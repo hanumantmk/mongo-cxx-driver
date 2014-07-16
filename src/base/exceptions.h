@@ -16,12 +16,32 @@
 
 #pragma once
 
-#include "base/collection.h"
+#include <exception>
+
+/**
+ * MongoDB C++ Driver exception hierarchy
+ *
+ * std::exception
+ *     L mongo::driver::Exception
+ *         L mongo::driver::OperationException
+ *             L mongo::driver::QueryException
+ *             L mongo::driver::WriteException
+ *         L mongo::driver::SocketException
+ */
 
 namespace mongo {
 namespace driver {
 
-    class Database {
+    class Exception : std::exception {
+    };
+
+    class OperationException : Exception {
+    };
+
+    class QueryException : OperationException {
+    };
+
+    class WriteException : OperationException {
     };
 
 } // namespace driver

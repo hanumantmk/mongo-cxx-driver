@@ -16,13 +16,9 @@
 
 #pragma once
 
-#include "base/collection.h"
+namespace bson {
 
-namespace mongo {
-namespace driver {
+class Element {
+};
 
-    class Database {
-    };
-
-} // namespace driver
-} // namespace mongo
+} // namespace bson

@@ -16,13 +16,11 @@
 
 #pragma once
 
-#include "base/collection.h"
-
 namespace mongo {
 namespace driver {
 
-    class Database {
-    };
+class Cursor {
+};
 
 } // namespace driver
 } // namespace mongo

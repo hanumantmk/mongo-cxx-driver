@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-#pragma once
-
-#include "base/collection.h"
-
 namespace mongo {
 namespace driver {
 
-    class Database {
+    class InsertOperation {
     };
 
 } // namespace driver

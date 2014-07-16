@@ -16,12 +16,10 @@
 
 #pragma once
 
-#include "base/collection.h"
-
 namespace mongo {
 namespace driver {
 
-    class Database {
+    class RemoveOperation {
     };
 
 } // namespace driver

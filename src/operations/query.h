@@ -16,12 +16,12 @@
 
 #pragma once
 
-#include "base/collection.h"
+#include "operations/read.h"
 
 namespace mongo {
 namespace driver {
 
-    class Database {
+    class QueryOperation : ReadOperation {
     };
 
 } // namespace driver
