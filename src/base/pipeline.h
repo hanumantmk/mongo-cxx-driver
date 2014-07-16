@@ -28,7 +28,7 @@ namespace driver {
     class Pipeline {
         Pipeline& batch_size(int32_t batch_size);
         Pipeline& allow_disk_use(bool value);
-        Pipeline& group(const bson::Document &);
+        Pipeline& group(const bson::Document& group);
         Pipeline& limit(int32_t limit);
         Pipeline& match(const bson::Document& filter);
         Pipeline& out(const std::string& collection_name);

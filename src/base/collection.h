@@ -31,9 +31,9 @@ namespace driver {
     class WriteResult;
 
     class Collection {
-        WriteResult insert(const bson::Document& d);
+        WriteResult insert(const bson::Document& document);
         std::unique_ptr<Cursor> aggregate(const Pipeline& p);
-        std::unique_ptr<Cursor> find(bson::Document& d);
+        std::unique_ptr<Cursor> find(const bson::Document& filter);
 
         // This is dumb -- everything else takes a model why shouldn't these
         bson::Document find_one_and_replace();
@@ -41,9 +41,20 @@ namespace driver {
         bson::Document find_one_and_remove();
 
         // Why not just replace
-        WriteResult replace_one();
-        WriteResult update();
-        WriteResult remove();
+        WriteResult replace_one(
+            const bson::Document& filter,
+            const bson::Document& replacement
+        );
+
+        WriteResult update(
+            const bson::Document& filter,
+            const bson::Document& update
+        );
+
+        WriteResult remove(
+            const bson::Document& filter
+        );
+
         ExplainResult explain();
         std::set<bson::Element> distinct(const bson::Document& d);
         uint64_t count();
