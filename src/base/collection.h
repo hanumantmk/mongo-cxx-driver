@@ -26,61 +26,117 @@
 namespace mongo {
 namespace driver {
 
+    class Client;
+    class Database;
     class Pipeline;
     class ExplainResult;
     class WriteResult;
+    class WriteConcern;
+    class ReadPreference;
 
     class Collection {
-        WriteResult insert(const bson::Document& document);
-        std::unique_ptr<Cursor> aggregate(
-            const Pipeline& p
+    public:
+
+        Collection(
+            Client* client,
+            Database* database,
+            const std::string& name
+        ) : _client(client), _database(database), _name(name) {}
+
+        //iterator begin() const;
+        //iterator end() const;
+
+        WriteResult insert(
+            const bson::Document& document,
+            const WriteConcern* write_concern
         );
+
+        std::unique_ptr<Cursor> aggregate(
+            const Pipeline& p,
+            bool allow_disk_use,
+            int32_t batch_size,
+            bool use_cursor,
+            int64_t max_time_ms,
+            const ReadPreference* read_preference
+        ) const;
 
         std::unique_ptr<Cursor> find(
-            const bson::Document& filter
-        );
+            const bson::Document& filter,
+            int32_t batch_size,
+            int32_t cursor_flags,
+            int32_t limit,
+            const bson::Document& modifiers,
+            const bson::Document& projection,
+            int32_t skip,
+            const bson::Document& sort,
+            int64_t max_time_ms,
+            const ReadPreference* read_preference
+        ) const;
 
         bson::Document find_and_replace(
-            bson::Document filter,
-            bson::Document replacement,
-            bson::Document projection,
+            const bson::Document& filter,
+            const bson::Document& replacement,
+            const bson::Document& projection,
             bool returnReplacement,
-            bson::Document sort,
+            const bson::Document& sort,
             bool upsert
         );
 
         bson::Document find_and_update(
-            bson::Document filter,
-            bson::Document update,
-            bson::Document projection,
+            const bson::Document& filter,
+            const bson::Document& update,
+            const bson::Document& projection,
             bool returnUpdated,
-            bson::Document sort,
+            const bson::Document& sort,
             bool upsert
         );
 
         bson::Document find_and_remove(
-            bson::Document filter,
-            bson::Document projection,
-            bson::Document sort
+            const bson::Document& filter,
+            const bson::Document& projection,
+            const bson::Document& sort
         );
 
         WriteResult replace(
             const bson::Document& filter,
-            const bson::Document& replacement
+            const bson::Document& replacement,
+            const WriteConcern* write_concern
         );
 
         WriteResult update(
             const bson::Document& filter,
-            const bson::Document& update
+            const bson::Document& update,
+            const WriteConcern* write_concern
         );
 
         WriteResult remove(
-            const bson::Document& filter
+            const bson::Document& filter,
+            bool multi,
+            const WriteConcern* write_concern
         );
 
-        ExplainResult explain();
-        std::set<bson::Element> distinct(const bson::Document& d);
-        uint64_t count();
+        ExplainResult explain() const;
+
+        std::set<bson::Element> distinct(
+            const std::string& field_name,
+            const bson::Document& filter,
+            const int64_t max_time_ms,
+            const ReadPreference* read_preference
+        ) const;
+
+        int64_t count(
+            const bson::Document& filter,
+            const bson::Document& hint,
+            int32_t limit,
+            const int64_t max_time_ms,
+            int32_t skip,
+            const ReadPreference* read_preference
+        ) const;
+
+    private:
+        Client* _client;
+        Database* _database;
+        std::string _name;
     };
 
 } // namespace driver

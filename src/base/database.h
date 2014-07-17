@@ -16,12 +16,24 @@
 
 #pragma once
 
+#include <string>
 #include "base/collection.h"
 
 namespace mongo {
 namespace driver {
 
+    class Client;
+
     class Database {
+    public:
+        Database(
+            Client* client,
+            const std::string& name
+        ) : _client(client), _name(name) {}
+
+    private:
+        Client* _client;
+        std::string _name;
     };
 
 } // namespace driver

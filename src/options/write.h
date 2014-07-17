@@ -15,3 +15,18 @@
  */
 
 #pragma once
+
+#include <cstdint>
+
+namespace mongo {
+namespace driver {
+
+    class WriteConcern;
+
+    class WriteOptions {
+        WriteOptions& write_concern(WriteConcern write_concern);
+        WriteConcern write_concern();
+    };
+
+} // namespace driver
+} // namespace mongo
