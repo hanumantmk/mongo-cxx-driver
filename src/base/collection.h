@@ -32,16 +32,39 @@ namespace driver {
 
     class Collection {
         WriteResult insert(const bson::Document& document);
-        std::unique_ptr<Cursor> aggregate(const Pipeline& p);
-        std::unique_ptr<Cursor> find(const bson::Document& filter);
+        std::unique_ptr<Cursor> aggregate(
+            const Pipeline& p
+        );
 
-        // This is dumb -- everything else takes a model why shouldn't these
-        bson::Document find_one_and_replace();
-        bson::Document find_one_and_update();
-        bson::Document find_one_and_remove();
+        std::unique_ptr<Cursor> find(
+            const bson::Document& filter
+        );
 
-        // Why not just replace
-        WriteResult replace_one(
+        bson::Document find_and_replace(
+            bson::Document filter,
+            bson::Document replacement,
+            bson::Document projection,
+            bool returnReplacement,
+            bson::Document sort,
+            bool upsert
+        );
+
+        bson::Document find_and_update(
+            bson::Document filter,
+            bson::Document update,
+            bson::Document projection,
+            bool returnUpdated,
+            bson::Document sort,
+            bool upsert
+        );
+
+        bson::Document find_and_remove(
+            bson::Document filter,
+            bson::Document projection,
+            bson::Document sort
+        );
+
+        WriteResult replace(
             const bson::Document& filter,
             const bson::Document& replacement
         );

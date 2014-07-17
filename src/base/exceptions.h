@@ -44,5 +44,8 @@ namespace driver {
     class WriteException : OperationException {
     };
 
+    class AuthenticationException : OperationException {
+    };
+
 } // namespace driver
 } // namespace mongo
