@@ -16,14 +16,35 @@
 
 #pragma once
 
-#include "operations/read.h"
+#include "bson/document.h"
 
 namespace mongo {
 namespace driver {
 
-    class QueryOperation {
-        QueryOperation(FindOptions);
-    };
+    class WriteConcern;
+
+    class UpdateModel {
+
+        friend class UpdateOperation;
+
+    public:
+        UpdateModel(
+            const bson::Document& filter,
+            const bson::Document& update
+        );
+
+        UpdateModel& multi(bool multi);
+        UpdateModel& upsert(bool upsert);
+        UpdateModel& write_concern(const WriteConcern& write_concern);
+
+    private:
+        const bson::Document& _filter;
+        const bson::Document& _update;
+        bool _multi;
+        bool _upsert;
+        WriteConcern& _write_concern;
+
+    }
 
 } // namespace driver
 } // namespace mongo

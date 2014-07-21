@@ -33,6 +33,8 @@ namespace driver {
     class WriteResult;
     class WriteConcern;
     class ReadPreference;
+    class FindModel;
+    class UpdateModel;
 
     class Collection {
     public:
@@ -60,18 +62,7 @@ namespace driver {
             const ReadPreference* read_preference
         ) const;
 
-        std::unique_ptr<Cursor> find(
-            const bson::Document& filter,
-            int32_t batch_size,
-            int32_t cursor_flags,
-            int32_t limit,
-            const bson::Document& modifiers,
-            const bson::Document& projection,
-            int32_t skip,
-            const bson::Document& sort,
-            int64_t max_time_ms,
-            const ReadPreference* read_preference
-        ) const;
+        std::unique_ptr<Cursor> find(const FindModel& model) const;
 
         bson::Document find_and_replace(
             const bson::Document& filter,
@@ -103,11 +94,7 @@ namespace driver {
             const WriteConcern* write_concern
         );
 
-        WriteResult update(
-            const bson::Document& filter,
-            const bson::Document& update,
-            const WriteConcern* write_concern
-        );
+        WriteResult update(const UpdateModel& model);
 
         WriteResult remove(
             const bson::Document& filter,
