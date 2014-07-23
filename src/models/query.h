@@ -18,14 +18,22 @@
 
 #include <cstdint>
 
+#include "bson/document.h"
+
 namespace mongo {
 namespace driver {
 
-    class WriteConcern;
+    class QueryModel {
 
-    class WriteOptions {
-        WriteOptions& write_concern(WriteConcern write_concern);
-        WriteConcern write_concern();
+        QueryModel& sort(const bson::Document& ordering);
+        bson::Document sort() const;
+
+        QueryModel& limit(int32_t limit);
+        int32_t limit() const;
+
+        QueryModel& skip(int32_t limit);
+        int32_t skip() const;
+
     };
 
 } // namespace driver

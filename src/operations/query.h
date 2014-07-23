@@ -16,13 +16,11 @@
 
 #pragma once
 
-#include "operations/read.h"
-
 namespace mongo {
 namespace driver {
 
     class QueryOperation {
-        QueryOperation(FindOptions);
+        QueryOperation();
     };
 
 } // namespace driver

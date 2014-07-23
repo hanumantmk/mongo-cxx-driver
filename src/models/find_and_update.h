@@ -16,24 +16,34 @@
 
 #pragma once
 
-#include <string>
-#include "base/collection.h"
+#include "bson/document.h"
+#include "models/write.h"
 
 namespace mongo {
 namespace driver {
 
-    class Client;
+    class FindAndUpdateModel : public WriteModel<FindAndUpdateModel> {
 
-    class Database {
     public:
-        Database(
-            Client* const client,
-            const std::string& name
-        ) : _client(client), _name(name) {}
+        FindAndUpdateModel(
+            const bson::Document& filter,
+            const bson::Document& update
+        );
+
+        FindAndUpdateModel& projection(const bson::Document& projection);
+        FindAndUpdateModel& return_replacement(bool multi);
+        FindAndUpdateModel& sort(const bson::Document& ordering);
+        FindAndUpdateModel& upsert(bool upsert);
 
     private:
-        Client* const _client;
-        const std::string _name;
+        const bson::Document& _filter;
+        const bson::Document& _update;
+
+        bson::Document& _projection;
+        bool _return_replacement;
+        bson::Document& _ordering;
+        bool _upsert;
+
     };
 
 } // namespace driver

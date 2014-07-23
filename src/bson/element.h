@@ -18,7 +18,7 @@
 
 namespace bson {
 
-class Element {
-};
+    class Element {
+    };
 
 } // namespace bson

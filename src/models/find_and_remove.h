@@ -17,34 +17,26 @@
 #pragma once
 
 #include "bson/document.h"
+#include "models/write.h"
 
 namespace mongo {
 namespace driver {
 
-    class WriteConcern;
-
-    class UpdateModel {
-
-        friend class UpdateOperation;
+    class FindAndRemoveModel : public WriteModel<FindAndRemoveModel> {
 
     public:
-        UpdateModel(
-            const bson::Document& filter,
-            const bson::Document& update
-        );
+        FindAndRemoveModel(const bson::Document& filter);
 
-        UpdateModel& multi(bool multi);
-        UpdateModel& upsert(bool upsert);
-        UpdateModel& write_concern(const WriteConcern& write_concern);
+        FindAndRemoveModel& projection(const bson::Document& projection);
+        FindAndRemoveModel& sort(const bson::Document& ordering);
 
     private:
         const bson::Document& _filter;
-        const bson::Document& _update;
-        bool _multi;
-        bool _upsert;
-        WriteConcern& _write_concern;
 
-    }
+        bson::Document& _projection;
+        bson::Document& _ordering;
+
+    };
 
 } // namespace driver
 } // namespace mongo

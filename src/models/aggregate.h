@@ -17,35 +17,60 @@
 #pragma once
 
 #include <cstdint>
+
 #include "bson/document.h"
+#include "models/read.h"
 
 namespace mongo {
 namespace driver {
 
     class Pipeline;
-    class ReadPreference;
 
-    class AggregateModel {
-
-        friend class CommandOperation;
+    class AggregateModel : public ReadModel<AggregateModel> {
 
     public:
-        AggregateModel(const Pipeline& document);
+
+        AggregateModel(const Pipeline& pipeline);
+
+        /**
+         * Enables writing to temporary files. When set to true, aggregation stages
+         * can write data to the _tmp subdirectory in the dbPath directory. The
+         * default is false.
+         *
+         * @see http://docs.mongodb.org/manual/reference/command/aggregate/
+         */
         AggregateModel& allow_disk_use(bool allow_disk_use);
+
+        /**
+         * The number of documents to return per batch.
+         *
+         * @see http://docs.mongodb.org/manual/reference/command/aggregate/
+         */
         AggregateModel& batch_size(int32_t batch_size);
-        AggregateModel& use_cursor(bool use_cursor);
+
+        /**
+         * The maximum amount of time to allow the query to run.
+         *
+         * @see http://docs.mongodb.org/manual/reference/command/aggregate/
+         */
         AggregateModel& max_time_ms(int64_t max_time_ms);
-        AggregateModel& read_preference(ReadPreference* read_preference);
+
+        /**
+         * Indicates if the results should be provided as a cursor. The default is false.
+         *
+         * @see http://docs.mongodb.org/manual/reference/command/aggregate/
+         */
+        AggregateModel& use_cursor(bool use_cursor);
 
     private:
+
         const Pipeline& _pipeline;
         bool _allow_disk_use;
         int32_t _batch_size;
-        bool _use_cursor;
         int64_t _max_time_ms;
-        const ReadPreference* _read_preference;
+        bool _use_cursor;
 
-    }
+    };
 
 } // namespace driver
 } // namespace mongo

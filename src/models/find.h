@@ -18,16 +18,14 @@
 
 #include <cstdint>
 #include <string>
+
 #include "bson/document.h"
+#include "models/read.h"
 
 namespace mongo {
 namespace driver {
 
-    class ReadPreference;
-
-    class FindModel {
-
-        friend class QueryOperation;
+    class FindModel : public ReadModel<FindModel> {
 
     public:
         FindModel(const bson::Document& filter);
@@ -41,7 +39,7 @@ namespace driver {
         FindModel& sort(const bson::Document& sort);
         FindModel& max_time_ms(int64_t max_time_ms);
 
-        // TODO: breakup modifiers in spec
+        // TODO: breakup modifiers in spec or continue and add members?
         FindModel& min(const bson::Document& min);
         FindModel& max(const bson::Document& max);
         FindModel& hint(const bson::Document& hint);
@@ -51,11 +49,9 @@ namespace driver {
         FindModel& comment(const std::string& comment);
         FindModel& max_scan(int64_t max_scan);
 
-        // TODO: add read preference?
-        FindModel& read_preference(const ReadPreference& read_preference);
-
     private:
         const bson::Document& _filter;
+
         int32_t _batch_size;
         int32_t _cursor_flags;
         int32_t _limit;

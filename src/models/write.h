@@ -15,3 +15,25 @@
  */
 
 #pragma once
+
+#include <cstdint>
+
+namespace mongo {
+namespace driver {
+
+    class WriteConcern;
+
+    template <class Derived>
+    class WriteModel {
+
+    public:
+        Derived& write_concern(const WriteConcern* const write_concern);
+        WriteConcern write_concern();
+
+    protected:
+        WriteConcern* const _write_concern;
+
+    };
+
+} // namespace driver
+} // namespace mongo

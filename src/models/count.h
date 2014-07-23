@@ -16,31 +16,34 @@
 
 #pragma once
 
+#include <cstdint>
+#include <string>
+
 #include "bson/document.h"
+#include "models/read.h"
 
 namespace mongo {
 namespace driver {
 
-    class WriteConcern;
-
-    class FindAndRemoveModel {
-
-        friend class CommandOperation;
+    class CountModel : public ReadModel<CountModel> {
 
     public:
-        FindAndRemoveModel(const bson::Document& filter);
+        CountModel(const bson::Document& filter);
 
-        FindAndRemoveModel& projection(const bson::Document& projection);
-        FindAndRemoveModel& sort(const bson::Document& sort);
-        FindAndRemoveModel& write_concern(const WriteConcern& write_concern);
+        CountModel& filter(const bson::Document& filter);
+        CountModel& hint(const bson::Document& hint);
+        CountModel& limit(int32_t limit);
+        CountModel& max_time_ms(int64_t max_time_ms);
+        CountModel& skip(int32_t skip);
 
     private:
         const bson::Document& _filter;
-        const bson::Document& _projection;
-        const bson::Document& _sort;
-        WriteConcern& _write_concern;
 
-    }
+        bson::Document& _hint;
+        int32_t _limit;
+        int64_t _max_time_ms;
+        int32_t _skip;
+    };
 
 } // namespace driver
 } // namespace mongo

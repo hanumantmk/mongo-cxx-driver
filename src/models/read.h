@@ -16,31 +16,24 @@
 
 #pragma once
 
-#include "bson/document.h"
+#include <cstdint>
 
 namespace mongo {
 namespace driver {
 
-    class WriteConcern;
+    class ReadPreference;
 
-    class ReplaceModel {
-
-        friend class CommandOperation;
+    template <class Derived>
+    class ReadModel {
 
     public:
-        ReplaceModel(
-            const bson::Document& filter,
-            const bson::Document& replacement
-        );
+        Derived& read_preference(const ReadPreference* const read_preference);
+        ReadPreference* read_preference();
 
-        ReplaceModel& write_concern(const WriteConcern& write_concern);
+    protected:
+        ReadPreference* const _read_preference;
 
-    private:
-        const bson::Document& _filter;
-        const bson::Document& _replacement;
-        WriteConcern& _write_concern;
-
-    }
+    };
 
 } // namespace driver
 } // namespace mongo

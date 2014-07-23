@@ -16,9 +16,10 @@
 
 #pragma once
 
-#include <string>
 #include <cstdint>
+#include <string>
 #include <vector>
+
 #include "bson/document.h"
 
 namespace mongo {

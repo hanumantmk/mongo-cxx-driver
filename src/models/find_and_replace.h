@@ -16,22 +16,33 @@
 
 #pragma once
 
-#include <cstdint>
 #include "bson/document.h"
+#include "models/write.h"
 
 namespace mongo {
 namespace driver {
 
-    class QueryOptions {
+    class FindAndReplaceModel : public WriteModel<FindAndReplaceModel> {
 
-        QueryOptions& sort(const bson::Document& ordering);
-        bson::Document sort() const;
+    public:
+        FindAndReplaceModel(
+            const bson::Document& filter,
+            const bson::Document& replacement
+        );
 
-        QueryOptions& limit(int32_t limit);
-        int32_t limit() const;
+        FindAndReplaceModel& projection(const bson::Document& projection);
+        FindAndReplaceModel& return_replacement(bool multi);
+        FindAndReplaceModel& sort(const bson::Document& ordering);
+        FindAndReplaceModel& upsert(bool upsert);
 
-        QueryOptions& skip(int32_t limit);
-        int32_t skip() const;
+    private:
+        const bson::Document& _filter;
+        const bson::Document& _replacement;
+
+        bson::Document& _projection;
+        bool _return_replacement;
+        bson::Document& _ordering;
+        bool _upsert;
 
     };
 

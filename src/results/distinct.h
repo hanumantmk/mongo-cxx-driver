@@ -14,29 +14,12 @@
  * limitations under the License.
  */
 
-#pragma once
-
-#include "bson/document.h"
-
 namespace mongo {
 namespace driver {
 
-    class WriteConcern;
-
-    class InsertModel {
-
-        friend class InsertOperation;
-
-    public:
-        InsertModel(const bson::Document& document);
-        InsertModel& write_concern(const WriteConcern& write_concern);
-
-    private:
-        const bson::Document& _filter;
-        bool _multi;
-        WriteConcern& _write_concern;
-
-    }
+    class DistinctResult{
+    };
 
 } // namespace driver
 } // namespace mongo
+

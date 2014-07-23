@@ -16,11 +16,29 @@
 
 #pragma once
 
+#include <cstdint>
+#include <string>
+
+#include "bson/document.h"
+#include "models/read.h"
+
 namespace mongo {
 namespace driver {
 
-    class Cursor {
+    class DistinctModel : public ReadModel<DistinctModel> {
+
+    public:
+        DistinctModel(const std::string& field_name);
+
+        DistinctModel& filter(const bson::Document& filter);
+        DistinctModel& max_time_ms(int64_t max_time_ms);
+
+    private:
+        const bson::Document& _field_name;
+        int64_t _max_time_ms;
+
     };
 
 } // namespace driver
 } // namespace mongo
+

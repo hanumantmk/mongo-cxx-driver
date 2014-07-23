@@ -19,6 +19,8 @@
 #include <cstdint>
 #include <memory>
 #include <set>
+#include <string>
+
 #include "base/cursor.h"
 #include "bson/document.h"
 #include "bson/element.h"
@@ -41,53 +43,134 @@ namespace driver {
     class InsertModel;
     class ReplaceModel;
     class AggregateModel;
+    class ExplainModel;
+    class DistinctModel;
+    class DistinctResult;
+    class CountModel;
 
     class Collection {
     public:
 
         Collection(
-            Client* client,
-            Database* database,
+            Client* const client,
+            Database* const database,
             const std::string& name
         ) : _client(client), _database(database), _name(name) {}
 
         //iterator begin() const;
         //iterator end() const;
 
+        /**
+         * Finds the documents matching the model.
+         *
+         * @see http://docs.mongodb.org/manual/core/read-operations-introduction/
+         * @param model The arguments.
+         */
         std::unique_ptr<Cursor> find(const FindModel& model) const;
+
+        /**
+         * Runs an aggregation framework pipeline.
+         *
+         * @see http://docs.mongodb.org/manual/reference/command/aggregate/
+         * @param model The arguments.
+         */
         std::unique_ptr<Cursor> aggregate(const AggregateModel& model) const;
 
+        /**
+         * Replaces a single document.
+         *
+         * @see http://docs.mongodb.org/manual/reference/command/update/
+         * @param model The arguments.
+         * @throws WriteException
+         * @throws DuplicateKeyException
+         */
         WriteResult replace(const ReplaceModel model);
+
+        /**
+         * Inserts the provided document. If the document is missing an identifier,
+         * the driver should generate one.
+         *
+         * @see http://docs.mongodb.org/manual/reference/command/insert/
+         * @param model The arguments.
+         * @throws WriteException
+         * @throws DuplicateKeyException
+         */
         WriteResult insert(const InsertModel& model);
+
+        /**
+         * Updates one or more documents.
+         *
+         * @see http://docs.mongodb.org/manual/reference/command/update/
+         * @param model The arguments.
+         * @throws WriteException
+         * @throws DuplicateKeyException
+         */
         WriteResult update(const UpdateModel& model);
+
+        /**
+         * Removes one or more documents.
+         *
+         * @see http://docs.mongodb.org/manual/reference/command/delete/
+         * @throws WriteException
+         */
         WriteResult remove(const RemoveModel& model);
 
+        /**
+         * Finds a single document and replaces it, returning either the original or the replaced
+         * document.
+         *
+         * @see http://docs.mongodb.org/manual/reference/command/findAndModify/
+         * @param model The arguments.
+         * @throws WriteException
+         */
         bson::Document find_and_replace(const FindAndReplaceModel& model);
+
+        /**
+         * Finds a single document and updates it, returning either the original or the updated
+         * document.
+         *
+         * @see http://docs.mongodb.org/manual/reference/command/findAndModify/
+         * @param model The arguments.
+         * @throws WriteException
+         */
         bson::Document find_and_update(const FindAndUpdateModel& model);
+
+        /**
+         * Finds a single document and removes it, returning the removed document.
+         *
+         * @see http://docs.mongodb.org/manual/reference/command/findAndModify/
+         * @param model The arguments.
+         * @throws WriteException
+         */
         bson::Document find_and_remove(const FindAndRemoveModel& model);
 
-        ExplainResult explain() const;
+        /**
+         * Gets a document containing information on the processing of the pipeline.
+         *
+         * @see http://docs.mongodb.org/manual/reference/operator/meta/explain/
+         */
+        bson::Document explain(const ExplainModel& model) const;
 
-        std::set<bson::Element> distinct(
-            const std::string& field_name,
-            const bson::Document& filter,
-            const int64_t max_time_ms,
-            const ReadPreference* read_preference
-        ) const;
+        /**
+         * Finds the distinct values for a specified field across a single collection.
+         *
+         * @see http://docs.mongodb.org/manual/reference/command/distinct/
+         * @param model The arguments.
+         */
+        DistinctResult distinct(const DistinctModel& model) const;
 
-        int64_t count(
-            const bson::Document& filter,
-            const bson::Document& hint,
-            int32_t limit,
-            const int64_t max_time_ms,
-            int32_t skip,
-            const ReadPreference* read_preference
-        ) const;
+        /**
+         * Gets the number of documents matching the model.
+         *
+         * @see http://docs.mongodb.org/manual/reference/command/count/
+         * @param model The arguments.
+         */
+        int64_t count(const CountModel& model) const;
 
     private:
-        Client* _client;
-        Database* _database;
-        std::string _name;
+        Client* const _client;
+        Database* const _database;
+        const std::string _name;
     };
 
 } // namespace driver

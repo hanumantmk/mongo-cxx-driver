@@ -17,27 +17,30 @@
 #pragma once
 
 #include "bson/document.h"
+#include "models/write.h"
 
 namespace mongo {
 namespace driver {
 
-    class WriteConcern;
-
-    class RemoveModel {
-
-        friend class CommandOperation;
+    class UpdateModel : public WriteModel<UpdateModel> {
 
     public:
-        RemoveModel(const bson::Document& filter);
-        RemoveModel& multi(bool multi);
-        RemoveModel& write_concern(const WriteConcern& write_concern);
+        UpdateModel(
+            const bson::Document& filter,
+            const bson::Document& update
+        );
+
+        UpdateModel& multi(bool multi);
+        UpdateModel& upsert(bool upsert);
 
     private:
         const bson::Document& _filter;
-        bool _multi;
-        WriteConcern& _write_concern;
+        const bson::Document& _update;
 
-    }
+        bool _multi;
+        bool _upsert;
+
+    };
 
 } // namespace driver
 } // namespace mongo

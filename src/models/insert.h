@@ -16,19 +16,21 @@
 
 #pragma once
 
-#include <cstdint>
+#include "bson/document.h"
+#include "models/write.h"
 
 namespace mongo {
 namespace driver {
 
-    class ReadPreference;
+    class InsertModel : public WriteModel<InsertModel> {
 
-    class ReadOptions {
-        ReadOptions& max_time_ms(int64_t max_time_ms);
-        int64_t max_time_ms();
+    public:
 
-        ReadOptions& read_preference(const ReadPreference& read_preference);
-        ReadPreference read_preference();
+        InsertModel(const bson::Document& document);
+
+    private:
+        const bson::Document& _document;
+
     };
 
 } // namespace driver
