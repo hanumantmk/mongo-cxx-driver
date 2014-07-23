@@ -16,33 +16,31 @@
 
 #pragma once
 
-#include <string>
-#include <cstdint>
-#include <vector>
 #include "bson/document.h"
 
 namespace mongo {
 namespace driver {
 
-    class ExplainResult;
+    class WriteConcern;
 
-    class Pipeline {
+    class FindAndRemoveModel {
+
+        friend class CommandOperation;
+
     public:
-        Pipeline& geoNear(/*something*/);
-        Pipeline& group(const bson::Document& group);
-        Pipeline& limit(int32_t limit);
-        Pipeline& match(const bson::Document& filter);
-        Pipeline& out(const std::string& collection_name);
-        Pipeline& project(const bson::Document& projection);
-        Pipeline& redact(const bson::Document& restrictions);
-        Pipeline& skip(int32_t skip);
-        Pipeline& sort(const bson::Document& sort);
-        Pipeline& unwind(const std::string& field_name);
+        FindAndRemoveModel(const bson::Document& filter);
+
+        FindAndRemoveModel& projection(const bson::Document& projection);
+        FindAndRemoveModel& sort(const bson::Document& sort);
+        FindAndRemoveModel& write_concern(const WriteConcern& write_concern);
 
     private:
-        std::vector<bson::Document> _pipeline;
+        const bson::Document& _filter;
+        const bson::Document& _projection;
+        const bson::Document& _sort;
+        WriteConcern& _write_concern;
 
-    };
+    }
 
 } // namespace driver
 } // namespace mongo

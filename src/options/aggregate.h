@@ -16,33 +16,36 @@
 
 #pragma once
 
-#include <string>
 #include <cstdint>
-#include <vector>
 #include "bson/document.h"
 
 namespace mongo {
 namespace driver {
 
-    class ExplainResult;
+    class Pipeline;
+    class ReadPreference;
 
-    class Pipeline {
+    class AggregateModel {
+
+        friend class CommandOperation;
+
     public:
-        Pipeline& geoNear(/*something*/);
-        Pipeline& group(const bson::Document& group);
-        Pipeline& limit(int32_t limit);
-        Pipeline& match(const bson::Document& filter);
-        Pipeline& out(const std::string& collection_name);
-        Pipeline& project(const bson::Document& projection);
-        Pipeline& redact(const bson::Document& restrictions);
-        Pipeline& skip(int32_t skip);
-        Pipeline& sort(const bson::Document& sort);
-        Pipeline& unwind(const std::string& field_name);
+        AggregateModel(const Pipeline& document);
+        AggregateModel& allow_disk_use(bool allow_disk_use);
+        AggregateModel& batch_size(int32_t batch_size);
+        AggregateModel& use_cursor(bool use_cursor);
+        AggregateModel& max_time_ms(int64_t max_time_ms);
+        AggregateModel& read_preference(ReadPreference* read_preference);
 
     private:
-        std::vector<bson::Document> _pipeline;
+        const Pipeline& _pipeline;
+        bool _allow_disk_use;
+        int32_t _batch_size;
+        bool _use_cursor;
+        int64_t _max_time_ms;
+        const ReadPreference* _read_preference;
 
-    };
+    }
 
 } // namespace driver
 } // namespace mongo

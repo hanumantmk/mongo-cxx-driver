@@ -28,13 +28,19 @@ namespace driver {
 
     class Client;
     class Database;
-    class Pipeline;
     class ExplainResult;
     class WriteResult;
     class WriteConcern;
     class ReadPreference;
     class FindModel;
+    class FindAndReplaceModel;
+    class FindAndUpdateModel;
+    class FindAndRemoveModel;
     class UpdateModel;
+    class RemoveModel;
+    class InsertModel;
+    class ReplaceModel;
+    class AggregateModel;
 
     class Collection {
     public:
@@ -48,59 +54,17 @@ namespace driver {
         //iterator begin() const;
         //iterator end() const;
 
-        WriteResult insert(
-            const bson::Document& document,
-            const WriteConcern* write_concern
-        );
-
-        std::unique_ptr<Cursor> aggregate(
-            const Pipeline& p,
-            bool allow_disk_use,
-            int32_t batch_size,
-            bool use_cursor,
-            int64_t max_time_ms,
-            const ReadPreference* read_preference
-        ) const;
-
         std::unique_ptr<Cursor> find(const FindModel& model) const;
+        std::unique_ptr<Cursor> aggregate(const AggregateModel& model) const;
 
-        bson::Document find_and_replace(
-            const bson::Document& filter,
-            const bson::Document& replacement,
-            const bson::Document& projection,
-            bool returnReplacement,
-            const bson::Document& sort,
-            bool upsert
-        );
-
-        bson::Document find_and_update(
-            const bson::Document& filter,
-            const bson::Document& update,
-            const bson::Document& projection,
-            bool returnUpdated,
-            const bson::Document& sort,
-            bool upsert
-        );
-
-        bson::Document find_and_remove(
-            const bson::Document& filter,
-            const bson::Document& projection,
-            const bson::Document& sort
-        );
-
-        WriteResult replace(
-            const bson::Document& filter,
-            const bson::Document& replacement,
-            const WriteConcern* write_concern
-        );
-
+        WriteResult replace(const ReplaceModel model);
+        WriteResult insert(const InsertModel& model);
         WriteResult update(const UpdateModel& model);
+        WriteResult remove(const RemoveModel& model);
 
-        WriteResult remove(
-            const bson::Document& filter,
-            bool multi,
-            const WriteConcern* write_concern
-        );
+        bson::Document find_and_replace(const FindAndReplaceModel& model);
+        bson::Document find_and_update(const FindAndUpdateModel& model);
+        bson::Document find_and_remove(const FindAndRemoveModel& model);
 
         ExplainResult explain() const;
 
