@@ -22,6 +22,9 @@ namespace mongo {
 namespace driver {
 
     class Client {
+    public:
+        Database database(const std::string& db);
+        Database operator[](const std::string& db) { return database(db); }
     };
 
 } // namespace driver

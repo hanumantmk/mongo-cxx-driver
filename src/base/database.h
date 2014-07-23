@@ -31,6 +31,9 @@ namespace driver {
             const std::string& name
         ) : _client(client), _name(name) {}
 
+        Collection collection(const std::string& name);
+        Collection operator[](const std::string& name);
+
     private:
         Client* const _client;
         const std::string _name;
