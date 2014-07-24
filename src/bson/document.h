@@ -47,6 +47,8 @@ namespace bson {
        MINKEY = 0xFF,
     } bson_type_t;
 
+    class Document;
+
     class Reference {
         friend class Document;
     public:
@@ -62,6 +64,29 @@ namespace bson {
         Type type() const {
             return Type(bson_iter_type(&iter));
         }
+
+        const char* key() const {
+            return bson_iter_key(&iter);
+        }
+
+        const char* getString() const {
+            return bson_iter_utf8(&iter, NULL);
+        }
+
+        double getDouble() const {
+            return bson_iter_double(&iter);
+        }
+
+        int32_t getInt32() const {
+            return bson_iter_int32(&iter);
+        }
+
+        int64_t getInt64() const {
+            return bson_iter_int64(&iter);
+        }
+
+        Document getDocument() const;
+        Document getArray() const;
 
     private:
         bson_iter_t iter;
@@ -129,9 +154,40 @@ namespace bson {
         const uint8_t * getBuf() { return buf; }
         std::size_t getLen() { return len; }
 
+        void print(std::ostream& out) const {
+            bson_t b;
+            bson_init_static(&b, buf, len);
+            char * json = bson_as_json(&b, NULL);
+            out << json;
+            bson_free(json);
+        }
+
     private:
         const uint8_t * buf;
         std::size_t len;
     };
+
+    inline Document Reference::getDocument() const {
+        const uint8_t * buf;
+        uint32_t len;
+
+        bson_iter_document(&iter, &len, &buf);
+
+        return Document(buf, len);
+    }
+
+    inline Document Reference::getArray() const {
+        const uint8_t * buf;
+        uint32_t len;
+
+        bson_iter_array(&iter, &len, &buf);
+
+        return Document(buf, len);
+    }
+
+    std::ostream& operator<<(std::ostream& out, const Document& doc) {
+        doc.print(out);
+        return out;
+    }
 
 } // namespace bson

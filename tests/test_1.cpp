@@ -15,11 +15,22 @@ int main(int argc, char ** argv) {
 
     bson::Document doc(bson_get_data(foo), foo->len);
 
+    std::cout << "Doc: " << doc << std::endl;
+
     for (auto x : doc) {
         std::cout << "type is: " << (int)(x.type()) << std::endl;
+        std::cout << "value is: ";
+        
+        if (x.type() == bson::Type::INT32 ) {
+            std::cout << x.getInt32();
+        } else {
+            std::cout << x.getString();
+        }
+
+        std::cout << std::endl;
     }
 
-    std::cout << "type is: " << (int)(doc["bar"].type()) << std::endl;
+    std::cout << "key: " << doc["hello"].key() << std::endl;
 
     bson_destroy(foo);
 
