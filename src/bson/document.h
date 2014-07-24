@@ -16,9 +16,122 @@
 
 #pragma once
 
+#include <cstddef>
+#include <cstdint>
+#include <iterator>
+#include "bson.h"
+
 namespace bson {
 
+    enum class Type {
+       EOD = 0x00,
+       DOUBLE = 0x01,
+       UTF8 = 0x02,
+       DOCUMENT = 0x03,
+       ARRAY = 0x04,
+       BINARY = 0x05,
+       UNDEFINED = 0x06,
+       OID = 0x07,
+       BOOL = 0x08,
+       DATE_TIME = 0x09,
+       NULL_TYPE = 0x0A,
+       REGEX = 0x0B,
+       DBPOINTER = 0x0C,
+       CODE = 0x0D,
+       SYMBOL = 0x0E,
+       CODEWSCOPE = 0x0F,
+       INT32 = 0x10,
+       TIMESTAMP = 0x11,
+       INT64 = 0x12,
+       MAXKEY = 0x7F,
+       MINKEY = 0xFF,
+    } bson_type_t;
+
+    class Reference {
+        friend class Document;
+    public:
+        Reference() { }
+        Reference(const bson_iter_t& i) {
+            iter = i;
+        }
+
+        bool operator==(const Reference& rhs) const {
+            return (iter.raw == rhs.iter.raw && iter.off == rhs.iter.off);
+        }
+
+        Type type() const {
+            return Type(bson_iter_type(&iter));
+        }
+
+    private:
+        bson_iter_t iter;
+    };
+
     class Document {
+    public:
+        class iterator : public std::iterator<std::forward_iterator_tag, Reference, std::ptrdiff_t, const Reference*, const Reference&>{
+        public:
+            iterator(const bson_iter_t& i) : iter(i), is_end(false) {
+            }
+
+            iterator(bool is_end) : is_end(is_end) {
+            }
+
+            const Reference& operator*() const { return iter; }
+            const Reference* operator->() const { return &iter; }
+
+            iterator& operator++() {
+                is_end = !bson_iter_next(&iter.iter);
+                return *this;
+            }
+
+            bool operator==(const iterator& rhs) const {
+                if (is_end && rhs.is_end) return true;
+                return iter == rhs.iter;
+            }
+            
+            bool operator!=(const iterator& rhs) const {
+                return !(*this == rhs);
+            }
+            
+        private:
+            Reference iter;
+            bool is_end;
+        };
+
+        iterator begin() {
+            bson_t b;
+            bson_iter_t iter;
+
+            bson_init_static(&b, buf, len);
+            bson_iter_init(&iter, &b);
+            bson_iter_next(&iter);
+
+            return iterator(iter);
+        }
+
+        iterator end() {
+            return iterator(true);
+        }
+
+        Reference operator[](const char * key) const {
+            bson_t b;
+            bson_iter_t iter;
+
+            bson_init_static(&b, buf, len);
+            bson_iter_init_find(&iter, &b, key);
+
+            return Reference(iter);
+        }
+
+        Document(const uint8_t * b, std::size_t l) : buf(b), len(l) {}
+
+        const uint8_t * getBuf() { return buf; }
+        std::size_t getLen() { return len; }
+
+    private:
+        const uint8_t * buf;
+        std::size_t len;
     };
 
 } // namespace bson

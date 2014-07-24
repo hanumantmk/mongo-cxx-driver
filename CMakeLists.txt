@@ -24,9 +24,10 @@ link_directories(
 
 include_directories(
     ${LIBMONGOC_INCLUDE_DIRS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Werror -ggdb3 ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Werror -ggdb3 -O0 ${CMAKE_CXX_FLAGS}")
 
 add_subdirectory(src)
 add_subdirectory(tests)

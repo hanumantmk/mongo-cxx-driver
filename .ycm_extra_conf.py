@@ -37,29 +37,12 @@ import ycm_core
 
 flags = [
     '-Wall',
-    '-Wextra',
     '-Werror',
-    '-Wno-long-long',
-    '-Wno-variadic-macros',
     '-std=c++11',
     '-x', 'c++',
-    '-Iinclude/',
     '-Isrc/',
-    '-Isrc/third_party/gtest-1.7.0/include',
-    '-Ibuild/linux2/normal/',
-    '-Ibuild/cached/',
-    '-Ibuild/cached/mongo',
-    '-isystem/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/c++/v1',
-    '-DMONGO_EXPOSE_MACROS',
-    '-Wall',
-    '-Wno-unknown-pragmas',
-    '-Wsign-compare',
-    '-Wno-unused-private-field',
-    '-Wno-mismatched-tags',
-    '-Winvalid-pch',
-    '-Wnon-virtual-dtor',
-    '-Woverloaded-virtual',
-    '-pipe'
+    '-Ilibmongoc-prefix/include/libmongoc-1.0',
+    '-Ilibmongoc-prefix/include/libbson-1.0',
 ]
 
 # Set this to the absolute path to the folder (NOT the file!) containing the
