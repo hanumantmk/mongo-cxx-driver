@@ -123,7 +123,7 @@ namespace driver {
          * @param model The arguments.
          * @throws WriteException
          */
-        bson::Document find_and_replace(const FindAndReplaceModel& model);
+        bson::Document find_one_and_replace(const FindAndReplaceModel& model);
 
         /**
          * Finds a single document and updates it, returning either the original or the updated
@@ -133,7 +133,7 @@ namespace driver {
          * @param model The arguments.
          * @throws WriteException
          */
-        bson::Document find_and_update(const FindAndUpdateModel& model);
+        bson::Document find_one_and_update(const FindAndUpdateModel& model);
 
         /**
          * Finds a single document and removes it, returning the removed document.
@@ -142,7 +142,7 @@ namespace driver {
          * @param model The arguments.
          * @throws WriteException
          */
-        bson::Document find_and_remove(const FindAndRemoveModel& model);
+        bson::Document find_one_and_remove(const FindAndRemoveModel& model);
 
         /**
          * Gets a document containing information on the processing of the pipeline.
