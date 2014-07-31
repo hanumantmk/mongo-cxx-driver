@@ -179,8 +179,8 @@ namespace bson {
         Document(const uint8_t * b, std::size_t l) : buf(b), len(l) {}
         Document() : buf(NULL), len(0) {}
 
-        const uint8_t * getBuf() { return buf; }
-        std::size_t getLen() { return len; }
+        const uint8_t * getBuf() const { return buf; }
+        std::size_t getLen() const { return len; }
         void setBuf(const uint8_t * b) { buf = b; }
         void setLen(std::size_t l) { len = l; }
 
@@ -215,7 +215,7 @@ namespace bson {
         return Document(buf, len);
     }
 
-    std::ostream& operator<<(std::ostream& out, const Document& doc) {
+    inline std::ostream& operator<<(std::ostream& out, const Document& doc) {
         doc.print(out);
         return out;
     }

@@ -26,6 +26,16 @@ namespace driver {
 
     Cursor::Cursor( mongoc_cursor_t* cursor ) :
         _cursor(cursor), _at_end(!cursor) {
+
+        if (_cursor) {
+            const bson_t* out;
+            if (mongoc_cursor_next(_cursor, &out)) {
+                _doc.setBuf(bson_get_data(out));
+                _doc.setLen(out->len);
+            } else {
+                _at_end = true;
+            }
+        }
     }
 
     Cursor::Cursor(Cursor&& rhs) {

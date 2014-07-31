@@ -22,6 +22,7 @@
 #include "base/client.h"
 #include "results/write.h"
 #include "results/distinct.h"
+#include "models/find.h"
 
 namespace mongo {
 namespace driver {
@@ -50,14 +51,13 @@ namespace driver {
         mongoc_collection_destroy(_collection);
     }
 
-    Cursor Collection::find(const FindModel& /* model */) const {
-        /*
+    Cursor Collection::find(const FindModel& model) const {
         bson_t query;
         
         bson_init_static(&query, model.filter().getBuf(), model.filter().getLen());
         return Cursor(mongoc_collection_find(
             _collection,
-            model.cursor_flags().value_or(0),
+            (mongoc_query_flags_t)model.cursor_flags().value_or(0),
             model.skip().value_or(0),
             model.limit().value_or(0),
             model.batch_size().value_or(0),
@@ -65,23 +65,24 @@ namespace driver {
             NULL,
             NULL
         ));
-        */
-
-        return Cursor();
     }
 
-    Cursor Collection::aggregate(const AggregateModel& /* model */) const { return Cursor(); }
+    Cursor Collection::aggregate(const AggregateModel& /* model */) const { return Cursor(NULL); }
+
+    Cursor Collection::end() const {
+        return Cursor(NULL);
+    }
 
     WriteResult Collection::replace(const ReplaceModel& /* model */) { return WriteResult(); }
     WriteResult Collection::insert(const InsertModel& /* model */) { return WriteResult(); }
     WriteResult Collection::update(const UpdateModel& /* model */) { return WriteResult(); }
     WriteResult Collection::remove(const RemoveModel& /* model */) { return WriteResult(); }
 
-    bson::Document Collectionfind_one_and_replace(const FindAndReplaceModel& model);
-    bson::Document Collectionfind_one_and_update(const FindAndUpdateModel& model);
-    bson::Document Collectionfind_one_and_remove(const FindAndRemoveModel& model);
+    bson::Document Collection::find_one_and_replace(const FindAndReplaceModel& /* model */) { return bson::Document(); }
+    bson::Document Collection::find_one_and_update(const FindAndUpdateModel& /* model */) { return bson::Document(); }
+    bson::Document Collection::find_one_and_remove(const FindAndRemoveModel& /* model */) { return bson::Document(); }
 
-    bson::Document Collection::explain(const ExplainModel& /*model*/) const { return bson::Document((uint8_t *)"", 0); }
+    bson::Document Collection::explain(const ExplainModel& /*model*/) const { return bson::Document(); }
 
     DistinctResult Collection::distinct(const DistinctModel& /* model */) const { return DistinctResult(); }
     int64_t Collection::count(const CountModel& /* model */) const { return 0; }

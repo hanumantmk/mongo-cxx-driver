@@ -22,7 +22,13 @@
 namespace mongo {
 namespace driver {
 
+    class Collection;
+
     class Cursor {
+        friend class Collection;
+
+    public:
+
         Cursor(Cursor&& cursor);
         ~Cursor();
 
