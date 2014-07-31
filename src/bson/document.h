@@ -19,6 +19,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <iterator>
+#include <tuple>
 #include "bson.h"
 
 namespace bson {
@@ -45,7 +46,17 @@ namespace bson {
        INT64 = 0x12,
        MAXKEY = 0x7F,
        MINKEY = 0xFF,
-    } bson_type_t;
+    };
+
+    enum class BinarySubtype {
+        BINARY = 0x00,
+        FUNCTION = 0x01,
+        BINARY_DEPRECATED = 0x02,
+        UUID_DEPRECATED = 0x03,
+        UUID = 0x04,
+        MD5 = 0x05,
+        USER = 0x80,
+    };
 
     class Document;
 
@@ -71,6 +82,22 @@ namespace bson {
 
         const char* getString() const {
             return bson_iter_utf8(&iter, NULL);
+        }
+
+        std::tuple<const char*, uint32_t> getStringWLen() const {
+            uint32_t len;
+            const char * str = bson_iter_utf8(&iter, &len);
+            return std::tuple<const char *, uint32_t>(str, len);
+        }
+
+        std::tuple<BinarySubtype, uint32_t, const uint8_t *> getBinary() const {
+            bson_subtype_t type;
+            uint32_t len;
+            const uint8_t* binary;
+
+            bson_iter_binary(&iter, &type, &len, &binary);
+
+            return std::tuple<BinarySubtype, uint32_t, const uint8_t *>(BinarySubtype(type), len, binary);
         }
 
         double getDouble() const {
