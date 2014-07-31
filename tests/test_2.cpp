@@ -3,8 +3,9 @@
 #include "models/update.h"
 #include "bson/document.h"
 
+using namespace mongo::driver;
+
 int main(int argc, char ** argv) {
-    using namespace mongo::driver;
 
     bson::Document a((uint8_t *)"", 0);
     bson::Document b((uint8_t *)"", 0);
@@ -12,10 +13,15 @@ int main(int argc, char ** argv) {
     UpdateModel u(a, b);
     u.multi(true);
 
-    std::cout << "upsert is: " << u.upsert().operator bool() << "  value is: " << u.upsert().value_or(true) << std::endl;
-    std::cout << "multi is: " << u.multi().operator bool() << "  value is: " << u.multi().value_or(false) << std::endl;
+    auto upsert = u.upsert();
+    auto multi = u.multi();
 
-    u.upsert().value();
+    std::cout << "upsert is: " << upsert.operator bool() << "  value is: " << upsert.value_or(true) << std::endl;
+    std::cout << "multi is: " << multi.operator bool() << "  value is: " << multi.value_or(false) << std::endl;
+
+    std::swap(upsert, multi);
+
+    upsert.value();
 
     return 0;
 }
