@@ -17,6 +17,7 @@
 #pragma once
 
 #include <cstdint>
+#include "util/optional.h"
 
 namespace mongo {
 namespace driver {
@@ -27,11 +28,27 @@ namespace driver {
     class ReadModel {
 
     public:
-        Derived& read_preference(const ReadPreference* const read_preference);
-        ReadPreference* read_preference();
+
+        Derived& max_time_ms(uint64_t max_time_ms) {
+            _max_time_ms = max_time_ms;
+            return *this;
+        }
+
+        optional<uint64_t> max_time_ms() const {
+            return _max_time_ms;
+        }
+
+        Derived& read_preference(ReadPreference* read_preference) {
+            _read_preference = read_preference;
+        }
+
+        optional<ReadPreference*> read_preference() const {
+            return _read_preference;
+        }
 
     protected:
-        ReadPreference* const _read_preference;
+        optional<uint64_t> _max_time_ms;
+        optional<ReadPreference*> _read_preference;
 
     };
 

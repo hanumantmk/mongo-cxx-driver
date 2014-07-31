@@ -21,9 +21,19 @@
 
 #include "bson/document.h"
 #include "models/read.h"
+#include "util/optional.h"
 
 namespace mongo {
 namespace driver {
+
+    enum class QueryFlags {
+        TAILABLE,
+        OPLOG_REPLAY,
+        NO_CURSOR_TIMEOUT,
+        AWAIT_DATA,
+        EXHAUST,
+        PARTIAL
+    };
 
     class FindModel : public ReadModel<FindModel> {
 
@@ -36,30 +46,27 @@ namespace driver {
         FindModel& modifiers(const bson::Document& modifiers);
         FindModel& projection(const bson::Document& projection);
         FindModel& skip(int32_t skip);
-        FindModel& sort(const bson::Document& sort);
-        FindModel& max_time_ms(int64_t max_time_ms);
+        FindModel& sort(const bson::Document& ordering);
 
-        // TODO: breakup modifiers in spec or continue and add members?
-        FindModel& min(const bson::Document& min);
-        FindModel& max(const bson::Document& max);
-        FindModel& hint(const bson::Document& hint);
-        FindModel& returnKey(bool return_key);
-        FindModel& snapshot(bool snapshot);
-        FindModel& show_disk_loc(bool show_disk_loc);
-        FindModel& comment(const std::string& comment);
-        FindModel& max_scan(int64_t max_scan);
+        const bson::Document& filter() const;
+        optional<int32_t> batch_size() const;
+        optional<int32_t> cursor_flags() const;
+        optional<int32_t> limit() const;
+        optional<const bson::Document*> modifiers() const;
+        optional<const bson::Document*> projection() const;
+        optional<int32_t> skip() const;
+        optional<const bson::Document*> sort() const;
 
     private:
         const bson::Document& _filter;
 
-        int32_t _batch_size;
-        int32_t _cursor_flags;
-        int32_t _limit;
-        bson::Document& _modifiers;
-        bson::Document& _projection;
-        int32_t _skip;
-        bson::Document& _sort;
-        int64_t _max_time_ms;
+        optional<int32_t> _batch_size;
+        optional<int32_t> _cursor_flags;
+        optional<int32_t> _limit;
+        optional<const bson::Document*> _modifiers;
+        optional<const bson::Document*> _projection;
+        optional<int32_t> _skip;
+        optional<const bson::Document*> _ordering;
     };
 
 } // namespace driver
