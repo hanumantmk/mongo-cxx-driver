@@ -21,6 +21,7 @@
 #include <set>
 #include <string>
 
+#include "mongoc.h"
 #include "base/cursor.h"
 #include "bson/document.h"
 #include "bson/element.h"
@@ -53,10 +54,15 @@ namespace driver {
         friend class Database;
 
     public:
+        Collection(Collection&& client);
+        ~Collection();
+
+        Collection& operator=(Collection&& client);
+
         Cursor find(const FindModel& model) const;
         Cursor aggregate(const AggregateModel& model) const;
 
-        WriteResult replace(const ReplaceModel model);
+        WriteResult replace(const ReplaceModel& model);
         WriteResult insert(const InsertModel& model);
         WriteResult update(const UpdateModel& model);
         WriteResult remove(const RemoveModel& model);
@@ -75,11 +81,15 @@ namespace driver {
             Client* client,
             Database* database,
             std::string name
-        ) : _client(client), _database(database), _name(name) {}
+        );
+
+        Collection(const Collection& client) = delete;
+        Collection& operator=(const Collection& client) = delete;
 
         Client* _client;
         Database* _database;
         std::string _name;
+        mongoc_collection_t* _collection;
     };
 
 } // namespace driver

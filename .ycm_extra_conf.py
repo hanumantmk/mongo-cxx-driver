@@ -54,6 +54,7 @@ flags = [
     '-I', './include',
     '-I', './src',
     '-I', './build/libmongoc-prefix/include/libmongoc-1.0',
+    '-I', './build/libmongoc-prefix/include/libbson-1.0',
     '-isystem', './tests/gmock/gtest',
     '-isystem', './tests/gmock/gtest/include',
     '-isystem', './tests/gmock',

@@ -14,38 +14,33 @@
  * limitations under the License.
  */
 
-#pragma once
-
-#include "mongoc.h"
-#include "bson/document.h"
+#include "base/client.h"
 
 namespace mongo {
 namespace driver {
 
-    class Cursor {
-        Cursor(Cursor&& cursor);
-        ~Cursor();
+    Client::Client(Client&& rhs) {
+        _client = rhs._client;
+        rhs._client = NULL;
+    }
 
-        Cursor& operator=(Cursor&& cursor);
+    Client& Client::operator=(Client&& rhs) {
+        _client = rhs._client;
+        rhs._client = NULL;
+        return *this;
+    }
 
-        const bson::Document& operator*() const;
-        const bson::Document* operator->() const;
+    Client::Client(std::string uri) {
+        _client = mongoc_client_new(uri.c_str());
+    }
 
-        Cursor& operator++();
+    Client::~Client() {
+        mongoc_client_destroy(_client);
+    }
 
-        bool operator==(const Cursor& rhs) const;
-        bool operator!=(const Cursor& rhs) const;
-
-    private:
-        Cursor(mongoc_cursor_t* cursor);
-
-        Cursor(const Cursor& cursor) = delete;
-        Cursor& operator=(const Cursor& cursor) = delete;
-
-        mongoc_cursor_t * _cursor;
-        bson::Document _doc;
-        bool _at_end;
-    };
+    Database Client::database(std::string db) {
+        return Database(this, std::move(db));
+    }
 
 } // namespace driver
 } // namespace mongo

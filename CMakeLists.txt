@@ -19,8 +19,6 @@ find_package(PkgConfig)
 set(ENV{PKG_CONFIG_PATH} ${CMAKE_CURRENT_BINARY_DIR}/libmongoc-prefix/lib/pkgconfig)
 pkg_check_modules(LIBMONGOC libmongoc-1.0)
 
-message(${LIBMONGOC_FOUND})
-
 link_directories(
     ${LIBMONGOC_LIBRARY_DIRS}
 )

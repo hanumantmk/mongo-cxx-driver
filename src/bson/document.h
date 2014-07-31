@@ -177,9 +177,12 @@ namespace bson {
         }
 
         Document(const uint8_t * b, std::size_t l) : buf(b), len(l) {}
+        Document() : buf(NULL), len(0) {}
 
         const uint8_t * getBuf() { return buf; }
         std::size_t getLen() { return len; }
+        void setBuf(const uint8_t * b) { buf = b; }
+        void setLen(std::size_t l) { len = l; }
 
         void print(std::ostream& out) const {
             bson_t b;

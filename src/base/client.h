@@ -21,8 +21,13 @@
 
 namespace mongo {
 namespace driver {
+    class Database;
+    class Collection;
 
     class Client {
+        friend class Database;
+        friend class Collection;
+
     public:
         Client(std::string uri);
         Client(Client&& client);

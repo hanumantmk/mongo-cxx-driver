@@ -17,29 +17,39 @@
 #pragma once
 
 #include <string>
+
+#include "mongoc.h"
 #include "base/collection.h"
 
 namespace mongo {
 namespace driver {
 
     class Client;
+    class Collection;
 
     class Database {
 
         friend class Client;
+        friend class Collection;
 
     public:
+        Database(Database&& client);
+        ~Database();
+
+        Database& operator=(Database&& client);
+
         Collection collection(std::string name);
         Collection operator[](std::string name);
 
     private:
-        Database(
-            Client* client,
-            std::string name
-        ) : _client(client), _name(name) {}
+        Database(const Database& client) = delete;
+        Database& operator=(const Database& client) = delete;
+
+        Database(Client* client, std::string name);
 
         Client* _client;
         std::string _name;
+        mongoc_database_t* _database;
 
     };
 
