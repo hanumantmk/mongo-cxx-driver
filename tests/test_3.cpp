@@ -21,11 +21,17 @@ int main() {
 
     Client client("mongodb://localhost");
     Collection col(client["test"]["test"]);
-    Cursor x(col.find(FindModel(doc)));
+    Cursor cursor(col.find(FindModel(doc)));
 
+    for (auto x : cursor) {
+        std::cout << "bson is: " << x["hello"].getString() << std::endl;
+    }
+
+            /*
     for (; x != col.end(); ++x) {
         std::cout << "bson is: " << *x << std::endl;
     }
+    */
 
     bson_destroy(foo);
 

@@ -28,29 +28,40 @@ namespace driver {
         friend class Collection;
 
     public:
+        class iterator: public std::iterator<std::forward_iterator_tag, const bson::Document&, std::ptrdiff_t, const bson::Document*, const bson::Document&> {
+            friend class Cursor;
 
-        Cursor(Cursor&& cursor);
+        public:
+            const bson::Document& operator*() const;
+            const bson::Document* operator->() const;
+
+            iterator& operator++();
+
+            bool operator==(const iterator& rhs) const;
+            bool operator!=(const iterator& rhs) const;
+
+        private:
+            iterator(mongoc_cursor_t* cursor);
+
+            mongoc_cursor_t * _cursor;
+            bson::Document _doc;
+            bool _at_end;
+        };
+
+        iterator begin();
+        iterator end();
+
+        Cursor(Cursor&& rhs);
+        Cursor& operator=(Cursor&& rhs);
         ~Cursor();
 
-        Cursor& operator=(Cursor&& cursor);
+        private:
+            Cursor(mongoc_cursor_t* cursor);
 
-        const bson::Document& operator*() const;
-        const bson::Document* operator->() const;
+            Cursor(const Cursor& cursor) = delete;
+            Cursor& operator=(const Cursor& cursor) = delete;
 
-        Cursor& operator++();
-
-        bool operator==(const Cursor& rhs) const;
-        bool operator!=(const Cursor& rhs) const;
-
-    private:
-        Cursor(mongoc_cursor_t* cursor);
-
-        Cursor(const Cursor& cursor) = delete;
-        Cursor& operator=(const Cursor& cursor) = delete;
-
-        mongoc_cursor_t * _cursor;
-        bson::Document _doc;
-        bool _at_end;
+            mongoc_cursor_t * _cursor;
     };
 
 } // namespace driver

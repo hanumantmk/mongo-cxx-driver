@@ -25,27 +25,15 @@ namespace mongo {
 namespace driver {
 
     Cursor::Cursor( mongoc_cursor_t* cursor ) :
-        _cursor(cursor), _at_end(!cursor) {
-
-        if (_cursor) {
-            const bson_t* out;
-            if (mongoc_cursor_next(_cursor, &out)) {
-                _doc.setBuf(bson_get_data(out));
-                _doc.setLen(out->len);
-            } else {
-                _at_end = true;
-            }
-        }
+        _cursor(cursor) {
     }
 
     Cursor::Cursor(Cursor&& rhs) {
         _cursor = rhs._cursor;
-        _doc = rhs._doc;
     }
 
     Cursor& Cursor::operator=(Cursor&& rhs) {
         _cursor = rhs._cursor;
-        _doc = rhs._doc;
         return *this;
     }
 
@@ -53,7 +41,7 @@ namespace driver {
         if (_cursor) mongoc_cursor_destroy(_cursor);
     }
 
-    Cursor& Cursor::operator++() {
+    Cursor::iterator& Cursor::iterator::operator++() {
         const bson_t* out;
         if (mongoc_cursor_next(_cursor, &out)) {
             _doc.setBuf(bson_get_data(out));
@@ -65,20 +53,32 @@ namespace driver {
         return *this;
     }
 
-    const bson::Document& Cursor::operator*() const {
+    Cursor::iterator Cursor::begin() {
+        return iterator(_cursor);
+    }
+
+    Cursor::iterator Cursor::end() {
+        return iterator(NULL);
+    }
+
+    Cursor::iterator::iterator(mongoc_cursor_t * cursor) : _cursor(cursor), _at_end(!cursor) {
+        if (cursor) operator++();
+    }
+
+    const bson::Document& Cursor::iterator::operator*() const {
         return _doc;
     }
 
-    const bson::Document* Cursor::operator->() const {
+    const bson::Document* Cursor::iterator::operator->() const {
         return &_doc;
     }
 
-    bool Cursor::operator==(const Cursor& rhs) const {
+    bool Cursor::iterator::operator==(const Cursor::iterator& rhs) const {
         if (_at_end == rhs._at_end) return true;
         return this == &rhs;
     }
 
-    bool Cursor::operator!=(const Cursor& rhs) const {
+    bool Cursor::iterator::operator!=(const Cursor::iterator& rhs) const {
         return ! (*this == rhs);
     }
 
