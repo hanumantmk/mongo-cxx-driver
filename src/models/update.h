@@ -18,27 +18,35 @@
 
 #include "bson/document.h"
 #include "models/write.h"
+#include "util/optional.h"
 
 namespace mongo {
 namespace driver {
 
-    class UpdateModel : public WriteModel<UpdateModel> {
+    //class UpdateModel : public WriteModel<UpdateModel> {
+    class UpdateModel {
 
     public:
         UpdateModel(
             const bson::Document& filter,
             const bson::Document& update
-        );
+        ) : _filter(filter), _update(update) { }
 
-        UpdateModel& multi(bool multi);
-        UpdateModel& upsert(bool upsert);
+        const bson::Document& filter() const { return _filter; }
+        const bson::Document& update() const { return _update; }
+
+        UpdateModel& multi(bool multi) { _multi = multi; return *this; }
+        UpdateModel& upsert(bool upsert) { _upsert = upsert; return *this; }
+
+        optional<bool> multi() const { return _multi; }
+        optional<bool> upsert() const { return _upsert; }
 
     private:
         const bson::Document& _filter;
         const bson::Document& _update;
 
-        bool _multi;
-        bool _upsert;
+        optional<bool> _multi;
+        optional<bool> _upsert;
 
     };
 

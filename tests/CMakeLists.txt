@@ -7,3 +7,4 @@ macro(test t)
 endmacro()
 
 test(1)
+test(2)
