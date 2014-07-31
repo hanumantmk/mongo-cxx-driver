@@ -14,33 +14,18 @@
  * limitations under the License.
  */
 
-#pragma once
-
-#include <cstdint>
-#include "util/optional.h"
+#include "models/insert.h"
 
 namespace mongo {
 namespace driver {
 
-    class WriteConcern;
+    InsertModel::InsertModel(const bson::Document& document)
+        : _document(document)
+    {}
 
-    template <class Derived>
-    class WriteModel {
-
-    public:
-        Derived& write_concern(const WriteConcern* write_concern) {
-            _write_concern = &write_concern;
-            return *this;
-        }
-
-        optional<WriteConcern*> write_concern() const {
-            return _write_concern;
-        }
-
-    protected:
-        optional<const WriteConcern*> _write_concern;
-
-    };
+    const bson::Document& InsertModel::document() const {
+        return _document;
+    }
 
 } // namespace driver
 } // namespace mongo

@@ -28,7 +28,6 @@ namespace driver {
     class ReadModel {
 
     public:
-
         Derived& max_time_ms(uint64_t max_time_ms) {
             _max_time_ms = max_time_ms;
             return *this;

@@ -27,6 +27,7 @@ namespace driver {
     public:
 
         InsertModel(const bson::Document& document);
+        const bson::Document& document() const;
 
     private:
         const bson::Document& _document;
