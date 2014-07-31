@@ -27,11 +27,11 @@ namespace driver {
     class WriteModel {
 
     public:
-        Derived& write_concern(const WriteConcern* const write_concern);
+        Derived& write_concern(const WriteConcern* write_concern);
         WriteConcern write_concern();
 
     protected:
-        WriteConcern* const _write_concern;
+        const WriteConcern* _write_concern;
 
     };
 

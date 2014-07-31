@@ -16,6 +16,7 @@
 
 #pragma once
 
+#include "mongoc.h"
 #include "base/database.h"
 
 namespace mongo {
@@ -23,8 +24,19 @@ namespace driver {
 
     class Client {
     public:
-        Database database(const std::string& db);
-        Database operator[](const std::string& db) { return database(db); }
+        Client(std::string uri);
+        Client(Client&& client);
+        ~Client();
+
+        Client& operator=(Client&& client);
+
+        Database database(std::string db);
+        Database operator[](std::string db) { return database(db); }
+
+    private:
+        Client(const Client& client) = delete;
+        Client& operator=(const Client& client) = delete;
+        mongoc_client_t* _client;
     };
 
 } // namespace driver

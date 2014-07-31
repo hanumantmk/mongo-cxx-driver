@@ -23,8 +23,7 @@
 namespace mongo {
 namespace driver {
 
-    //class UpdateModel : public WriteModel<UpdateModel> {
-    class UpdateModel {
+    class UpdateModel : public WriteModel<UpdateModel> {
 
     public:
         UpdateModel(

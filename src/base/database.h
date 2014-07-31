@@ -25,18 +25,22 @@ namespace driver {
     class Client;
 
     class Database {
-    public:
-        Database(
-            Client* const client,
-            const std::string& name
-        ) : _client(client), _name(name) {}
 
-        Collection collection(const std::string& name);
-        Collection operator[](const std::string& name);
+        friend class Client;
+
+    public:
+        Collection collection(std::string name);
+        Collection operator[](std::string name);
 
     private:
-        Client* const _client;
-        const std::string _name;
+        Database(
+            Client* client,
+            std::string name
+        ) : _client(client), _name(name) {}
+
+        Client* _client;
+        std::string _name;
+
     };
 
 } // namespace driver
