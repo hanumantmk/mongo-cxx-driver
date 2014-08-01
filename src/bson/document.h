@@ -155,6 +155,7 @@ namespace Document {
         using View::iterator;
 
         Value(const uint8_t* b, std::size_t l, std::function<void(void*)> dtor = free);
+        Value(const View& view);
         Value(Value&& rhs);
         Value& operator=(Value&& rhs);
         ~Value();

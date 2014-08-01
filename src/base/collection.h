@@ -26,6 +26,8 @@
 #include "base/cursor.h"
 #include "bson/document.h"
 #include "bson/element.h"
+#include "models/bulk.h"
+#include "results/write.h"
 
 namespace mongo {
 namespace driver {
@@ -52,6 +54,7 @@ namespace driver {
 
     class Collection {
 
+        friend class BulkOperationBuilder;
         friend class Database;
 
     public:
@@ -77,11 +80,13 @@ namespace driver {
 
         template <class T>
         WriteResult bulk_write(const BulkWriteModel<T>& model) const {
-            BulkWriteOperation op(model.ordered());
+            BulkOperationBuilder op(this, model.ordered());
 
-            for (auto x: model) {
+            for (auto x : model.requests()) {
                 op.add(x);
             }
+
+            return op.execute();
         }
 
         int64_t count(const CountModel& model) const;

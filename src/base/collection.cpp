@@ -24,6 +24,7 @@
 #include "results/distinct.h"
 #include "models/find.h"
 #include "models/insert.h"
+#include "models/insert_request.h"
 #include "util/libbson.h"
 
 namespace mongo {
@@ -82,43 +83,16 @@ namespace driver {
         ));
     }
 
-    BulkOperationBuilder Collection::initializeUnorderedBulkOp() {
-        return BulkOperationBuilder(mongoc_collection_create_bulk_operation(
-            _collection,
-            false,
-            NULL
-        ));
-    }
-
-    BulkOperationBuilder Collection::initializeOrderedBulkOp() {
-        return BulkOperationBuilder(mongoc_collection_create_bulk_operation(
-            _collection,
-            true,
-            NULL
-        ));
-    }
-
     Cursor Collection::aggregate(const AggregateModel& /* model */) const { return Cursor(NULL); }
 
     WriteResult Collection::replace(const ReplaceModel& /* model */) { return WriteResult(); }
 
     WriteResult Collection::insert(const InsertModel& model) { 
-        scoped_bson_t document(model.document());
-        bson_error_t error;
+        BulkOperationBuilder op(this, false);
+        InsertRequest req(model);
+        op.add(&req);
 
-        /* TODO: handle flags */
-
-        if (! mongoc_collection_insert(
-            _collection,
-            (mongoc_insert_flags_t)0,
-            document.bson(),
-            NULL,
-            &error
-        )) {
-            /* TODO handle errors */
-        }
-
-        return WriteResult();
+        return op.execute();
     }
 
     WriteResult Collection::update(const UpdateModel& /* model */) { return WriteResult(); }

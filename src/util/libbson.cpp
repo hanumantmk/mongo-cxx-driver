@@ -65,5 +65,9 @@ namespace libbson {
         return _is_initialized ? &_bson : NULL;
     }
 
+    bson::Document::View scoped_bson_t::view() {
+        return _is_initialized ? bson::Document::View(bson_get_data(bson()), bson()->len) : bson::Document::View();
+    }
+
 } // namespace libbson
 } // namespace bson

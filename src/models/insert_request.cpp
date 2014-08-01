@@ -14,31 +14,23 @@
  * limitations under the License.
  */
 
-#pragma once
-
-#include "models/write.h"
+#include "models/insert_request.h"
+#include "util/libbson.h"
 
 namespace mongo {
 namespace driver {
 
-    class WriteRequest;
-
-    template <class T>
-    class BulkWriteModel : WriteModel<BulkWriteModel<T>> {
-    public:
-        BulkWriteModel(const T& requests, bool ordered)
-            : _requests(requests), _ordered(ordered)
-        {
-        }
-
-        const T& requests() const { return _requests; }
-        bool ordered() const { return _ordered; }
-
-    private:
-
-        const T& _requests;
-        bool _ordered;
-    };
-
+InsertRequest::InsertRequest(const bson::Document::View& doc) : _doc(doc) {
 }
+
+InsertRequest::InsertRequest(const InsertModel& model) : _doc(model.document()) {
 }
+
+void InsertRequest::add(mongoc_bulk_operation_t* bulk) const {
+    bson::libbson::scoped_bson_t to_insert(_doc);
+    
+    mongoc_bulk_operation_insert(bulk, to_insert.bson());
+}
+
+} // namespace driver
+} // namespace mongo

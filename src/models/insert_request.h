@@ -16,32 +16,22 @@
 
 #pragma once
 
-#include <iostream>
 #include "bson/document.h"
+#include "models/write_request.h"
+#include "models/insert.h"
 
 namespace mongo {
 namespace driver {
 
-    class WriteResult {
+    class InsertRequest : public WriteRequest {
     public:
-        WriteResult(const bson::Document::View& view);
-        WriteResult(bson::Document::Value value);
-        ~WriteResult();
-        WriteResult(WriteResult&& rhs);
-        WriteResult& operator=(WriteResult&& rhs);
+        InsertRequest(const bson::Document::View& doc);
+        InsertRequest(const InsertModel& model);
 
-        /* TODO replace this: */
-        WriteResult();
-
-       friend std::ostream& operator<<(std::ostream& out, const WriteResult& doc) {
-           out << doc._value;
-        return out;
-       }
     private:
-        WriteResult(const WriteResult& rhs) = delete;
-        WriteResult& operator=(const WriteResult& rhs) = delete;
+        virtual void add(mongoc_bulk_operation_t* bulk) const;
 
-        bson::Document::Value _value;
+        const bson::Document::View& _doc;
     };
 
 } // namespace driver

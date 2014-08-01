@@ -15,6 +15,7 @@
  */
 
 #include <cstdlib>
+#include <cstring>
 
 #include "bson/document.h"
 
@@ -111,6 +112,10 @@ const uint8_t* View::getBuf() const { return buf; }
 std::size_t View::getLen() const { return len; }
 
 Value::Value(const uint8_t* b, std::size_t l, std::function<void(void *)> dtor) : View(b, l), dtor(dtor) {
+}
+
+Value::Value(const View& view) : View((uint8_t *)malloc((std::size_t)view.getLen()), view.getLen()), dtor(free) {
+    std::memcpy((void *)buf, view.getBuf(), view.getLen());
 }
 
 Value::Value(Value&& rhs) {

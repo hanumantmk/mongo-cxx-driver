@@ -17,20 +17,30 @@
 #pragma once
 
 #include "mongoc.h"
+#include "results/write.h"
 
 namespace mongo {
 namespace driver {
+
+    class WriteRequest;
+    class Collection;
 
     class BulkOperationBuilder {
 
         friend class Collection;
 
     public:
+        BulkOperationBuilder(BulkOperationBuilder&& rhs);
+        BulkOperationBuilder& operator=(BulkOperationBuilder&& rhs);
+        ~BulkOperationBuilder();
 
     private:
-        BulkOperationBuilder(mongoc_bulk_operation_t* bulk_operation);
+        BulkOperationBuilder(const Collection * collection, bool is_ordered);
+        void add(const WriteRequest* req);
+        WriteResult execute();
 
-
+        BulkOperationBuilder(const BulkOperationBuilder& rhs) = delete;
+        BulkOperationBuilder& operator=(const BulkOperationBuilder& rhs) = delete;
 
         mongoc_bulk_operation_t* _bulk_operation;
     };

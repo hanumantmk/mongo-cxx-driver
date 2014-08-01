@@ -8,6 +8,8 @@ add_library(mongocxx
     bson/document.cpp
     models/find.cpp
     models/insert.cpp
+    models/insert_request.cpp
+    results/write.cpp
     util/libbson.cpp
     util/optional.cpp
 )

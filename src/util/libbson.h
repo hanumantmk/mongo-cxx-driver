@@ -38,11 +38,14 @@ namespace libbson {
 
         bson_t* bson();
 
+        bson::Document::View view();
+
     private:
         scoped_bson_t(const scoped_bson_t& rhs) = delete;
         scoped_bson_t& operator=(const scoped_bson_t& rhs) = delete;
         scoped_bson_t(scoped_bson_t&& rhs) = delete;
         scoped_bson_t& operator=(scoped_bson_t&& rhs) = delete;
+
 
         bson_t _bson;
         bool _is_initialized;

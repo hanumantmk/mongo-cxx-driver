@@ -15,13 +15,46 @@
  */
 
 #include "base/bulk.h"
+#include "models/write_request.h"
+#include "base/collection.h"
+#include "util/libbson.h"
 
 namespace mongo {
 namespace driver {
 
-    BulkOperationBuilder::BulkOperationBuilder(mongoc_bulk_operation_t* bulk_operation)
-        : _bulk_operation(bulk_operation)
+    BulkOperationBuilder::BulkOperationBuilder(const Collection * collection, bool is_ordered)
+        : _bulk_operation(mongoc_collection_create_bulk_operation(collection->_collection, is_ordered, NULL))
     {}
+
+    BulkOperationBuilder::BulkOperationBuilder(BulkOperationBuilder&& rhs) {
+        *this = std::move(rhs);
+    }
+
+    BulkOperationBuilder& BulkOperationBuilder::operator=(BulkOperationBuilder&& rhs) {
+        _bulk_operation = rhs._bulk_operation;
+        rhs._bulk_operation = NULL;
+        return *this;
+    }
+
+    BulkOperationBuilder::~BulkOperationBuilder() {
+        if (_bulk_operation) {
+            mongoc_bulk_operation_destroy(_bulk_operation);
+        }
+    }
+
+    void BulkOperationBuilder::add(const WriteRequest* req) {
+        req->add(_bulk_operation);
+    }
+
+    WriteResult BulkOperationBuilder::execute() {
+        bson_error_t error;
+        bson::libbson::scoped_bson_t reply;
+        reply.init();
+
+        mongoc_bulk_operation_execute(_bulk_operation, reply.bson(), &error);
+
+        return WriteResult(reply.view());
+    }
 
 }
 }

@@ -14,31 +14,30 @@
  * limitations under the License.
  */
 
-#pragma once
-
-#include "models/write.h"
+#include "results/write.h"
 
 namespace mongo {
 namespace driver {
 
-    class WriteRequest;
-
-    template <class T>
-    class BulkWriteModel : WriteModel<BulkWriteModel<T>> {
-    public:
-        BulkWriteModel(const T& requests, bool ordered)
-            : _requests(requests), _ordered(ordered)
-        {
-        }
-
-        const T& requests() const { return _requests; }
-        bool ordered() const { return _ordered; }
-
-    private:
-
-        const T& _requests;
-        bool _ordered;
-    };
-
+WriteResult::WriteResult(const bson::Document::View& view) : _value(view) {
 }
+
+WriteResult::WriteResult(bson::Document::Value value) : _value(std::move(value)) {
 }
+
+WriteResult::WriteResult() : _value(bson::Document::View()) {
+}
+
+WriteResult::~WriteResult() {
+}
+
+WriteResult::WriteResult(WriteResult&& rhs) : _value(std::move(rhs._value)) {
+}
+
+WriteResult& WriteResult::operator=(WriteResult&& rhs) {
+    _value = std::move(rhs._value);
+    return *this;
+}
+
+} // namespace driver
+} // namespace mongo
