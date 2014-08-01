@@ -133,6 +133,15 @@ Value::~Value() {
     }
 }
 
+std::ostream& operator<<(std::ostream& out, const bson::Document::View& doc) {
+    bson_t b;
+    bson_init_static(&b, doc.getBuf(), doc.getLen());
+    char* json = bson_as_json(&b, NULL);
+    out << json;
+    bson_free(json);
+    return out;
+}
+
 }
 
 Document::View Reference::getDocument() const {
@@ -154,12 +163,3 @@ Document::View Reference::getArray() const {
 }
 
 }  // namespace bson
-
-std::ostream& operator<<(std::ostream& out, const bson::Document::View& doc) {
-    bson_t b;
-    bson_init_static(&b, doc.getBuf(), doc.getLen());
-    char* json = bson_as_json(&b, NULL);
-    out << json;
-    bson_free(json);
-    return out;
-}

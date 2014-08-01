@@ -133,6 +133,8 @@ namespace Document {
         const uint8_t* getBuf() const;
         std::size_t getLen() const;
 
+       friend std::ostream& operator<<(std::ostream& out, const bson::Document::View& doc);
+
        protected:
         const uint8_t* buf;
         std::size_t len;
@@ -156,5 +158,3 @@ namespace Document {
 }
 
 }  // namespace bson
-
-std::ostream& operator<<(std::ostream& out, const bson::Document::View& doc);
