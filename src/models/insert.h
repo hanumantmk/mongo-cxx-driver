@@ -26,11 +26,11 @@ namespace driver {
 
     public:
 
-        InsertModel(const bson::Document& document);
-        const bson::Document& document() const;
+        InsertModel(const bson::Document::View& document);
+        const bson::Document::View& document() const;
 
     private:
-        const bson::Document& _document;
+        const bson::Document::View& _document;
 
     };
 

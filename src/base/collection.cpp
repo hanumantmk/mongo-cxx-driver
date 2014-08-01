@@ -108,11 +108,11 @@ namespace driver {
     WriteResult Collection::update(const UpdateModel& /* model */) { return WriteResult(); }
     WriteResult Collection::remove(const RemoveModel& /* model */) { return WriteResult(); }
 
-    bson::Document Collection::find_one_and_replace(const FindAndReplaceModel& /* model */) { return bson::Document(); }
-    bson::Document Collection::find_one_and_update(const FindAndUpdateModel& /* model */) { return bson::Document(); }
-    bson::Document Collection::find_one_and_remove(const FindAndRemoveModel& /* model */) { return bson::Document(); }
+    bson::Document::Value Collection::find_one_and_replace(const FindAndReplaceModel& /* model */) { return bson::Document::Value((const uint8_t *)NULL, 0); }
+    bson::Document::Value Collection::find_one_and_update(const FindAndUpdateModel& /* model */) { return bson::Document::Value((const uint8_t *)NULL, 0); }
+    bson::Document::Value Collection::find_one_and_remove(const FindAndRemoveModel& /* model */) { return bson::Document::Value((const uint8_t *)NULL, 0); }
 
-    bson::Document Collection::explain(const ExplainModel& /*model*/) const { return bson::Document(); }
+    bson::Document::Value Collection::explain(const ExplainModel& /*model*/) const { return bson::Document::Value((const uint8_t *)NULL, 0); }
 
     DistinctResult Collection::distinct(const DistinctModel& /* model */) const { return DistinctResult(); }
     int64_t Collection::count(const CountModel& /* model */) const { return 0; }

@@ -28,18 +28,18 @@ namespace driver {
     class CountModel : public ReadModel<CountModel> {
 
     public:
-        CountModel(const bson::Document& filter);
+        CountModel(const bson::Document::View& filter);
 
-        CountModel& filter(const bson::Document& filter);
-        CountModel& hint(const bson::Document& hint);
+        CountModel& filter(const bson::Document::View& filter);
+        CountModel& hint(const bson::Document::View& hint);
         CountModel& limit(int32_t limit);
         CountModel& max_time_ms(int64_t max_time_ms);
         CountModel& skip(int32_t skip);
 
     private:
-        const bson::Document& _filter;
+        const bson::Document::View& _filter;
 
-        bson::Document& _hint;
+        bson::Document::View& _hint;
         int32_t _limit;
         int64_t _max_time_ms;
         int32_t _skip;

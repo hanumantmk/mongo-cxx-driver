@@ -26,22 +26,22 @@ namespace driver {
 
     public:
         FindAndUpdateModel(
-            const bson::Document& filter,
-            const bson::Document& update
+            const bson::Document::View& filter,
+            const bson::Document::View& update
         );
 
-        FindAndUpdateModel& projection(const bson::Document& projection);
+        FindAndUpdateModel& projection(const bson::Document::View& projection);
         FindAndUpdateModel& return_replacement(bool multi);
-        FindAndUpdateModel& sort(const bson::Document& ordering);
+        FindAndUpdateModel& sort(const bson::Document::View& ordering);
         FindAndUpdateModel& upsert(bool upsert);
 
     private:
-        const bson::Document& _filter;
-        const bson::Document& _update;
+        const bson::Document::View& _filter;
+        const bson::Document::View& _update;
 
-        bson::Document& _projection;
+        bson::Document::View& _projection;
         bool _return_replacement;
-        bson::Document& _ordering;
+        bson::Document::View& _ordering;
         bool _upsert;
 
     };

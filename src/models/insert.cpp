@@ -19,11 +19,11 @@
 namespace mongo {
 namespace driver {
 
-    InsertModel::InsertModel(const bson::Document& document)
+    InsertModel::InsertModel(const bson::Document::View& document)
         : _document(document)
     {}
 
-    const bson::Document& InsertModel::document() const {
+    const bson::Document::View& InsertModel::document() const {
         return _document;
     }
 

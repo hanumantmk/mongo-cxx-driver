@@ -26,12 +26,12 @@ namespace libbson {
     class scoped_bson_t {
     public:
 
-        scoped_bson_t(const mongo::driver::optional<const bson::Document *>& doc);
-        scoped_bson_t(const bson::Document& doc);
+        scoped_bson_t(const mongo::driver::optional<const bson::Document::View *>& doc);
+        scoped_bson_t(const bson::Document::View& doc);
         scoped_bson_t();
 
-        void init_from_static(const mongo::driver::optional<const bson::Document *>& doc);
-        void init_from_static(const bson::Document& doc);
+        void init_from_static(const mongo::driver::optional<const bson::Document::View *>& doc);
+        void init_from_static(const bson::Document::View& doc);
         void init();
 
         ~scoped_bson_t();

@@ -38,35 +38,35 @@ namespace driver {
     class FindModel : public ReadModel<FindModel> {
 
     public:
-        FindModel(const bson::Document& filter);
+        FindModel(const bson::Document::View& filter);
 
         FindModel& batch_size(int32_t batch_size);
         FindModel& cursor_flags(int32_t cursor_flags);
         FindModel& limit(int32_t limit);
-        FindModel& modifiers(const bson::Document& modifiers);
-        FindModel& projection(const bson::Document& projection);
+        FindModel& modifiers(const bson::Document::View& modifiers);
+        FindModel& projection(const bson::Document::View& projection);
         FindModel& skip(int32_t skip);
-        FindModel& sort(const bson::Document& ordering);
+        FindModel& sort(const bson::Document::View& ordering);
 
-        const bson::Document& filter() const;
+        const bson::Document::View& filter() const;
         optional<int32_t> batch_size() const;
         optional<int32_t> cursor_flags() const;
         optional<int32_t> limit() const;
-        optional<const bson::Document*> modifiers() const;
-        optional<const bson::Document*> projection() const;
+        optional<const bson::Document::View*> modifiers() const;
+        optional<const bson::Document::View*> projection() const;
         optional<int32_t> skip() const;
-        optional<const bson::Document*> sort() const;
+        optional<const bson::Document::View*> sort() const;
 
     private:
-        const bson::Document& _filter;
+        const bson::Document::View& _filter;
 
         optional<int32_t> _batch_size;
         optional<int32_t> _cursor_flags;
         optional<int32_t> _limit;
-        optional<const bson::Document*> _modifiers;
-        optional<const bson::Document*> _projection;
+        optional<const bson::Document::View*> _modifiers;
+        optional<const bson::Document::View*> _projection;
         optional<int32_t> _skip;
-        optional<const bson::Document*> _ordering;
+        optional<const bson::Document::View*> _ordering;
     };
 
 } // namespace driver

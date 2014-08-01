@@ -25,16 +25,16 @@ namespace driver {
     class FindAndRemoveModel : public WriteModel<FindAndRemoveModel> {
 
     public:
-        FindAndRemoveModel(const bson::Document& filter);
+        FindAndRemoveModel(const bson::Document::View& filter);
 
-        FindAndRemoveModel& projection(const bson::Document& projection);
-        FindAndRemoveModel& sort(const bson::Document& ordering);
+        FindAndRemoveModel& projection(const bson::Document::View& projection);
+        FindAndRemoveModel& sort(const bson::Document::View& ordering);
 
     private:
-        const bson::Document& _filter;
+        const bson::Document::View& _filter;
 
-        bson::Document& _projection;
-        bson::Document& _ordering;
+        bson::Document::View& _projection;
+        bson::Document::View& _ordering;
 
     };
 

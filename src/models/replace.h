@@ -26,13 +26,13 @@ namespace driver {
 
     public:
         ReplaceModel(
-            const bson::Document& filter,
-            const bson::Document& replacement
+            const bson::Document::View& filter,
+            const bson::Document::View& replacement
         );
 
     private:
-        const bson::Document& _filter;
-        const bson::Document& _replacement;
+        const bson::Document::View& _filter;
+        const bson::Document::View& _replacement;
 
     };
 

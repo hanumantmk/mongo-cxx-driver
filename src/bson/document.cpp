@@ -161,9 +161,9 @@ Document::View Reference::getArray() const {
     return Document::View(buf, len);
 }
 
-std::ostream& operator<<(std::ostream& out, const Document::View& doc) {
+}  // namespace bson
+
+std::ostream& operator<<(std::ostream& out, const bson::Document::View& doc) {
     doc.print(out);
     return out;
 }
-
-}  // namespace bson

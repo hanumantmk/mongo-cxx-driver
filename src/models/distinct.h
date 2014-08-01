@@ -30,13 +30,13 @@ namespace driver {
     public:
         DistinctModel(const std::string& field_name);
 
-        DistinctModel& filter(const bson::Document& filter);
+        DistinctModel& filter(const bson::Document::View& filter);
         DistinctModel& max_time_ms(int64_t max_time_ms);
 
     private:
-        const bson::Document& _field_name;
+        const bson::Document::View& _field_name;
 
-        bson::Document& _filter;
+        bson::Document::View& _filter;
         int64_t _max_time_ms;
 
     };

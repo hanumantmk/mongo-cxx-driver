@@ -25,12 +25,12 @@ namespace driver {
     class RemoveModel : WriteModel<RemoveModel> {
 
     public:
-        RemoveModel(const bson::Document& filter);
+        RemoveModel(const bson::Document::View& filter);
 
         RemoveModel& multi(bool multi);
 
     private:
-        const bson::Document& _filter;
+        const bson::Document::View& _filter;
 
         bool _multi;
 

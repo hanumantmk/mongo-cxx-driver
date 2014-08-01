@@ -27,12 +27,12 @@ namespace driver {
 
     public:
         UpdateModel(
-            const bson::Document& filter,
-            const bson::Document& update
+            const bson::Document::View& filter,
+            const bson::Document::View& update
         ) : _filter(filter), _update(update) { }
 
-        const bson::Document& filter() const { return _filter; }
-        const bson::Document& update() const { return _update; }
+        const bson::Document::View& filter() const { return _filter; }
+        const bson::Document::View& update() const { return _update; }
 
         UpdateModel& multi(bool multi) { _multi = multi; return *this; }
         UpdateModel& upsert(bool upsert) { _upsert = upsert; return *this; }
@@ -41,8 +41,8 @@ namespace driver {
         optional<bool> upsert() const { return _upsert; }
 
     private:
-        const bson::Document& _filter;
-        const bson::Document& _update;
+        const bson::Document::View& _filter;
+        const bson::Document::View& _update;
 
         optional<bool> _multi;
         optional<bool> _upsert;

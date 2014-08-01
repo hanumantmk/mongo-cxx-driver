@@ -13,7 +13,7 @@ int main(int argc, char ** argv) {
         "bar", BCON_INT32(10)
     );
 
-    bson::Document doc(bson_get_data(foo), foo->len);
+    bson::Document::View doc(bson_get_data(foo), foo->len);
 
     std::cout << "Doc: " << doc << std::endl;
 

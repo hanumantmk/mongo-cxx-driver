@@ -25,8 +25,8 @@ namespace driver {
 
     class QueryModel {
 
-        QueryModel& sort(const bson::Document& ordering);
-        bson::Document sort() const;
+        QueryModel& sort(const bson::Document::View& ordering);
+        bson::Document::View sort() const;
 
         QueryModel& limit(int32_t limit);
         int32_t limit() const;
