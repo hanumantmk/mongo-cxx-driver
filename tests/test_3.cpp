@@ -9,6 +9,8 @@
 #include "base/collection.h"
 #include "base/cursor.h"
 #include "models/find.h"
+#include "models/insert.h"
+#include "results/write.h"
 
 using namespace mongo::driver;
 
@@ -21,10 +23,24 @@ int main() {
 
     Client client("mongodb://localhost");
     Collection col(client["test"]["test"]);
+
+    col.drop();
+
+    bson_t bson;
+    bson_init(&bson);
+    for (int i = 0; i < 20; i++) {
+        bson_reinit(&bson);
+
+        BSON_APPEND_INT32(&bson, "foo", i);
+
+        col.insert(InsertModel(bson::Document(bson_get_data(&bson), bson.len)));
+    }
+    bson_destroy(&bson);
+
     Cursor cursor(col.find(FindModel(doc)));
 
     for (auto x : cursor) {
-        std::cout << "bson is: " << x["hello"].getString() << std::endl;
+        std::cout << "bson is: " << x["foo"].getInt32() << std::endl;
     }
 
             /*

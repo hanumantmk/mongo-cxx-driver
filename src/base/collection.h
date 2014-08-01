@@ -76,6 +76,8 @@ namespace driver {
         DistinctResult distinct(const DistinctModel& model) const;
         int64_t count(const CountModel& model) const;
 
+        void drop();
+
     private:
         Collection(
             Client* client,

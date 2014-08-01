@@ -23,6 +23,7 @@
 #include "results/write.h"
 #include "results/distinct.h"
 #include "models/find.h"
+#include "models/insert.h"
 #include "util/libbson.h"
 
 namespace mongo {
@@ -84,7 +85,26 @@ namespace driver {
     Cursor Collection::aggregate(const AggregateModel& /* model */) const { return Cursor(NULL); }
 
     WriteResult Collection::replace(const ReplaceModel& /* model */) { return WriteResult(); }
-    WriteResult Collection::insert(const InsertModel& /* model */) { return WriteResult(); }
+
+    WriteResult Collection::insert(const InsertModel& model) { 
+        scoped_bson_t document(model.document());
+        bson_error_t error;
+
+        /* TODO: handle flags */
+
+        if (! mongoc_collection_insert(
+            _collection,
+            (mongoc_insert_flags_t)0,
+            document.bson(),
+            NULL,
+            &error
+        )) {
+            /* TODO handle errors */
+        }
+
+        return WriteResult();
+    }
+
     WriteResult Collection::update(const UpdateModel& /* model */) { return WriteResult(); }
     WriteResult Collection::remove(const RemoveModel& /* model */) { return WriteResult(); }
 
@@ -96,6 +116,14 @@ namespace driver {
 
     DistinctResult Collection::distinct(const DistinctModel& /* model */) const { return DistinctResult(); }
     int64_t Collection::count(const CountModel& /* model */) const { return 0; }
+
+    void Collection::drop() {
+        bson_error_t error;
+
+        if (mongoc_collection_drop(_collection, &error)) {
+            /* TODO handle errors */
+        }
+    }
 
 } // namespace driver
 } // namespace mongo
