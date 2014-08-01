@@ -16,6 +16,7 @@
 
 #pragma once
 
+#include <iostream>
 #include <functional>
 #include <cstddef>
 #include <cstdint>
@@ -133,7 +134,16 @@ namespace Document {
         const uint8_t* getBuf() const;
         std::size_t getLen() const;
 
-       friend std::ostream& operator<<(std::ostream& out, const bson::Document::View& doc);
+       public:
+
+       friend std::ostream& operator<<(std::ostream& out, const bson::Document::View& doc) {
+        bson_t b;
+        bson_init_static(&b, doc.getBuf(), doc.getLen());
+        char* json = bson_as_json(&b, NULL);
+        out << json;
+        bson_free(json);
+        return out;
+    }
 
        protected:
         const uint8_t* buf;

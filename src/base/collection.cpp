@@ -82,6 +82,22 @@ namespace driver {
         ));
     }
 
+    BulkOperationBuilder Collection::initializeUnorderedBulkOp() {
+        return BulkOperationBuilder(mongoc_collection_create_bulk_operation(
+            _collection,
+            false,
+            NULL
+        ));
+    }
+
+    BulkOperationBuilder Collection::initializeOrderedBulkOp() {
+        return BulkOperationBuilder(mongoc_collection_create_bulk_operation(
+            _collection,
+            true,
+            NULL
+        ));
+    }
+
     Cursor Collection::aggregate(const AggregateModel& /* model */) const { return Cursor(NULL); }
 
     WriteResult Collection::replace(const ReplaceModel& /* model */) { return WriteResult(); }

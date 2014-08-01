@@ -22,6 +22,7 @@
 #include <string>
 
 #include "mongoc.h"
+#include "base/bulk.h"
 #include "base/cursor.h"
 #include "bson/document.h"
 #include "bson/element.h"
@@ -72,8 +73,17 @@ namespace driver {
         bson::Document::Value find_one_and_remove(const FindAndRemoveModel& model);
 
         bson::Document::Value explain(const ExplainModel& model) const;
-
         DistinctResult distinct(const DistinctModel& model) const;
+
+        template <class T>
+        WriteResult bulk_write(const BulkWriteModel<T>& model) const {
+            BulkWriteOperation op(model.ordered());
+
+            for (auto x: model) {
+                op.add(x);
+            }
+        }
+
         int64_t count(const CountModel& model) const;
 
         void drop();

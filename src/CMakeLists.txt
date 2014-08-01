@@ -1,5 +1,6 @@
 add_library(mongocxx
     mongocxx.cpp
+    base/bulk.cpp
     base/database.cpp
     base/cursor.cpp
     base/collection.cpp
