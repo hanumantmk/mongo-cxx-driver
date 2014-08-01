@@ -4,6 +4,7 @@ add_library(mongocxx
     base/cursor.cpp
     base/collection.cpp
     base/client.cpp
+    bson/document.cpp
     models/find.cpp
     util/libbson.cpp
     util/optional.cpp
