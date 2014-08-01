@@ -110,14 +110,6 @@ View::View() : buf(NULL), len(0) {}
 const uint8_t* View::getBuf() const { return buf; }
 std::size_t View::getLen() const { return len; }
 
-void View::print(std::ostream& out) const {
-    bson_t b;
-    bson_init_static(&b, buf, len);
-    char* json = bson_as_json(&b, NULL);
-    out << json;
-    bson_free(json);
-}
-
 Value::Value(const uint8_t* b, std::size_t l, std::function<void(void *)> dtor) : View(b, l), dtor(dtor) {
 }
 
@@ -164,6 +156,10 @@ Document::View Reference::getArray() const {
 }  // namespace bson
 
 std::ostream& operator<<(std::ostream& out, const bson::Document::View& doc) {
-    doc.print(out);
+    bson_t b;
+    bson_init_static(&b, doc.getBuf(), doc.getLen());
+    char* json = bson_as_json(&b, NULL);
+    out << json;
+    bson_free(json);
     return out;
 }

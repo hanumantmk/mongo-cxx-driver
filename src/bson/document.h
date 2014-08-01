@@ -133,8 +133,6 @@ namespace Document {
         const uint8_t* getBuf() const;
         std::size_t getLen() const;
 
-        void print(std::ostream& out) const;
-
        protected:
         const uint8_t* buf;
         std::size_t len;
