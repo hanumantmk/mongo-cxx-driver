@@ -5,6 +5,8 @@ add_library(mongocxx
     base/collection.cpp
     base/client.cpp
     models/find.cpp
+    util/libbson.cpp
+    util/optional.cpp
 )
 
 target_link_libraries(mongocxx

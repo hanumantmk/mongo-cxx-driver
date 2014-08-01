@@ -39,14 +39,14 @@ public:
 };
 
 struct in_place_t {};
-constexpr in_place_t in_place{};
+extern in_place_t in_place;
 
 struct nullopt_t
 {
-    explicit constexpr nullopt_t(int)  {}
+    explicit nullopt_t(int)  {}
 };
 
-constexpr nullopt_t nullopt{0};
+extern nullopt_t nullopt;
 
 template <class _Tp, bool = std::is_trivially_destructible<_Tp>::value>
 class __optional_storage
@@ -67,7 +67,7 @@ protected:
     }
 
     
-    constexpr __optional_storage() 
+    __optional_storage() 
         :  __null_state_('\0') {}
 
     
@@ -87,18 +87,17 @@ protected:
         }
 
     
-    constexpr __optional_storage(const value_type& __v)
+    __optional_storage(const value_type& __v)
         :  __val_(__v),
            __engaged_(true) {}
 
     
-    constexpr __optional_storage(value_type&& __v)
+    __optional_storage(value_type&& __v)
         :  __val_(std::move(__v)),
            __engaged_(true) {}
 
     template <class... _Args>
     
-    constexpr
     explicit __optional_storage(in_place_t, _Args&&... __args)
        :  __val_(std::forward<_Args>(__args)...),
            __engaged_(true) {}
@@ -117,7 +116,7 @@ protected:
     bool __engaged_ = false;
 
     
-    constexpr __optional_storage() 
+    __optional_storage() 
         :  __null_state_('\0') {}
 
     
@@ -137,18 +136,17 @@ protected:
         }
 
     
-    constexpr __optional_storage(const value_type& __v)
+    __optional_storage(const value_type& __v)
         :  __val_(__v),
            __engaged_(true) {}
 
     
-    constexpr __optional_storage(value_type&& __v)
+    __optional_storage(value_type&& __v)
         :  __val_(std::move(__v)),
            __engaged_(true) {}
 
     template <class... _Args>
     
-    constexpr
     explicit __optional_storage(in_place_t, _Args&&... __args)
        :  __val_(std::forward<_Args>(__args)...),
            __engaged_(true) {}
@@ -173,14 +171,14 @@ public:
     static_assert(std::is_nothrow_destructible<value_type>::value,
         "Instantiation of optional with an object type that is not  destructible is undefined behavior.");
 
-    constexpr optional()  {}
+    optional()  {}
     optional(const optional&) = default;
     optional(optional&&) = default;
     ~optional() = default;
-    constexpr optional(nullopt_t)  {}
-    constexpr optional(const value_type& __v)
+    optional(nullopt_t)  {}
+    optional(const value_type& __v)
         : __base(__v) {}
-    constexpr optional(value_type&& __v)
+    optional(value_type&& __v)
         : __base(std::move(__v)) {}
 
     template <class... _Args,
@@ -190,7 +188,6 @@ public:
                       >::type
              >
     
-    constexpr
     explicit optional(in_place_t, _Args&&... __args)
         : __base(in_place, std::forward<_Args>(__args)...) {}
 
@@ -201,7 +198,6 @@ public:
                       >::type
              >
     
-    constexpr
     explicit optional(in_place_t, std::initializer_list<_Up> __il, _Args&&... __args)
         : __base(in_place, __il, std::forward<_Args>(__args)...) {}
 
@@ -335,11 +331,10 @@ public:
     }
 
     
-    constexpr
     value_type const*
     operator->() const
     {
-        static_assert(this->__engaged_, "optional operator-> called for disengaged value");
+        assert(this->__engaged_);
         return std::addressof(this->__val_);
     }
 
@@ -352,11 +347,10 @@ public:
     }
 
     
-    constexpr
     const value_type&
     operator*() const
     {
-        static_assert(this->__engaged_, "optional operator* called for disengaged value");
+        assert(this->__engaged_);
         return this->__val_;
     }
 
@@ -369,7 +363,7 @@ public:
     }
 
     
-    constexpr explicit operator bool() const  {return this->__engaged_;}
+    explicit operator bool() const  {return this->__engaged_;}
 
     
     value_type& value()
@@ -379,9 +373,16 @@ public:
         return this->__val_;
     }
 
+    const value_type& value() const
+    {
+        if (!this->__engaged_)
+            throw bad_optional_access("optional<T>::value: not engaged");
+        return this->__val_;
+    }
+
     template <class _Up>
     
-    constexpr value_type value_or(_Up&& __v) const&
+    value_type value_or(_Up&& __v) const&
     {
         static_assert(std::is_copy_constructible<value_type>::value,
                       "optional<T>::value_or: T must be copy constructible");
@@ -412,7 +413,6 @@ private:
     }
 
     
-    constexpr
     value_type const*
     __operator_arrow(std::false_type) const
     {
@@ -422,7 +422,6 @@ private:
 
 template <class _Tp>
 inline 
-constexpr
 bool
 operator==(const optional<_Tp>& __x, nullopt_t) 
 {
@@ -431,7 +430,6 @@ operator==(const optional<_Tp>& __x, nullopt_t)
 
 template <class _Tp>
 inline 
-constexpr
 bool
 operator==(nullopt_t, const optional<_Tp>& __x) 
 {
@@ -440,7 +438,6 @@ operator==(nullopt_t, const optional<_Tp>& __x)
 
 template <class _Tp>
 inline 
-constexpr
 bool
 operator<(const optional<_Tp>&, nullopt_t) 
 {
@@ -449,7 +446,6 @@ operator<(const optional<_Tp>&, nullopt_t)
 
 template <class _Tp>
 inline 
-constexpr
 bool
 operator<(nullopt_t, const optional<_Tp>& __x) 
 {
@@ -458,7 +454,6 @@ operator<(nullopt_t, const optional<_Tp>& __x)
 
 template <class _Tp>
 inline 
-constexpr
 bool
 operator==(const optional<_Tp>& __x, const _Tp& __v)
 {
@@ -467,7 +462,6 @@ operator==(const optional<_Tp>& __x, const _Tp& __v)
 
 template <class _Tp>
 inline 
-constexpr
 bool
 operator==(const _Tp& __v, const optional<_Tp>& __x)
 {

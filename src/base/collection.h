@@ -61,7 +61,6 @@ namespace driver {
 
         Cursor find(const FindModel& model) const;
         Cursor aggregate(const AggregateModel& model) const;
-        Cursor end() const;
 
         WriteResult replace(const ReplaceModel& model);
         WriteResult insert(const InsertModel& model);
