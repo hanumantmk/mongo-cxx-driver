@@ -67,11 +67,11 @@ namespace driver {
         WriteResult update(const UpdateModel& model);
         WriteResult remove(const RemoveModel& model);
 
-        bson::Document find_one_and_replace(const FindAndReplaceModel& model);
-        bson::Document find_one_and_update(const FindAndUpdateModel& model);
-        bson::Document find_one_and_remove(const FindAndRemoveModel& model);
+        bson::Document::Value find_one_and_replace(const FindAndReplaceModel& model);
+        bson::Document::Value find_one_and_update(const FindAndUpdateModel& model);
+        bson::Document::Value find_one_and_remove(const FindAndRemoveModel& model);
 
-        bson::Document explain(const ExplainModel& model) const;
+        bson::Document::Value explain(const ExplainModel& model) const;
 
         DistinctResult distinct(const DistinctModel& model) const;
         int64_t count(const CountModel& model) const;

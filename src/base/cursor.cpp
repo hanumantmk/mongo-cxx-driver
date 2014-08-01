@@ -44,8 +44,7 @@ namespace driver {
     Cursor::iterator& Cursor::iterator::operator++() {
         const bson_t* out;
         if (mongoc_cursor_next(_cursor, &out)) {
-            _doc.setBuf(bson_get_data(out));
-            _doc.setLen(out->len);
+            _doc = bson::Document(bson_get_data(out), out->len);
         } else {
             _at_end = true;
         }

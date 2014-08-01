@@ -16,6 +16,7 @@
 
 #pragma once
 
+#include <functional>
 #include <cstddef>
 #include <cstdint>
 #include <iterator>
@@ -58,10 +59,12 @@ enum class BinarySubtype {
     USER = 0x80,
 };
 
-class Document;
+namespace Document {
+    class View;
+};
 
 class Reference {
-    friend class Document;
+    friend class Document::View;
 
    public:
     Reference();
@@ -85,58 +88,75 @@ class Reference {
 
     int64_t getInt64() const;
 
-    Document getDocument() const;
-    Document getArray() const;
+    Document::View getDocument() const;
+    Document::View getArray() const;
 
    private:
     bson_iter_t iter;
 };
 
-class Document {
-   public:
-    class iterator : public std::iterator<std::forward_iterator_tag, Reference,
-                                          std::ptrdiff_t, const Reference*,
-                                          const Reference&> {
+namespace Document {
+
+    class View {
        public:
-        iterator(const bson_iter_t& i);
+        class iterator : public std::iterator<std::forward_iterator_tag, Reference,
+                                              std::ptrdiff_t, const Reference*,
+                                              const Reference&> {
+           public:
+            iterator(const bson_iter_t& i);
 
-        iterator(bool is_end);
+            iterator(bool is_end);
 
-        const Reference& operator*() const;
-        const Reference* operator->() const;
+            const Reference& operator*() const;
+            const Reference* operator->() const;
 
-        iterator& operator++();
+            iterator& operator++();
 
-        bool operator==(const iterator& rhs) const;
+            bool operator==(const iterator& rhs) const;
 
-        bool operator!=(const iterator& rhs) const;
+            bool operator!=(const iterator& rhs) const;
 
-       private:
-        Reference iter;
-        bool is_end;
+           private:
+            Reference iter;
+            bool is_end;
+        };
+
+        iterator begin();
+
+        iterator end();
+
+        Reference operator[](const char* key) const;
+
+        View(const uint8_t* b, std::size_t l);
+        View();
+
+        const uint8_t* getBuf() const;
+        std::size_t getLen() const;
+
+        void print(std::ostream& out) const;
+
+       protected:
+        const uint8_t* buf;
+        std::size_t len;
     };
 
-    iterator begin();
+    class Value : public View {
+    public:
+        using View::iterator;
 
-    iterator end();
+        Value(const uint8_t* b, std::size_t l, std::function<void(void*)> dtor = free);
+        Value(Value&& rhs);
+        Value& operator=(Value&& rhs);
+        ~Value();
 
-    Reference operator[](const char* key) const;
+    private:
+        Value(const Value& rhs) = delete;
+        Value& operator=(const Value& rhs) = delete;
 
-    Document(const uint8_t* b, std::size_t l);
-    Document();
+        std::function<void(void*)> dtor;
+    };
+}
 
-    const uint8_t* getBuf() const;
-    std::size_t getLen() const;
-    void setBuf(const uint8_t* b);
-    void setLen(std::size_t l);
-
-    void print(std::ostream& out) const;
-
-   private:
-    const uint8_t* buf;
-    std::size_t len;
-};
-
-std::ostream& operator<<(std::ostream& out, const Document& doc);
+std::ostream& operator<<(std::ostream& out, const Document::View& doc);
 
 }  // namespace bson

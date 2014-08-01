@@ -19,7 +19,7 @@ int main() {
 
     bson_t * foo = bson_new();
 
-    bson::Document doc(bson_get_data(foo), foo->len);
+    bson::Document::View doc(bson_get_data(foo), foo->len);
 
     Client client("mongodb://localhost");
     Collection col(client["test"]["test"]);
@@ -33,7 +33,7 @@ int main() {
 
         BSON_APPEND_INT32(&bson, "foo", i);
 
-        col.insert(InsertModel(bson::Document(bson_get_data(&bson), bson.len)));
+        col.insert(InsertModel(bson::Document::View(bson_get_data(&bson), bson.len)));
     }
     bson_destroy(&bson);
 

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include <cstdlib>
+
 #include "bson/document.h"
 
 namespace bson {
@@ -56,28 +58,30 @@ int32_t Reference::getInt32() const { return bson_iter_int32(&iter); }
 
 int64_t Reference::getInt64() const { return bson_iter_int64(&iter); }
 
-Document::iterator::iterator(const bson_iter_t& i) : iter(i), is_end(false) {}
+namespace Document {
 
-Document::iterator::iterator(bool is_end) : is_end(is_end) {}
+View::iterator::iterator(const bson_iter_t& i) : iter(i), is_end(false) {}
 
-const Reference& Document::iterator::operator*() const { return iter; }
-const Reference* Document::iterator::operator->() const { return &iter; }
+View::iterator::iterator(bool is_end) : is_end(is_end) {}
 
-Document::iterator& Document::iterator::operator++() {
+const Reference& View::iterator::operator*() const { return iter; }
+const Reference* View::iterator::operator->() const { return &iter; }
+
+View::iterator& View::iterator::operator++() {
     is_end = !bson_iter_next(&iter.iter);
     return *this;
 }
 
-bool Document::iterator::operator==(const iterator& rhs) const {
+bool View::iterator::operator==(const iterator& rhs) const {
     if (is_end && rhs.is_end) return true;
     return iter == rhs.iter;
 }
 
-bool Document::iterator::operator!=(const iterator& rhs) const {
+bool View::iterator::operator!=(const iterator& rhs) const {
     return !(*this == rhs);
 }
 
-Document::iterator Document::begin() {
+View::iterator View::begin() {
     bson_t b;
     bson_iter_t iter;
 
@@ -88,9 +92,9 @@ Document::iterator Document::begin() {
     return iterator(iter);
 }
 
-Document::iterator Document::end() { return iterator(true); }
+View::iterator View::end() { return iterator(true); }
 
-Reference Document::operator[](const char* key) const {
+Reference View::operator[](const char* key) const {
     bson_t b;
     bson_iter_t iter;
 
@@ -100,15 +104,13 @@ Reference Document::operator[](const char* key) const {
     return Reference(iter);
 }
 
-Document::Document(const uint8_t* b, std::size_t l) : buf(b), len(l) {}
-Document::Document() : buf(NULL), len(0) {}
+View::View(const uint8_t* b, std::size_t l) : buf(b), len(l) {}
+View::View() : buf(NULL), len(0) {}
 
-const uint8_t* Document::getBuf() const { return buf; }
-std::size_t Document::getLen() const { return len; }
-void Document::setBuf(const uint8_t* b) { buf = b; }
-void Document::setLen(std::size_t l) { len = l; }
+const uint8_t* View::getBuf() const { return buf; }
+std::size_t View::getLen() const { return len; }
 
-void Document::print(std::ostream& out) const {
+void View::print(std::ostream& out) const {
     bson_t b;
     bson_init_static(&b, buf, len);
     char* json = bson_as_json(&b, NULL);
@@ -116,25 +118,50 @@ void Document::print(std::ostream& out) const {
     bson_free(json);
 }
 
-Document Reference::getDocument() const {
+Value::Value(const uint8_t* b, std::size_t l, std::function<void(void *)> dtor) : View(b, l), dtor(dtor) {
+}
+
+Value::Value(Value&& rhs) {
+    *this = std::move(rhs);
+}
+
+Value& Value::operator=(Value&& rhs) {
+    buf = rhs.buf;
+    len = rhs.len;
+    dtor = rhs.dtor;
+
+    rhs.buf = NULL;
+
+    return *this;
+}
+
+Value::~Value() {
+    if (buf) {
+        dtor((void *)buf);
+    }
+}
+
+}
+
+Document::View Reference::getDocument() const {
     const uint8_t* buf;
     uint32_t len;
 
     bson_iter_document(&iter, &len, &buf);
 
-    return Document(buf, len);
+    return Document::View(buf, len);
 }
 
-Document Reference::getArray() const {
+Document::View Reference::getArray() const {
     const uint8_t* buf;
     uint32_t len;
 
     bson_iter_array(&iter, &len, &buf);
 
-    return Document(buf, len);
+    return Document::View(buf, len);
 }
 
-std::ostream& operator<<(std::ostream& out, const Document& doc) {
+std::ostream& operator<<(std::ostream& out, const Document::View& doc) {
     doc.print(out);
     return out;
 }

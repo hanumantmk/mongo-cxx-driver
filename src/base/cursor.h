@@ -28,12 +28,12 @@ namespace driver {
         friend class Collection;
 
     public:
-        class iterator: public std::iterator<std::forward_iterator_tag, const bson::Document&, std::ptrdiff_t, const bson::Document*, const bson::Document&> {
+        class iterator: public std::iterator<std::forward_iterator_tag, const bson::Document::View&, std::ptrdiff_t, const bson::Document::View*, const bson::Document::View&> {
             friend class Cursor;
 
         public:
-            const bson::Document& operator*() const;
-            const bson::Document* operator->() const;
+            const bson::Document::View& operator*() const;
+            const bson::Document::View* operator->() const;
 
             iterator& operator++();
 
@@ -44,7 +44,7 @@ namespace driver {
             iterator(mongoc_cursor_t* cursor);
 
             mongoc_cursor_t * _cursor;
-            bson::Document _doc;
+            bson::Document::View _doc;
             bool _at_end;
         };
 
