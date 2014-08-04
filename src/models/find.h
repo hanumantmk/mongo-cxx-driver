@@ -43,19 +43,20 @@ namespace driver {
         FindModel& batch_size(int32_t batch_size);
         FindModel& cursor_flags(int32_t cursor_flags);
         FindModel& limit(int32_t limit);
-        FindModel& modifiers(const bson::Document::View& modifiers);
-        FindModel& projection(const bson::Document::View& projection);
+        FindModel& modifiers(bson::Document::View modifiers);
+        FindModel& projection(bson::Document::View projection);
         FindModel& skip(int32_t skip);
-        FindModel& sort(const bson::Document::View& ordering);
+        FindModel& sort(bson::Document::View ordering);
 
-        const bson::Document::View& filter() const;
+        bson::Document::View filter() const;
+
         optional<int32_t> batch_size() const;
         optional<int32_t> cursor_flags() const;
         optional<int32_t> limit() const;
-        optional<const bson::Document::View*> modifiers() const;
-        optional<const bson::Document::View*> projection() const;
+        optional<bson::Document::View> modifiers() const;
+        optional<bson::Document::View> projection() const;
         optional<int32_t> skip() const;
-        optional<const bson::Document::View*> sort() const;
+        optional<bson::Document::View> sort() const;
 
     private:
         bson::Document::View _filter;
@@ -63,10 +64,10 @@ namespace driver {
         optional<int32_t> _batch_size;
         optional<int32_t> _cursor_flags;
         optional<int32_t> _limit;
-        optional<const bson::Document::View> _modifiers;
-        optional<const bson::Document::View> _projection;
+        optional<bson::Document::View> _modifiers;
+        optional<bson::Document::View> _projection;
         optional<int32_t> _skip;
-        optional<const bson::Document::View> _ordering;
+        optional<bson::Document::View> _ordering;
     };
 
 } // namespace driver

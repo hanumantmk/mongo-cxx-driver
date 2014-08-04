@@ -170,7 +170,7 @@ namespace Document {
     class ViewOrValue {
     public:
         ViewOrValue(bson::Document::View view);
-        ViewOrValue(bson::Docuemtn::Value value);
+        ViewOrValue(bson::Document::Value value);
 
         ViewOrValue(ViewOrValue&& rhs);
         ViewOrValue& operator=(ViewOrValue&& rhs);
@@ -178,14 +178,14 @@ namespace Document {
         ~ViewOrValue();
 
     private:
-        ViewOrValue(const bson::Docuement::ViewOrValue& view) = delete;
-        ViewOrValue& operator=(const bson::Docuement::ViewOrValue& view) = delete;
+        ViewOrValue(const bson::Document::ViewOrValue& view) = delete;
+        ViewOrValue& operator=(const bson::Document::ViewOrValue& view) = delete;
 
         bool _is_view;
         union {
             bson::Document::View view;
             bson::Document::Value value;
-        }
+        };
     };
 
 }

@@ -20,7 +20,7 @@ namespace mongo {
 namespace driver {
 
 
-    FindModel::FindModel(const bson::Document::View& filter) 
+    FindModel::FindModel(bson::Document::View filter)
         : _filter(filter)
     {}
 
@@ -39,13 +39,13 @@ namespace driver {
         return *this;
     }
 
-    FindModel& FindModel::modifiers(const bson::Document::View& modifiers) {
-        _modifiers = &modifiers;
+    FindModel& FindModel::modifiers(bson::Document::View modifiers) {
+        _modifiers = modifiers;
         return *this;
     }
 
-    FindModel& FindModel::projection(const bson::Document::View& projection) {
-        _projection = &projection;
+    FindModel& FindModel::projection(bson::Document::View projection) {
+        _projection = projection;
         return *this;
     }
 
@@ -54,12 +54,12 @@ namespace driver {
         return *this;
     }
 
-    FindModel& FindModel::sort(const bson::Document::View& ordering) {
-        _ordering = &ordering;
+    FindModel& FindModel::sort(bson::Document::View ordering) {
+        _ordering = ordering;
         return *this;
     }
 
-    const bson::Document::View& FindModel::filter() const {
+    bson::Document::View FindModel::filter() const {
         return _filter;
     }
 
@@ -75,11 +75,11 @@ namespace driver {
         return _limit;
     }
 
-    optional<const bson::Document::View*> FindModel::modifiers() const {
+    optional<bson::Document::View> FindModel::modifiers() const {
         return _modifiers;
     }
 
-    optional<const bson::Document::View*> FindModel::projection() const {
+    optional<bson::Document::View> FindModel::projection() const {
         return _projection;
     }
 
@@ -87,7 +87,7 @@ namespace driver {
         return _skip;
     }
 
-    optional<const bson::Document::View*> FindModel::sort() const {
+    optional<bson::Document::View> FindModel::sort() const {
         return _ordering;
     }
 
