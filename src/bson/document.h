@@ -166,6 +166,28 @@ namespace Document {
 
         std::function<void(void*)> dtor;
     };
+
+    class ViewOrValue {
+    public:
+        ViewOrValue(bson::Document::View view);
+        ViewOrValue(bson::Docuemtn::Value value);
+
+        ViewOrValue(ViewOrValue&& rhs);
+        ViewOrValue& operator=(ViewOrValue&& rhs);
+
+        ~ViewOrValue();
+
+    private:
+        ViewOrValue(const bson::Docuement::ViewOrValue& view) = delete;
+        ViewOrValue& operator=(const bson::Docuement::ViewOrValue& view) = delete;
+
+        bool _is_view;
+        union {
+            bson::Document::View view;
+            bson::Document::Value value;
+        }
+    };
+
 }
 
 }  // namespace bson

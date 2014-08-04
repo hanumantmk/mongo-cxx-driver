@@ -33,15 +33,17 @@ namespace driver {
         Pipeline& group(const bson::Document::View& group);
         Pipeline& limit(int32_t limit);
         Pipeline& match(const bson::Document::View& filter);
-        Pipeline& out(const std::string& collection_name);
+        Pipeline& out(std::string collection_name);
         Pipeline& project(const bson::Document::View& projection);
         Pipeline& redact(const bson::Document::View& restrictions);
         Pipeline& skip(int32_t skip);
         Pipeline& sort(const bson::Document::View& sort);
-        Pipeline& unwind(const std::string& field_name);
+        Pipeline& unwind(std::string field_name);
+
+        std::vector<ViewOrValue>& pipeline() const;
 
     private:
-        std::vector<bson::Document::View> _pipeline;
+        std::vector<ViewOrValue> _pipeline;
 
     };
 

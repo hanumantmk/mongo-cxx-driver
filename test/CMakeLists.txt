@@ -3,6 +3,7 @@ enable_testing()
 ExternalProject_Add(
     googletest
     URL http://googletest.googlecode.com/files/gtest-1.7.0.zip
+    DOWNLOAD_DIR ${CMAKE_CURRENT_BINARY_DIR}/download
     LOG_DOWNLOAD ON
     LOG_CONFIGURE ON
     LOG_BUILD ON

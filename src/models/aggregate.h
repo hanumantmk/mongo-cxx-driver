@@ -20,6 +20,7 @@
 
 #include "bson/document.h"
 #include "models/read.h"
+#include "util/optional.h"
 
 namespace mongo {
 namespace driver {
@@ -30,45 +31,25 @@ namespace driver {
 
     public:
 
-        AggregateModel(const Pipeline& pipeline);
+        AggregateModel(Pipeline pipeline);
 
-        /**
-         * Enables writing to temporary files. When set to true, aggregation stages
-         * can write data to the _tmp subdirectory in the dbPath directory. The
-         * default is false.
-         *
-         * @see http://docs.mongodb.org/manual/reference/command/aggregate/
-         */
         AggregateModel& allow_disk_use(bool allow_disk_use);
-
-        /**
-         * The number of documents to return per batch.
-         *
-         * @see http://docs.mongodb.org/manual/reference/command/aggregate/
-         */
         AggregateModel& batch_size(int32_t batch_size);
-
-        /**
-         * The maximum amount of time to allow the query to run.
-         *
-         * @see http://docs.mongodb.org/manual/reference/command/aggregate/
-         */
         AggregateModel& max_time_ms(int64_t max_time_ms);
-
-        /**
-         * Indicates if the results should be provided as a cursor. The default is false.
-         *
-         * @see http://docs.mongodb.org/manual/reference/command/aggregate/
-         */
         AggregateModel& use_cursor(bool use_cursor);
+
+        optional<bool> allow_disk_use() const;
+        optional<int32_t> batch_size() const;
+        optional<int64_t> max_time_ms() const;
+        optional<bool> use_cursor() const;
 
     private:
 
-        const Pipeline& _pipeline;
-        bool _allow_disk_use;
-        int32_t _batch_size;
-        int64_t _max_time_ms;
-        bool _use_cursor;
+        Pipeline _pipeline;
+        optional<bool> _allow_disk_use;
+        optional<int32_t> _batch_size;
+        optional<int64_t> _max_time_ms;
+        optional<bool> _use_cursor;
 
     };
 

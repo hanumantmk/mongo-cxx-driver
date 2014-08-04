@@ -38,7 +38,7 @@ namespace driver {
     class FindModel : public ReadModel<FindModel> {
 
     public:
-        FindModel(const bson::Document::View& filter);
+        FindModel(bson::Document::View filter);
 
         FindModel& batch_size(int32_t batch_size);
         FindModel& cursor_flags(int32_t cursor_flags);
@@ -58,15 +58,15 @@ namespace driver {
         optional<const bson::Document::View*> sort() const;
 
     private:
-        const bson::Document::View& _filter;
+        bson::Document::View _filter;
 
         optional<int32_t> _batch_size;
         optional<int32_t> _cursor_flags;
         optional<int32_t> _limit;
-        optional<const bson::Document::View*> _modifiers;
-        optional<const bson::Document::View*> _projection;
+        optional<const bson::Document::View> _modifiers;
+        optional<const bson::Document::View> _projection;
         optional<int32_t> _skip;
-        optional<const bson::Document::View*> _ordering;
+        optional<const bson::Document::View> _ordering;
     };
 
 } // namespace driver
