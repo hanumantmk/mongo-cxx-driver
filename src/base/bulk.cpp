@@ -42,8 +42,8 @@ namespace driver {
         }
     }
 
-    void BulkOperationBuilder::add(const WriteRequest* req) {
-        req->add(_bulk_operation);
+    void BulkOperationBuilder::add(const WriteRequest& req) {
+        req.add(_bulk_operation);
     }
 
     WriteResult BulkOperationBuilder::execute() {

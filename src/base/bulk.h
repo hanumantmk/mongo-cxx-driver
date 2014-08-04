@@ -36,7 +36,7 @@ namespace driver {
 
     private:
         BulkOperationBuilder(const Collection * collection, bool is_ordered);
-        void add(const WriteRequest* req);
+        void add(const WriteRequest& req);
         WriteResult execute();
 
         BulkOperationBuilder(const BulkOperationBuilder& rhs) = delete;

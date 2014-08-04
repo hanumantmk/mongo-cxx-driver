@@ -90,7 +90,7 @@ namespace driver {
     WriteResult Collection::insert(const InsertModel& model) { 
         BulkOperationBuilder op(this, false);
         InsertRequest req(model);
-        op.add(&req);
+        op.add(req);
 
         return op.execute();
     }

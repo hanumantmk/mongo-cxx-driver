@@ -31,7 +31,7 @@ namespace driver {
     private:
         virtual void add(mongoc_bulk_operation_t* bulk) const;
 
-        const bson::Document::View& _doc;
+        bson::Document::View _doc;
     };
 
 } // namespace driver

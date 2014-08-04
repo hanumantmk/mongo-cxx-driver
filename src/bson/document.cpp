@@ -75,14 +75,17 @@ View::iterator& View::iterator::operator++() {
 
 bool View::iterator::operator==(const iterator& rhs) const {
     if (is_end && rhs.is_end) return true;
+    if (is_end || rhs.is_end) return false;
     return iter == rhs.iter;
+
+    return false;
 }
 
 bool View::iterator::operator!=(const iterator& rhs) const {
     return !(*this == rhs);
 }
 
-View::iterator View::begin() {
+View::iterator View::begin() const {
     bson_t b;
     bson_iter_t iter;
 
@@ -93,7 +96,7 @@ View::iterator View::begin() {
     return iterator(iter);
 }
 
-View::iterator View::end() { return iterator(true); }
+View::iterator View::end() const { return iterator(true); }
 
 Reference View::operator[](const char* key) const {
     bson_t b;

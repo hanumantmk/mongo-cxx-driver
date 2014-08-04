@@ -122,9 +122,9 @@ namespace Document {
             bool is_end;
         };
 
-        iterator begin();
+        iterator begin() const;
 
-        iterator end();
+        iterator end() const;
 
         Reference operator[](const char* key) const;
 
