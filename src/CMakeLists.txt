@@ -1,12 +1,3 @@
-link_directories(
-    ${LIBMONGOC_LIBRARY_DIRS}
-)
-
-include_directories(
-    ${LIBMONGOC_INCLUDE_DIRS}
-    ${CMAKE_CURRENT_SOURCE_DIR}
-)
-
 add_library(mongocxx
     mongocxx.cpp
     base/bulk.cpp
