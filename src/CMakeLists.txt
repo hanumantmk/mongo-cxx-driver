@@ -1,4 +1,5 @@
 add_library(mongocxx
+    bson/builder.cpp
     bson/document.cpp
     driver/base/bulk.cpp
     driver/base/client.cpp
