@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-#pragma once
-
 #include "driver/model/bulk.h"
 
 namespace mongo {

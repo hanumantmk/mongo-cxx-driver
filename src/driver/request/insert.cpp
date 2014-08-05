@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
-#include "driver/request/insert_request.h"
+#include "driver/request/insert.h"
 #include "driver/util/libbson.h"
 
 namespace mongo {
 namespace driver {
 namespace model {
 
-insert_request::insert_request(const bson::Document::View& doc) : _doc(doc) {
-}
-
-insert_request::insert_request(const insert& model) : _doc(model.document()) {
-}
-
-void insert_request::add(mongoc_bulk_operation_t* bulk) const {
-    bson::libbson::scoped_bson_t to_insert(_doc);
-    mongoc_bulk_operation_insert(bulk, to_insert.bson());
-}
+/*
+ *insert_request::insert_request(const bson::Document::View& doc) : _doc(doc) {
+ *}
+ *
+ *insert_request::insert_request(const insert& model) : _doc(model.document()) {
+ *}
+ *
+ *void insert_request::add(mongoc_bulk_operation_t* bulk) const {
+ *    bson::libbson::scoped_bson_t to_insert(_doc);
+ *    mongoc_bulk_operation_insert(bulk, to_insert.bson());
+ *}
+ */
 
 } // namespace model
 } // namespace driver

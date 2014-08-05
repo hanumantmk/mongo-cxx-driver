@@ -17,6 +17,7 @@
 #pragma once
 
 #include "bson/document.h"
+
 #include "driver/model/insert.h"
 #include "driver/request/write.h"
 
@@ -24,16 +25,18 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-    class InsertRequest : public WriteRequest {
-    public:
-        InsertRequest(const bson::Document::View& doc);
-        InsertRequest(const insert& model);
-
-    private:
-        virtual void add(mongoc_bulk_operation_t* bulk) const;
-
-        bson::Document::View _doc;
-    };
+/*
+ *    class InsertRequest : public WriteRequest {
+ *    public:
+ *        InsertRequest(const bson::Document::View& doc);
+ *        InsertRequest(const insert& model);
+ *
+ *    private:
+ *        virtual void add(mongoc_bulk_operation_t* bulk) const;
+ *
+ *        bson::Document::View _doc;
+ *    };
+ */
 
 } // namespace model
 } // namespace driver

@@ -56,45 +56,49 @@ namespace driver {
         mongoc_collection_destroy(_collection);
     }
 
-    Cursor Collection::find(const model::find& model) const {
-        scoped_bson_t filter;
-        scoped_bson_t projection(model.projection());
-
-        if (model.modifiers()) {
-            scoped_bson_t query(model.filter());
-            scoped_bson_t modifiers(model.modifiers());
-
-            filter.init();
-
-            BSON_APPEND_DOCUMENT(filter.bson(), "&query", query.bson());
-            bson_concat(filter.bson(), modifiers.bson());
-        } else {
-            filter.init_from_static(model.filter());
-        }
-
-        return Cursor(mongoc_collection_find(
-            _collection,
-            (mongoc_query_flags_t)model.cursor_flags().value_or(0),
-            model.skip().value_or(0),
-            model.limit().value_or(0),
-            model.batch_size().value_or(0),
-            filter.bson(),
-            projection.bson(),
-            NULL
-        ));
-    }
+/*
+ *    Cursor Collection::find(const model::find& model) const {
+ *        scoped_bson_t filter;
+ *        scoped_bson_t projection(model.projection());
+ *
+ *        if (model.modifiers()) {
+ *            scoped_bson_t query(model.filter());
+ *            scoped_bson_t modifiers(model.modifiers());
+ *
+ *            filter.init();
+ *
+ *            BSON_APPEND_DOCUMENT(filter.bson(), "&query", query.bson());
+ *            bson_concat(filter.bson(), modifiers.bson());
+ *        } else {
+ *            filter.init_from_static(model.filter());
+ *        }
+ *
+ *        return Cursor(mongoc_collection_find(
+ *            _collection,
+ *            (mongoc_query_flags_t)model.cursor_flags().value_or(0),
+ *            model.skip().value_or(0),
+ *            model.limit().value_or(0),
+ *            model.batch_size().value_or(0),
+ *            filter.bson(),
+ *            projection.bson(),
+ *            NULL
+ *        ));
+ *    }
+ */
 
     Cursor Collection::aggregate(const AggregateModel& /* model */) const { return Cursor(NULL); }
 
     WriteResult Collection::replace(const ReplaceModel& /* model */) { return WriteResult(); }
 
-    WriteResult Collection::insert(const InsertModel& model) { 
-        BulkOperationBuilder op(this, false);
-        InsertRequest req(model);
-        op.add(req);
-
-        return op.execute();
-    }
+/*
+ *    WriteResult Collection::insert(const InsertModel& model) { 
+ *        BulkOperationBuilder op(this, false);
+ *        InsertRequest req(model);
+ *        op.add(req);
+ *
+ *        return op.execute();
+ *    }
+ */
 
     WriteResult Collection::update(const UpdateModel& /* model */) { return WriteResult(); }
     WriteResult Collection::remove(const RemoveModel& /* model */) { return WriteResult(); }

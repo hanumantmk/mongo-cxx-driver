@@ -20,18 +20,18 @@
 
 namespace mongo {
 namespace driver {
-namespace model {
 
-    class BulkOperationBuilder;
+/*
+ *    class BulkOperationBuilder;
+ *
+ *    class WriteRequest {
+ *        friend class BulkOperationBuilder;
+ *    public:
+ *        virtual ~WriteRequest() {}
+ *    private:
+ *        virtual void add(mongoc_bulk_operation_t* bulk) const = 0;
+ *    };
+ */
 
-    class WriteRequest {
-        friend class BulkOperationBuilder;
-    public:
-        virtual ~WriteRequest() {}
-    private:
-        virtual void add(mongoc_bulk_operation_t* bulk) const = 0;
-    };
-
-} // namespace model
 } // namespace driver
 } // namespace mongo

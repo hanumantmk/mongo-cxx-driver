@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "models/update.h"
 #include "bson/document.h"
+#include "driver/model/update.h"
 
 using namespace mongo::driver;
 
@@ -10,7 +10,7 @@ int main(int argc, char ** argv) {
     bson::Document::View a((uint8_t *)"", 0);
     bson::Document::View b((uint8_t *)"", 0);
 
-    UpdateModel u(a, b);
+    model::update u(a, b);
     u.multi(true);
 
     auto upsert = u.upsert();
