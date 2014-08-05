@@ -24,19 +24,18 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-    class query {
+class query {
 
-        query& sort(const bson::document::view& ordering);
-        bson::document::view sort() const;
+    query& sort(const bson::document::view& ordering);
+    bson::document::view sort() const;
 
-        query& limit(int32_t limit);
-        int32_t limit() const;
+    query& limit(int32_t limit);
+    int32_t limit() const;
 
-        query& skip(int32_t limit);
-        int32_t skip() const;
+    query& skip(int32_t limit);
+    int32_t skip() const;
+};
 
-    };
-
-} // namespace model
-} // namespace driver
-} // namespace mongo
+}  // namespace model
+}  // namespace driver
+}  // namespace mongo

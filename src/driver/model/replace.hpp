@@ -23,20 +23,17 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-    class replace : write<replace> {
+class replace : write<replace> {
 
-    public:
-        replace(
-            const bson::document::view& filter,
-            const bson::document::view& replacement
-        );
+   public:
+    replace(const bson::document::view& filter,
+            const bson::document::view& replacement);
 
-    private:
-        const bson::document::view& _filter;
-        const bson::document::view& _replacement;
+   private:
+    const bson::document::view& _filter;
+    const bson::document::view& _replacement;
+};
 
-    };
-
-} // namespace model
-} // namespace driver
-} // namespace mongo
+}  // namespace model
+}  // namespace driver
+}  // namespace mongo

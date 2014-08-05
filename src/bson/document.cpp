@@ -111,16 +111,17 @@ view::view() : buf(NULL), len(0) {}
 const uint8_t* view::get_buf() const { return buf; }
 std::size_t view::get_len() const { return len; }
 
-value::value(const uint8_t* b, std::size_t l, std::function<void(void *)> dtor) : view(b, l), dtor(dtor) {
+value::value(const uint8_t* b, std::size_t l, std::function<void(void*)> dtor)
+    : view(b, l), dtor(dtor) {}
+
+value::value(const view& view)
+    : bson::document::view((uint8_t*)malloc((std::size_t)view.get_len()),
+                           view.get_len()),
+      dtor(free) {
+    std::memcpy((void*)buf, view.get_buf(), view.get_len());
 }
 
-value::value(const view& view) : bson::document::view((uint8_t *)malloc((std::size_t)view.get_len()), view.get_len()), dtor(free) {
-    std::memcpy((void *)buf, view.get_buf(), view.get_len());
-}
-
-value::value(value&& rhs) {
-    *this = std::move(rhs);
-}
+value::value(value&& rhs) { *this = std::move(rhs); }
 
 value& value::operator=(value&& rhs) {
     buf = rhs.buf;
@@ -134,10 +135,9 @@ value& value::operator=(value&& rhs) {
 
 value::~value() {
     if (buf) {
-        dtor((void *)buf);
+        dtor((void*)buf);
     }
 }
-
 }
 
 document::view thing::get_document() const {

@@ -17,8 +17,5 @@
 #include "driver/model/bulk.hpp"
 
 namespace mongo {
-namespace driver {
-
-
-}
+namespace driver {}
 }

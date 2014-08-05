@@ -19,9 +19,9 @@
 namespace mongo {
 namespace driver {
 
-    class QueryOperation {
-        QueryOperation();
-    };
+class QueryOperation {
+    QueryOperation();
+};
 
-} // namespace driver
-} // namespace mongo
+}  // namespace driver
+}  // namespace mongo

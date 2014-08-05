@@ -20,10 +20,8 @@ namespace mongo {
 namespace driver {
 namespace result {
 
-    class explain {
+class explain {};
 
-    };
-
-} // namespace result
-} // namespace driver
-} // namespace mongo
+}  // namespace result
+}  // namespace driver
+}  // namespace mongo

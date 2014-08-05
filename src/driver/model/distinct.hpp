@@ -26,23 +26,21 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-    class distinct : public read<distinct> {
+class distinct : public read<distinct> {
 
-    public:
-        distinct(std::string field_name);
+   public:
+    distinct(std::string field_name);
 
-        distinct& filter(bson::document::view filter);
-        distinct& max_time_ms(int64_t max_time_ms);
+    distinct& filter(bson::document::view filter);
+    distinct& max_time_ms(int64_t max_time_ms);
 
-    private:
-        bson::document::view _field_name;
+   private:
+    bson::document::view _field_name;
 
-        bson::document::view _filter;
-        int64_t _max_time_ms;
+    bson::document::view _filter;
+    int64_t _max_time_ms;
+};
 
-    };
-
-} // namespace model
-} // namespace driver
-} // namespace mongo
-
+}  // namespace model
+}  // namespace driver
+}  // namespace mongo

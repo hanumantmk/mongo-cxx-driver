@@ -38,6 +38,6 @@ namespace model {
  *    };
  */
 
-} // namespace model
-} // namespace driver
-} // namespace mongo
+}  // namespace model
+}  // namespace driver
+}  // namespace mongo

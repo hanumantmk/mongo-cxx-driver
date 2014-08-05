@@ -19,8 +19,7 @@
 namespace mongo {
 namespace driver {
 
-    class InsertOperation {
-    };
+class InsertOperation {};
 
-} // namespace driver
-} // namespace mongo
+}  // namespace driver
+}  // namespace mongo

@@ -23,18 +23,16 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-    class insert : public write<insert> {
+class insert : public write<insert> {
 
-    public:
+   public:
+    insert(const bson::document::view& document);
+    const bson::document::view& document() const;
 
-        insert(const bson::document::view& document);
-        const bson::document::view& document() const;
+   private:
+    const bson::document::view& _document;
+};
 
-    private:
-        const bson::document::view& _document;
-
-    };
-
-} // namespace model
-} // namespace driver
-} // namespace mongo
+}  // namespace model
+}  // namespace driver
+}  // namespace mongo

@@ -23,22 +23,21 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-    class find_one_and_remove : public write<find_one_and_remove> {
+class find_one_and_remove : public write<find_one_and_remove> {
 
-    public:
-        find_one_and_remove(const bson::document::view& filter);
+   public:
+    find_one_and_remove(const bson::document::view& filter);
 
-        find_one_and_remove& projection(const bson::document::view& projection);
-        find_one_and_remove& sort(const bson::document::view& ordering);
+    find_one_and_remove& projection(const bson::document::view& projection);
+    find_one_and_remove& sort(const bson::document::view& ordering);
 
-    private:
-        const bson::document::view& _filter;
+   private:
+    const bson::document::view& _filter;
 
-        bson::document::view& _projection;
-        bson::document::view& _ordering;
+    bson::document::view& _projection;
+    bson::document::view& _ordering;
+};
 
-    };
-
-} // namespace model
-} // namespace driver
-} // namespace mongo
+}  // namespace model
+}  // namespace driver
+}  // namespace mongo

@@ -27,32 +27,29 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-    class aggregate : public read<aggregate> {
+class aggregate : public read<aggregate> {
 
-    public:
+   public:
+    aggregate(pipeline pipeline);
 
-        aggregate(pipeline pipeline);
+    aggregate& allow_disk_use(bool allow_disk_use);
+    aggregate& batch_size(int32_t batch_size);
+    aggregate& max_time_ms(int64_t max_time_ms);
+    aggregate& use_cursor(bool use_cursor);
 
-        aggregate& allow_disk_use(bool allow_disk_use);
-        aggregate& batch_size(int32_t batch_size);
-        aggregate& max_time_ms(int64_t max_time_ms);
-        aggregate& use_cursor(bool use_cursor);
+    optional<bool> allow_disk_use() const;
+    optional<int32_t> batch_size() const;
+    optional<int64_t> max_time_ms() const;
+    optional<bool> use_cursor() const;
 
-        optional<bool> allow_disk_use() const;
-        optional<int32_t> batch_size() const;
-        optional<int64_t> max_time_ms() const;
-        optional<bool> use_cursor() const;
+   private:
+    pipeline _pipeline;
+    optional<bool> _allow_disk_use;
+    optional<int32_t> _batch_size;
+    optional<int64_t> _max_time_ms;
+    optional<bool> _use_cursor;
+};
 
-    private:
-
-        pipeline _pipeline;
-        optional<bool> _allow_disk_use;
-        optional<int32_t> _batch_size;
-        optional<int64_t> _max_time_ms;
-        optional<bool> _use_cursor;
-
-    };
-
-} // namespace model
-} // namespace driver
-} // namespace mongo
+}  // namespace model
+}  // namespace driver
+}  // namespace mongo

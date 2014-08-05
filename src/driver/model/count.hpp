@@ -26,26 +26,26 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-    class count : public ReadModel<count> {
+class count : public ReadModel<count> {
 
-    public:
-        count(const bson::document::view& filter);
+   public:
+    count(const bson::document::view& filter);
 
-        count& filter(const bson::document::view& filter);
-        count& hint(const bson::document::view& hint);
-        count& limit(int32_t limit);
-        count& max_time_ms(int64_t max_time_ms);
-        count& skip(int32_t skip);
+    count& filter(const bson::document::view& filter);
+    count& hint(const bson::document::view& hint);
+    count& limit(int32_t limit);
+    count& max_time_ms(int64_t max_time_ms);
+    count& skip(int32_t skip);
 
-    private:
-        const bson::document::view& _filter;
+   private:
+    const bson::document::view& _filter;
 
-        bson::document::view& _hint;
-        int32_t _limit;
-        int64_t _max_time_ms;
-        int32_t _skip;
-    };
+    bson::document::view& _hint;
+    int32_t _limit;
+    int64_t _max_time_ms;
+    int32_t _skip;
+};
 
-} // namesapce model
-} // namespace driver
-} // namespace mongo
+}  // namesapce model
+}  // namespace driver
+}  // namespace mongo

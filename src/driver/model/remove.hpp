@@ -23,20 +23,19 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-    class remove : write<remove> {
+class remove : write<remove> {
 
-    public:
-        remove(const bson::document::view& filter);
+   public:
+    remove(const bson::document::view& filter);
 
-        remove& multi(bool multi);
+    remove& multi(bool multi);
 
-    private:
-        const bson::document::view& _filter;
+   private:
+    const bson::document::view& _filter;
 
-        bool _multi;
+    bool _multi;
+};
 
-    };
-
-} // namespace model
-} // namespace driver
-} // namespace mongo
+}  // namespace model
+}  // namespace driver
+}  // namespace mongo

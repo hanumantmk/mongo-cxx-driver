@@ -32,31 +32,30 @@
 namespace mongo {
 namespace driver {
 
-    using namespace bson::libbson;
+using namespace bson::libbson;
 
-    collection::collection( client* client, database* database, std::string name) :
-        _client(client), _name(name) {
-        _collection = mongoc_client_get_collection(_client->_client, database->_name.c_str(), name.c_str());
-    }
+collection::collection(client* client, database* database, std::string name)
+    : _client(client), _name(name) {
+    _collection = mongoc_client_get_collection(
+        _client->_client, database->_name.c_str(), name.c_str());
+}
 
-    collection::collection(collection&& rhs) {
-        _database = rhs._database;
-        _client = rhs._client;
-        _collection = rhs._collection;
-        _name = std::move(rhs._name);
-    }
+collection::collection(collection&& rhs) {
+    _database = rhs._database;
+    _client = rhs._client;
+    _collection = rhs._collection;
+    _name = std::move(rhs._name);
+}
 
-    collection& collection::operator=(collection&& rhs) {
-        _database = rhs._database;
-        _client = rhs._client;
-        _collection = rhs._collection;
-        _name = std::move(rhs._name);
-        return *this;
-    }
+collection& collection::operator=(collection&& rhs) {
+    _database = rhs._database;
+    _client = rhs._client;
+    _collection = rhs._collection;
+    _name = std::move(rhs._name);
+    return *this;
+}
 
-    collection::~collection() {
-        mongoc_collection_destroy(_collection);
-    }
+collection::~collection() { mongoc_collection_destroy(_collection); }
 
 /*
  *    Cursor collection::find(const model::find& model) const {
@@ -88,12 +87,16 @@ namespace driver {
  *    }
  */
 
-    cursor collection::aggregate(const model::aggregate& /* model */) const { return cursor(NULL); }
+cursor collection::aggregate(const model::aggregate& /* model */) const {
+    return cursor(NULL);
+}
 
-    result::write collection::replace(const model::replace& /* model */) { return result::write(); }
+result::write collection::replace(const model::replace& /* model */) {
+    return result::write();
+}
 
 /*
- *    WriteResult collection::insert(const InsertModel& model) { 
+ *    WriteResult collection::insert(const InsertModel& model) {
  *        BulkOperationBuilder op(this, false);
  *        InsertRequest req(model);
  *        op.add(req);
@@ -102,25 +105,44 @@ namespace driver {
  *    }
  */
 
-    result::write collection::update(const model::update& /* model */) { return result::write(); }
-    result::write collection::remove(const model::remove& /* model */) { return result::write(); }
+result::write collection::update(const model::update& /* model */) {
+    return result::write();
+}
+result::write collection::remove(const model::remove& /* model */) {
+    return result::write();
+}
 
-    bson::document::value collection::find_one_and_replace(const model::find_one_and_replace& /* model */) { return bson::document::value((const uint8_t *)NULL, 0); }
-    bson::document::value collection::find_one_and_update(const model::find_one_and_update& /* model */) { return bson::document::value((const uint8_t *)NULL, 0); }
-    bson::document::value collection::find_one_and_remove(const model::find_one_and_remove& /* model */) { return bson::document::value((const uint8_t *)NULL, 0); }
+bson::document::value collection::find_one_and_replace(
+    const model::find_one_and_replace& /* model */) {
+    return bson::document::value((const uint8_t*)NULL, 0);
+}
+bson::document::value collection::find_one_and_update(
+    const model::find_one_and_update& /* model */) {
+    return bson::document::value((const uint8_t*)NULL, 0);
+}
+bson::document::value collection::find_one_and_remove(
+    const model::find_one_and_remove& /* model */) {
+    return bson::document::value((const uint8_t*)NULL, 0);
+}
 
-    bson::document::value collection::explain(const model::explain& /*model*/) const { return bson::document::value((const uint8_t *)NULL, 0); }
+bson::document::value collection::explain(const model::explain& /*model*/)
+    const {
+    return bson::document::value((const uint8_t*)NULL, 0);
+}
 
-    result::distinct collection::distinct(const model::distinct& /* model */) const { return result::distinct(); }
-    int64_t collection::count(const model::count& /* model */) const { return 0; }
+result::distinct collection::distinct(const model::distinct& /* model */)
+    const {
+    return result::distinct();
+}
+int64_t collection::count(const model::count& /* model */) const { return 0; }
 
-    void collection::drop() {
-        bson_error_t error;
+void collection::drop() {
+    bson_error_t error;
 
-        if (mongoc_collection_drop(_collection, &error)) {
-            /* TODO handle errors */
-        }
+    if (mongoc_collection_drop(_collection, &error)) {
+        /* TODO handle errors */
     }
+}
 
-} // namespace driver
-} // namespace mongo
+}  // namespace driver
+}  // namespace mongo

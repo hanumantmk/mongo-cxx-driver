@@ -42,11 +42,12 @@ namespace driver {
  *        WriteResult execute();
  *
  *        BulkOperationBuilder(const BulkOperationBuilder& rhs) = delete;
- *        BulkOperationBuilder& operator=(const BulkOperationBuilder& rhs) = delete;
+ *        BulkOperationBuilder& operator=(const BulkOperationBuilder& rhs) =
+ *delete;
  *
  *        mongoc_bulk_operation_t* _bulk_operation;
  *    };
  */
 
-} // namespace driver
-} // namespace mongo
+}  // namespace driver
+}  // namespace mongo

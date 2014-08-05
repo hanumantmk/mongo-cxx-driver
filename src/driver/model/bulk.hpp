@@ -42,10 +42,10 @@ namespace driver {
  *    };
  *
  *    template <class T>
- *    inline BulkWriteModel<T> make_bulk_write_model(const T& requests, bool ordered) {
+ *    inline BulkWriteModel<T> make_bulk_write_model(const T& requests, bool
+ *ordered) {
  *        return BulkWriteModel<T>(requests, ordered);
  *    }
  */
-
 }
 }

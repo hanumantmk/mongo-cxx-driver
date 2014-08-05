@@ -8,10 +8,7 @@
 int main() {
     mongoc_init();
 
-    bson_t * foo = BCON_NEW(
-        "hello", "world",
-        "bar", BCON_INT32(10)
-    );
+    bson_t* foo = BCON_NEW("hello", "world", "bar", BCON_INT32(10));
 
     bson::document::view doc(bson_get_data(foo), foo->len);
 
@@ -21,7 +18,7 @@ int main() {
         std::cout << "type is: " << (int)(x.type()) << std::endl;
         std::cout << "value is: ";
 
-        if (x.type() == bson::type::INT32 ) {
+        if (x.type() == bson::type::INT32) {
             std::cout << x.get_int_32();
         } else {
             std::cout << x.get_string();

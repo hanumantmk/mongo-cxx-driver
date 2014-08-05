@@ -23,27 +23,27 @@
 namespace mongo {
 namespace driver {
 
-    class collection;
+class collection;
 
-    class client {
-        friend class database;
-        friend class collection;
+class client {
+    friend class database;
+    friend class collection;
 
-    public:
-        client(std::string uri);
-        client(client&& client);
-        ~client();
+   public:
+    client(std::string uri);
+    client(client&& client);
+    ~client();
 
-        client& operator=(client&& client);
+    client& operator=(client&& client);
 
-        class database operator[](std::string database_name);
-        class database database(std::string database_name);
+    class database operator[](std::string database_name);
+    class database database(std::string database_name);
 
-    private:
-        client(const client& client) = delete;
-        client& operator=(const client& client) = delete;
-        mongoc_client_t* _client;
-    };
+   private:
+    client(const client& client) = delete;
+    client& operator=(const client& client) = delete;
+    mongoc_client_t* _client;
+};
 
-} // namespace driver
-} // namespace mongo
+}  // namespace driver
+}  // namespace mongo

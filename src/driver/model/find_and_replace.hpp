@@ -23,30 +23,27 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-    class find_one_and_replace : public write<find_one_and_replace> {
+class find_one_and_replace : public write<find_one_and_replace> {
 
-    public:
-        find_one_and_replace(
-            const bson::document::view& filter,
-            const bson::document::view& replacement
-        );
+   public:
+    find_one_and_replace(const bson::document::view& filter,
+                         const bson::document::view& replacement);
 
-        find_one_and_replace& projection(const bson::document::view& projection);
-        find_one_and_replace& return_replacement(bool multi);
-        find_one_and_replace& sort(const bson::document::view& ordering);
-        find_one_and_replace& upsert(bool upsert);
+    find_one_and_replace& projection(const bson::document::view& projection);
+    find_one_and_replace& return_replacement(bool multi);
+    find_one_and_replace& sort(const bson::document::view& ordering);
+    find_one_and_replace& upsert(bool upsert);
 
-    private:
-        const bson::document::view& _filter;
-        const bson::document::view& _replacement;
+   private:
+    const bson::document::view& _filter;
+    const bson::document::view& _replacement;
 
-        bson::document::view& _projection;
-        bool _return_replacement;
-        bson::document::view& _ordering;
-        bool _upsert;
+    bson::document::view& _projection;
+    bool _return_replacement;
+    bson::document::view& _ordering;
+    bool _upsert;
+};
 
-    };
-
-} // namespace model
-} // namespace driver
-} // namespace mongo
+}  // namespace model
+}  // namespace driver
+}  // namespace mongo

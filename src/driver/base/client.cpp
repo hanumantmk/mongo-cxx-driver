@@ -19,32 +19,28 @@
 namespace mongo {
 namespace driver {
 
-    client::client(client&& rhs) {
-        _client = rhs._client;
-        rhs._client = NULL;
-    }
+client::client(client&& rhs) {
+    _client = rhs._client;
+    rhs._client = NULL;
+}
 
-    client& client::operator=(client&& rhs) {
-        _client = rhs._client;
-        rhs._client = NULL;
-        return *this;
-    }
+client& client::operator=(client&& rhs) {
+    _client = rhs._client;
+    rhs._client = NULL;
+    return *this;
+}
 
-    client::client(std::string uri) {
-        _client = mongoc_client_new(uri.c_str());
-    }
+client::client(std::string uri) { _client = mongoc_client_new(uri.c_str()); }
 
-    client::~client() {
-        mongoc_client_destroy(_client);
-    }
+client::~client() { mongoc_client_destroy(_client); }
 
-    class database client::database(std::string database_name) {
-        return mongo::driver::database(this, std::move(database_name));
-    }
+class database client::database(std::string database_name) {
+    return mongo::driver::database(this, std::move(database_name));
+}
 
-    class database client::operator[](std::string database_name) {
-        return database(database_name);
-    }
+class database client::operator[](std::string database_name) {
+    return database(database_name);
+}
 
-} // namespace driver
-} // namespace mongo
+}  // namespace driver
+}  // namespace mongo

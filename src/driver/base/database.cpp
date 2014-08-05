@@ -20,35 +20,33 @@
 namespace mongo {
 namespace driver {
 
-    database::database(client* client, std::string name) :
-        _client(client), _name(name) {
-        _database = mongoc_client_get_database(_client->_client, name.c_str());
-    }
+database::database(client* client, std::string name)
+    : _client(client), _name(name) {
+    _database = mongoc_client_get_database(_client->_client, name.c_str());
+}
 
-    database::database(database&& rhs) {
-        _database = rhs._database;
-        _client = rhs._client;
-        _name = std::move(rhs._name);
-    }
+database::database(database&& rhs) {
+    _database = rhs._database;
+    _client = rhs._client;
+    _name = std::move(rhs._name);
+}
 
-    database& database::operator=(database&& rhs) {
-        _database = rhs._database;
-        _client = rhs._client;
-        _name = std::move(rhs._name);
-        return *this;
-    }
+database& database::operator=(database&& rhs) {
+    _database = rhs._database;
+    _client = rhs._client;
+    _name = std::move(rhs._name);
+    return *this;
+}
 
-    database::~database() {
-        mongoc_database_destroy(_database);
-    }
+database::~database() { mongoc_database_destroy(_database); }
 
-    collection database::collection(std::string collection_name) {
-        return mongo::driver::collection(_client, this, std::move(collection_name));
-    }
+collection database::collection(std::string collection_name) {
+    return mongo::driver::collection(_client, this, std::move(collection_name));
+}
 
-    collection database::operator[](std::string collection_name) {
-        return collection(collection_name);
-    }
+collection database::operator[](std::string collection_name) {
+    return collection(collection_name);
+}
 
-} // namespace driver
-} // namespace mongo
+}  // namespace driver
+}  // namespace mongo

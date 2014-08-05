@@ -24,28 +24,29 @@ namespace mongo {
 namespace driver {
 namespace result {
 
-    class write {
-    public:
-        write(const bson::document::view& view);
-        write(bson::document::value value);
-        ~write();
-        write(write&& rhs);
-        write& operator=(write&& rhs);
+class write {
+   public:
+    write(const bson::document::view& view);
+    write(bson::document::value value);
+    ~write();
+    write(write&& rhs);
+    write& operator=(write&& rhs);
 
-        /* TODO replace this: */
-        write();
+    /* TODO replace this: */
+    write();
 
-       friend std::ostream& operator<<(std::ostream& out, const write& doc) {
-           out << doc._value;
+    friend std::ostream& operator<<(std::ostream& out, const write& doc) {
+        out << doc._value;
         return out;
-       }
-    private:
-        write(const write& rhs) = delete;
-        write& operator=(const write& rhs) = delete;
+    }
 
-        bson::document::value _value;
-    };
+   private:
+    write(const write& rhs) = delete;
+    write& operator=(const write& rhs) = delete;
 
-} // namespace result
-} // namespace driver
-} // namespace mongo
+    bson::document::value _value;
+};
+
+}  // namespace result
+}  // namespace driver
+}  // namespace mongo

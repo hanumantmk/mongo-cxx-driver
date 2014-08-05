@@ -23,26 +23,25 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-    class write_concern;
+class write_concern;
 
-    template <class derived>
-    class write {
+template <class derived>
+class write {
 
-    public:
-        derived& write_concern(const write_concern* write_concern) {
-            _write_concern = &write_concern;
-            return *this;
-        }
+   public:
+    derived& write_concern(const write_concern* write_concern) {
+        _write_concern = &write_concern;
+        return *this;
+    }
 
-        optional<class write_concern*> write_concern() const {
-            return _write_concern;
-        }
+    optional<class write_concern*> write_concern() const {
+        return _write_concern;
+    }
 
-    protected:
-        optional<const class write_concern*> _write_concern;
+   protected:
+    optional<const class write_concern*> _write_concern;
+};
 
-    };
-
-} // namespace model
-} // namespace driver
-} // namespace mongo
+}  // namespace model
+}  // namespace driver
+}  // namespace mongo

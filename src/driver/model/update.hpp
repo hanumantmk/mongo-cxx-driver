@@ -26,37 +26,40 @@ namespace model {
 
 namespace details {
 
-    class xupdate : public write<xupdate> {
+class xupdate : public write<xupdate> {
 
-    public:
-        xupdate(
-            const bson::document::view& filter,
-            const bson::document::view& update
-        ) : _filter(filter), _update(update) { }
+   public:
+    xupdate(const bson::document::view& filter,
+            const bson::document::view& update)
+        : _filter(filter), _update(update) {}
 
-        const bson::document::view& filter() const { return _filter; }
-        const bson::document::view& update() const { return _update; }
+    const bson::document::view& filter() const { return _filter; }
+    const bson::document::view& update() const { return _update; }
 
-        xupdate& multi(bool multi) { _multi = multi; return *this; }
-        xupdate& upsert(bool upsert) { _upsert = upsert; return *this; }
+    xupdate& multi(bool multi) {
+        _multi = multi;
+        return *this;
+    }
+    xupdate& upsert(bool upsert) {
+        _upsert = upsert;
+        return *this;
+    }
 
-        optional<bool> multi() const { return _multi; }
-        optional<bool> upsert() const { return _upsert; }
+    optional<bool> multi() const { return _multi; }
+    optional<bool> upsert() const { return _upsert; }
 
-    private:
-        const bson::document::view& _filter;
-        const bson::document::view& _update;
+   private:
+    const bson::document::view& _filter;
+    const bson::document::view& _update;
 
-        optional<bool> _multi;
-        optional<bool> _upsert;
+    optional<bool> _multi;
+    optional<bool> _upsert;
+};
 
-    };
+}  // namespace details
 
+typedef details::xupdate update;
 
-} // namespace details
-
-    typedef details::xupdate update;
-
-} // namespace model
-} // namespace driver
-} // namespace mongo
+}  // namespace model
+}  // namespace driver
+}  // namespace mongo

@@ -23,15 +23,19 @@ namespace mongo {
 namespace driver {
 
 /*
- *    BulkOperationBuilder::BulkOperationBuilder(const Collection * collection, bool is_ordered)
- *        : _bulk_operation(mongoc_collection_create_bulk_operation(collection->_collection, is_ordered, NULL))
+ *    BulkOperationBuilder::BulkOperationBuilder(const Collection * collection,
+ *bool is_ordered)
+ *        :
+ *_bulk_operation(mongoc_collection_create_bulk_operation(collection->_collection,
+ *is_ordered, NULL))
  *    {}
  *
  *    BulkOperationBuilder::BulkOperationBuilder(BulkOperationBuilder&& rhs) {
  *        *this = std::move(rhs);
  *    }
  *
- *    BulkOperationBuilder& BulkOperationBuilder::operator=(BulkOperationBuilder&& rhs) {
+ *    BulkOperationBuilder&
+ *BulkOperationBuilder::operator=(BulkOperationBuilder&& rhs) {
  *        _bulk_operation = rhs._bulk_operation;
  *        rhs._bulk_operation = NULL;
  *        return *this;
@@ -57,6 +61,5 @@ namespace driver {
  *        return WriteResult(reply.view());
  *    }
  */
-
 }
 }
