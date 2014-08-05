@@ -18,19 +18,28 @@
 
 #include "mongoc.h"
 
-#include "bson/document.h"
+#include "bson/document.hpp"
 
 namespace mongo {
 namespace driver {
 
-    class Collection;
+    class collection;
 
-    class Cursor {
-        friend class Collection;
+    class cursor {
+
+        friend class collection;
 
     public:
-        class iterator: public std::iterator<std::forward_iterator_tag, const bson::document::view&, std::ptrdiff_t, const bson::document::view*, const bson::document::view&> {
-            friend class Cursor;
+
+        class iterator : public std::iterator<
+            std::forward_iterator_tag,
+            const bson::document::view&,
+            std::ptrdiff_t,
+            const bson::document::view*,
+            const bson::document::view&
+        > {
+
+            friend class cursor;
 
         public:
             const bson::document::view& operator*() const;
@@ -47,23 +56,23 @@ namespace driver {
             mongoc_cursor_t * _cursor;
             bson::document::view _doc;
             bool _at_end;
-        };
+        }; // class iterator
 
         iterator begin();
         iterator end();
 
-        Cursor(Cursor&& rhs);
-        Cursor& operator=(Cursor&& rhs);
-        ~Cursor();
+        cursor(cursor&& rhs);
+        cursor& operator=(cursor&& rhs);
+        ~cursor();
 
         private:
-            Cursor(mongoc_cursor_t* cursor);
+            cursor(mongoc_cursor_t* cursor);
 
-            Cursor(const Cursor& cursor) = delete;
-            Cursor& operator=(const Cursor& cursor) = delete;
+            cursor(const cursor& cursor) = delete;
+            cursor& operator=(const cursor& cursor) = delete;
 
             mongoc_cursor_t * _cursor;
-    };
+    }; // class cursor
 
 } // namespace driver
 } // namespace mongo

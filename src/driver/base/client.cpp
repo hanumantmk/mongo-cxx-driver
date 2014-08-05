@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "driver/base/client.h"
+#include "driver/base/client.hpp"
 
 namespace mongo {
 namespace driver {
@@ -38,8 +38,12 @@ namespace driver {
         mongoc_client_destroy(_client);
     }
 
-    database client::database(std::string database_name) {
+    class database client::database(std::string database_name) {
         return mongo::driver::database(this, std::move(database_name));
+    }
+
+    class database client::operator[](std::string database_name) {
+        return database(database_name);
     }
 
 } // namespace driver

@@ -19,29 +19,29 @@
 #include "mongoc.h"
 #include "bson.h"
 
-#include "driver/base/cursor.h"
+#include "driver/base/cursor.hpp"
 
 namespace mongo {
 namespace driver {
 
-    Cursor::Cursor( mongoc_cursor_t* cursor ) :
+    cursor::cursor( mongoc_cursor_t* cursor ) :
         _cursor(cursor) {
     }
 
-    Cursor::Cursor(Cursor&& rhs) {
+    cursor::cursor(cursor&& rhs) {
         _cursor = rhs._cursor;
     }
 
-    Cursor& Cursor::operator=(Cursor&& rhs) {
+    cursor& cursor::operator=(cursor&& rhs) {
         _cursor = rhs._cursor;
         return *this;
     }
 
-    Cursor::~Cursor() {
+    cursor::~cursor() {
         if (_cursor) mongoc_cursor_destroy(_cursor);
     }
 
-    Cursor::iterator& Cursor::iterator::operator++() {
+    cursor::iterator& cursor::iterator::operator++() {
         const bson_t* out;
         if (mongoc_cursor_next(_cursor, &out)) {
             _doc = bson::document::view(bson_get_data(out), out->len);
@@ -52,32 +52,32 @@ namespace driver {
         return *this;
     }
 
-    Cursor::iterator Cursor::begin() {
+    cursor::iterator cursor::begin() {
         return iterator(_cursor);
     }
 
-    Cursor::iterator Cursor::end() {
+    cursor::iterator cursor::end() {
         return iterator(NULL);
     }
 
-    Cursor::iterator::iterator(mongoc_cursor_t * cursor) : _cursor(cursor), _at_end(!cursor) {
+    cursor::iterator::iterator(mongoc_cursor_t * cursor) : _cursor(cursor), _at_end(!cursor) {
         if (cursor) operator++();
     }
 
-    const bson::document::view& Cursor::iterator::operator*() const {
+    const bson::document::view& cursor::iterator::operator*() const {
         return _doc;
     }
 
-    const bson::document::view* Cursor::iterator::operator->() const {
+    const bson::document::view* cursor::iterator::operator->() const {
         return &_doc;
     }
 
-    bool Cursor::iterator::operator==(const Cursor::iterator& rhs) const {
+    bool cursor::iterator::operator==(const cursor::iterator& rhs) const {
         if (_at_end == rhs._at_end) return true;
         return this == &rhs;
     }
 
-    bool Cursor::iterator::operator!=(const Cursor::iterator& rhs) const {
+    bool cursor::iterator::operator!=(const cursor::iterator& rhs) const {
         return ! (*this == rhs);
     }
 

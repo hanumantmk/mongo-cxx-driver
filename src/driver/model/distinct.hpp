@@ -19,8 +19,8 @@
 #include <cstdint>
 #include <string>
 
-#include "bson/document.h"
-#include "driver/model/read.h"
+#include "bson/document.hpp"
+#include "driver/model/read.hpp"
 
 namespace mongo {
 namespace driver {

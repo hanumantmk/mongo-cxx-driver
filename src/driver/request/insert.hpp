@@ -16,10 +16,10 @@
 
 #pragma once
 
-#include "bson/document.h"
+#include "bson/document.hpp"
 
-#include "driver/model/insert.h"
-#include "driver/request/write.h"
+#include "driver/model/insert.hpp"
+#include "driver/request/write.hpp"
 
 namespace mongo {
 namespace driver {

@@ -20,7 +20,7 @@
 #include <string>
 #include <vector>
 
-#include "bson/document.h"
+#include "bson/document.hpp"
 
 namespace mongo {
 namespace driver {

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-#include "driver/util/libbson.h"
+#include "driver/util/libbson.hpp"
 
 namespace bson {
 namespace libbson {
 
     static void doc_to_bson_t(const bson::document::view& doc, bson_t* bson) {
-        bson_init_static(bson, doc.getBuf(), doc.getLen());
+        bson_init_static(bson, doc.get_buf(), doc.get_len());
     }
 
     static void optional_doc_to_bson_t(const mongo::driver::optional<bson::document::view>& doc, bson_t* bson) {

@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include "driver/model/write.h"
+#include "driver/model/write.hpp"
 
 namespace mongo {
 namespace driver {

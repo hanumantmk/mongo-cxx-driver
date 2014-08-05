@@ -17,7 +17,7 @@
 #include <cstdlib>
 #include <cstring>
 
-#include "bson/document.h"
+#include "bson/document.hpp"
 
 namespace bson {
 
@@ -114,7 +114,7 @@ std::size_t view::get_len() const { return len; }
 value::value(const uint8_t* b, std::size_t l, std::function<void(void *)> dtor) : view(b, l), dtor(dtor) {
 }
 
-value::value(const view& view) : view((uint8_t *)malloc((std::size_t)view.get_len()), view.get_len()), dtor(free) {
+value::value(const view& view) : bson::document::view((uint8_t *)malloc((std::size_t)view.get_len()), view.get_len()), dtor(free) {
     std::memcpy((void *)buf, view.get_buf(), view.get_len());
 }
 

@@ -1,20 +1,22 @@
-#include "mongoc.h"
 #include <iostream>
 #include <memory>
 #include <cstring>
 #include <vector>
 
-#include "bson/document.h"
-#include "driver/base/client.h"
-#include "driver/base/database.h"
-#include "driver/base/collection.h"
-#include "driver/base/cursor.h"
-#include "driver/model/bulk.h"
-#include "driver/model/find.h"
-#include "driver/model/insert.h"
-#include "driver/request/insert.h"
-#include "driver/result/write.h"
-#include "driver/util/adapter.h"
+#include "mongoc.h"
+
+#include "bson/document.hpp"
+
+#include "driver/base/client.hpp"
+#include "driver/base/database.hpp"
+#include "driver/base/collection.hpp"
+#include "driver/base/cursor.hpp"
+#include "driver/model/bulk.hpp"
+#include "driver/model/find.hpp"
+#include "driver/model/insert.hpp"
+#include "driver/request/insert.hpp"
+#include "driver/result/write.hpp"
+#include "driver/util/adapter.hpp"
 
 using namespace mongo::driver;
 
@@ -25,8 +27,8 @@ int main() {
 
     bson::document::view doc(bson_get_data(foo), foo->len);
 
-    Client client("mongodb://localhost");
-    Collection col(client["test"]["test"]);
+    client client("mongodb://localhost");
+    collection col(client["test"]["test"]);
 
     col.drop();
 

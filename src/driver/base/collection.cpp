@@ -19,17 +19,19 @@
 #include "mongoc.h"
 #include "bson.h"
 
-#include "driver/base/collection.h"
-#include "driver/base/client.h"
-#include "driver/model/find.h"
-#include "driver/model/insert.h"
-#include "driver/result/write.h"
-#include "driver/result/distinct.h"
-#include "driver/request/insert.h"
-#include "driver/util/libbson.h"
+#include "driver/base/collection.hpp"
+#include "driver/base/client.hpp"
+#include "driver/model/aggregate.hpp"
+#include "driver/model/find.hpp"
+#include "driver/model/insert.hpp"
+#include "driver/result/write.hpp"
+#include "driver/result/distinct.hpp"
+#include "driver/request/insert.hpp"
+#include "driver/util/libbson.hpp"
 
 namespace mongo {
 namespace driver {
+
     using namespace bson::libbson;
 
     collection::collection( client* client, database* database, std::string name) :
@@ -86,9 +88,9 @@ namespace driver {
  *    }
  */
 
-    Cursor collection::aggregate(const AggregateModel& /* model */) const { return Cursor(NULL); }
+    cursor collection::aggregate(const model::aggregate& /* model */) const { return cursor(NULL); }
 
-    WriteResult collection::replace(const ReplaceModel& /* model */) { return WriteResult(); }
+    result::write collection::replace(const model::replace& /* model */) { return result::write(); }
 
 /*
  *    WriteResult collection::insert(const InsertModel& model) { 
@@ -100,17 +102,17 @@ namespace driver {
  *    }
  */
 
-    result::write collection::update(const UpdateModel& /* model */) { return WriteResult(); }
-    result::write collection::remove(const RemoveModel& /* model */) { return WriteResult(); }
+    result::write collection::update(const model::update& /* model */) { return result::write(); }
+    result::write collection::remove(const model::remove& /* model */) { return result::write(); }
 
-    bson::document::value collection::find_one_and_replace(const class find_one_and_replace& /* model */) { return bson::document::value((const uint8_t *)NULL, 0); }
-    bson::document::value collection::find_one_and_update(const class find_one_and_update& /* model */) { return bson::document::value((const uint8_t *)NULL, 0); }
-    bson::document::value collection::find_one_and_remove(const class find_one_and_remove& /* model */) { return bson::document::value((const uint8_t *)NULL, 0); }
+    bson::document::value collection::find_one_and_replace(const model::find_one_and_replace& /* model */) { return bson::document::value((const uint8_t *)NULL, 0); }
+    bson::document::value collection::find_one_and_update(const model::find_one_and_update& /* model */) { return bson::document::value((const uint8_t *)NULL, 0); }
+    bson::document::value collection::find_one_and_remove(const model::find_one_and_remove& /* model */) { return bson::document::value((const uint8_t *)NULL, 0); }
 
-    bson::document::value collection::explain(const class explain& /*model*/) const { return bson::document::value((const uint8_t *)NULL, 0); }
+    bson::document::value collection::explain(const model::explain& /*model*/) const { return bson::document::value((const uint8_t *)NULL, 0); }
 
-    distinct collection::distinct(const class distinct& /* model */) const { return distinct(); }
-    int64_t collection::count(const class count& /* model */) const { return 0; }
+    result::distinct collection::distinct(const model::distinct& /* model */) const { return result::distinct(); }
+    int64_t collection::count(const model::count& /* model */) const { return 0; }
 
     void collection::drop() {
         bson_error_t error;

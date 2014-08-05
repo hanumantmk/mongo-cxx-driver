@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "driver/result/write.h"
+#include "driver/result/write.hpp"
 
 namespace mongo {
 namespace driver {

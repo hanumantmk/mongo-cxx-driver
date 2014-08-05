@@ -16,8 +16,8 @@
 
 #pragma once
 
-#include "bson/document.h"
-#include "driver/model/write.h"
+#include "bson/document.hpp"
+#include "driver/model/write.hpp"
 
 namespace mongo {
 namespace driver {

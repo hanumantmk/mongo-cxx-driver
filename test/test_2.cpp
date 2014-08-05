@@ -1,7 +1,8 @@
 #include <iostream>
 
-#include "bson/document.h"
-#include "driver/model/update.h"
+#include "bson/document.hpp"
+
+#include "driver/model/update.hpp"
 
 using namespace mongo::driver;
 

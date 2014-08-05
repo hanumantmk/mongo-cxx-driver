@@ -18,10 +18,10 @@
 
 #include <cstdint>
 
-#include "bson/document.h"
-#include "driver/base/pipeline.h"
-#include "driver/model/read.h"
-#include "driver/util/optional.h"
+#include "bson/document.hpp"
+#include "driver/base/pipeline.hpp"
+#include "driver/model/read.hpp"
+#include "driver/util/optional.hpp"
 
 namespace mongo {
 namespace driver {

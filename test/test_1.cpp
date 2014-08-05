@@ -1,11 +1,11 @@
-#include "mongoc.h"
 #include <iostream>
 #include <memory>
 #include <cstring>
 
-#include "bson/document.h"
+#include "mongoc.h"
+#include "bson/document.hpp"
 
-int main(int argc, char ** argv) {
+int main() {
     mongoc_init();
 
     bson_t * foo = BCON_NEW(
@@ -20,11 +20,11 @@ int main(int argc, char ** argv) {
     for (auto x : doc) {
         std::cout << "type is: " << (int)(x.type()) << std::endl;
         std::cout << "value is: ";
-        
-        if (x.type() == bson::Type::INT32 ) {
-            std::cout << x.getInt32();
+
+        if (x.type() == bson::type::INT32 ) {
+            std::cout << x.get_int_32();
         } else {
-            std::cout << x.getString();
+            std::cout << x.get_string();
         }
 
         std::cout << std::endl;

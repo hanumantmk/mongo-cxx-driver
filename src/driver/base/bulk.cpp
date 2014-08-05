@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#include "driver/base/bulk.h"
-#include "driver/base/collection.h"
-#include "driver/request/write.h"
-#include "driver/util/libbson.h"
+#include "driver/base/bulk.hpp"
+#include "driver/base/collection.hpp"
+#include "driver/request/write.hpp"
+#include "driver/util/libbson.hpp"
 
 namespace mongo {
 namespace driver {

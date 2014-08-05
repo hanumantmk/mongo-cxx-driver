@@ -23,32 +23,41 @@
 
 #include "mongoc.h"
 
-#include "bson/document.h"
-#include "driver/base/bulk.h"
-#include "driver/base/cursor.h"
-#include "driver/result/write.h"
+#include "bson/document.hpp"
+#include "driver/base/bulk.hpp"
+#include "driver/base/cursor.hpp"
+#include "driver/result/distinct.hpp"
+#include "driver/result/explain.hpp"
+#include "driver/result/write.hpp"
 
 namespace mongo {
 namespace driver {
 
+    namespace model {
+        class aggregate;
+        class find;
+        class find_one_and_replace;
+        class find_one_and_remove;
+        class find_one_and_update;
+        class update;
+        class remove;
+        class insert;
+        class replace;
+        class distinct;
+        class count;
+        class explain;
+    }
+
+    namespace result {
+        class write;
+        class explain;
+        class distinct;
+    }
+
     class client;
     class database;
-    class explain_result;
-    class write_result;
     class write_concern;
     class read_preference;
-    class find;
-    class find_one_and_replace;
-    class find_one_and_remove;
-    class find_one_and_update;
-    class update;
-    class remove;
-    class insert;
-    class replace;
-    class aggregate;
-    class explain;
-    class distinct;
-    class count;
     class findable;
 
     class collection {
@@ -62,21 +71,21 @@ namespace driver {
 
         collection& operator=(collection&& client);
 
-        Cursor find(const find& model) const;
+        cursor find(const model::find& model) const;
         findable find(bson::document::view filter) const;
-        Cursor aggregate(const aggregate& model) const;
+        cursor aggregate(const model::aggregate& model) const;
 
-        write replace(const replace& model);
-        write insert(const insert& model);
-        write update(const update& model);
-        write remove(const remove& model);
+        result::write replace(const model::replace& model);
+        result::write insert(const model::insert& model);
+        result::write update(const model::update& model);
+        result::write remove(const model::remove& model);
 
-        bson::document::Value find_one_and_replace(const find_one_and_replace& model);
-        bson::document::Value find_one_and_update(const find_one_and_update& model);
-        bson::document::Value find_one_and_remove(const find_one_and_remove& model);
+        bson::document::value find_one_and_replace(const model::find_one_and_replace& model);
+        bson::document::value find_one_and_update(const model::find_one_and_update& model);
+        bson::document::value find_one_and_remove(const model::find_one_and_remove& model);
 
-        bson::document::Value explain(const explain& model) const;
-        distinct distinct(const distinct& model) const;
+        bson::document::value explain(const model::explain& model) const;
+        result::distinct distinct(const model::distinct& model) const;
 
 /*
  *        template <class T>
@@ -91,7 +100,7 @@ namespace driver {
  *        }
  */
 
-        int64_t count(const count& model) const;
+        int64_t count(const model::count& model) const;
 
         void drop();
 

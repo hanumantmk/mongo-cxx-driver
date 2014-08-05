@@ -22,6 +22,7 @@
 #include <cstdint>
 #include <iterator>
 #include <tuple>
+
 #include "bson.h"
 
 namespace bson {

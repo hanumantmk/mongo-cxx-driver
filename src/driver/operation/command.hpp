@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include "operations/query.h"
+#include "operations/query.hpp"
 
 namespace mongo {
 namespace driver {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "driver/model/find.h"
+#include "driver/model/find.hpp"
 
 namespace mongo {
 namespace driver {

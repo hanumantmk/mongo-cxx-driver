@@ -20,7 +20,7 @@
 
 #include "mongoc.h"
 
-#include "driver/base/collection.h"
+#include "driver/base/collection.hpp"
 
 namespace mongo {
 namespace driver {
@@ -39,8 +39,8 @@ namespace driver {
 
         database& operator=(database&& client);
 
-        collection operator[](std::string name);
-        collection collection(std::string name);
+        class collection operator[](std::string collection_name);
+        class collection collection(std::string collection_name);
 
     private:
         database(const database& client) = delete;

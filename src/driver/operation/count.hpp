@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include "operations/command.h"
+#include "operations/command.hpp"
 
 namespace mongo {
 namespace driver {

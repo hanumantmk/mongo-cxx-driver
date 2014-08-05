@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include "driver/request/insert.h"
-#include "driver/util/libbson.h"
+#include "driver/request/insert.hpp"
+#include "driver/util/libbson.hpp"
 
 namespace mongo {
 namespace driver {

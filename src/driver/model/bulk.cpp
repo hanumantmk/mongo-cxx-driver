@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "driver/model/bulk.h"
+#include "driver/model/bulk.hpp"
 
 namespace mongo {
 namespace driver {

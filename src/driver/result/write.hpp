@@ -18,7 +18,7 @@
 
 #include <iostream>
 
-#include "bson/document.h"
+#include "bson/document.hpp"
 
 namespace mongo {
 namespace driver {

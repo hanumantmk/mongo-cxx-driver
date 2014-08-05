@@ -17,7 +17,7 @@
 #pragma once
 
 #include <cstdint>
-#include "driver/util/optional.h"
+#include "driver/util/optional.hpp"
 
 namespace mongo {
 namespace driver {

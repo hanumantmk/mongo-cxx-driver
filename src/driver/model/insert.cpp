@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "driver/model/insert.h"
+#include "driver/model/insert.hpp"
 
 namespace mongo {
 namespace driver {
