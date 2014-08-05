@@ -1,10 +1,9 @@
-cmake_minimum_required(VERSION 2.8.6)
+cmake_minimum_required(VERSION 3.0)
 
 project (mongo-cxx-driver)
 
 include(ExternalProject)
 
-set(libmongoc_ABI 1.0)
 set(libmongoc_RELEASE 0.98.0)
 set(libmongoc_FLAGS --prefix=<INSTALL_DIR> --without-documentation)
 set(libmongoc_URL https://github.com/mongodb/mongo-c-driver/releases/download)
@@ -17,24 +16,10 @@ ExternalProject_Add(libmongoc
     BUILD_COMMAND ${MAKE}
 )
 
-add_dependencies(libmongocxx
-    libmongoc
+ExternalProject_Add(libmongocxx
+    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/
+    BUILD_COMMAND ${CMAKE_COMMAND}
+    INSTALL_COMMAND ""
 )
 
-find_package(PkgConfig)
-set(ENV{PKG_CONFIG_PATH} ${CMAKE_INSTALL_PREFIX}/libmongoc-prefix/lib/pkgconfig)
-pkg_check_modules(LIBMONGOC REQUIRED libmongoc-${libmongoc_ABI})
-
-link_directories(
-    ${LIBMONGOC_LIBRARY_DIRS}
-)
-
-include_directories(
-    ${LIBMONGOC_INCLUDE_DIRS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/src
-)
-
-set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Werror -ggdb3 -O0 ${CMAKE_CXX_FLAGS}")
-
-add_subdirectory(src)
-add_subdirectory(test)
+add_dependencies(libmongoc libmongocxx)
