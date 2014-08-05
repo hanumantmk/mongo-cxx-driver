@@ -1,17 +1,16 @@
 add_library(mongocxx
-    mongocxx.cpp
-    base/bulk.cpp
-    base/database.cpp
-    base/cursor.cpp
-    base/collection.cpp
-    base/client.cpp
     bson/document.cpp
-    models/find.cpp
-    models/insert.cpp
-    models/insert_request.cpp
-    results/write.cpp
-    util/libbson.cpp
-    util/optional.cpp
+    driver/base/bulk.cpp
+    driver/base/client.cpp
+    driver/base/collection.cpp
+    driver/base/cursor.cpp
+    driver/base/database.cpp
+    driver/model/find.cpp
+    driver/model/insert.cpp
+    driver/request/insert.cpp
+    driver/result/write.cpp
+    driver/util/libbson.cpp
+    driver/util/optional.cpp
 )
 
 target_link_libraries(mongocxx
