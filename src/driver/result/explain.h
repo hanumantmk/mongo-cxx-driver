@@ -16,9 +16,12 @@
 
 namespace mongo {
 namespace driver {
+namespace result {
 
-    class ExplainResult{
+    class explain {
+
     };
 
+} // namespace result
 } // namespace driver
 } // namespace mongo

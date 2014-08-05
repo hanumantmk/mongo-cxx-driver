@@ -32,19 +32,19 @@ namespace mongo {
 namespace driver {
     using namespace bson::libbson;
 
-    Collection::Collection( Client* client, Database* database, std::string name) :
+    collection::collection( client* client, database* database, std::string name) :
         _client(client), _name(name) {
         _collection = mongoc_client_get_collection(_client->_client, database->_name.c_str(), name.c_str());
     }
 
-    Collection::Collection(Collection&& rhs) {
+    collection::collection(collection&& rhs) {
         _database = rhs._database;
         _client = rhs._client;
         _collection = rhs._collection;
         _name = std::move(rhs._name);
     }
 
-    Collection& Collection::operator=(Collection&& rhs) {
+    collection& collection::operator=(collection&& rhs) {
         _database = rhs._database;
         _client = rhs._client;
         _collection = rhs._collection;
@@ -52,12 +52,12 @@ namespace driver {
         return *this;
     }
 
-    Collection::~Collection() {
+    collection::~collection() {
         mongoc_collection_destroy(_collection);
     }
 
 /*
- *    Cursor Collection::find(const model::find& model) const {
+ *    Cursor collection::find(const model::find& model) const {
  *        scoped_bson_t filter;
  *        scoped_bson_t projection(model.projection());
  *
@@ -86,12 +86,12 @@ namespace driver {
  *    }
  */
 
-    Cursor Collection::aggregate(const AggregateModel& /* model */) const { return Cursor(NULL); }
+    Cursor collection::aggregate(const AggregateModel& /* model */) const { return Cursor(NULL); }
 
-    WriteResult Collection::replace(const ReplaceModel& /* model */) { return WriteResult(); }
+    WriteResult collection::replace(const ReplaceModel& /* model */) { return WriteResult(); }
 
 /*
- *    WriteResult Collection::insert(const InsertModel& model) { 
+ *    WriteResult collection::insert(const InsertModel& model) { 
  *        BulkOperationBuilder op(this, false);
  *        InsertRequest req(model);
  *        op.add(req);
@@ -100,19 +100,19 @@ namespace driver {
  *    }
  */
 
-    WriteResult Collection::update(const UpdateModel& /* model */) { return WriteResult(); }
-    WriteResult Collection::remove(const RemoveModel& /* model */) { return WriteResult(); }
+    result::write collection::update(const UpdateModel& /* model */) { return WriteResult(); }
+    result::write collection::remove(const RemoveModel& /* model */) { return WriteResult(); }
 
-    bson::Document::Value Collection::find_one_and_replace(const FindAndReplaceModel& /* model */) { return bson::Document::Value((const uint8_t *)NULL, 0); }
-    bson::Document::Value Collection::find_one_and_update(const FindAndUpdateModel& /* model */) { return bson::Document::Value((const uint8_t *)NULL, 0); }
-    bson::Document::Value Collection::find_one_and_remove(const FindAndRemoveModel& /* model */) { return bson::Document::Value((const uint8_t *)NULL, 0); }
+    bson::document::value collection::find_one_and_replace(const class find_one_and_replace& /* model */) { return bson::document::value((const uint8_t *)NULL, 0); }
+    bson::document::value collection::find_one_and_update(const class find_one_and_update& /* model */) { return bson::document::value((const uint8_t *)NULL, 0); }
+    bson::document::value collection::find_one_and_remove(const class find_one_and_remove& /* model */) { return bson::document::value((const uint8_t *)NULL, 0); }
 
-    bson::Document::Value Collection::explain(const ExplainModel& /*model*/) const { return bson::Document::Value((const uint8_t *)NULL, 0); }
+    bson::document::value collection::explain(const class explain& /*model*/) const { return bson::document::value((const uint8_t *)NULL, 0); }
 
-    DistinctResult Collection::distinct(const DistinctModel& /* model */) const { return DistinctResult(); }
-    int64_t Collection::count(const CountModel& /* model */) const { return 0; }
+    distinct collection::distinct(const class distinct& /* model */) const { return distinct(); }
+    int64_t collection::count(const class count& /* model */) const { return 0; }
 
-    void Collection::drop() {
+    void collection::drop() {
         bson_error_t error;
 
         if (mongoc_collection_drop(_collection, &error)) {

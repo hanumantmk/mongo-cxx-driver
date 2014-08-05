@@ -16,10 +16,12 @@
 
 namespace mongo {
 namespace driver {
+namespace result {
 
-    class DistinctResult{
+    class distinct {
     };
 
+} // namespace result
 } // namespace driver
 } // namespace mongo
 

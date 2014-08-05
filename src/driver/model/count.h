@@ -29,18 +29,18 @@ namespace model {
     class count : public ReadModel<count> {
 
     public:
-        count(const bson::Document::View& filter);
+        count(const bson::document::view& filter);
 
-        count& filter(const bson::Document::View& filter);
-        count& hint(const bson::Document::View& hint);
+        count& filter(const bson::document::view& filter);
+        count& hint(const bson::document::view& hint);
         count& limit(int32_t limit);
         count& max_time_ms(int64_t max_time_ms);
         count& skip(int32_t skip);
 
     private:
-        const bson::Document::View& _filter;
+        const bson::document::view& _filter;
 
-        bson::Document::View& _hint;
+        bson::document::view& _hint;
         int32_t _limit;
         int64_t _max_time_ms;
         int32_t _skip;

@@ -44,7 +44,7 @@ namespace driver {
     Cursor::iterator& Cursor::iterator::operator++() {
         const bson_t* out;
         if (mongoc_cursor_next(_cursor, &out)) {
-            _doc = bson::Document::View(bson_get_data(out), out->len);
+            _doc = bson::document::view(bson_get_data(out), out->len);
         } else {
             _at_end = true;
         }
@@ -64,11 +64,11 @@ namespace driver {
         if (cursor) operator++();
     }
 
-    const bson::Document::View& Cursor::iterator::operator*() const {
+    const bson::document::view& Cursor::iterator::operator*() const {
         return _doc;
     }
 
-    const bson::Document::View* Cursor::iterator::operator->() const {
+    const bson::document::view* Cursor::iterator::operator->() const {
         return &_doc;
     }
 

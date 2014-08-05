@@ -20,33 +20,33 @@
 namespace mongo {
 namespace driver {
 
-    Database::Database( Client* client, std::string name) :
+    database::database(client* client, std::string name) :
         _client(client), _name(name) {
         _database = mongoc_client_get_database(_client->_client, name.c_str());
     }
 
-    Database::Database(Database&& rhs) {
+    database::database(database&& rhs) {
         _database = rhs._database;
         _client = rhs._client;
         _name = std::move(rhs._name);
     }
 
-    Database& Database::operator=(Database&& rhs) {
+    database& database::operator=(database&& rhs) {
         _database = rhs._database;
         _client = rhs._client;
         _name = std::move(rhs._name);
         return *this;
     }
 
-    Database::~Database() {
+    database::~database() {
         mongoc_database_destroy(_database);
     }
 
-    Collection Database::collection(std::string name) {
-        return Collection(_client, this, std::move(name));
+    collection database::collection(std::string name) {
+        return mongo::driver::collection(_client, this, std::move(name));
     }
 
-    Collection Database::operator[](std::string name) {
+    collection database::operator[](std::string name) {
         return collection(name);
     }
 

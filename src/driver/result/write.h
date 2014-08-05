@@ -17,32 +17,35 @@
 #pragma once
 
 #include <iostream>
+
 #include "bson/document.h"
 
 namespace mongo {
 namespace driver {
+namespace result {
 
-    class WriteResult {
+    class write {
     public:
-        WriteResult(const bson::Document::View& view);
-        WriteResult(bson::Document::Value value);
-        ~WriteResult();
-        WriteResult(WriteResult&& rhs);
-        WriteResult& operator=(WriteResult&& rhs);
+        write(const bson::document::view& view);
+        write(bson::document::value value);
+        ~write();
+        write(write&& rhs);
+        write& operator=(write&& rhs);
 
         /* TODO replace this: */
-        WriteResult();
+        write();
 
-       friend std::ostream& operator<<(std::ostream& out, const WriteResult& doc) {
+       friend std::ostream& operator<<(std::ostream& out, const write& doc) {
            out << doc._value;
         return out;
        }
     private:
-        WriteResult(const WriteResult& rhs) = delete;
-        WriteResult& operator=(const WriteResult& rhs) = delete;
+        write(const write& rhs) = delete;
+        write& operator=(const write& rhs) = delete;
 
-        bson::Document::Value _value;
+        bson::document::value _value;
     };
 
+} // namespace result
 } // namespace driver
 } // namespace mongo

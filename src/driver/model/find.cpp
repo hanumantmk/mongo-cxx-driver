@@ -21,7 +21,7 @@ namespace driver {
 namespace model {
 
 
-    find::find(bson::Document::View filter)
+    find::find(bson::document::view filter)
         : _filter(filter)
     {}
 
@@ -40,12 +40,12 @@ namespace model {
         return *this;
     }
 
-    find& find::modifiers(bson::Document::View modifiers) {
+    find& find::modifiers(bson::document::view modifiers) {
         _modifiers = modifiers;
         return *this;
     }
 
-    find& find::projection(bson::Document::View projection) {
+    find& find::projection(bson::document::view projection) {
         _projection = projection;
         return *this;
     }
@@ -55,12 +55,12 @@ namespace model {
         return *this;
     }
 
-    find& find::sort(bson::Document::View ordering) {
+    find& find::sort(bson::document::view ordering) {
         _ordering = ordering;
         return *this;
     }
 
-    bson::Document::View find::filter() const {
+    bson::document::view find::filter() const {
         return _filter;
     }
 
@@ -76,11 +76,11 @@ namespace model {
         return _limit;
     }
 
-    optional<bson::Document::View> find::modifiers() const {
+    optional<bson::document::view> find::modifiers() const {
         return _modifiers;
     }
 
-    optional<bson::Document::View> find::projection() const {
+    optional<bson::document::view> find::projection() const {
         return _projection;
     }
 
@@ -88,7 +88,7 @@ namespace model {
         return _skip;
     }
 
-    optional<bson::Document::View> find::sort() const {
+    optional<bson::document::view> find::sort() const {
         return _ordering;
     }
 

@@ -32,19 +32,19 @@
 namespace mongo {
 namespace driver {
 
-    class Exception : std::exception {
+    class exception : std::exception {
     };
 
-    class OperationException : Exception {
+    class operation_exception : exception {
     };
 
-    class QueryException : OperationException {
+    class query_exception : operation_exception {
     };
 
-    class WriteException : OperationException {
+    class write_exception : operation_exception {
     };
 
-    class AuthenticationException : OperationException {
+    class authentication_exception : operation_exception {
     };
 
 } // namespace driver

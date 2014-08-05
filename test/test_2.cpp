@@ -7,8 +7,8 @@ using namespace mongo::driver;
 
 int main(int argc, char ** argv) {
 
-    bson::Document::View a((uint8_t *)"", 0);
-    bson::Document::View b((uint8_t *)"", 0);
+    bson::document::view a((uint8_t *)"", 0);
+    bson::document::view b((uint8_t *)"", 0);
 
     model::update u(a, b);
     u.multi(true);

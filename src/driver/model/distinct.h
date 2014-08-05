@@ -31,13 +31,13 @@ namespace model {
     public:
         distinct(std::string field_name);
 
-        distinct& filter(bson::Document::View filter);
+        distinct& filter(bson::document::view filter);
         distinct& max_time_ms(int64_t max_time_ms);
 
     private:
-        bson::Document::View _field_name;
+        bson::document::view _field_name;
 
-        bson::Document::View _filter;
+        bson::document::view _filter;
         int64_t _max_time_ms;
 
     };

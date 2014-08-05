@@ -26,8 +26,8 @@ namespace model {
 
     class query {
 
-        query& sort(const bson::Document::View& ordering);
-        bson::Document::View sort() const;
+        query& sort(const bson::document::view& ordering);
+        bson::document::view sort() const;
 
         query& limit(int32_t limit);
         int32_t limit() const;

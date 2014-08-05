@@ -26,16 +26,16 @@ namespace model {
     class find_one_and_remove : public write<find_one_and_remove> {
 
     public:
-        find_one_and_remove(const bson::Document::View& filter);
+        find_one_and_remove(const bson::document::view& filter);
 
-        find_one_and_remove& projection(const bson::Document::View& projection);
-        find_one_and_remove& sort(const bson::Document::View& ordering);
+        find_one_and_remove& projection(const bson::document::view& projection);
+        find_one_and_remove& sort(const bson::document::view& ordering);
 
     private:
-        const bson::Document::View& _filter;
+        const bson::document::view& _filter;
 
-        bson::Document::View& _projection;
-        bson::Document::View& _ordering;
+        bson::document::view& _projection;
+        bson::document::view& _ordering;
 
     };
 

@@ -39,36 +39,36 @@ namespace model {
     class find : public read<find> {
 
     public:
-        explicit find(bson::Document::View filter);
+        explicit find(bson::document::view filter);
 
         find& batch_size(int32_t batch_size);
         find& cursor_flags(int32_t cursor_flags);
         find& limit(int32_t limit);
-        find& modifiers(bson::Document::View modifiers);
-        find& projection(bson::Document::View projection);
+        find& modifiers(bson::document::view modifiers);
+        find& projection(bson::document::view projection);
         find& skip(int32_t skip);
-        find& sort(bson::Document::View ordering);
+        find& sort(bson::document::view ordering);
 
-        bson::Document::View filter() const;
+        bson::document::view filter() const;
 
         optional<int32_t> batch_size() const;
         optional<int32_t> cursor_flags() const;
         optional<int32_t> limit() const;
-        optional<bson::Document::View> modifiers() const;
-        optional<bson::Document::View> projection() const;
+        optional<bson::document::view> modifiers() const;
+        optional<bson::document::view> projection() const;
         optional<int32_t> skip() const;
-        optional<bson::Document::View> sort() const;
+        optional<bson::document::view> sort() const;
 
     private:
-        bson::Document::View _filter;
+        bson::document::view _filter;
 
         optional<int32_t> _batch_size;
         optional<int32_t> _cursor_flags;
         optional<int32_t> _limit;
-        optional<bson::Document::View> _modifiers;
-        optional<bson::Document::View> _projection;
+        optional<bson::document::view> _modifiers;
+        optional<bson::document::view> _projection;
         optional<int32_t> _skip;
-        optional<bson::Document::View> _ordering;
+        optional<bson::document::view> _ordering;
     };
 
 } // namespace model

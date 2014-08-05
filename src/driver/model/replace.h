@@ -27,13 +27,13 @@ namespace model {
 
     public:
         replace(
-            const bson::Document::View& filter,
-            const bson::Document::View& replacement
+            const bson::document::view& filter,
+            const bson::document::view& replacement
         );
 
     private:
-        const bson::Document::View& _filter;
-        const bson::Document::View& _replacement;
+        const bson::document::view& _filter;
+        const bson::document::view& _replacement;
 
     };
 

@@ -18,26 +18,28 @@
 
 namespace mongo {
 namespace driver {
+namespace result {
 
-WriteResult::WriteResult(const bson::Document::View& view) : _value(view) {
-}
+    write::write(const bson::document::view& view) : _value(view) {
+    }
 
-WriteResult::WriteResult(bson::Document::Value value) : _value(std::move(value)) {
-}
+    write::write(bson::document::value value) : _value(std::move(value)) {
+    }
 
-WriteResult::WriteResult() : _value(bson::Document::View()) {
-}
+    write::write() : _value(bson::document::view()) {
+    }
 
-WriteResult::~WriteResult() {
-}
+    write::~write() {
+    }
 
-WriteResult::WriteResult(WriteResult&& rhs) : _value(std::move(rhs._value)) {
-}
+    write::write(write&& rhs) : _value(std::move(rhs._value)) {
+    }
 
-WriteResult& WriteResult::operator=(WriteResult&& rhs) {
-    _value = std::move(rhs._value);
-    return *this;
-}
+    write& write::operator=(write&& rhs) {
+        _value = std::move(rhs._value);
+        return *this;
+    }
 
+} // namespace result
 } // namespace driver
 } // namespace mongo

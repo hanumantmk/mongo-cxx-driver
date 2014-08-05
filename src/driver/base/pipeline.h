@@ -30,20 +30,20 @@ namespace driver {
     class pipeline {
     public:
         pipeline& geoNear(/*something*/);
-        pipeline& group(const bson::Document::View& group);
+        pipeline& group(const bson::document::view& group);
         pipeline& limit(int32_t limit);
-        pipeline& match(const bson::Document::View& filter);
+        pipeline& match(const bson::document::view& filter);
         pipeline& out(std::string collection_name);
-        pipeline& project(const bson::Document::View& projection);
-        pipeline& redact(const bson::Document::View& restrictions);
+        pipeline& project(const bson::document::view& projection);
+        pipeline& redact(const bson::document::view& restrictions);
         pipeline& skip(int32_t skip);
-        pipeline& sort(const bson::Document::View& sort);
+        pipeline& sort(const bson::document::view& sort);
         pipeline& unwind(std::string field_name);
 
-        bson::Document::View operator[](int index) const;
+        bson::document::view operator[](int index) const;
 
     private:
-        std::vector<bson::Document::View> _pipeline;
+        std::vector<bson::document::view> _pipeline;
 
     };
 

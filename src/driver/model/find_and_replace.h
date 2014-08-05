@@ -27,22 +27,22 @@ namespace model {
 
     public:
         find_one_and_replace(
-            const bson::Document::View& filter,
-            const bson::Document::View& replacement
+            const bson::document::view& filter,
+            const bson::document::view& replacement
         );
 
-        find_one_and_replace& projection(const bson::Document::View& projection);
+        find_one_and_replace& projection(const bson::document::view& projection);
         find_one_and_replace& return_replacement(bool multi);
-        find_one_and_replace& sort(const bson::Document::View& ordering);
+        find_one_and_replace& sort(const bson::document::view& ordering);
         find_one_and_replace& upsert(bool upsert);
 
     private:
-        const bson::Document::View& _filter;
-        const bson::Document::View& _replacement;
+        const bson::document::view& _filter;
+        const bson::document::view& _replacement;
 
-        bson::Document::View& _projection;
+        bson::document::view& _projection;
         bool _return_replacement;
-        bson::Document::View& _ordering;
+        bson::document::view& _ordering;
         bool _upsert;
 
     };

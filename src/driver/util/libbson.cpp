@@ -19,30 +19,30 @@
 namespace bson {
 namespace libbson {
 
-    static void doc_to_bson_t(const bson::Document::View& doc, bson_t* bson) {
+    static void doc_to_bson_t(const bson::document::view& doc, bson_t* bson) {
         bson_init_static(bson, doc.getBuf(), doc.getLen());
     }
 
-    static void optional_doc_to_bson_t(const mongo::driver::optional<bson::Document::View>& doc, bson_t* bson) {
+    static void optional_doc_to_bson_t(const mongo::driver::optional<bson::document::view>& doc, bson_t* bson) {
         if (doc) {
             doc_to_bson_t(*doc, bson);
         }
     }
 
-    scoped_bson_t::scoped_bson_t(const mongo::driver::optional<bson::Document::View>& doc) : _is_initialized(doc) {
+    scoped_bson_t::scoped_bson_t(const mongo::driver::optional<bson::document::view>& doc) : _is_initialized(doc) {
         optional_doc_to_bson_t(doc, &_bson);
     }
 
-    scoped_bson_t::scoped_bson_t(const bson::Document::View& doc) : _is_initialized(true) {
+    scoped_bson_t::scoped_bson_t(const bson::document::view& doc) : _is_initialized(true) {
         doc_to_bson_t(doc, &_bson);
     }
 
-    void scoped_bson_t::init_from_static(const mongo::driver::optional<bson::Document::View>& doc) {
+    void scoped_bson_t::init_from_static(const mongo::driver::optional<bson::document::view>& doc) {
         _is_initialized = static_cast<bool>(doc);
         optional_doc_to_bson_t(doc, &_bson);
     }
 
-    void scoped_bson_t::init_from_static(const bson::Document::View& doc) {
+    void scoped_bson_t::init_from_static(const bson::document::view& doc) {
         _is_initialized = true;
         doc_to_bson_t(doc, &_bson);
     }
@@ -65,8 +65,8 @@ namespace libbson {
         return _is_initialized ? &_bson : NULL;
     }
 
-    bson::Document::View scoped_bson_t::view() {
-        return _is_initialized ? bson::Document::View(bson_get_data(bson()), bson()->len) : bson::Document::View();
+    bson::document::view scoped_bson_t::view() {
+        return _is_initialized ? bson::document::view(bson_get_data(bson()), bson()->len) : bson::document::view();
     }
 
 } // namespace libbson

@@ -26,7 +26,7 @@
 
 namespace bson {
 
-enum class Type {
+enum class type {
     EOD = 0x00,
     DOUBLE = 0x01,
     UTF8 = 0x02,
@@ -50,7 +50,7 @@ enum class Type {
     MINKEY = 0xFF,
 };
 
-enum class BinarySubtype {
+enum class binary_sub_type {
     BINARY = 0x00,
     FUNCTION = 0x01,
     BINARY_DEPRECATED = 0x02,
@@ -60,56 +60,54 @@ enum class BinarySubtype {
     USER = 0x80,
 };
 
-namespace Document {
-    class View;
+namespace document {
+    class view;
 };
 
-class Reference {
-    friend class Document::View;
+class thing {
+    friend class document::view;
 
    public:
-    Reference();
-    Reference(const bson_iter_t& i);
+    thing();
+    thing(const bson_iter_t& i);
 
-    bool operator==(const Reference& rhs) const;
+    bool operator==(const thing& rhs) const;
 
-    Type type() const;
+    bson::type type() const;
 
     const char* key() const;
 
-    const char* getString() const;
+    const char* get_string() const;
 
-    std::tuple<const char*, uint32_t> getStringWLen() const;
+    std::tuple<const char*, uint32_t> get_string_w_len() const;
 
-    std::tuple<BinarySubtype, uint32_t, const uint8_t*> getBinary() const;
+    std::tuple<binary_sub_type, uint32_t, const uint8_t*> get_binary() const;
 
-    double getDouble() const;
+    double get_double() const;
+    int32_t get_int_32() const;
+    int64_t get_int_64() const;
 
-    int32_t getInt32() const;
-
-    int64_t getInt64() const;
-
-    Document::View getDocument() const;
-    Document::View getArray() const;
+    document::view get_document() const;
+    document::view get_array() const;
 
    private:
     bson_iter_t iter;
 };
 
-namespace Document {
+namespace document {
 
-    class View {
+    class view {
        public:
-        class iterator : public std::iterator<std::forward_iterator_tag, Reference,
-                                              std::ptrdiff_t, const Reference*,
-                                              const Reference&> {
+        class iterator : public std::iterator<std::forward_iterator_tag, thing,
+                                              std::ptrdiff_t, const thing*,
+                                              const thing&> {
            public:
             iterator(const bson_iter_t& i);
 
             iterator(bool is_end);
 
-            const Reference& operator*() const;
-            const Reference* operator->() const;
+            const thing& operator*() const;
+            const thing* operator->() const;
 
             iterator& operator++();
 
@@ -118,27 +116,26 @@ namespace Document {
             bool operator!=(const iterator& rhs) const;
 
            private:
-            Reference iter;
+            thing iter;
             bool is_end;
         };
 
         iterator begin() const;
-
         iterator end() const;
 
-        Reference operator[](const char* key) const;
+        thing operator[](const char* key) const;
 
-        View(const uint8_t* b, std::size_t l);
-        View();
+        view(const uint8_t* b, std::size_t l);
+        view();
 
-        const uint8_t* getBuf() const;
-        std::size_t getLen() const;
+        const uint8_t* get_buf() const;
+        std::size_t get_len() const;
 
        public:
 
-       friend std::ostream& operator<<(std::ostream& out, const bson::Document::View& doc) {
+       friend std::ostream& operator<<(std::ostream& out, const bson::document::view& doc) {
         bson_t b;
-        bson_init_static(&b, doc.getBuf(), doc.getLen());
+        bson_init_static(&b, doc.get_buf(), doc.get_len());
         char* json = bson_as_json(&b, NULL);
         out << json;
         bson_free(json);
@@ -150,41 +147,41 @@ namespace Document {
         std::size_t len;
     };
 
-    class Value : public View {
+    class value : public view {
     public:
-        using View::iterator;
+        using view::iterator;
 
-        Value(const uint8_t* b, std::size_t l, std::function<void(void*)> dtor = free);
-        Value(const View& view);
-        Value(Value&& rhs);
-        Value& operator=(Value&& rhs);
-        ~Value();
+        value(const uint8_t* b, std::size_t l, std::function<void(void*)> dtor = free);
+        value(const view& view);
+        value(value&& rhs);
+        value& operator=(value&& rhs);
+        ~value();
 
     private:
-        Value(const Value& rhs) = delete;
-        Value& operator=(const Value& rhs) = delete;
+        value(const value& rhs) = delete;
+        value& operator=(const value& rhs) = delete;
 
         std::function<void(void*)> dtor;
     };
 
-    class ViewOrValue {
+    class view_or_value {
     public:
-        ViewOrValue(bson::Document::View view);
-        ViewOrValue(bson::Document::Value value);
+        view_or_value(bson::document::view view);
+        view_or_value(bson::document::value value);
 
-        ViewOrValue(ViewOrValue&& rhs);
-        ViewOrValue& operator=(ViewOrValue&& rhs);
+        view_or_value(view_or_value&& rhs);
+        view_or_value& operator=(view_or_value&& rhs);
 
-        ~ViewOrValue();
+        ~view_or_value();
 
     private:
-        ViewOrValue(const bson::Document::ViewOrValue& view) = delete;
-        ViewOrValue& operator=(const bson::Document::ViewOrValue& view) = delete;
+        view_or_value(const bson::document::view_or_value& view) = delete;
+        view_or_value& operator=(const bson::document::view_or_value& view) = delete;
 
         bool _is_view;
         union {
-            bson::Document::View view;
-            bson::Document::Value value;
+            bson::document::view view;
+            bson::document::value value;
         };
     };
 

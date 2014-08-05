@@ -26,12 +26,12 @@ namespace model {
     class remove : write<remove> {
 
     public:
-        remove(const bson::Document::View& filter);
+        remove(const bson::document::view& filter);
 
         remove& multi(bool multi);
 
     private:
-        const bson::Document::View& _filter;
+        const bson::document::view& _filter;
 
         bool _multi;
 

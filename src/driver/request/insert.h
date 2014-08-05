@@ -28,13 +28,13 @@ namespace model {
 /*
  *    class InsertRequest : public WriteRequest {
  *    public:
- *        InsertRequest(const bson::Document::View& doc);
+ *        InsertRequest(const bson::document::view& doc);
  *        InsertRequest(const insert& model);
  *
  *    private:
  *        virtual void add(mongoc_bulk_operation_t* bulk) const;
  *
- *        bson::Document::View _doc;
+ *        bson::document::view _doc;
  *    };
  */
 

@@ -30,12 +30,12 @@ namespace details {
 
     public:
         xupdate(
-            const bson::Document::View& filter,
-            const bson::Document::View& update
+            const bson::document::view& filter,
+            const bson::document::view& update
         ) : _filter(filter), _update(update) { }
 
-        const bson::Document::View& filter() const { return _filter; }
-        const bson::Document::View& update() const { return _update; }
+        const bson::document::view& filter() const { return _filter; }
+        const bson::document::view& update() const { return _update; }
 
         xupdate& multi(bool multi) { _multi = multi; return *this; }
         xupdate& upsert(bool upsert) { _upsert = upsert; return *this; }
@@ -44,8 +44,8 @@ namespace details {
         optional<bool> upsert() const { return _upsert; }
 
     private:
-        const bson::Document::View& _filter;
-        const bson::Document::View& _update;
+        const bson::document::view& _filter;
+        const bson::document::view& _update;
 
         optional<bool> _multi;
         optional<bool> _upsert;

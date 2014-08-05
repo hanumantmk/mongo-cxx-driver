@@ -31,53 +31,52 @@
 namespace mongo {
 namespace driver {
 
-    class Client;
-    class Database;
-    class ExplainResult;
-    class WriteResult;
-    class WriteConcern;
-    class ReadPreference;
-    class FindModel;
-    class FindAndReplaceModel;
-    class FindAndUpdateModel;
-    class FindAndRemoveModel;
-    class UpdateModel;
-    class RemoveModel;
-    class InsertModel;
-    class ReplaceModel;
-    class AggregateModel;
-    class ExplainModel;
-    class DistinctModel;
-    class DistinctResult;
-    class CountModel;
-    class Findable;
+    class client;
+    class database;
+    class explain_result;
+    class write_result;
+    class write_concern;
+    class read_preference;
+    class find;
+    class find_one_and_replace;
+    class find_one_and_remove;
+    class find_one_and_update;
+    class update;
+    class remove;
+    class insert;
+    class replace;
+    class aggregate;
+    class explain;
+    class distinct;
+    class count;
+    class findable;
 
-    class Collection {
+    class collection {
 
         friend class BulkOperationBuilder;
-        friend class Database;
+        friend class database;
 
     public:
-        Collection(Collection&& client);
-        ~Collection();
+        collection(collection&& client);
+        ~collection();
 
-        Collection& operator=(Collection&& client);
+        collection& operator=(collection&& client);
 
-        Cursor find(const FindModel& model) const;
-        Findable find(bson::Document::View filter) const;
-        Cursor aggregate(const AggregateModel& model) const;
+        Cursor find(const find& model) const;
+        findable find(bson::document::view filter) const;
+        Cursor aggregate(const aggregate& model) const;
 
-        WriteResult replace(const ReplaceModel& model);
-        WriteResult insert(const InsertModel& model);
-        WriteResult update(const UpdateModel& model);
-        WriteResult remove(const RemoveModel& model);
+        write replace(const replace& model);
+        write insert(const insert& model);
+        write update(const update& model);
+        write remove(const remove& model);
 
-        bson::Document::Value find_one_and_replace(const FindAndReplaceModel& model);
-        bson::Document::Value find_one_and_update(const FindAndUpdateModel& model);
-        bson::Document::Value find_one_and_remove(const FindAndRemoveModel& model);
+        bson::document::Value find_one_and_replace(const find_one_and_replace& model);
+        bson::document::Value find_one_and_update(const find_one_and_update& model);
+        bson::document::Value find_one_and_remove(const find_one_and_remove& model);
 
-        bson::Document::Value explain(const ExplainModel& model) const;
-        DistinctResult distinct(const DistinctModel& model) const;
+        bson::document::Value explain(const explain& model) const;
+        distinct distinct(const distinct& model) const;
 
 /*
  *        template <class T>
@@ -92,22 +91,22 @@ namespace driver {
  *        }
  */
 
-        int64_t count(const CountModel& model) const;
+        int64_t count(const count& model) const;
 
         void drop();
 
     private:
-        Collection(
-            Client* client,
-            Database* database,
+        collection(
+            client* client,
+            database* database,
             std::string name
         );
 
-        Collection(const Collection& client) = delete;
-        Collection& operator=(const Collection& client) = delete;
+        collection(const collection& client) = delete;
+        collection& operator=(const collection& client) = delete;
 
-        Client* _client;
-        Database* _database;
+        client* _client;
+        database* _database;
         std::string _name;
         mongoc_collection_t* _collection;
     };

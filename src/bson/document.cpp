@@ -21,27 +21,27 @@
 
 namespace bson {
 
-Reference::Reference() {}
+thing::thing() {}
 
-Reference::Reference(const bson_iter_t& i) { iter = i; }
+thing::thing(const bson_iter_t& i) { iter = i; }
 
-bool Reference::operator==(const Reference& rhs) const {
+bool thing::operator==(const thing& rhs) const {
     return (iter.raw == rhs.iter.raw && iter.off == rhs.iter.off);
 }
 
-Type Reference::type() const { return Type(bson_iter_type(&iter)); }
+type thing::type() const { return bson::type(bson_iter_type(&iter)); }
 
-const char* Reference::key() const { return bson_iter_key(&iter); }
+const char* thing::key() const { return bson_iter_key(&iter); }
 
-const char* Reference::getString() const { return bson_iter_utf8(&iter, NULL); }
+const char* thing::get_string() const { return bson_iter_utf8(&iter, NULL); }
 
-std::tuple<const char*, uint32_t> Reference::getStringWLen() const {
+std::tuple<const char*, uint32_t> thing::get_string_w_len() const {
     uint32_t len;
     const char* str = bson_iter_utf8(&iter, &len);
     return std::tuple<const char*, uint32_t>(str, len);
 }
 
-std::tuple<BinarySubtype, uint32_t, const uint8_t*> Reference::getBinary()
+std::tuple<binary_sub_type, uint32_t, const uint8_t*> thing::get_binary()
     const {
     bson_subtype_t type;
     uint32_t len;
@@ -49,31 +49,28 @@ std::tuple<BinarySubtype, uint32_t, const uint8_t*> Reference::getBinary()
 
     bson_iter_binary(&iter, &type, &len, &binary);
 
-    return std::tuple<BinarySubtype, uint32_t, const uint8_t*>(
-        BinarySubtype(type), len, binary);
+    return std::tuple<binary_sub_type, uint32_t, const uint8_t*>(
+        binary_sub_type(type), len, binary);
 }
 
-double Reference::getDouble() const { return bson_iter_double(&iter); }
+double thing::get_double() const { return bson_iter_double(&iter); }
+int32_t thing::get_int_32() const { return bson_iter_int32(&iter); }
+int64_t thing::get_int_64() const { return bson_iter_int64(&iter); }
 
-int32_t Reference::getInt32() const { return bson_iter_int32(&iter); }
+namespace document {
 
-int64_t Reference::getInt64() const { return bson_iter_int64(&iter); }
+view::iterator::iterator(const bson_iter_t& i) : iter(i), is_end(false) {}
+view::iterator::iterator(bool is_end) : is_end(is_end) {}
 
-namespace Document {
+const thing& view::iterator::operator*() const { return iter; }
+const thing* view::iterator::operator->() const { return &iter; }
 
-View::iterator::iterator(const bson_iter_t& i) : iter(i), is_end(false) {}
-
-View::iterator::iterator(bool is_end) : is_end(is_end) {}
-
-const Reference& View::iterator::operator*() const { return iter; }
-const Reference* View::iterator::operator->() const { return &iter; }
-
-View::iterator& View::iterator::operator++() {
+view::iterator& view::iterator::operator++() {
     is_end = !bson_iter_next(&iter.iter);
     return *this;
 }
 
-bool View::iterator::operator==(const iterator& rhs) const {
+bool view::iterator::operator==(const iterator& rhs) const {
     if (is_end && rhs.is_end) return true;
     if (is_end || rhs.is_end) return false;
     return iter == rhs.iter;
@@ -81,11 +78,11 @@ bool View::iterator::operator==(const iterator& rhs) const {
     return false;
 }
 
-bool View::iterator::operator!=(const iterator& rhs) const {
+bool view::iterator::operator!=(const iterator& rhs) const {
     return !(*this == rhs);
 }
 
-View::iterator View::begin() const {
+view::iterator view::begin() const {
     bson_t b;
     bson_iter_t iter;
 
@@ -96,36 +93,36 @@ View::iterator View::begin() const {
     return iterator(iter);
 }
 
-View::iterator View::end() const { return iterator(true); }
+view::iterator view::end() const { return iterator(true); }
 
-Reference View::operator[](const char* key) const {
+thing view::operator[](const char* key) const {
     bson_t b;
     bson_iter_t iter;
 
     bson_init_static(&b, buf, len);
     bson_iter_init_find(&iter, &b, key);
 
-    return Reference(iter);
+    return thing(iter);
 }
 
-View::View(const uint8_t* b, std::size_t l) : buf(b), len(l) {}
-View::View() : buf(NULL), len(0) {}
+view::view(const uint8_t* b, std::size_t l) : buf(b), len(l) {}
+view::view() : buf(NULL), len(0) {}
 
-const uint8_t* View::getBuf() const { return buf; }
-std::size_t View::getLen() const { return len; }
+const uint8_t* view::get_buf() const { return buf; }
+std::size_t view::get_len() const { return len; }
 
-Value::Value(const uint8_t* b, std::size_t l, std::function<void(void *)> dtor) : View(b, l), dtor(dtor) {
+value::value(const uint8_t* b, std::size_t l, std::function<void(void *)> dtor) : view(b, l), dtor(dtor) {
 }
 
-Value::Value(const View& view) : View((uint8_t *)malloc((std::size_t)view.getLen()), view.getLen()), dtor(free) {
-    std::memcpy((void *)buf, view.getBuf(), view.getLen());
+value::value(const view& view) : view((uint8_t *)malloc((std::size_t)view.get_len()), view.get_len()), dtor(free) {
+    std::memcpy((void *)buf, view.get_buf(), view.get_len());
 }
 
-Value::Value(Value&& rhs) {
+value::value(value&& rhs) {
     *this = std::move(rhs);
 }
 
-Value& Value::operator=(Value&& rhs) {
+value& value::operator=(value&& rhs) {
     buf = rhs.buf;
     len = rhs.len;
     dtor = rhs.dtor;
@@ -135,7 +132,7 @@ Value& Value::operator=(Value&& rhs) {
     return *this;
 }
 
-Value::~Value() {
+value::~value() {
     if (buf) {
         dtor((void *)buf);
     }
@@ -143,22 +140,22 @@ Value::~Value() {
 
 }
 
-Document::View Reference::getDocument() const {
+document::view thing::get_document() const {
     const uint8_t* buf;
     uint32_t len;
 
     bson_iter_document(&iter, &len, &buf);
 
-    return Document::View(buf, len);
+    return document::view(buf, len);
 }
 
-Document::View Reference::getArray() const {
+document::view thing::get_array() const {
     const uint8_t* buf;
     uint32_t len;
 
     bson_iter_array(&iter, &len, &buf);
 
-    return Document::View(buf, len);
+    return document::view(buf, len);
 }
 
 }  // namespace bson

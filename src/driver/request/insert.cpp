@@ -22,7 +22,7 @@ namespace driver {
 namespace model {
 
 /*
- *insert_request::insert_request(const bson::Document::View& doc) : _doc(doc) {
+ *insert_request::insert_request(const bson::document::view& doc) : _doc(doc) {
  *}
  *
  *insert_request::insert_request(const insert& model) : _doc(model.document()) {

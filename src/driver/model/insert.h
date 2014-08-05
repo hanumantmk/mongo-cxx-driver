@@ -27,11 +27,11 @@ namespace model {
 
     public:
 
-        insert(const bson::Document::View& document);
-        const bson::Document::View& document() const;
+        insert(const bson::document::view& document);
+        const bson::document::view& document() const;
 
     private:
-        const bson::Document::View& _document;
+        const bson::document::view& _document;
 
     };
 

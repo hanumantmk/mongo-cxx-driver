@@ -23,7 +23,7 @@ int main() {
 
     bson_t * foo = bson_new();
 
-    bson::Document::View doc(bson_get_data(foo), foo->len);
+    bson::document::view doc(bson_get_data(foo), foo->len);
 
     Client client("mongodb://localhost");
     Collection col(client["test"]["test"]);
@@ -39,7 +39,7 @@ int main() {
     }
 
 /*
- *        std::cout << "individual write is: " << col.insert(InsertModel(bson::Document::View(bson_get_data(&bson), bson.len))) << std::endl;
+ *        std::cout << "individual write is: " << col.insert(InsertModel(bson::document::view(bson_get_data(&bson), bson.len))) << std::endl;
  *    }
  *    bson_destroy(&bson);
  *
@@ -52,7 +52,7 @@ int main() {
  *
  *        BSON_APPEND_INT32(bsons + i, "foo", i + 10);
  *
- *        requests.emplace_back(bson::Document::View(bson_get_data(bsons + i), bsons[i].len));
+ *        requests.emplace_back(bson::document::view(bson_get_data(bsons + i), bsons[i].len));
  *    }
  *
  *    std::cout << "bulk write is: " << col.bulk_write(make_bulk_write_model(requests, false)) << std::endl;
@@ -68,7 +68,7 @@ int main() {
  *        BSON_APPEND_INT32(&child, "foo", i + 20);
  *        bson_append_document_end(&bson, &child);
  *    }
- *    bson::Document::View bson_array(bson_get_data(&bson), bson.len);
+ *    bson::document::view bson_array(bson_get_data(&bson), bson.len);
  *
  *    auto adapter = make_adapter(&bson_array, [] (const bson::Reference& ref) {
  *         return InsertRequest(ref.getDocument());
