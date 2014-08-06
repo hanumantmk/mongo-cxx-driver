@@ -22,29 +22,37 @@
 
 #include "bson/document.hpp"
 
+#include "driver/model/find.hpp"
+#include "driver/result/explain.hpp"
+
 namespace mongo {
 namespace driver {
+namespace fluent {
 
-class explain_result;
+class findable {
 
-class pipeline {
+    friend class collection;
+
    public:
-    pipeline& geoNear(/*something*/);
-    pipeline& group(bson::document::view group);
-    pipeline& limit(int32_t limit);
-    pipeline& match(bson::document::view filter);
-    pipeline& out(const std::string& collection_name);
-    pipeline& project(bson::document::view projection);
-    pipeline& redact(bson::document::view restrictions);
-    pipeline& skip(int32_t skip);
-    pipeline& sort(bson::document::view sort);
-    pipeline& unwind(const std::string& field_name);
+    findable& add_query_flag(const bson::document::view& group);
+    findable& add_query_modifier(const std::string& name /*, bson value*/ );
+    findable& batch_size(int32_t batch_size);
+    findable& comment(const std::string& comment);
+    findable& limit(int32_t limit);
+    findable& max_time_ms(int64_t max_time_ms);
+    findable& project(const bson::document::view& projection);
+    findable& skip(int32_t skip);
+    findable& sort(const bson::document::view& ordering);
 
-    bson::document::view operator[](int index) const;
+    int64_t count();
+    result::explain explain();
 
    private:
-    std::vector<bson::document::view> _pipeline;
+    findable(const bson::document::view& filter);
+    model::find model;
+
 };
 
+} // namespace fluent
 } // namespace driver
 } // namespace mongo

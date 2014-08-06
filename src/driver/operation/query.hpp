@@ -23,5 +23,5 @@ class QueryOperation {
     QueryOperation();
 };
 
-}  // namespace driver
-}  // namespace mongo
+} // namespace driver
+} // namespace mongo

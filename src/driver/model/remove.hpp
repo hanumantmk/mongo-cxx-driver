@@ -36,6 +36,6 @@ class remove : write<remove> {
     bool _multi;
 };
 
-}  // namespace model
-}  // namespace driver
-}  // namespace mongo
+} // namespace model
+} // namespace driver
+} // namespace mongo

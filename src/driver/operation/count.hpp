@@ -23,5 +23,5 @@ namespace driver {
 
 class CountOperation : CommandOperation {};
 
-}  // namespace driver
-}  // namespace mongo
+} // namespace driver
+} // namespace mongo

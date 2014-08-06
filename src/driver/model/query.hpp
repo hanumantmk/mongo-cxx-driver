@@ -36,6 +36,6 @@ class query {
     int32_t skip() const;
 };
 
-}  // namespace model
-}  // namespace driver
-}  // namespace mongo
+} // namespace model
+} // namespace driver
+} // namespace mongo

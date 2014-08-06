@@ -33,6 +33,6 @@ class insert : public write<insert> {
     const bson::document::view& _document;
 };
 
-}  // namespace model
-}  // namespace driver
-}  // namespace mongo
+} // namespace model
+} // namespace driver
+} // namespace mongo

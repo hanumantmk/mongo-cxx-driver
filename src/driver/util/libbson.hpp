@@ -52,5 +52,5 @@ class scoped_bson_t {
     bool _is_initialized;
 };
 
-}  // namespace libbson
-}  // namespace bson
+} // namespace libbson
+} // namespace bson

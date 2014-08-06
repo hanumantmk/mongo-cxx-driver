@@ -38,6 +38,6 @@ class find_one_and_remove : public write<find_one_and_remove> {
     bson::document::view& _ordering;
 };
 
-}  // namespace model
-}  // namespace driver
-}  // namespace mongo
+} // namespace model
+} // namespace driver
+} // namespace mongo

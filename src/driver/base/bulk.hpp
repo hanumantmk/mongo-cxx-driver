@@ -49,5 +49,5 @@ namespace driver {
  *    };
  */
 
-}  // namespace driver
-}  // namespace mongo
+} // namespace driver
+} // namespace mongo

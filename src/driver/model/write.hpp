@@ -42,6 +42,6 @@ class write {
     optional<const class write_concern*> _write_concern;
 };
 
-}  // namespace model
-}  // namespace driver
-}  // namespace mongo
+} // namespace model
+} // namespace driver
+} // namespace mongo

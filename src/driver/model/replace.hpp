@@ -34,6 +34,6 @@ class replace : write<replace> {
     const bson::document::view& _replacement;
 };
 
-}  // namespace model
-}  // namespace driver
-}  // namespace mongo
+} // namespace model
+} // namespace driver
+} // namespace mongo

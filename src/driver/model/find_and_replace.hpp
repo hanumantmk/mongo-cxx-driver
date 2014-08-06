@@ -44,6 +44,6 @@ class find_one_and_replace : public write<find_one_and_replace> {
     bool _upsert;
 };
 
-}  // namespace model
-}  // namespace driver
-}  // namespace mongo
+} // namespace model
+} // namespace driver
+} // namespace mongo

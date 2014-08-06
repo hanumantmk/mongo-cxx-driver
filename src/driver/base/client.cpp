@@ -42,5 +42,5 @@ class database client::operator[](std::string database_name) {
     return database(database_name);
 }
 
-}  // namespace driver
-}  // namespace mongo
+} // namespace driver
+} // namespace mongo

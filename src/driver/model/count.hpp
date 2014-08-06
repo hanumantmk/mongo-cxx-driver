@@ -46,6 +46,6 @@ class count : public ReadModel<count> {
     int32_t _skip;
 };
 
-}  // namesapce model
-}  // namespace driver
-}  // namespace mongo
+} // namesapce model
+} // namespace driver
+} // namespace mongo

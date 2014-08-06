@@ -74,5 +74,5 @@ inline Adapter<In, Func> make_adapter(const In* in, Func func) {
     return Adapter<In, Func>(in, func);
 }
 
-}  // namespace driver
-}  // namespace mongo
+} // namespace driver
+} // namespace mongo

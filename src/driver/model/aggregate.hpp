@@ -30,7 +30,9 @@ namespace model {
 class aggregate : public read<aggregate> {
 
    public:
-    aggregate(pipeline pipeline);
+    explicit aggregate(pipeline pipeline)
+        : _pipeline(std::move(pipeline))
+    {}
 
     aggregate& allow_disk_use(bool allow_disk_use);
     aggregate& batch_size(int32_t batch_size);
@@ -50,6 +52,6 @@ class aggregate : public read<aggregate> {
     optional<bool> _use_cursor;
 };
 
-}  // namespace model
-}  // namespace driver
-}  // namespace mongo
+} // namespace model
+} // namespace driver
+} // namespace mongo

@@ -22,6 +22,6 @@ namespace result {
 
 class explain {};
 
-}  // namespace result
-}  // namespace driver
-}  // namespace mongo
+} // namespace result
+} // namespace driver
+} // namespace mongo

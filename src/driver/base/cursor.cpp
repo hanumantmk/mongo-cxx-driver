@@ -72,5 +72,5 @@ bool cursor::iterator::operator!=(const cursor::iterator& rhs) const {
     return !(*this == rhs);
 }
 
-}  // namespace driver
-}  // namespace mongo
+} // namespace driver
+} // namespace mongo

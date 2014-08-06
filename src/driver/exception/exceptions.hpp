@@ -42,5 +42,5 @@ class write_exception : operation_exception {};
 
 class authentication_exception : operation_exception {};
 
-}  // namespace driver
-}  // namespace mongo
+} // namespace driver
+} // namespace mongo

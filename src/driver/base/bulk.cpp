@@ -61,5 +61,6 @@ namespace driver {
  *        return WriteResult(reply.view());
  *    }
  */
-}
-}
+
+} // namespace mongo
+} // namespace driver

@@ -41,6 +41,6 @@ class distinct : public read<distinct> {
     int64_t _max_time_ms;
 };
 
-}  // namespace model
-}  // namespace driver
-}  // namespace mongo
+} // namespace model
+} // namespace driver
+} // namespace mongo

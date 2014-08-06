@@ -73,5 +73,5 @@ bson::document::view scoped_bson_t::view() {
                : bson::document::view();
 }
 
-}  // namespace libbson
-}  // namespace bson
+} // namespace libbson
+} // namespace bson

@@ -47,6 +47,6 @@ class write {
     bson::document::value _value;
 };
 
-}  // namespace result
-}  // namespace driver
-}  // namespace mongo
+} // namespace result
+} // namespace driver
+} // namespace mongo

@@ -26,6 +26,7 @@
 #include "bson/document.hpp"
 #include "driver/base/bulk.hpp"
 #include "driver/base/cursor.hpp"
+#include "driver/fluent/findable.hpp"
 #include "driver/result/distinct.hpp"
 #include "driver/result/explain.hpp"
 #include "driver/result/write.hpp"
@@ -34,6 +35,7 @@ namespace mongo {
 namespace driver {
 
 namespace model {
+
 class aggregate;
 class find;
 class find_one_and_replace;
@@ -46,19 +48,28 @@ class replace;
 class distinct;
 class count;
 class explain;
+
 }
 
 namespace result {
+
 class write;
 class explain;
 class distinct;
+
 }
 
 class client;
 class database;
 class write_concern;
 class read_preference;
+
+namespace fluent {
+
 class findable;
+class aggregatable;
+
+}
 
 class collection {
 
@@ -72,13 +83,18 @@ class collection {
     collection& operator=(collection&& client);
 
     cursor find(const model::find& model) const;
-    findable find(bson::document::view filter) const;
-    cursor aggregate(const model::aggregate& model) const;
+    fluent::findable find(bson::document::view filter) const;
 
-    result::write replace(const model::replace& model);
+    cursor aggregate(const model::aggregate& model) const;
+    fluent::aggregatable aggregate() const;
+
     result::write insert(const model::insert& model);
-    result::write update(const model::update& model);
-    result::write remove(const model::remove& model);
+
+    result::write replaceOne(const model::replace& model);
+    result::write updateOne(const model::update& model);
+    result::write updateMany(const model::update& model);
+    result::write removeOne(const model::remove& model);
+    result::write removeMany(const model::remove& model);
 
     bson::document::value find_one_and_replace(
         const model::find_one_and_replace& model);
@@ -119,5 +135,5 @@ class collection {
     mongoc_collection_t* _collection;
 };
 
-}  // namespace driver
-}  // namespace mongo
+} // namespace driver
+} // namespace mongo

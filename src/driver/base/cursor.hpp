@@ -68,7 +68,7 @@ class cursor {
     cursor& operator=(const cursor& cursor) = delete;
 
     mongoc_cursor_t* _cursor;
-};  // class cursor
+};
 
-}  // namespace driver
-}  // namespace mongo
+} // namespace driver
+} // namespace mongo

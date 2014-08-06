@@ -44,6 +44,6 @@ class find_one_and_update : public write<find_one_and_update> {
     bool _upsert;
 };
 
-}  // namespace model
-}  // namespace driver
-}  // namespace mongo
+} // namespace model
+} // namespace driver
+} // namespace mongo

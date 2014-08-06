@@ -73,6 +73,6 @@ optional<int32_t> find::skip() const { return _skip; }
 
 optional<bson::document::view> find::sort() const { return _ordering; }
 
-}  // namespace model
-}  // namespace driver
-}  // namespace mongo
+} // namespace model
+} // namespace driver
+} // namespace mongo

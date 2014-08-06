@@ -48,5 +48,5 @@ collection database::operator[](std::string collection_name) {
     return collection(collection_name);
 }
 
-}  // namespace driver
-}  // namespace mongo
+} // namespace driver
+} // namespace mongo

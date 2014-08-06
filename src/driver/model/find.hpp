@@ -71,6 +71,6 @@ class find : public read<find> {
     optional<bson::document::view> _ordering;
 };
 
-}  // namespace model
-}  // namespace driver
-}  // namespace mongo
+} // namespace model
+} // namespace driver
+} // namespace mongo

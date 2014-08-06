@@ -56,10 +56,10 @@ class xupdate : public write<xupdate> {
     optional<bool> _upsert;
 };
 
-}  // namespace details
+} // namespace details
 
 typedef details::xupdate update;
 
-}  // namespace model
-}  // namespace driver
-}  // namespace mongo
+} // namespace model
+} // namespace driver
+} // namespace mongo

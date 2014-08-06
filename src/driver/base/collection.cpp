@@ -91,7 +91,7 @@ cursor collection::aggregate(const model::aggregate& /* model */) const {
     return cursor(NULL);
 }
 
-result::write collection::replace(const model::replace& /* model */) {
+result::write collection::replaceOne(const model::replace& /* model */) {
     return result::write();
 }
 
@@ -105,10 +105,17 @@ result::write collection::replace(const model::replace& /* model */) {
  *    }
  */
 
-result::write collection::update(const model::update& /* model */) {
+result::write collection::updateMany(const model::update& /* model */) {
     return result::write();
 }
-result::write collection::remove(const model::remove& /* model */) {
+result::write collection::removeMany(const model::remove& /* model */) {
+    return result::write();
+}
+
+result::write collection::updateOne(const model::update& /* model */) {
+    return result::write();
+}
+result::write collection::removeOne(const model::remove& /* model */) {
     return result::write();
 }
 
@@ -144,5 +151,5 @@ void collection::drop() {
     }
 }
 
-}  // namespace driver
-}  // namespace mongo
+} // namespace driver
+} // namespace mongo

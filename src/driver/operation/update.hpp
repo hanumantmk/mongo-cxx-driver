@@ -21,5 +21,5 @@ namespace driver {
 
 class UpdateOperation {};
 
-}  // namespace driver
-}  // namespace mongo
+} // namespace driver
+} // namespace mongo

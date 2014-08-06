@@ -50,6 +50,6 @@ class read {
     optional<class read_preference*> _read_preference;
 };
 
-}  // namespace model
-}  // namespace driver
-}  // namespace mongo
+} // namespace model
+} // namespace driver
+} // namespace mongo

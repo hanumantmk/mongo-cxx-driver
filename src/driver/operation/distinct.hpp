@@ -23,5 +23,5 @@ namespace driver {
 
 class DistinctOperation : CommandOperation {};
 
-}  // namespace driver
-}  // namespace mongo
+} // namespace driver
+} // namespace mongo

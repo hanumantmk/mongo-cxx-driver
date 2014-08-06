@@ -21,5 +21,5 @@ namespace driver {
 
 class RemoveOperation {};
 
-}  // namespace driver
-}  // namespace mongo
+} // namespace driver
+} // namespace mongo

@@ -53,5 +53,5 @@ class database {
     mongoc_database_t* _database;
 };
 
-}  // namespace driver
-}  // namespace mongo
+} // namespace driver
+} // namespace mongo
