@@ -21,87 +21,74 @@
 namespace bson {
 namespace util {
 
-namespace functor
-{
-    template <typename, typename>
-    struct build_free_function;
+namespace functor {
+template <typename, typename>
+struct build_free_function;
 
-    template <typename F, typename R, typename ... Args>
-    struct build_free_function<F, R (Args...)>
-    {
-        typedef R (*type)(Args...);
-    };
+template <typename F, typename R, typename... Args>
+struct build_free_function<F, R(Args...)> {
+    typedef R (*type)(Args...);
+};
 
-    template <typename, typename>
-    struct build_class_function;
+template <typename, typename>
+struct build_class_function;
 
-    template <typename C, typename R, typename ... Args>
-    struct build_class_function<C, R (Args...)>
-    {
-        typedef R (C::*type)(Args...);
-    };
+template <typename C, typename R, typename... Args>
+struct build_class_function<C, R(Args...)> {
+    typedef R (C::*type)(Args...);
+};
 
-    template <typename>
-    struct strip_cv_from_class_function;
+template <typename>
+struct strip_cv_from_class_function;
 
-    template <typename C, typename R, typename ... Args>
-    struct strip_cv_from_class_function<R (C::*) (Args...)>
-    {
-        typedef R (C::*type)(Args...);
-    };
+template <typename C, typename R, typename... Args>
+struct strip_cv_from_class_function<R (C::*)(Args...)> {
+    typedef R (C::*type)(Args...);
+};
 
-    template <typename C, typename R, typename ... Args>
-    struct strip_cv_from_class_function<R (C::*) (Args...) const>
-    {
-        typedef R (C::*type)(Args...);
-    };
+template <typename C, typename R, typename... Args>
+struct strip_cv_from_class_function<R (C::*)(Args...) const> {
+    typedef R (C::*type)(Args...);
+};
 
-    template <typename C, typename R, typename ... Args>
-    struct strip_cv_from_class_function<R (C::*) (Args...) volatile>
-    {
-        typedef R (C::*type)(Args...);
-    };
-
-    template <typename C, typename S>
-    struct is_class_method_with_signature
-    {
-        typedef int yes;
-        typedef char no;
-
-        // T stands for SFINAE
-        template <typename T>
-        static typename std::enable_if<
-            std::is_convertible<
-                typename build_class_function<C, S>::type,
-                typename strip_cv_from_class_function<decltype(&T::operator())>::type
-            >::value, yes>::type
-        sfinae(void *);
-
-        template <typename> static no sfinae(...);
-
-        static bool constexpr value = sizeof(sfinae<C>(nullptr)) == sizeof(yes);
-    };
-
-    template <typename F, typename S>
-    struct is_function_with_signature :
-        std::is_convertible<F, typename build_free_function<F, S>::type>
-    {};
-
-    template <typename C, typename S, bool>
-    struct is_functor_impl :
-        is_class_method_with_signature<C, S>
-    {};
-
-    template <typename F, typename S>
-    struct is_functor_impl<F, S, false> :
-        is_function_with_signature<F, S>
-    {};
-} // functor
+template <typename C, typename R, typename... Args>
+struct strip_cv_from_class_function<R (C::*)(Args...) volatile> {
+    typedef R (C::*type)(Args...);
+};
 
 template <typename C, typename S>
-struct is_functor :
-    functor::is_functor_impl<C, S, std::is_class<C>::value>
-{};
+struct is_class_method_with_signature {
+    typedef int yes;
+    typedef char no;
 
-} // util
-} // bson
+    // T stands for SFINAE
+    template <typename T>
+    static typename std::enable_if<
+        std::is_convertible<typename build_class_function<C, S>::type,
+                            typename strip_cv_from_class_function<
+                                decltype(&T::operator())>::type>::value,
+        yes>::type
+        sfinae(void *);
+
+    template <typename>
+    static no sfinae(...);
+
+    static bool constexpr value = sizeof(sfinae<C>(nullptr)) == sizeof(yes);
+};
+
+template <typename F, typename S>
+struct is_function_with_signature
+    : std::is_convertible<F, typename build_free_function<F, S>::type> {};
+
+template <typename C, typename S, bool>
+struct is_functor_impl : is_class_method_with_signature<C, S> {};
+
+template <typename F, typename S>
+struct is_functor_impl<F, S, false> : is_function_with_signature<F, S> {};
+}  // functor
+
+template <typename C, typename S>
+struct is_functor : functor::is_functor_impl<C, S, std::is_class<C>::value> {};
+
+}  // util
+}  // bson

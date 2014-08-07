@@ -23,8 +23,7 @@ builder::close_doc_t builder::close_doc;
 builder::open_array_t builder::open_array;
 builder::close_array_t builder::close_array;
 
-builder::builder()
-{
+builder::builder() {
     _stack.reserve(100);
     _stack.emplace_back(false);
     bson_init(&_stack.back().bson);
@@ -72,7 +71,7 @@ builder& builder::key_append(const std::string& key, open_array_t) {
 }
 
 builder& builder::nokey_append(int32_t i32) {
-    if (! _stack.back().is_array) {
+    if (!_stack.back().is_array) {
         throw(std::runtime_error("in subdocument"));
     }
 
@@ -82,7 +81,7 @@ builder& builder::nokey_append(int32_t i32) {
 }
 
 builder& builder::nokey_append(open_doc_t) {
-    if (! _stack.back().is_array) {
+    if (!_stack.back().is_array) {
         throw(std::runtime_error("in subdocument"));
     }
 
@@ -112,7 +111,7 @@ builder& builder::nokey_append(close_doc_t) {
 }
 
 builder& builder::nokey_append(open_array_t) {
-    if (! _stack.back().is_array) {
+    if (!_stack.back().is_array) {
         throw(std::runtime_error("in subdocument"));
     }
 
@@ -127,7 +126,7 @@ builder& builder::nokey_append(open_array_t) {
 }
 
 builder& builder::nokey_append(close_array_t) {
-    if (! _stack.back().is_array || _stack.size() < 2) {
+    if (!_stack.back().is_array || _stack.size() < 2) {
         throw(std::runtime_error("in subdocument or insufficient stack"));
     }
 
@@ -142,7 +141,8 @@ builder& builder::nokey_append(close_array_t) {
 }
 
 document::view builder::view() const {
-    return document::view(bson_get_data(&_stack.front().bson), _stack.front().bson.len);
+    return document::view(bson_get_data(&_stack.front().bson),
+                          _stack.front().bson.len);
 }
 
 }  // namespace bson
