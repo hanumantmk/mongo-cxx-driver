@@ -17,7 +17,3 @@ add_library(mongocxx
 target_link_libraries(mongocxx
     ${LIBMONGOC_LIBRARIES}
 )
-
-add_dependencies(mongocxx
-    libmongoc
-)

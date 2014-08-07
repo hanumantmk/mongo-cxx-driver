@@ -6,17 +6,7 @@ include(ExternalProject)
 
 set(libmongoc_RELEASE 0.98.0)
 
-ExternalProject_Add(libmongoc
-    URL https://github.com/mongodb/mongo-c-driver/releases/download/${libmongoc_RELEASE}/mongo-c-driver-${libmongoc_RELEASE}.tar.gz
-    DOWNLOAD_DIR ${CMAKE_CURRENT_BINARY_DIR}/download/libmongoc-${libmongoc_RELEASE}
-    SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/libmongoc/libmongoc-${libmongoc_RELEASE}
-    CONFIGURE_COMMAND ${CMAKE_CURRENT_BINARY_DIR}/libmongoc/libmongoc-${libmongoc_RELEASE}/configure --prefix=<INSTALL_DIR> --without-documentation
-    BUILD_COMMAND ${MAKE}
-)
-
 find_package(PkgConfig)
-
-set(ENV{PKG_CONFIG_PATH} ${CMAKE_CURRENT_BINARY_DIR}/libmongoc-prefix/lib/pkgconfig)
 pkg_check_modules(LIBMONGOC libmongoc-1.0)
 
 link_directories(
