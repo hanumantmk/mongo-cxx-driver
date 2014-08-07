@@ -88,8 +88,8 @@ class collection {
     cursor aggregate(const model::aggregate& model) const;
     fluent::aggregatable aggregate() const;
 
-    result::write insert(const model::insert& model);
-
+    result::write insertOne(const model::insert& model);
+    result::write insertMany(const model::insert& model);
     result::write replaceOne(const model::replace& model);
     result::write updateOne(const model::update& model);
     result::write updateMany(const model::update& model);
