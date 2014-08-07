@@ -25,12 +25,12 @@
 
 namespace bson {
 
-    class Builder {
+    class builder {
 
     public:
-        template <class T> class ArrayCtx;
-        template <class T> class DocumentCtx;
-        template <class T> class KeyCtx;
+        template <class T> class array_ctx;
+        template <class T> class document_ctx;
+        template <class T> class key_ctx;
 
         struct open_doc_t {};
         static open_doc_t open_doc;
@@ -44,35 +44,35 @@ namespace bson {
         struct close_array_t {};
         static close_array_t close_array;
 
-        struct ClosedCtx {
-            ClosedCtx(Builder*) {}
+        struct closed_ctx {
+            closed_ctx(builder*) {}
         };
 
-        class InvalidState : public std::runtime_error {
+        class invalid_state : public std::runtime_error {
             
         };
 
-        class ValueBuilder;
-        typedef ArrayCtx<ClosedCtx> ArrayBuilder;
-        typedef KeyCtx<ClosedCtx> DocumentBuilder;
+        class value_builder;
+        typedef array_ctx<closed_ctx> array_builder;
+        typedef key_ctx<closed_ctx> document_builder;
 
         template <class Base>
-        class ArrayCtx {
+        class array_ctx {
         public:
-            ArrayCtx(Builder* builder) :
+            array_ctx(builder* builder) :
                 _builder(builder) {}
 
             Base unwrap() { return Base(_builder); }
 
-            ArrayCtx<ArrayCtx> wrapArray() { return ArrayCtx<ArrayCtx>(_builder); }
-            KeyCtx<ArrayCtx> wrapDocument() { return KeyCtx<ArrayCtx>(_builder); }
+            array_ctx<array_ctx> wrap_array() { return array_ctx<array_ctx>(_builder); }
+            key_ctx<array_ctx> wrap_document() { return key_ctx<array_ctx>(_builder); }
 
             template <class T>
             typename std::enable_if<!
-                (util::is_functor<T, void (ArrayBuilder)>::value ||
-                 util::is_functor<T, void (ValueBuilder)>::value ||
+                (util::is_functor<T, void (array_builder)>::value ||
+                 util::is_functor<T, void (value_builder)>::value ||
                  std::is_same<T, close_doc_t>::value),
-                ArrayCtx>::type&
+                array_ctx>::type&
             operator<<(const T& t) {
                 _builder->nokey_append(t);
                 return *this;
@@ -80,22 +80,22 @@ namespace bson {
 
             template <typename Func>
             typename std::enable_if<
-                (util::is_functor<Func, void (ArrayBuilder)>::value ||
-                 util::is_functor<Func, void (ValueBuilder)>::value),
-                ArrayCtx>::type&
+                (util::is_functor<Func, void (array_builder)>::value ||
+                 util::is_functor<Func, void (value_builder)>::value),
+                array_ctx>::type&
             operator<<(Func func) {
                 func(*this);
                 return *this;
             }
 
-            KeyCtx<ArrayCtx> operator<<(open_doc_t) {
+            key_ctx<array_ctx> operator<<(open_doc_t) {
                 _builder->nokey_append(open_doc);
-                return wrapDocument();
+                return wrap_document();
             }
 
-            ArrayCtx<ArrayCtx> operator<<(open_array_t) {
+            array_ctx<array_ctx> operator<<(open_array_t) {
                 _builder->nokey_append(open_array);
-                return wrapArray();
+                return wrap_array();
             }
 
             Base operator<<(close_array_t) {
@@ -103,30 +103,30 @@ namespace bson {
                 return unwrap();
             }
 
-            operator ArrayBuilder() {
-                return ArrayBuilder(_builder);
+            operator array_builder() {
+                return array_builder(_builder);
             }
 
-            operator ValueBuilder();
+            operator value_builder();
 
         private:
-            Builder* _builder;
+            builder* _builder;
         };
 
         template <class Base>
-        class KeyCtx {
+        class key_ctx {
         public:
-            KeyCtx(Builder* builder) :
+            key_ctx(builder* builder) :
                 _builder(builder) {}
 
             Base unwrap() { return Base(_builder); }
 
-            DocumentCtx<KeyCtx> operator<<(const std::string& key) {
-                return DocumentCtx<KeyCtx>(_builder, key);
+            document_ctx<key_ctx> operator<<(const std::string& key) {
+                return document_ctx<key_ctx>(_builder, key);
             }
 
             template <typename Func>
-            typename std::enable_if<util::is_functor<Func, void (DocumentBuilder)>::value, KeyCtx>::type&
+            typename std::enable_if<util::is_functor<Func, void (document_builder)>::value, key_ctx>::type&
             operator<<(Func func) {
                 func(*this);
                 return *this;
@@ -137,89 +137,89 @@ namespace bson {
                 return unwrap();
             }
 
-            operator DocumentBuilder() {
-                return DocumentBuilder(_builder);
+            operator document_builder() {
+                return document_builder(_builder);
             }
 
         private:
-            Builder* _builder;
+            builder* _builder;
         };
 
         template <class Base>
-        class DocumentCtx {
+        class document_ctx {
         public:
-            DocumentCtx(Builder* builder, std::string key) :
+            document_ctx(builder* builder, std::string key) :
                 _builder(builder),
                 _key(std::move(key)) {}
 
             Base unwrap() { return Base(_builder); }
 
-            ArrayCtx<Base> wrapArray() { return ArrayCtx<Base>(_builder); }
-            KeyCtx<Base> wrapDocument() { return KeyCtx<Base>(_builder); }
+            array_ctx<Base> wrap_array() { return array_ctx<Base>(_builder); }
+            key_ctx<Base> wrap_document() { return key_ctx<Base>(_builder); }
 
             template <class T>
-            typename std::enable_if<! util::is_functor<T, void (ValueBuilder)>::value, Base>::type
+            typename std::enable_if<! util::is_functor<T, void (value_builder)>::value, Base>::type
             operator<<(const T& t) {
                 _builder->key_append(_key, t);
                 return unwrap();
             }
 
             template <typename Func>
-            typename std::enable_if<util::is_functor<Func, void (ValueBuilder)>::value, Base>::type
+            typename std::enable_if<util::is_functor<Func, void (value_builder)>::value, Base>::type
             operator<<(Func func) {
                 func(*this);
                 return unwrap();
             }
 
-            KeyCtx<Base> operator<<(open_doc_t) {
+            key_ctx<Base> operator<<(open_doc_t) {
                 _builder->key_append(_key, open_doc);
-                return wrapDocument();
+                return wrap_document();
             }
 
-            ArrayCtx<Base> operator<<(open_array_t) {
+            array_ctx<Base> operator<<(open_array_t) {
                 _builder->key_append(_key, open_array);
-                return wrapArray();
+                return wrap_array();
             }
 
-            operator ValueBuilder();
+            operator value_builder();
 
         private:
-            Builder* _builder;
+            builder* _builder;
             std::string _key;
         };
 
-        class ValueBuilder {
+        class value_builder {
         public:
-            ValueBuilder(Builder* builder) :
+            value_builder(builder* builder) :
                 _builder(builder),
                 _is_array(true) {}
 
-            ValueBuilder(Builder* builder, std::string key) :
+            value_builder(builder* builder, std::string key) :
                 _builder(builder),
                 _is_array(false),
                 _key(key) {}
 
-            ArrayCtx<ValueBuilder> wrapArray() { return ArrayCtx<ValueBuilder>(_builder); }
-            KeyCtx<ValueBuilder> wrapDocument() { return KeyCtx<ValueBuilder>(_builder); }
+            array_ctx<value_builder> wrap_array() { return array_ctx<value_builder>(_builder); }
+            key_ctx<value_builder> wrap_document() { return key_ctx<value_builder>(_builder); }
 
-            KeyCtx<ValueBuilder> operator<<(open_doc_t) {
+            key_ctx<value_builder> operator<<(open_doc_t) {
                 if (_is_array) {
                     _builder->nokey_append(open_doc);
                 } else {
                     _builder->key_append(_key, open_doc);
                 }
 
-                return wrapDocument();
+                return wrap_document();
             }
 
-            ArrayCtx<ValueBuilder> operator<<(open_array_t) {
+            array_ctx<value_builder> operator<<(open_array_t) {
                 if (_is_array) {
                     _builder->nokey_append(open_array);
                 } else {
                     _builder->key_append(_key, open_array);
                 }
 
-                return wrapArray();
+                return wrap_array();
             }
 
             template <class T>
@@ -232,43 +232,43 @@ namespace bson {
             }
 
         private:
-            Builder* _builder;
+            builder* _builder;
             bool _is_array;
             std::string _key;
         };
 
-        Builder();
+        builder();
 
-        Builder(Builder&& rhs);
-        Builder& operator=(Builder&& rhs);
+        builder(builder&& rhs);
+        builder& operator=(builder&& rhs);
 
-        ~Builder();
+        ~builder();
 
-        DocumentCtx<KeyCtx<Builder>> operator<<(const std::string& rhs) {
-            KeyCtx<Builder> ctx(this);
+        document_ctx<key_ctx<builder>> operator<<(const std::string& rhs) {
+            key_ctx<builder> ctx(this);
 
             return ctx << rhs;
         }
 
-        operator DocumentBuilder() {
-            return DocumentBuilder(this);
+        operator document_builder() {
+            return document_builder(this);
         }
 
-        Builder& key_append(const std::string& key, int32_t i32);
-        Builder& key_append(const std::string& key, open_doc_t);
-        Builder& key_append(const std::string& key, open_array_t);
+        builder& key_append(const std::string& key, int32_t i32);
+        builder& key_append(const std::string& key, open_doc_t);
+        builder& key_append(const std::string& key, open_array_t);
 
-        Builder& nokey_append(int32_t i32);
-        Builder& nokey_append(open_doc_t);
-        Builder& nokey_append(close_doc_t);
-        Builder& nokey_append(open_array_t);
-        Builder& nokey_append(close_array_t);
+        builder& nokey_append(int32_t i32);
+        builder& nokey_append(open_doc_t);
+        builder& nokey_append(close_doc_t);
+        builder& nokey_append(open_array_t);
+        builder& nokey_append(close_array_t);
 
         document::view view() const;
 
     private:
-        Builder(const Builder& rhs) = delete;
-        Builder& operator=(const Builder& rhs) = delete;
+        builder(const builder& rhs) = delete;
+        builder& operator=(const builder& rhs) = delete;
 
         struct frame {
             frame(bool is_array) : n(0), is_array(is_array) {
@@ -283,13 +283,13 @@ namespace bson {
     };
 
     template <class T>
-    Builder::ArrayCtx<T>::operator ValueBuilder() {
-        return ValueBuilder(_builder);
+    builder::array_ctx<T>::operator value_builder() {
+        return value_builder(_builder);
     }
 
     template <class T>
-    Builder::DocumentCtx<T>::operator ValueBuilder() {
-        return ValueBuilder(_builder, _key);
+    builder::document_ctx<T>::operator value_builder() {
+        return value_builder(_builder, _key);
     }
 
 
