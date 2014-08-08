@@ -53,8 +53,8 @@ std::tuple<binary_sub_type, uint32_t, const uint8_t*> element::get_binary()
 
 const char* element::get_string() const { return bson_iter_utf8(&_iter, NULL); }
 double element::get_double() const { return bson_iter_double(&_iter); }
-int32_t element::get_int_32() const { return bson_iter_int32(&_iter); }
-int64_t element::get_int_64() const { return bson_iter_int64(&_iter); }
+int32_t element::get_int32() const { return bson_iter_int32(&_iter); }
+int64_t element::get_int64() const { return bson_iter_int64(&_iter); }
 
 namespace document {
 

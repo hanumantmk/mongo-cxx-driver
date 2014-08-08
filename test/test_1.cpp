@@ -2,8 +2,7 @@
 #include <memory>
 #include <cstring>
 
-#include "mongoc.h"
-#include "bson/document.hpp"
+#include "mongocxx.hpp"
 
 int main() {
     mongoc_init();
@@ -19,7 +18,7 @@ int main() {
         std::cout << "value is: ";
 
         if (x.type() == bson::type::_int32) {
-            std::cout << x.get_int_32();
+            std::cout << x.get_int32();
         } else {
             std::cout << x.get_string();
         }

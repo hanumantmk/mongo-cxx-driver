@@ -84,8 +84,8 @@ class element {
 
     const char* get_string() const;
     double get_double() const;
-    int32_t get_int_32() const;
-    int64_t get_int_64() const;
+    int32_t get_int32() const;
+    int64_t get_int64() const;
 
     document::view get_document() const;
     document::view get_array() const;
