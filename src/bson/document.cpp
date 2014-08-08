@@ -21,52 +21,51 @@
 
 namespace bson {
 
-thing::thing() {}
+element::element() {}
 
-thing::thing(const bson_iter_t& i) { iter = i; }
+element::element(const bson_iter_t& i) { _iter = i; }
 
-bool thing::operator==(const thing& rhs) const {
-    return (iter.raw == rhs.iter.raw && iter.off == rhs.iter.off);
+bool element::operator==(const element& rhs) const {
+    return (_iter.raw == rhs._iter.raw && _iter.off == rhs._iter.off);
 }
 
-type thing::type() const { return bson::type(bson_iter_type(&iter)); }
+type element::type() const { return bson::type(bson_iter_type(&_iter)); }
 
-const char* thing::key() const { return bson_iter_key(&iter); }
+const char* element::key() const { return bson_iter_key(&_iter); }
 
-const char* thing::get_string() const { return bson_iter_utf8(&iter, NULL); }
-
-std::tuple<const char*, uint32_t> thing::get_string_w_len() const {
+std::tuple<const char*, uint32_t> element::get_string_w_len() const {
     uint32_t len;
-    const char* str = bson_iter_utf8(&iter, &len);
+    const char* str = bson_iter_utf8(&_iter, &len);
     return std::tuple<const char*, uint32_t>(str, len);
 }
 
-std::tuple<binary_sub_type, uint32_t, const uint8_t*> thing::get_binary()
+std::tuple<binary_sub_type, uint32_t, const uint8_t*> element::get_binary()
     const {
     bson_subtype_t type;
     uint32_t len;
     const uint8_t* binary;
 
-    bson_iter_binary(&iter, &type, &len, &binary);
+    bson_iter_binary(&_iter, &type, &len, &binary);
 
     return std::tuple<binary_sub_type, uint32_t, const uint8_t*>(
         binary_sub_type(type), len, binary);
 }
 
-double thing::get_double() const { return bson_iter_double(&iter); }
-int32_t thing::get_int_32() const { return bson_iter_int32(&iter); }
-int64_t thing::get_int_64() const { return bson_iter_int64(&iter); }
+const char* element::get_string() const { return bson_iter_utf8(&_iter, NULL); }
+double element::get_double() const { return bson_iter_double(&_iter); }
+int32_t element::get_int_32() const { return bson_iter_int32(&_iter); }
+int64_t element::get_int_64() const { return bson_iter_int64(&_iter); }
 
 namespace document {
 
 view::iterator::iterator(const bson_iter_t& i) : iter(i), is_end(false) {}
 view::iterator::iterator(bool is_end) : is_end(is_end) {}
 
-const thing& view::iterator::operator*() const { return iter; }
-const thing* view::iterator::operator->() const { return &iter; }
+const element& view::iterator::operator*() const { return iter; }
+const element* view::iterator::operator->() const { return &iter; }
 
 view::iterator& view::iterator::operator++() {
-    is_end = !bson_iter_next(&iter.iter);
+    is_end = !bson_iter_next(&iter._iter);
     return *this;
 }
 
@@ -95,14 +94,14 @@ view::iterator view::begin() const {
 
 view::iterator view::end() const { return iterator(true); }
 
-thing view::operator[](const char* key) const {
+element view::operator[](const char* key) const {
     bson_t b;
     bson_iter_t iter;
 
     bson_init_static(&b, buf, len);
     bson_iter_init_find(&iter, &b, key);
 
-    return thing(iter);
+    return element(iter);
 }
 
 view::view(const uint8_t* b, std::size_t l) : buf(b), len(l) {}
@@ -140,20 +139,20 @@ value::~value() {
 }
 }
 
-document::view thing::get_document() const {
+document::view element::get_document() const {
     const uint8_t* buf;
     uint32_t len;
 
-    bson_iter_document(&iter, &len, &buf);
+    bson_iter_document(&_iter, &len, &buf);
 
     return document::view(buf, len);
 }
 
-document::view thing::get_array() const {
+document::view element::get_array() const {
     const uint8_t* buf;
     uint32_t len;
 
-    bson_iter_array(&iter, &len, &buf);
+    bson_iter_array(&_iter, &len, &buf);
 
     return document::view(buf, len);
 }

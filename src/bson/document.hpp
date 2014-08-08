@@ -65,25 +65,24 @@ namespace document {
 class view;
 };
 
-class thing {
+class element {
     friend class document::view;
 
    public:
-    thing();
-    thing(const bson_iter_t& i);
+    element();
+    element(const bson_iter_t& i);
 
-    bool operator==(const thing& rhs) const;
+    bool operator==(const element& rhs) const;
 
     bson::type type() const;
 
     const char* key() const;
 
-    const char* get_string() const;
-
     std::tuple<const char*, uint32_t> get_string_w_len() const;
 
     std::tuple<binary_sub_type, uint32_t, const uint8_t*> get_binary() const;
 
+    const char* get_string() const;
     double get_double() const;
     int32_t get_int_32() const;
     int64_t get_int_64() const;
@@ -92,7 +91,7 @@ class thing {
     document::view get_array() const;
 
    private:
-    bson_iter_t iter;
+    bson_iter_t _iter;
 };
 
 namespace document {
@@ -100,15 +99,15 @@ namespace document {
 class view {
    public:
     class iterator
-        : public std::iterator<std::forward_iterator_tag, thing, std::ptrdiff_t,
-                               const thing*, const thing&> {
+        : public std::iterator<std::forward_iterator_tag, element, std::ptrdiff_t,
+                               const element*, const element&> {
        public:
         iterator(const bson_iter_t& i);
 
         iterator(bool is_end);
 
-        const thing& operator*() const;
-        const thing* operator->() const;
+        const element& operator*() const;
+        const element* operator->() const;
 
         iterator& operator++();
 
@@ -117,14 +116,14 @@ class view {
         bool operator!=(const iterator& rhs) const;
 
        private:
-        thing iter;
+        element iter;
         bool is_end;
     };
 
     iterator begin() const;
     iterator end() const;
 
-    thing operator[](const char* key) const;
+    element operator[](const char* key) const;
 
     view(const uint8_t* b, std::size_t l);
     view();
