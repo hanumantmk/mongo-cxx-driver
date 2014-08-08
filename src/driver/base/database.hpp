@@ -49,6 +49,7 @@ class database {
     database(client* client, std::string name);
 
     client* _client;
+
     std::string _name;
     mongoc_database_t* _database;
 };

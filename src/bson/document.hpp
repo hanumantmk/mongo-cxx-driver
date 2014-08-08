@@ -27,38 +27,38 @@
 
 namespace bson {
 
-enum class type {
-    EOD = 0x00,
-    DOUBLE = 0x01,
-    UTF8 = 0x02,
-    DOCUMENT = 0x03,
-    ARRAY = 0x04,
-    BINARY = 0x05,
-    UNDEFINED = 0x06,
-    OID = 0x07,
-    BOOL = 0x08,
-    DATE_TIME = 0x09,
-    NULL_TYPE = 0x0A,
-    REGEX = 0x0B,
-    DBPOINTER = 0x0C,
-    CODE = 0x0D,
-    SYMBOL = 0x0E,
-    CODEWSCOPE = 0x0F,
-    INT32 = 0x10,
-    TIMESTAMP = 0x11,
-    INT64 = 0x12,
-    MAXKEY = 0x7F,
-    MINKEY = 0xFF,
+enum class type : unsigned char {
+    _eod = 0x00,
+    _double = 0x01,
+    _utf8 = 0x02,
+    _document = 0x03,
+    _array = 0x04,
+    _binary = 0x05,
+    _undefined = 0x06,
+    _oid = 0x07,
+    _bool = 0x08,
+    _date = 0x09,
+    _null = 0x0A,
+    _regex = 0x0B,
+    _dbpointer = 0x0C,
+    _code = 0x0D,
+    _symbol = 0x0E,
+    _codewscope = 0x0F,
+    _int32 = 0x10,
+    _timestamp = 0x11,
+    _int64 = 0x12,
+    _maxkey = 0x7F,
+    _minkey = 0xFF,
 };
 
-enum class binary_sub_type {
-    BINARY = 0x00,
-    FUNCTION = 0x01,
-    BINARY_DEPRECATED = 0x02,
-    UUID_DEPRECATED = 0x03,
-    UUID = 0x04,
-    MD5 = 0x05,
-    USER = 0x80,
+enum class binary_sub_type : unsigned char {
+    _binary = 0x00,
+    _function = 0x01,
+    _binary_deprecated = 0x02,
+    _uuid_deprecated = 0x03,
+    _uuid = 0x04,
+    _md5 = 0x05,
+    _user = 0x80,
 };
 
 namespace document {

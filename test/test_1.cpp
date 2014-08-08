@@ -18,7 +18,7 @@ int main() {
         std::cout << "type is: " << (int)(x.type()) << std::endl;
         std::cout << "value is: ";
 
-        if (x.type() == bson::type::INT32) {
+        if (x.type() == bson::type::_int32) {
             std::cout << x.get_int_32();
         } else {
             std::cout << x.get_string();

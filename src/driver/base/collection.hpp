@@ -116,6 +116,7 @@ class collection {
 
     client* _client;
     database* _database;
+
     std::string _name;
     mongoc_collection_t* _collection;
 };

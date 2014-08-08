@@ -42,6 +42,7 @@ class client {
    private:
     client(const client& client) = delete;
     client& operator=(const client& client) = delete;
+
     mongoc_client_t* _client;
 };
 
