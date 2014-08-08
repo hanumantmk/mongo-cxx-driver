@@ -72,7 +72,6 @@ class aggregatable;
 
 class collection {
 
-    friend class BulkOperationBuilder;
     friend class database;
 
    public:
@@ -104,19 +103,6 @@ class collection {
 
     bson::document::value explain(const model::explain& model) const;
     result::distinct distinct(const model::distinct& model) const;
-
-    /*
-     *        template <class T>
-     *        WriteResult bulk_write(const BulkWriteModel<T>& model) const {
-     *            BulkOperationBuilder op(this, model.ordered());
-     *
-     *            for (auto x : model.requests()) {
-     *                op.add(x);
-     *            }
-     *
-     *            return op.execute();
-     *        }
-     */
 
     int64_t count(const model::count& model) const;
 
