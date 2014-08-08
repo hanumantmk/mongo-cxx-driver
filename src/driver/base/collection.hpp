@@ -24,7 +24,6 @@
 #include "mongoc.h"
 
 #include "bson/document.hpp"
-#include "driver/base/bulk.hpp"
 #include "driver/base/cursor.hpp"
 #include "driver/fluent/findable.hpp"
 #include "driver/result/distinct.hpp"
