@@ -26,7 +26,7 @@ namespace model {
 class insert : public write<insert> {
 
    public:
-    insert(bson::document::view& document);
+    insert(bson::document::view document);
     bson::document::view document() const;
 
    private:

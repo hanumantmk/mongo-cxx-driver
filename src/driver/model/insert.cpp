@@ -20,9 +20,9 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-insert::insert(const bson::document::view& document) : _document(document) {}
+insert::insert(bson::document::view document) : _document(document) {}
 
-const bson::document::view& insert::document() const { return _document; }
+bson::document::view insert::document() const { return _document; }
 
 } // namespace model
 } // namespace driver
