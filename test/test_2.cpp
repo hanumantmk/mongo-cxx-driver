@@ -1,8 +1,6 @@
 #include <iostream>
 
-#include "bson/document.hpp"
-
-#include "driver/model/update.hpp"
+#include "mongocxx.hpp"
 
 using namespace mongo::driver;
 

@@ -23,5 +23,8 @@
 #include "driver/base/client.hpp"
 #include "driver/base/collection.hpp"
 #include "driver/base/database.hpp"
+#include "driver/base/options.hpp"
+
+#include "driver/model/update.hpp"
 
 #include "driver/base/cursor.hpp"

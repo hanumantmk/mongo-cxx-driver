@@ -18,19 +18,30 @@
 
 #include "bson/document.hpp"
 #include "driver/model/write.hpp"
+#include "driver/util/optional.hpp"
 
 namespace mongo {
 namespace driver {
 namespace model {
 
-class insert : public write<insert> {
+class find_one_and_remove : public write<find_one_and_remove> {
 
    public:
-    insert(bson::document::view& document);
-    bson::document::view document() const;
+    find_one_and_remove(bson::document::view filter);
+
+    find_one_and_remove& projection(bson::document::view projection);
+    find_one_and_remove& sort(bson::document::view ordering);
+
+    bson::document::view filter() const;
+
+    optional<bson::document::view> projection() const;
+    optional<bson::document::view> sort() const;
 
    private:
-    bson::document::view _document;
+    bson::document::view _filter;
+
+    optional<bson::document::view> _projection;
+    optional<bson::document::view> _ordering;
 };
 
 } // namespace model

@@ -18,6 +18,7 @@
 
 #include "bson/document.hpp"
 #include "driver/model/write.hpp"
+#include "driver/util/optional.hpp"
 
 namespace mongo {
 namespace driver {
@@ -26,22 +27,30 @@ namespace model {
 class find_one_and_update : public write<find_one_and_update> {
 
    public:
-    find_one_and_update(const bson::document::view& filter,
-                        const bson::document::view& update);
+    find_one_and_update(bson::document::view filter,
+                        bson::document::view update);
 
-    find_one_and_update& projection(const bson::document::view& projection);
+    find_one_and_update& projection(bson::document::view projection);
     find_one_and_update& return_replacement(bool multi);
-    find_one_and_update& sort(const bson::document::view& ordering);
+    find_one_and_update& sort(bson::document::view ordering);
     find_one_and_update& upsert(bool upsert);
 
-   private:
-    const bson::document::view& _filter;
-    const bson::document::view& _update;
+    bson::document::view filter() const;
+    bson::document::view update() const;
 
-    bson::document::view& _projection;
-    bool _return_replacement;
-    bson::document::view& _ordering;
-    bool _upsert;
+    optional<bson::document::view> projection() const;
+    optional<bool> return_replacement() const;
+    optional<bson::document::view> sort() const;
+    optional<bool> upsert() const;
+
+   private:
+    bson::document::view _filter;
+    bson::document::view _update;
+
+    optional<bson::document::view> _projection;
+    optional<bool> _return_replacement;
+    optional<bson::document::view> _ordering;
+    optional<bool> _upsert;
 };
 
 } // namespace model

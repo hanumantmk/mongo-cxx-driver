@@ -15,6 +15,7 @@
  */
 
 #include "driver/base/client.hpp"
+#include "driver/base/options.hpp"
 
 namespace mongo {
 namespace driver {
@@ -30,9 +31,14 @@ client& client::operator=(client&& rhs) {
     return *this;
 }
 
-client::client(std::string uri) { _client = mongoc_client_new(uri.c_str()); }
+client::client(options options)
+{
+    _client = mongoc_client_new(options._mongodb_uri.c_str());
+}
 
-client::~client() { mongoc_client_destroy(_client); }
+client::~client() {
+    mongoc_client_destroy(_client);
+}
 
 class database client::database(std::string database_name) {
     return mongo::driver::database(this, std::move(database_name));

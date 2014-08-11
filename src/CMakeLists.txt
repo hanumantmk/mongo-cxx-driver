@@ -5,6 +5,7 @@ add_library(mongocxx
     driver/base/collection.cpp
     driver/base/cursor.cpp
     driver/base/database.cpp
+    driver/base/options.cpp
     driver/model/bulk.cpp
     driver/model/find.cpp
     driver/model/insert.cpp

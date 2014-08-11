@@ -24,6 +24,7 @@
 #include "driver/model/aggregate.hpp"
 #include "driver/model/find.hpp"
 #include "driver/model/insert.hpp"
+#include "driver/model/update.hpp"
 #include "driver/result/write.hpp"
 #include "driver/result/distinct.hpp"
 #include "driver/request/insert.hpp"

@@ -21,6 +21,7 @@
 
 #include "bson/document.hpp"
 #include "driver/model/read.hpp"
+#include "driver/util/optional.hpp"
 
 namespace mongo {
 namespace driver {
@@ -34,11 +35,16 @@ class distinct : public read<distinct> {
     distinct& filter(bson::document::view filter);
     distinct& max_time_ms(int64_t max_time_ms);
 
+    bson::document::view field_name() const;
+
+    optional<bson::document::view> filter() const;
+    optional<int64_t> max_time_ms() const;
+
    private:
     bson::document::view _field_name;
 
-    bson::document::view _filter;
-    int64_t _max_time_ms;
+    optional<bson::document::view> _filter;
+    optional<int64_t> _max_time_ms;
 };
 
 } // namespace model

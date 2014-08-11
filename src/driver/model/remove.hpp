@@ -18,6 +18,7 @@
 
 #include "bson/document.hpp"
 #include "driver/model/write.hpp"
+#include "driver/util/optional.hpp"
 
 namespace mongo {
 namespace driver {
@@ -29,11 +30,12 @@ class remove : write<remove> {
     remove(const bson::document::view& filter);
 
     remove& multi(bool multi);
+    optional<bool> multi();
 
    private:
-    const bson::document::view& _filter;
+    bson::document::view _filter;
 
-    bool _multi;
+    optional<bool> _multi;
 };
 
 } // namespace model

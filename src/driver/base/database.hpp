@@ -28,6 +28,12 @@ namespace driver {
 class client;
 class collection;
 
+/**
+ * The database class serves as a representation of a MongoDB database. It acts as a gateway
+ * for accessing collections that are contained within the particular database that an instance of
+ * the class represents. It inherets all of its default settings from the client that calls it's
+ * constructor.
+ */
 class database {
 
     friend class client;

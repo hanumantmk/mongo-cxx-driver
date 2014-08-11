@@ -14,30 +14,26 @@
  * limitations under the License.
  */
 
-#pragma once
-
-#include "bson/document.hpp"
-#include "driver/model/write.hpp"
+#include "driver/base/options.hpp"
 
 namespace mongo {
 namespace driver {
-namespace model {
 
-class find_one_and_remove : public write<find_one_and_remove> {
+namespace {
+    const char kDefaultURI[] = "mongodb://localhost:27017";
+} // namespace
 
-   public:
-    find_one_and_remove(const bson::document::view& filter);
+options::options()
+    : _mongodb_uri(kDefaultURI)
+{}
 
-    find_one_and_remove& projection(const bson::document::view& projection);
-    find_one_and_remove& sort(const bson::document::view& ordering);
+options::options(std::string mongodb_uri)
+    : _mongodb_uri(mongodb_uri)
+{}
 
-   private:
-    const bson::document::view& _filter;
+options::options(const char* mongodb_uri)
+    : _mongodb_uri(mongodb_uri)
+{}
 
-    bson::document::view& _projection;
-    bson::document::view& _ordering;
-};
-
-} // namespace model
 } // namespace driver
 } // namespace mongo

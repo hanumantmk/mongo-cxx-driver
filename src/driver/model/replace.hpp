@@ -26,12 +26,12 @@ namespace model {
 class replace : write<replace> {
 
    public:
-    replace(const bson::document::view& filter,
-            const bson::document::view& replacement);
+    replace(bson::document::view filter,
+            bson::document::view replacement);
 
    private:
-    const bson::document::view& _filter;
-    const bson::document::view& _replacement;
+    bson::document::view _filter;
+    bson::document::view _replacement;
 };
 
 } // namespace model

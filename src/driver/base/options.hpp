@@ -16,23 +16,27 @@
 
 #pragma once
 
-#include "bson/document.hpp"
-#include "driver/model/write.hpp"
+#include <string>
 
 namespace mongo {
 namespace driver {
-namespace model {
 
-class insert : public write<insert> {
+/**
+ * The options class represents a set of options for the MongoDB driver client.
+ *
+ * @param mongodb_uri The MongoDB uri to extract options from.
+ */
+class options {
+    friend class client;
 
    public:
-    insert(bson::document::view& document);
-    bson::document::view document() const;
+    options();
+    options(std::string mongodb_uri);
+    options(const char* mongodb_uri);
 
    private:
-    bson::document::view _document;
+    std::string _mongodb_uri;
 };
 
-} // namespace model
 } // namespace driver
 } // namespace mongo

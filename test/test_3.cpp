@@ -3,20 +3,7 @@
 #include <cstring>
 #include <vector>
 
-#include "mongoc.h"
-
-#include "bson/document.hpp"
-
-#include "driver/base/client.hpp"
-#include "driver/base/database.hpp"
-#include "driver/base/collection.hpp"
-#include "driver/base/cursor.hpp"
-#include "driver/model/bulk.hpp"
-#include "driver/model/find.hpp"
-#include "driver/model/insert.hpp"
-#include "driver/request/insert.hpp"
-#include "driver/result/write.hpp"
-#include "driver/util/adapter.hpp"
+#include "mongocxx.hpp"
 
 using namespace mongo::driver;
 

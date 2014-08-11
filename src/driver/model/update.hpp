@@ -33,13 +33,14 @@ class xupdate : public write<xupdate> {
             const bson::document::view& update)
         : _filter(filter), _update(update) {}
 
-    const bson::document::view& filter() const { return _filter; }
-    const bson::document::view& update() const { return _update; }
+    bson::document::view filter() const { return _filter; }
+    bson::document::view update() const { return _update; }
 
     xupdate& multi(bool multi) {
         _multi = multi;
         return *this;
     }
+
     xupdate& upsert(bool upsert) {
         _upsert = upsert;
         return *this;
@@ -49,8 +50,8 @@ class xupdate : public write<xupdate> {
     optional<bool> upsert() const { return _upsert; }
 
    private:
-    const bson::document::view& _filter;
-    const bson::document::view& _update;
+    bson::document::view _filter;
+    bson::document::view _update;
 
     optional<bool> _multi;
     optional<bool> _upsert;
@@ -58,7 +59,7 @@ class xupdate : public write<xupdate> {
 
 } // namespace details
 
-typedef details::xupdate update;
+using update = details::xupdate;
 
 } // namespace model
 } // namespace driver

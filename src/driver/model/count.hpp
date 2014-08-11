@@ -21,6 +21,7 @@
 
 #include "bson/document.hpp"
 #include "driver/models/read.hpp"
+#include "driver/util/optional.hpp"
 
 namespace mongo {
 namespace driver {
@@ -29,21 +30,28 @@ namespace model {
 class count : public ReadModel<count> {
 
    public:
-    count(const bson::document::view& filter);
+    explicit count(bson::document::view filter);
 
-    count& filter(const bson::document::view& filter);
-    count& hint(const bson::document::view& hint);
+    count& filter(bson::document::view filter);
+    count& hint(bson::document::view hint);
     count& limit(int32_t limit);
     count& max_time_ms(int64_t max_time_ms);
     count& skip(int32_t skip);
 
-   private:
-    const bson::document::view& _filter;
+    bson::document::view filter() const;
 
-    bson::document::view& _hint;
-    int32_t _limit;
-    int64_t _max_time_ms;
-    int32_t _skip;
+    optional<bson::document::view> hint() const;
+    optional<int32_t> limit() const;
+    optional<int64_t> max_time_ms() const;
+    optional<int32_t> skip() const;
+
+   private:
+    bson::document::view _filter;
+
+    optional<bson::document::view> _hint;
+    optional<int32_t> _limit;
+    optional<int64_t> _max_time_ms;
+    optional<int32_t> _skip;
 };
 
 } // namesapce model

@@ -27,7 +27,7 @@
 
 namespace bson {
 
-enum class type : unsigned char {
+enum class type : uint8_t {
     _eod = 0x00,
     _double = 0x01,
     _utf8 = 0x02,
@@ -48,17 +48,17 @@ enum class type : unsigned char {
     _timestamp = 0x11,
     _int64 = 0x12,
     _maxkey = 0x7F,
-    _minkey = 0xFF,
+    _minkey = 0xFF
 };
 
-enum class binary_sub_type : unsigned char {
+enum class binary_sub_type : uint8_t {
     _binary = 0x00,
     _function = 0x01,
     _binary_deprecated = 0x02,
     _uuid_deprecated = 0x03,
     _uuid = 0x04,
     _md5 = 0x05,
-    _user = 0x80,
+    _user = 0x80
 };
 
 namespace document {

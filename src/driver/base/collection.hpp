@@ -33,14 +33,17 @@
 namespace mongo {
 namespace driver {
 
-namespace model {
+class client;
+class database;
+class write_concern;
+class read_preference;
 
+namespace model {
 class aggregate;
 class find;
 class find_one_and_replace;
 class find_one_and_remove;
 class find_one_and_update;
-class update;
 class remove;
 class insert;
 class replace;
@@ -48,27 +51,23 @@ class distinct;
 class count;
 class explain;
 
+namespace details {
+class xupdate;
 }
 
-namespace result {
+using update = details::xupdate;
+} // namespace model
 
+namespace result {
 class write;
 class explain;
 class distinct;
-
-}
-
-class client;
-class database;
-class write_concern;
-class read_preference;
+} // namespace result
 
 namespace fluent {
-
 class findable;
 class aggregatable;
-
-}
+} // namespace fluent
 
 class collection {
 
@@ -81,10 +80,7 @@ class collection {
     collection& operator=(collection&& client);
 
     cursor find(const model::find& model) const;
-    fluent::findable find(bson::document::view filter) const;
-
     cursor aggregate(const model::aggregate& model) const;
-    fluent::aggregatable aggregate() const;
 
     result::write insertOne(const model::insert& model);
     result::write insertMany(const model::insert& model);
