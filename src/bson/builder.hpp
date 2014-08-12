@@ -21,6 +21,7 @@
 
 #include "bson.h"
 #include "bson/document.hpp"
+#include "bson/string_or_literal.hpp"
 #include "bson/util/functor.hpp"
 
 namespace bson {
@@ -115,8 +116,8 @@ class builder {
 
         Base unwrap() { return Base(_builder); }
 
-        document_ctx<key_ctx> operator<<(const std::string& key) {
-            return document_ctx<key_ctx>(_builder, key);
+        document_ctx<key_ctx> operator<<(string_or_literal key) {
+            return document_ctx<key_ctx>(_builder, std::move(key));
         }
 
         template <typename Func>
@@ -140,7 +141,7 @@ class builder {
     template <class Base>
     class document_ctx {
        public:
-        document_ctx(builder* builder, std::string key)
+        document_ctx(builder* builder, string_or_literal key)
             : _builder(builder), _key(std::move(key)) {}
 
         Base unwrap() { return Base(_builder); }
@@ -176,14 +177,14 @@ class builder {
 
        private:
         builder* _builder;
-        std::string _key;
+        string_or_literal _key;
     };
 
     class value_builder {
        public:
         value_builder(builder* builder) : _builder(builder), _is_array(true) {}
 
-        value_builder(builder* builder, std::string key)
+        value_builder(builder* builder, string_or_literal key)
             : _builder(builder), _is_array(false), _key(key) {}
 
         array_ctx<value_builder> wrap_array() {
@@ -225,7 +226,7 @@ class builder {
        private:
         builder* _builder;
         bool _is_array;
-        std::string _key;
+        string_or_literal _key;
     };
 
     builder();
@@ -235,17 +236,17 @@ class builder {
 
     ~builder();
 
-    document_ctx<key_ctx<builder>> operator<<(const std::string& rhs) {
+    document_ctx<key_ctx<builder>> operator<<(string_or_literal rhs) {
         key_ctx<builder> ctx(this);
 
-        return ctx << rhs;
+        return ctx << std::move(rhs);
     }
 
     operator document_builder() { return document_builder(this); }
 
-    builder& key_append(const std::string& key, int32_t i32);
-    builder& key_append(const std::string& key, open_doc_t);
-    builder& key_append(const std::string& key, open_array_t);
+    builder& key_append(const string_or_literal& key, int32_t i32);
+    builder& key_append(const string_or_literal& key, open_doc_t);
+    builder& key_append(const string_or_literal& key, open_array_t);
 
     builder& nokey_append(int32_t i32);
     builder& nokey_append(open_doc_t);

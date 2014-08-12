@@ -1,6 +1,8 @@
 add_library(mongocxx
     bson/builder.cpp
     bson/document.cpp
+    bson/string_or_literal.cpp
+    bson/util/itoa.cpp
     driver/base/client.cpp
     driver/base/collection.cpp
     driver/base/cursor.cpp

@@ -15,6 +15,7 @@
  */
 
 #include "bson/builder.hpp"
+#include "bson/util/itoa.hpp"
 
 namespace bson {
 
@@ -35,7 +36,7 @@ builder::~builder() {
     }
 }
 
-builder& builder::key_append(const std::string& key, int32_t i32) {
+builder& builder::key_append(const string_or_literal& key, int32_t i32) {
     if (_stack.back().is_array) {
         throw(std::runtime_error("in subarray"));
     }
@@ -44,7 +45,7 @@ builder& builder::key_append(const std::string& key, int32_t i32) {
     return *this;
 }
 
-builder& builder::key_append(const std::string& key, open_doc_t) {
+builder& builder::key_append(const string_or_literal& key, open_doc_t) {
     if (_stack.back().is_array) {
         throw(std::runtime_error("in subarray"));
     }
@@ -57,7 +58,7 @@ builder& builder::key_append(const std::string& key, open_doc_t) {
     return *this;
 }
 
-builder& builder::key_append(const std::string& key, open_array_t) {
+builder& builder::key_append(const string_or_literal& key, open_array_t) {
     if (_stack.back().is_array) {
         throw(std::runtime_error("in subarray"));
     }
@@ -75,8 +76,9 @@ builder& builder::nokey_append(int32_t i32) {
         throw(std::runtime_error("in subdocument"));
     }
 
-    std::string key = std::to_string(_stack.back().n);
+    util::itoa key(_stack.back().n++);
     bson_append_int32(&_stack.back().bson, key.c_str(), key.length(), i32);
+
     return *this;
 }
 
@@ -89,9 +91,9 @@ builder& builder::nokey_append(open_doc_t) {
     _stack.emplace_back(false);
     bson_t* child = &_stack.back().bson;
 
-    std::string key = std::to_string(_stack.back().n);
-
+    util::itoa key(_stack.back().n++);
     bson_append_document_begin(parent, key.c_str(), key.length(), child);
+
     return *this;
 }
 
@@ -119,9 +121,9 @@ builder& builder::nokey_append(open_array_t) {
     _stack.emplace_back(true);
     bson_t* child = &_stack.back().bson;
 
-    std::string key = std::to_string(_stack.back().n);
-
+    util::itoa key(_stack.back().n++);
     bson_append_array_begin(parent, key.c_str(), key.length(), child);
+
     return *this;
 }
 
