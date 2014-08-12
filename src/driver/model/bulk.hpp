@@ -21,31 +21,31 @@
 namespace mongo {
 namespace driver {
 
-/*
- *    class WriteRequest;
- *
- *    template <class T>
- *    class BulkWriteModel : public write<BulkWriteModel<T>> {
- *    public:
- *        BulkWriteModel(const T& requests, bool ordered)
- *            : _requests(requests), _ordered(ordered)
- *        {
- *        }
- *
- *        const T& requests() const { return _requests; }
- *        bool ordered() const { return _ordered; }
- *
- *    private:
- *
- *        const T& _requests;
- *        bool _ordered;
- *    };
- *
- *    template <class T>
- *    inline BulkWriteModel<T> make_bulk_write_model(const T& requests, bool
- *ordered) {
- *        return BulkWriteModel<T>(requests, ordered);
- *    }
- */
+    /*
+     *    class WriteRequest;
+     *
+     *    template <class T>
+     *    class BulkWriteModel : public write<BulkWriteModel<T>> {
+     *    public:
+     *        BulkWriteModel(const T& requests, bool ordered)
+     *            : _requests(requests), _ordered(ordered)
+     *        {
+     *        }
+     *
+     *        const T& requests() const { return _requests; }
+     *        bool ordered() const { return _ordered; }
+     *
+     *    private:
+     *
+     *        const T& _requests;
+     *        bool _ordered;
+     *    };
+     *
+     *    template <class T>
+     *    inline BulkWriteModel<T> make_bulk_write_model(const T& requests, bool
+     *ordered) {
+     *        return BulkWriteModel<T>(requests, ordered);
+     *    }
+     */
 }
 }

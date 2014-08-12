@@ -21,7 +21,7 @@
 namespace mongo {
 namespace driver {
 
-class DistinctOperation : CommandOperation {};
+    class DistinctOperation : CommandOperation {};
 
-} // namespace driver
-} // namespace mongo
+}  // namespace driver
+}  // namespace mongo

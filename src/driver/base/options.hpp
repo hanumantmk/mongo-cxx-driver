@@ -21,22 +21,22 @@
 namespace mongo {
 namespace driver {
 
-/**
- * The options class represents a set of options for the MongoDB driver client.
- *
- * @param mongodb_uri The MongoDB uri to extract options from.
- */
-class options {
-    friend class client;
+    /**
+     * The options class represents a set of options for the MongoDB driver client.
+     *
+     * @param mongodb_uri The MongoDB uri to extract options from.
+     */
+    class options {
+        friend class client;
 
-   public:
-    options();
-    options(std::string mongodb_uri);
-    options(const char* mongodb_uri);
+       public:
+        options();
+        options(std::string mongodb_uri);
+        options(const char* mongodb_uri);
 
-   private:
-    std::string _mongodb_uri;
-};
+       private:
+        std::string _mongodb_uri;
+    };
 
-} // namespace driver
-} // namespace mongo
+}  // namespace driver
+}  // namespace mongo

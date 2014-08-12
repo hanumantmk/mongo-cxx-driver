@@ -18,10 +18,10 @@
 
 namespace mongo {
 namespace driver {
-namespace result {
+    namespace result {
 
-class distinct {};
+        class distinct {};
 
-} // namespace result
-} // namespace driver
-} // namespace mongo
+    }  // namespace result
+}  // namespace driver
+}  // namespace mongo

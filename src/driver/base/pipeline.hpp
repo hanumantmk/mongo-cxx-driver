@@ -25,26 +25,26 @@
 namespace mongo {
 namespace driver {
 
-class explain_result;
+    class explain_result;
 
-class pipeline {
-   public:
-    pipeline& geoNear(/*something*/);
-    pipeline& group(const bson::document::view& group);
-    pipeline& limit(int32_t limit);
-    pipeline& match(const bson::document::view& filter);
-    pipeline& out(const std::string& collection_name);
-    pipeline& project(const bson::document::view& projection);
-    pipeline& redact(const bson::document::view& restrictions);
-    pipeline& skip(int32_t skip);
-    pipeline& sort(const bson::document::view& ordering);
-    pipeline& unwind(const std::string& field_name);
+    class pipeline {
+       public:
+        pipeline& geoNear(/*something*/);
+        pipeline& group(bson::document::view group);
+        pipeline& limit(int32_t limit);
+        pipeline& match(bson::document::view filter);
+        pipeline& out(const std::string& collection_name);
+        pipeline& project(bson::document::view projection);
+        pipeline& redact(bson::document::view restrictions);
+        pipeline& skip(int32_t skip);
+        pipeline& sort(bson::document::view sort);
+        pipeline& unwind(const std::string& field_name);
 
-    bson::document::view operator[](int index) const;
+        bson::document::view operator[](int index) const;
 
-   private:
-    std::vector<bson::document::view> _pipeline;
-};
+       private:
+        std::vector<bson::document::view> _pipeline;
+    };
 
-} // namespace driver
-} // namespace mongo
+}  // namespace driver
+}  // namespace mongo

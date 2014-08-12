@@ -23,21 +23,21 @@
 
 namespace mongo {
 namespace driver {
-namespace model {
+    namespace model {
 
-/*
- *    class InsertRequest : public WriteRequest {
- *    public:
- *        InsertRequest(const bson::document::view& doc);
- *        InsertRequest(const insert& model);
- *
- *    private:
- *        virtual void add(mongoc_bulk_operation_t* bulk) const;
- *
- *        bson::document::view _doc;
- *    };
- */
+        /*
+         *    class InsertRequest : public WriteRequest {
+         *    public:
+         *        InsertRequest(const bson::document::view& doc);
+         *        InsertRequest(const insert& model);
+         *
+         *    private:
+         *        virtual void add(mongoc_bulk_operation_t* bulk) const;
+         *
+         *        bson::document::view _doc;
+         *    };
+         */
 
-} // namespace model
-} // namespace driver
-} // namespace mongo
+    }  // namespace model
+}  // namespace driver
+}  // namespace mongo

@@ -21,7 +21,7 @@
 namespace mongo {
 namespace driver {
 
-class FindAndModifyOperation : CommandOperation {};
+    class FindAndModifyOperation : CommandOperation {};
 
-} // namespace driver
-} // namespace mongo
+}  // namespace driver
+}  // namespace mongo

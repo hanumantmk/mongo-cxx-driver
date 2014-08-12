@@ -22,37 +22,36 @@
 
 namespace mongo {
 namespace driver {
-namespace model {
+    namespace model {
 
-class find_one_and_update : public write<find_one_and_update> {
+        class find_one_and_update : public write<find_one_and_update> {
 
-   public:
-    find_one_and_update(bson::document::view filter,
-                        bson::document::view update);
+           public:
+            find_one_and_update(bson::document::view filter, bson::document::view update);
 
-    find_one_and_update& projection(bson::document::view projection);
-    find_one_and_update& return_replacement(bool multi);
-    find_one_and_update& sort(bson::document::view ordering);
-    find_one_and_update& upsert(bool upsert);
+            find_one_and_update& projection(bson::document::view projection);
+            find_one_and_update& return_replacement(bool multi);
+            find_one_and_update& sort(bson::document::view ordering);
+            find_one_and_update& upsert(bool upsert);
 
-    bson::document::view filter() const;
-    bson::document::view update() const;
+            bson::document::view filter() const;
+            bson::document::view update() const;
 
-    optional<bson::document::view> projection() const;
-    optional<bool> return_replacement() const;
-    optional<bson::document::view> sort() const;
-    optional<bool> upsert() const;
+            optional<bson::document::view> projection() const;
+            optional<bool> return_replacement() const;
+            optional<bson::document::view> sort() const;
+            optional<bool> upsert() const;
 
-   private:
-    bson::document::view _filter;
-    bson::document::view _update;
+           private:
+            bson::document::view _filter;
+            bson::document::view _update;
 
-    optional<bson::document::view> _projection;
-    optional<bool> _return_replacement;
-    optional<bson::document::view> _ordering;
-    optional<bool> _upsert;
-};
+            optional<bson::document::view> _projection;
+            optional<bool> _return_replacement;
+            optional<bson::document::view> _ordering;
+            optional<bool> _upsert;
+        };
 
-} // namespace model
-} // namespace driver
-} // namespace mongo
+    }  // namespace model
+}  // namespace driver
+}  // namespace mongo

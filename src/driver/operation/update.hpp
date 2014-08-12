@@ -19,7 +19,7 @@
 namespace mongo {
 namespace driver {
 
-class UpdateOperation {};
+    class UpdateOperation {};
 
-} // namespace driver
-} // namespace mongo
+}  // namespace driver
+}  // namespace mongo

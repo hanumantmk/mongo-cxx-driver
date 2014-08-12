@@ -25,40 +25,41 @@
 namespace mongo {
 namespace driver {
 
-class client;
-class collection;
+    class client;
+    class collection;
 
-/**
- * The database class serves as a representation of a MongoDB database. It acts as a gateway
- * for accessing collections that are contained within the particular database that an instance of
- * the class represents. It inherets all of its default settings from the client that calls it's
- * constructor.
- */
-class database {
+    /**
+     * The database class serves as a representation of a MongoDB database. It acts as a gateway
+     * for accessing collections that are contained within the particular database that an instance
+     * of
+     * the class represents. It inherets all of its default settings from the client that calls it's
+     * constructor.
+     */
+    class database {
 
-    friend class client;
-    friend class collection;
+        friend class client;
+        friend class collection;
 
-   public:
-    database(database&& client);
-    ~database();
+       public:
+        database(database&& client);
+        ~database();
 
-    database& operator=(database&& client);
+        database& operator=(database&& client);
 
-    class collection operator[](std::string collection_name);
-    class collection collection(std::string collection_name);
+        class collection operator[](std::string collection_name);
+        class collection collection(std::string collection_name);
 
-   private:
-    database(const database& client) = delete;
-    database& operator=(const database& client) = delete;
+       private:
+        database(const database& client) = delete;
+        database& operator=(const database& client) = delete;
 
-    database(client* client, std::string name);
+        database(client* client, std::string name);
 
-    client* _client;
+        client* _client;
 
-    std::string _name;
-    mongoc_database_t* _database;
-};
+        std::string _name;
+        mongoc_database_t* _database;
+    };
 
-} // namespace driver
-} // namespace mongo
+}  // namespace driver
+}  // namespace mongo

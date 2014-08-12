@@ -27,32 +27,31 @@
 
 namespace mongo {
 namespace driver {
-namespace fluent {
+    namespace fluent {
 
-class findable {
+        class findable {
 
-    friend class collection;
+            friend class collection;
 
-   public:
-    findable& add_query_flag(const bson::document::view& group);
-    findable& add_query_modifier(const std::string& name /*, bson value*/ );
-    findable& batch_size(int32_t batch_size);
-    findable& comment(const std::string& comment);
-    findable& limit(int32_t limit);
-    findable& max_time_ms(int64_t max_time_ms);
-    findable& project(const bson::document::view& projection);
-    findable& skip(int32_t skip);
-    findable& sort(const bson::document::view& ordering);
+           public:
+            findable& add_query_flag(const bson::document::view& group);
+            findable& add_query_modifier(const std::string& name /*, bson value*/);
+            findable& batch_size(int32_t batch_size);
+            findable& comment(const std::string& comment);
+            findable& limit(int32_t limit);
+            findable& max_time_ms(int64_t max_time_ms);
+            findable& project(const bson::document::view& projection);
+            findable& skip(int32_t skip);
+            findable& sort(const bson::document::view& ordering);
 
-    int64_t count();
-    result::explain explain();
+            int64_t count();
+            result::explain explain();
 
-   private:
-    findable(const bson::document::view& filter);
-    model::find model;
+           private:
+            findable(const bson::document::view& filter);
+            model::find model;
+        };
 
-};
-
-} // namespace fluent
-} // namespace driver
-} // namespace mongo
+    }  // namespace fluent
+}  // namespace driver
+}  // namespace mongo

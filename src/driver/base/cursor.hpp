@@ -23,53 +23,51 @@
 namespace mongo {
 namespace driver {
 
-class collection;
+    class collection;
 
-class cursor {
+    class cursor {
 
-    friend class collection;
-
-   public:
-    class iterator : public std::iterator<
-        std::forward_iterator_tag, const bson::document::view&,
-        std::ptrdiff_t, const bson::document::view*,
-        const bson::document::view&
-    > {
-
-        friend class cursor;
+        friend class collection;
 
        public:
-        const bson::document::view& operator*() const;
-        const bson::document::view* operator->() const;
+        class iterator : public std::iterator<
+                             std::forward_iterator_tag, const bson::document::view&, std::ptrdiff_t,
+                             const bson::document::view*, const bson::document::view&> {
 
-        iterator& operator++();
+            friend class cursor;
 
-        bool operator==(const iterator& rhs) const;
-        bool operator!=(const iterator& rhs) const;
+           public:
+            const bson::document::view& operator*() const;
+            const bson::document::view* operator->() const;
+
+            iterator& operator++();
+
+            bool operator==(const iterator& rhs) const;
+            bool operator!=(const iterator& rhs) const;
+
+           private:
+            iterator(mongoc_cursor_t* cursor);
+
+            mongoc_cursor_t* _cursor;
+            bson::document::view _doc;
+            bool _at_end;
+        };  // class iterator
+
+        iterator begin();
+        iterator end();
+
+        cursor(cursor&& rhs);
+        cursor& operator=(cursor&& rhs);
+        ~cursor();
 
        private:
-        iterator(mongoc_cursor_t* cursor);
+        cursor(mongoc_cursor_t* cursor);
+
+        cursor(const cursor& cursor) = delete;
+        cursor& operator=(const cursor& cursor) = delete;
 
         mongoc_cursor_t* _cursor;
-        bson::document::view _doc;
-        bool _at_end;
-    };  // class iterator
+    };
 
-    iterator begin();
-    iterator end();
-
-    cursor(cursor&& rhs);
-    cursor& operator=(cursor&& rhs);
-    ~cursor();
-
-   private:
-    cursor(mongoc_cursor_t* cursor);
-
-    cursor(const cursor& cursor) = delete;
-    cursor& operator=(const cursor& cursor) = delete;
-
-    mongoc_cursor_t* _cursor;
-};
-
-} // namespace driver
-} // namespace mongo
+}  // namespace driver
+}  // namespace mongo

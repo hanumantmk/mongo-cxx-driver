@@ -62,7 +62,7 @@ enum class binary_sub_type : uint8_t {
 };
 
 namespace document {
-class view;
+    class view;
 };
 
 class element {
@@ -96,96 +96,92 @@ class element {
 
 namespace document {
 
-class view {
-   public:
-    class iterator
-        : public std::iterator<std::forward_iterator_tag, element, std::ptrdiff_t,
-                               const element*, const element&> {
+    class view {
        public:
-        iterator(const bson_iter_t& i);
+        class iterator : public std::iterator<std::forward_iterator_tag, element, std::ptrdiff_t,
+                                              const element*, const element&> {
+           public:
+            iterator(const bson_iter_t& i);
 
-        iterator(bool is_end);
+            iterator(bool is_end);
 
-        const element& operator*() const;
-        const element* operator->() const;
+            const element& operator*() const;
+            const element* operator->() const;
 
-        iterator& operator++();
+            iterator& operator++();
 
-        bool operator==(const iterator& rhs) const;
+            bool operator==(const iterator& rhs) const;
 
-        bool operator!=(const iterator& rhs) const;
+            bool operator!=(const iterator& rhs) const;
+
+           private:
+            element iter;
+            bool is_end;
+        };
+
+        iterator begin() const;
+        iterator end() const;
+
+        element operator[](const char* key) const;
+
+        view(const uint8_t* b, std::size_t l);
+        view();
+
+        const uint8_t* get_buf() const;
+        std::size_t get_len() const;
+
+       public:
+        friend std::ostream& operator<<(std::ostream& out, const bson::document::view& doc) {
+            bson_t b;
+            bson_init_static(&b, doc.get_buf(), doc.get_len());
+            char* json = bson_as_json(&b, NULL);
+            out << json;
+            bson_free(json);
+            return out;
+        }
+
+       protected:
+        const uint8_t* buf;
+        std::size_t len;
+    };
+
+    class value : public view {
+       public:
+        using view::iterator;
+
+        value(const uint8_t* b, std::size_t l, std::function<void(void*)> dtor = free);
+        value(const view& view);
+        value(value&& rhs);
+        value& operator=(value&& rhs);
+        ~value();
 
        private:
-        element iter;
-        bool is_end;
+        value(const value& rhs) = delete;
+        value& operator=(const value& rhs) = delete;
+
+        std::function<void(void*)> dtor;
     };
 
-    iterator begin() const;
-    iterator end() const;
+    class view_or_value {
+       public:
+        view_or_value(bson::document::view view);
+        view_or_value(bson::document::value value);
 
-    element operator[](const char* key) const;
+        view_or_value(view_or_value&& rhs);
+        view_or_value& operator=(view_or_value&& rhs);
 
-    view(const uint8_t* b, std::size_t l);
-    view();
+        ~view_or_value();
 
-    const uint8_t* get_buf() const;
-    std::size_t get_len() const;
+       private:
+        view_or_value(const bson::document::view_or_value& view) = delete;
+        view_or_value& operator=(const bson::document::view_or_value& view) = delete;
 
-   public:
-    friend std::ostream& operator<<(std::ostream& out,
-                                    const bson::document::view& doc) {
-        bson_t b;
-        bson_init_static(&b, doc.get_buf(), doc.get_len());
-        char* json = bson_as_json(&b, NULL);
-        out << json;
-        bson_free(json);
-        return out;
-    }
-
-   protected:
-    const uint8_t* buf;
-    std::size_t len;
-};
-
-class value : public view {
-   public:
-    using view::iterator;
-
-    value(const uint8_t* b, std::size_t l,
-          std::function<void(void*)> dtor = free);
-    value(const view& view);
-    value(value&& rhs);
-    value& operator=(value&& rhs);
-    ~value();
-
-   private:
-    value(const value& rhs) = delete;
-    value& operator=(const value& rhs) = delete;
-
-    std::function<void(void*)> dtor;
-};
-
-class view_or_value {
-   public:
-    view_or_value(bson::document::view view);
-    view_or_value(bson::document::value value);
-
-    view_or_value(view_or_value&& rhs);
-    view_or_value& operator=(view_or_value&& rhs);
-
-    ~view_or_value();
-
-   private:
-    view_or_value(const bson::document::view_or_value& view) = delete;
-    view_or_value& operator=(const bson::document::view_or_value& view) =
-        delete;
-
-    bool _is_view;
-    union {
-        bson::document::view view;
-        bson::document::value value;
+        bool _is_view;
+        union {
+            bson::document::view view;
+            bson::document::value value;
+        };
     };
-};
 }
 
 }  // namespace bson

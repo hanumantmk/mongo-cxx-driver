@@ -1,2 +1,6 @@
 BasedOnStyle: Google
 IndentWidth: 4
+Standard: Cpp11
+UseTab: Never
+ColumnLimit: 100
+NamespaceIndentation: Inner

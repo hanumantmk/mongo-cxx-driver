@@ -22,34 +22,32 @@
 
 namespace mongo {
 namespace driver {
-namespace model {
+    namespace model {
 
-class read_preference;
+        class read_preference;
 
-template <class Derived>
-class read {
+        template <class Derived>
+        class read {
 
-   public:
-    Derived& max_time_ms(uint64_t max_time_ms) {
-        _max_time_ms = max_time_ms;
-        return *this;
-    }
+           public:
+            Derived& max_time_ms(uint64_t max_time_ms) {
+                _max_time_ms = max_time_ms;
+                return *this;
+            }
 
-    optional<uint64_t> max_time_ms() const { return _max_time_ms; }
+            optional<uint64_t> max_time_ms() const { return _max_time_ms; }
 
-    Derived& read_preference(read_preference* read_preference) {
-        _read_preference = read_preference;
-    }
+            Derived& read_preference(read_preference* read_preference) {
+                _read_preference = read_preference;
+            }
 
-    optional<class read_preference*> read_preference() const {
-        return _read_preference;
-    }
+            optional<class read_preference*> read_preference() const { return _read_preference; }
 
-   protected:
-    optional<uint64_t> _max_time_ms;
-    optional<class read_preference*> _read_preference;
-};
+           protected:
+            optional<uint64_t> _max_time_ms;
+            optional<class read_preference*> _read_preference;
+        };
 
-} // namespace model
-} // namespace driver
-} // namespace mongo
+    }  // namespace model
+}  // namespace driver
+}  // namespace mongo

@@ -25,52 +25,52 @@
 
 namespace mongo {
 namespace driver {
-namespace model {
+    namespace model {
 
-enum class query_flags : uint32_t {
-    k_tailable,
-    k_oplog_replay,
-    k_no_cursor_timeout,
-    k_await_data,
-    k_exhaust,
-    k_partial
-};
+        enum class QueryFlags {
+            TAILABLE,
+            OPLOG_REPLAY,
+            NO_CURSOR_TIMEOUT,
+            AWAIT_DATA,
+            EXHAUST,
+            PARTIAL
+        };
 
-class find : public read<find> {
+        class find : public read<find> {
 
-   public:
-    explicit find(bson::document::view filter);
+           public:
+            explicit find(bson::document::view filter);
 
-    find& batch_size(int32_t batch_size);
-    find& cursor_flags(int32_t cursor_flags);
-    find& limit(int32_t limit);
-    find& modifiers(bson::document::view modifiers);
-    find& projection(bson::document::view projection);
-    find& skip(int32_t skip);
-    find& sort(bson::document::view ordering);
+            find& batch_size(int32_t batch_size);
+            find& cursor_flags(int32_t cursor_flags);
+            find& limit(int32_t limit);
+            find& modifiers(bson::document::view modifiers);
+            find& projection(bson::document::view projection);
+            find& skip(int32_t skip);
+            find& sort(bson::document::view ordering);
 
-    bson::document::view filter() const;
+            bson::document::view filter() const;
 
-    optional<int32_t> batch_size() const;
-    optional<int32_t> cursor_flags() const;
-    optional<int32_t> limit() const;
-    optional<bson::document::view> modifiers() const;
-    optional<bson::document::view> projection() const;
-    optional<int32_t> skip() const;
-    optional<bson::document::view> sort() const;
+            optional<int32_t> batch_size() const;
+            optional<int32_t> cursor_flags() const;
+            optional<int32_t> limit() const;
+            optional<bson::document::view> modifiers() const;
+            optional<bson::document::view> projection() const;
+            optional<int32_t> skip() const;
+            optional<bson::document::view> sort() const;
 
-   private:
-    bson::document::view _filter;
+           private:
+            bson::document::view _filter;
 
-    optional<int32_t> _batch_size;
-    optional<int32_t> _cursor_flags;
-    optional<int32_t> _limit;
-    optional<bson::document::view> _modifiers;
-    optional<bson::document::view> _projection;
-    optional<int32_t> _skip;
-    optional<bson::document::view> _ordering;
-};
+            optional<int32_t> _batch_size;
+            optional<int32_t> _cursor_flags;
+            optional<int32_t> _limit;
+            optional<bson::document::view> _modifiers;
+            optional<bson::document::view> _projection;
+            optional<int32_t> _skip;
+            optional<bson::document::view> _ordering;
+        };
 
-} // namespace model
-} // namespace driver
-} // namespace mongo
+    }  // namespace model
+}  // namespace driver
+}  // namespace mongo

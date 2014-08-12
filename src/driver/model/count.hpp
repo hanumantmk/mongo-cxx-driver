@@ -25,35 +25,35 @@
 
 namespace mongo {
 namespace driver {
-namespace model {
+    namespace model {
 
-class count : public ReadModel<count> {
+        class count : public ReadModel<count> {
 
-   public:
-    explicit count(bson::document::view filter);
+           public:
+            explicit count(bson::document::view filter);
 
-    count& filter(bson::document::view filter);
-    count& hint(bson::document::view hint);
-    count& limit(int32_t limit);
-    count& max_time_ms(int64_t max_time_ms);
-    count& skip(int32_t skip);
+            count& filter(bson::document::view filter);
+            count& hint(bson::document::view hint);
+            count& limit(int32_t limit);
+            count& max_time_ms(int64_t max_time_ms);
+            count& skip(int32_t skip);
 
-    bson::document::view filter() const;
+            bson::document::view filter() const;
 
-    optional<bson::document::view> hint() const;
-    optional<int32_t> limit() const;
-    optional<int64_t> max_time_ms() const;
-    optional<int32_t> skip() const;
+            optional<bson::document::view> hint() const;
+            optional<int32_t> limit() const;
+            optional<int64_t> max_time_ms() const;
+            optional<int32_t> skip() const;
 
-   private:
-    bson::document::view _filter;
+           private:
+            bson::document::view _filter;
 
-    optional<bson::document::view> _hint;
-    optional<int32_t> _limit;
-    optional<int64_t> _max_time_ms;
-    optional<int32_t> _skip;
-};
+            optional<bson::document::view> _hint;
+            optional<int32_t> _limit;
+            optional<int64_t> _max_time_ms;
+            optional<int32_t> _skip;
+        };
 
-} // namesapce model
-} // namespace driver
-} // namespace mongo
+    }  // namesapce model
+}  // namespace driver
+}  // namespace mongo

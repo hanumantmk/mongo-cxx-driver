@@ -25,32 +25,31 @@
 namespace bson {
 namespace libbson {
 
-class scoped_bson_t {
-   public:
-    scoped_bson_t(const mongo::driver::optional<bson::document::view>& doc);
-    scoped_bson_t(const bson::document::view& doc);
-    scoped_bson_t();
+    class scoped_bson_t {
+       public:
+        scoped_bson_t(const mongo::driver::optional<bson::document::view>& doc);
+        scoped_bson_t(const bson::document::view& doc);
+        scoped_bson_t();
 
-    void init_from_static(
-        const mongo::driver::optional<bson::document::view>& doc);
-    void init_from_static(const bson::document::view& doc);
-    void init();
+        void init_from_static(const mongo::driver::optional<bson::document::view>& doc);
+        void init_from_static(const bson::document::view& doc);
+        void init();
 
-    ~scoped_bson_t();
+        ~scoped_bson_t();
 
-    bson_t* bson();
+        bson_t* bson();
 
-    bson::document::view view();
+        bson::document::view view();
 
-   private:
-    scoped_bson_t(const scoped_bson_t& rhs) = delete;
-    scoped_bson_t& operator=(const scoped_bson_t& rhs) = delete;
-    scoped_bson_t(scoped_bson_t&& rhs) = delete;
-    scoped_bson_t& operator=(scoped_bson_t&& rhs) = delete;
+       private:
+        scoped_bson_t(const scoped_bson_t& rhs) = delete;
+        scoped_bson_t& operator=(const scoped_bson_t& rhs) = delete;
+        scoped_bson_t(scoped_bson_t&& rhs) = delete;
+        scoped_bson_t& operator=(scoped_bson_t&& rhs) = delete;
 
-    bson_t _bson;
-    bool _is_initialized;
-};
+        bson_t _bson;
+        bool _is_initialized;
+    };
 
-} // namespace libbson
-} // namespace bson
+}  // namespace libbson
+}  // namespace bson

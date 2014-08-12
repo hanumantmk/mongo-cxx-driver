@@ -23,36 +23,36 @@
 namespace mongo {
 namespace driver {
 
-class options;
+    class options;
 
-/**
- * The client class is the entrypoint into the MongoDB driver. It acts as a logical gateway for
- * accessing the databases of MongoDB clusters. Databases that are accessed via a client inherit
- * all of the options specified on the client.
- *
- * @param options The options for this client.
- * @param client The client to copy.
- */
-class client {
-    friend class database;
-    friend class collection;
+    /**
+     * The client class is the entrypoint into the MongoDB driver. It acts as a logical gateway for
+     * accessing the databases of MongoDB clusters. Databases that are accessed via a client inherit
+     * all of the options specified on the client.
+     *
+     * @param options The options for this client.
+     * @param client The client to copy.
+     */
+    class client {
+        friend class database;
+        friend class collection;
 
-   public:
-    client(options options);
-    explicit client(client&& client);
-    ~client();
+       public:
+        client(options options);
+        explicit client(client&& client);
+        ~client();
 
-    client& operator=(client&& client);
+        client& operator=(client&& client);
 
-    class database operator[](std::string database_name);
-    class database database(std::string database_name);
+        class database operator[](std::string database_name);
+        class database database(std::string database_name);
 
-   private:
-    client(const client& client) = delete;
-    client& operator=(const client& client) = delete;
+       private:
+        client(const client& client) = delete;
+        client& operator=(const client& client) = delete;
 
-    mongoc_client_t* _client;
-};
+        mongoc_client_t* _client;
+    };
 
-} // namespace driver
-} // namespace mongo
+}  // namespace driver
+}  // namespace mongo

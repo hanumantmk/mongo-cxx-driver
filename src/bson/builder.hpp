@@ -65,12 +65,8 @@ class builder {
 
         Base unwrap() { return Base(_builder); }
 
-        array_ctx<array_ctx> wrap_array() {
-            return array_ctx<array_ctx>(_builder);
-        }
-        key_ctx<array_ctx> wrap_document() {
-            return key_ctx<array_ctx>(_builder);
-        }
+        array_ctx<array_ctx> wrap_array() { return array_ctx<array_ctx>(_builder); }
+        key_ctx<array_ctx> wrap_document() { return key_ctx<array_ctx>(_builder); }
 
         template <class T>
         typename std::enable_if<!(util::is_functor<T, void(array_builder)>::value || util::is_functor<T, void(value_builder)>::value || std::is_same<T, close_doc_t>::value), array_ctx>::type& operator<<(
@@ -187,12 +183,8 @@ class builder {
         value_builder(builder* builder, string_or_literal key)
             : _builder(builder), _is_array(false), _key(key) {}
 
-        array_ctx<value_builder> wrap_array() {
-            return array_ctx<value_builder>(_builder);
-        }
-        key_ctx<value_builder> wrap_document() {
-            return key_ctx<value_builder>(_builder);
-        }
+        array_ctx<value_builder> wrap_array() { return array_ctx<value_builder>(_builder); }
+        key_ctx<value_builder> wrap_document() { return key_ctx<value_builder>(_builder); }
 
         key_ctx<value_builder> operator<<(open_doc_t) {
             if (_is_array) {
