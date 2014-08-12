@@ -21,55 +21,55 @@
 namespace mongo {
 namespace driver {
 
-    template <class In, typename Func>
-    class Adapter {
+template <class In, typename Func>
+class Adapter {
+   public:
+    typedef decltype(*(std::declval<In>().begin())) inner_iter;
+
+    typedef typename std::result_of<Func(inner_iter)>::type Out;
+
+    class iterator : public std::iterator<std::forward_iterator_tag, const Out&, std::ptrdiff_t,
+                                          const Out*, const Out&> {
+        friend class Adapter;
+
        public:
-        typedef decltype(*(std::declval<In>().begin())) inner_iter;
+        Out operator*() const { return _adapter->_func(*_iterator); }
 
-        typedef typename std::result_of<Func(inner_iter)>::type Out;
+        iterator& operator++() {
+            ++_iterator;
+            return *this;
+        }
 
-        class iterator : public std::iterator<std::forward_iterator_tag, const Out&, std::ptrdiff_t,
-                                              const Out*, const Out&> {
-            friend class Adapter;
+        bool operator==(const iterator& rhs) const { return _iterator == rhs._iterator; }
 
-           public:
-            Out operator*() const { return _adapter->_func(*_iterator); }
-
-            iterator& operator++() {
-                ++_iterator;
-                return *this;
-            }
-
-            bool operator==(const iterator& rhs) const { return _iterator == rhs._iterator; }
-
-            bool operator!=(const iterator& rhs) const { return !(*this == rhs); }
-
-           private:
-            iterator(const Adapter* adapter, typename In::iterator&& iterator)
-                : _adapter(adapter), _iterator(std::move(iterator)) {}
-
-            const Adapter* _adapter;
-
-            typename In::iterator _iterator;
-        };
-
-        friend class iterator;
-
-        Adapter(const In* in, Func func) : _in(in), _func(func) {}
-
-        iterator begin() const { return iterator(this, std::move(_in->begin())); }
-
-        iterator end() const { return iterator(this, std::move(_in->end())); }
+        bool operator!=(const iterator& rhs) const { return !(*this == rhs); }
 
        private:
-        const In* _in;
-        Func _func;
+        iterator(const Adapter* adapter, typename In::iterator&& iterator)
+            : _adapter(adapter), _iterator(std::move(iterator)) {}
+
+        const Adapter* _adapter;
+
+        typename In::iterator _iterator;
     };
 
-    template <class In, typename Func>
-    inline Adapter<In, Func> make_adapter(const In* in, Func func) {
-        return Adapter<In, Func>(in, func);
-    }
+    friend class iterator;
+
+    Adapter(const In* in, Func func) : _in(in), _func(func) {}
+
+    iterator begin() const { return iterator(this, std::move(_in->begin())); }
+
+    iterator end() const { return iterator(this, std::move(_in->end())); }
+
+   private:
+    const In* _in;
+    Func _func;
+};
+
+template <class In, typename Func>
+inline Adapter<In, Func> make_adapter(const In* in, Func func) {
+    return Adapter<In, Func>(in, func);
+}
 
 }  // namespace driver
 }  // namespace mongo

@@ -19,7 +19,7 @@
 namespace mongo {
 namespace driver {
 
-    class RemoveOperation {};
+class RemoveOperation {};
 
 }  // namespace driver
 }  // namespace mongo

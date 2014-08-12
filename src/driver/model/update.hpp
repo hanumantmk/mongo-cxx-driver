@@ -22,44 +22,44 @@
 
 namespace mongo {
 namespace driver {
-    namespace model {
+namespace model {
 
-        namespace details {
+namespace details {
 
-            class xupdate : public write<xupdate> {
+class xupdate : public write<xupdate> {
 
-               public:
-                xupdate(const bson::document::view& filter, const bson::document::view& update)
-                    : _filter(filter), _update(update) {}
+   public:
+    xupdate(const bson::document::view& filter, const bson::document::view& update)
+        : _filter(filter), _update(update) {}
 
-                bson::document::view filter() const { return _filter; }
-                bson::document::view update() const { return _update; }
+    bson::document::view filter() const { return _filter; }
+    bson::document::view update() const { return _update; }
 
-                xupdate& multi(bool multi) {
-                    _multi = multi;
-                    return *this;
-                }
+    xupdate& multi(bool multi) {
+        _multi = multi;
+        return *this;
+    }
 
-                xupdate& upsert(bool upsert) {
-                    _upsert = upsert;
-                    return *this;
-                }
+    xupdate& upsert(bool upsert) {
+        _upsert = upsert;
+        return *this;
+    }
 
-                optional<bool> multi() const { return _multi; }
-                optional<bool> upsert() const { return _upsert; }
+    optional<bool> multi() const { return _multi; }
+    optional<bool> upsert() const { return _upsert; }
 
-               private:
-                bson::document::view _filter;
-                bson::document::view _update;
+   private:
+    bson::document::view _filter;
+    bson::document::view _update;
 
-                optional<bool> _multi;
-                optional<bool> _upsert;
-            };
+    optional<bool> _multi;
+    optional<bool> _upsert;
+};
 
-        }  // namespace details
+}  // namespace details
 
-        using update = details::xupdate;
+using update = details::xupdate;
 
-    }  // namespace model
+}  // namespace model
 }  // namespace driver
 }  // namespace mongo

@@ -21,17 +21,17 @@
 namespace mongo {
 namespace driver {
 
-    /*
-     *    class BulkOperationBuilder;
-     *
-     *    class WriteRequest {
-     *        friend class BulkOperationBuilder;
-     *    public:
-     *        virtual ~WriteRequest() {}
-     *    private:
-     *        virtual void add(mongoc_bulk_operation_t* bulk) const = 0;
-     *    };
-     */
+/*
+ *    class BulkOperationBuilder;
+ *
+ *    class WriteRequest {
+ *        friend class BulkOperationBuilder;
+ *    public:
+ *        virtual ~WriteRequest() {}
+ *    private:
+ *        virtual void add(mongoc_bulk_operation_t* bulk) const = 0;
+ *    };
+ */
 
 }  // namespace driver
 }  // namespace mongo

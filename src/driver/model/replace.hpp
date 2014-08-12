@@ -21,18 +21,18 @@
 
 namespace mongo {
 namespace driver {
-    namespace model {
+namespace model {
 
-        class replace : write<replace> {
+class replace : write<replace> {
 
-           public:
-            replace(bson::document::view filter, bson::document::view replacement);
+   public:
+    replace(bson::document::view filter, bson::document::view replacement);
 
-           private:
-            bson::document::view _filter;
-            bson::document::view _replacement;
-        };
+   private:
+    bson::document::view _filter;
+    bson::document::view _replacement;
+};
 
-    }  // namespace model
+}  // namespace model
 }  // namespace driver
 }  // namespace mongo
