@@ -22,9 +22,17 @@
 
 #include "driver/base/client.hpp"
 #include "driver/base/collection.hpp"
+#include "driver/base/cursor.hpp"
 #include "driver/base/database.hpp"
 #include "driver/base/options.hpp"
 
+#include "driver/model/find.hpp"
+#include "driver/model/find_one_and_remove.hpp"
+#include "driver/model/find_one_and_replace.hpp"
+#include "driver/model/find_one_and_update.hpp"
+#include "driver/model/replace.hpp"
 #include "driver/model/update.hpp"
 
-#include "driver/base/cursor.hpp"
+#include "driver/result/distinct.hpp"
+#include "driver/result/explain.hpp"
+#include "driver/result/write.hpp"

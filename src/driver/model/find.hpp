@@ -27,13 +27,13 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-enum class QueryFlags {
-    TAILABLE,
-    OPLOG_REPLAY,
-    NO_CURSOR_TIMEOUT,
-    AWAIT_DATA,
-    EXHAUST,
-    PARTIAL
+enum class query_flags : uint32_t {
+    k_tailable,
+    k_oplog_replay,
+    k_no_cursor_timeout,
+    k_await_data,
+    k_exhaust,
+    k_partial
 };
 
 class find : public read<find> {

@@ -46,6 +46,7 @@ class aggregate : public read<aggregate> {
 
    private:
     pipeline _pipeline;
+
     optional<bool> _allow_disk_use;
     optional<int32_t> _batch_size;
     optional<int64_t> _max_time_ms;

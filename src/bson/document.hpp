@@ -28,37 +28,37 @@
 namespace bson {
 
 enum class type : uint8_t {
-    _eod = 0x00,
-    _double = 0x01,
-    _utf8 = 0x02,
-    _document = 0x03,
-    _array = 0x04,
-    _binary = 0x05,
-    _undefined = 0x06,
-    _oid = 0x07,
-    _bool = 0x08,
-    _date = 0x09,
-    _null = 0x0A,
-    _regex = 0x0B,
-    _dbpointer = 0x0C,
-    _code = 0x0D,
-    _symbol = 0x0E,
-    _codewscope = 0x0F,
-    _int32 = 0x10,
-    _timestamp = 0x11,
-    _int64 = 0x12,
-    _maxkey = 0x7F,
-    _minkey = 0xFF
+    k_eod = 0x00,
+    k_double = 0x01,
+    k_utf8 = 0x02,
+    k_document = 0x03,
+    k_array = 0x04,
+    k_binary = 0x05,
+    k_undefined = 0x06,
+    k_oid = 0x07,
+    k_bool = 0x08,
+    k_date = 0x09,
+    k_null = 0x0A,
+    k_regex = 0x0B,
+    k_dbpointer = 0x0C,
+    k_code = 0x0D,
+    k_symbol = 0x0E,
+    k_codewscope = 0x0F,
+    k_int32 = 0x10,
+    k_timestamp = 0x11,
+    k_int64 = 0x12,
+    k_maxkey = 0x7F,
+    k_minkey = 0xFF
 };
 
 enum class binary_sub_type : uint8_t {
-    _binary = 0x00,
-    _function = 0x01,
-    _binary_deprecated = 0x02,
-    _uuid_deprecated = 0x03,
-    _uuid = 0x04,
-    _md5 = 0x05,
-    _user = 0x80
+    k_binary = 0x00,
+    k_function = 0x01,
+    k_binary_deprecated = 0x02,
+    k_uuid_deprecated = 0x03,
+    k_uuid = 0x04,
+    k_md5 = 0x05,
+    k_user = 0x80
 };
 
 namespace document {

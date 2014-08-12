@@ -31,9 +31,10 @@ class cursor {
 
    public:
     class iterator : public std::iterator<
-                         std::forward_iterator_tag, const bson::document::view&,
-                         std::ptrdiff_t, const bson::document::view*,
-                         const bson::document::view&> {
+        std::forward_iterator_tag, const bson::document::view&,
+        std::ptrdiff_t, const bson::document::view*,
+        const bson::document::view&
+    > {
 
         friend class cursor;
 
