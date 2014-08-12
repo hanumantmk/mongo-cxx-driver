@@ -65,7 +65,7 @@ scoped_bson_t::~scoped_bson_t() {
     }
 }
 
-bson_t* scoped_bson_t::bson() { return _is_initialized ? &_bson : NULL; }
+bson_t* scoped_bson_t::bson() { return _is_initialized ? &_bson : nullptr; }
 
 bson::document::view scoped_bson_t::view() {
     return _is_initialized

@@ -82,12 +82,12 @@ cursor collection::find(const model::find& model) const {
         model.batch_size().value_or(0),
         filter.bson(),
         projection.bson(),
-        NULL
+        nullptr
     ));
 }
 
 cursor collection::aggregate(const model::aggregate& /* model */) const {
-    return cursor(NULL);
+    return cursor(nullptr);
 }
 
 result::write collection::replaceOne(const model::replace& /* model */) {
@@ -110,20 +110,20 @@ result::write collection::removeOne(const model::remove& /* model */) {
 
 bson::document::value collection::find_one_and_replace(
     const model::find_one_and_replace& /* model */) {
-    return bson::document::value((const uint8_t*)NULL, 0);
+    return bson::document::value((const uint8_t*)nullptr, 0);
 }
 bson::document::value collection::find_one_and_update(
     const model::find_one_and_update& /* model */) {
-    return bson::document::value((const uint8_t*)NULL, 0);
+    return bson::document::value((const uint8_t*)nullptr, 0);
 }
 bson::document::value collection::find_one_and_remove(
     const model::find_one_and_remove& /* model */) {
-    return bson::document::value((const uint8_t*)NULL, 0);
+    return bson::document::value((const uint8_t*)nullptr, 0);
 }
 
 bson::document::value collection::explain(const model::explain& /*model*/)
     const {
-    return bson::document::value((const uint8_t*)NULL, 0);
+    return bson::document::value((const uint8_t*)nullptr, 0);
 }
 
 result::distinct collection::distinct(const model::distinct& /* model */)

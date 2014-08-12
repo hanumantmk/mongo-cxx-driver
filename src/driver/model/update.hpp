@@ -29,8 +29,8 @@ namespace details {
 class xupdate : public write<xupdate> {
 
    public:
-    xupdate(const bson::document::view& filter, const bson::document::view& update)
-        : _filter(filter), _update(update) {}
+    xupdate(bson::document::view  filter, bson::document::view  update)
+        : _filter(std::move(filter)), _update(std::move(update)) {}
 
     bson::document::view filter() const { return _filter; }
     bson::document::view update() const { return _update; }

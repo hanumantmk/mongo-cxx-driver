@@ -134,7 +134,7 @@ class view {
     friend std::ostream& operator<<(std::ostream& out, const bson::document::view& doc) {
         bson_t b;
         bson_init_static(&b, doc.get_buf(), doc.get_len());
-        char* json = bson_as_json(&b, NULL);
+        char* json = bson_as_json(&b, nullptr);
         out << json;
         bson_free(json);
         return out;

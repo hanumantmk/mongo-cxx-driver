@@ -50,7 +50,7 @@ cursor::iterator& cursor::iterator::operator++() {
 
 cursor::iterator cursor::begin() { return iterator(_cursor); }
 
-cursor::iterator cursor::end() { return iterator(NULL); }
+cursor::iterator cursor::end() { return iterator(nullptr); }
 
 cursor::iterator::iterator(mongoc_cursor_t* cursor)
     : _cursor(cursor), _at_end(!cursor) {

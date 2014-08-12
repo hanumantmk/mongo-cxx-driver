@@ -20,7 +20,7 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-insert::insert(bson::document::view document) : _document(document) {}
+insert::insert(bson::document::view document) : _document(std::move(document)) {}
 
 bson::document::view insert::document() const { return _document; }
 

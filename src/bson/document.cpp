@@ -51,7 +51,7 @@ std::tuple<binary_sub_type, uint32_t, const uint8_t*> element::get_binary()
         binary_sub_type(type), len, binary);
 }
 
-const char* element::get_string() const { return bson_iter_utf8(&_iter, NULL); }
+const char* element::get_string() const { return bson_iter_utf8(&_iter, nullptr); }
 double element::get_double() const { return bson_iter_double(&_iter); }
 int32_t element::get_int32() const { return bson_iter_int32(&_iter); }
 int64_t element::get_int64() const { return bson_iter_int64(&_iter); }
@@ -105,13 +105,13 @@ element view::operator[](const char* key) const {
 }
 
 view::view(const uint8_t* b, std::size_t l) : buf(b), len(l) {}
-view::view() : buf(NULL), len(0) {}
+view::view() : buf(nullptr), len(0) {}
 
 const uint8_t* view::get_buf() const { return buf; }
 std::size_t view::get_len() const { return len; }
 
 value::value(const uint8_t* b, std::size_t l, std::function<void(void*)> dtor)
-    : view(b, l), dtor(dtor) {}
+    : view(b, l), dtor(std::move(dtor)) {}
 
 value::value(const view& view)
     : bson::document::view((uint8_t*)malloc((std::size_t)view.get_len()),
@@ -127,7 +127,7 @@ value& value::operator=(value&& rhs) {
     len = rhs.len;
     dtor = rhs.dtor;
 
-    rhs.buf = NULL;
+    rhs.buf = nullptr;
 
     return *this;
 }

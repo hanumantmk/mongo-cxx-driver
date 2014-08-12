@@ -22,12 +22,12 @@ namespace driver {
 
 client::client(client&& rhs) {
     _client = rhs._client;
-    rhs._client = NULL;
+    rhs._client = nullptr;
 }
 
 client& client::operator=(client&& rhs) {
     _client = rhs._client;
-    rhs._client = NULL;
+    rhs._client = nullptr;
     return *this;
 }
 

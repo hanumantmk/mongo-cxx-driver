@@ -15,6 +15,7 @@
  */
 
 #include "driver/base/options.hpp"
+#include <utility>
 
 namespace mongo {
 namespace driver {
@@ -28,7 +29,7 @@ options::options()
 {}
 
 options::options(std::string mongodb_uri)
-    : _mongodb_uri(mongodb_uri)
+    : _mongodb_uri(std::move(mongodb_uri))
 {}
 
 options::options(const char* mongodb_uri)
