@@ -24,7 +24,7 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-class find_one_and_replace : public write<find_one_and_replace> {
+class LIBMONGOCXX_EXPORT find_one_and_replace : public write<find_one_and_replace> {
 
    public:
     find_one_and_replace(bson::document::view filter, bson::document::view replacement);

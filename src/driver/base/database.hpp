@@ -35,24 +35,25 @@ class collection;
  * the class represents. It inherets all of its default settings from the client that calls it's
  * constructor.
  */
-class database {
+class LIBMONGOCXX_EXPORT database {
 
     friend class client;
     friend class collection;
 
    public:
+    database(const database&) = delete;
     database(database&& client);
+
+    database& operator=(const database&) = delete;
+    database& operator=(database&& client);
+
     ~database();
 
-    database& operator=(database&& client);
 
     class collection operator[](std::string collection_name);
     class collection collection(std::string collection_name);
 
    private:
-    database(const database& client) = delete;
-    database& operator=(const database& client) = delete;
-
     database(client* client, std::string name);
 
     client* _client;

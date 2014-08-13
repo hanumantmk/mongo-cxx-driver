@@ -27,16 +27,16 @@ namespace driver {
 
 class explain_result;
 
-class pipeline {
+class LIBMONGOCXX_EXPORT pipeline {
    public:
     pipeline& geoNear(/*something*/);
     pipeline& group(bson::document::view group);
-    pipeline& limit(int32_t limit);
+    pipeline& limit(std::int32_t limit);
     pipeline& match(bson::document::view filter);
     pipeline& out(const std::string& collection_name);
     pipeline& project(bson::document::view projection);
     pipeline& redact(bson::document::view restrictions);
-    pipeline& skip(int32_t skip);
+    pipeline& skip(std::int32_t skip);
     pipeline& sort(bson::document::view sort);
     pipeline& unwind(const std::string& field_name);
 

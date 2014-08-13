@@ -27,7 +27,7 @@
 
 namespace bson {
 
-enum class type : uint8_t {
+enum class type : ustd::int8_t {
     k_eod = 0x00,
     k_double = 0x01,
     k_utf8 = 0x02,
@@ -51,7 +51,7 @@ enum class type : uint8_t {
     k_minkey = 0xFF
 };
 
-enum class binary_sub_type : uint8_t {
+enum class binary_sub_type : ustd::int8_t {
     k_binary = 0x00,
     k_function = 0x01,
     k_binary_deprecated = 0x02,
@@ -65,7 +65,7 @@ namespace document {
 class view;
 };
 
-class element {
+class LIBMONGOCXX_EXPORT element {
     friend class document::view;
 
    public:
@@ -78,14 +78,14 @@ class element {
 
     const char* key() const;
 
-    std::tuple<const char*, uint32_t> get_string_w_len() const;
+    std::tuple<const char*, ustd::int32_t> get_string_w_len() const;
 
-    std::tuple<binary_sub_type, uint32_t, const uint8_t*> get_binary() const;
+    std::tuple<binary_sub_type, ustd::int32_t, const ustd::int8_t*> get_binary() const;
 
     const char* get_string() const;
     double get_double() const;
-    int32_t get_int32() const;
-    int64_t get_int64() const;
+    std::int32_t get_int32() const;
+    std::int64_t get_int64() const;
 
     document::view get_document() const;
     document::view get_array() const;
@@ -96,7 +96,7 @@ class element {
 
 namespace document {
 
-class view {
+class LIBMONGOCXX_EXPORT view {
    public:
     class iterator : public std::iterator<std::forward_iterator_tag, element, std::ptrdiff_t,
                                           const element*, const element&> {
@@ -124,10 +124,10 @@ class view {
 
     element operator[](const char* key) const;
 
-    view(const uint8_t* b, std::size_t l);
+    view(const ustd::int8_t* b, std::size_t l);
     view();
 
-    const uint8_t* get_buf() const;
+    const ustd::int8_t* get_buf() const;
     std::size_t get_len() const;
 
    public:
@@ -141,15 +141,15 @@ class view {
     }
 
    protected:
-    const uint8_t* buf;
+    const ustd::int8_t* buf;
     std::size_t len;
 };
 
-class value : public view {
+class LIBMONGOCXX_EXPORT value : public view {
    public:
     using view::iterator;
 
-    value(const uint8_t* b, std::size_t l, std::function<void(void*)> dtor = free);
+    value(const ustd::int8_t* b, std::size_t l, std::function<void(void*)> dtor = free);
     value(const view& view);
     value(value&& rhs);
     value& operator=(value&& rhs);
@@ -162,7 +162,7 @@ class value : public view {
     std::function<void(void*)> dtor;
 };
 
-class view_or_value {
+class LIBMONGOCXX_EXPORT view_or_value {
    public:
     view_or_value(bson::document::view view);
     view_or_value(bson::document::value value);

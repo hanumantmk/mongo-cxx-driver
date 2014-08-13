@@ -33,28 +33,28 @@ type element::type() const { return bson::type(bson_iter_type(&_iter)); }
 
 const char* element::key() const { return bson_iter_key(&_iter); }
 
-std::tuple<const char*, uint32_t> element::get_string_w_len() const {
-    uint32_t len;
+std::tuple<const char*, ustd::int32_t> element::get_string_w_len() const {
+    ustd::int32_t len;
     const char* str = bson_iter_utf8(&_iter, &len);
-    return std::tuple<const char*, uint32_t>(str, len);
+    return std::tuple<const char*, ustd::int32_t>(str, len);
 }
 
-std::tuple<binary_sub_type, uint32_t, const uint8_t*> element::get_binary()
+std::tuple<binary_sub_type, ustd::int32_t, const ustd::int8_t*> element::get_binary()
     const {
     bson_subtype_t type;
-    uint32_t len;
-    const uint8_t* binary;
+    ustd::int32_t len;
+    const ustd::int8_t* binary;
 
     bson_iter_binary(&_iter, &type, &len, &binary);
 
-    return std::tuple<binary_sub_type, uint32_t, const uint8_t*>(
+    return std::tuple<binary_sub_type, ustd::int32_t, const ustd::int8_t*>(
         binary_sub_type(type), len, binary);
 }
 
 const char* element::get_string() const { return bson_iter_utf8(&_iter, nullptr); }
 double element::get_double() const { return bson_iter_double(&_iter); }
-int32_t element::get_int32() const { return bson_iter_int32(&_iter); }
-int64_t element::get_int64() const { return bson_iter_int64(&_iter); }
+std::int32_t element::get_int32() const { return bson_iter_int32(&_iter); }
+std::int64_t element::get_int64() const { return bson_iter_int64(&_iter); }
 
 namespace document {
 
@@ -104,17 +104,17 @@ element view::operator[](const char* key) const {
     return element(iter);
 }
 
-view::view(const uint8_t* b, std::size_t l) : buf(b), len(l) {}
+view::view(const ustd::int8_t* b, std::size_t l) : buf(b), len(l) {}
 view::view() : buf(nullptr), len(0) {}
 
-const uint8_t* view::get_buf() const { return buf; }
+const ustd::int8_t* view::get_buf() const { return buf; }
 std::size_t view::get_len() const { return len; }
 
-value::value(const uint8_t* b, std::size_t l, std::function<void(void*)> dtor)
+value::value(const ustd::int8_t* b, std::size_t l, std::function<void(void*)> dtor)
     : view(b, l), dtor(std::move(dtor)) {}
 
 value::value(const view& view)
-    : bson::document::view((uint8_t*)malloc((std::size_t)view.get_len()),
+    : bson::document::view((ustd::int8_t*)malloc((std::size_t)view.get_len()),
                            view.get_len()),
       dtor(free) {
     std::memcpy((void*)buf, view.get_buf(), view.get_len());
@@ -140,8 +140,8 @@ value::~value() {
 }
 
 document::view element::get_document() const {
-    const uint8_t* buf;
-    uint32_t len;
+    const ustd::int8_t* buf;
+    ustd::int32_t len;
 
     bson_iter_document(&_iter, &len, &buf);
 
@@ -149,8 +149,8 @@ document::view element::get_document() const {
 }
 
 document::view element::get_array() const {
-    const uint8_t* buf;
-    uint32_t len;
+    const ustd::int8_t* buf;
+    ustd::int32_t len;
 
     bson_iter_array(&_iter, &len, &buf);
 

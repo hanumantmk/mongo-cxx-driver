@@ -27,15 +27,15 @@ namespace model {
 class read_preference;
 
 template <class Derived>
-class read {
+class LIBMONGOCXX_EXPORT read {
 
    public:
-    Derived& max_time_ms(uint64_t max_time_ms) {
+    Derived& max_time_ms(ustd::int64_t max_time_ms) {
         _max_time_ms = max_time_ms;
         return *this;
     }
 
-    optional<uint64_t> max_time_ms() const { return _max_time_ms; }
+    optional<ustd::int64_t> max_time_ms() const { return _max_time_ms; }
 
     Derived& read_preference(read_preference* read_preference) {
         _read_preference = read_preference;
@@ -44,7 +44,7 @@ class read {
     optional<class read_preference*> read_preference() const { return _read_preference; }
 
    protected:
-    optional<uint64_t> _max_time_ms;
+    optional<ustd::int64_t> _max_time_ms;
     optional<class read_preference*> _read_preference;
 };
 

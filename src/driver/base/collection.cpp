@@ -110,27 +110,27 @@ result::write collection::removeOne(const model::remove& /* model */) {
 
 bson::document::value collection::find_one_and_replace(
     const model::find_one_and_replace& /* model */) {
-    return bson::document::value((const uint8_t*)nullptr, 0);
+    return bson::document::value((const ustd::int8_t*)nullptr, 0);
 }
 bson::document::value collection::find_one_and_update(
     const model::find_one_and_update& /* model */) {
-    return bson::document::value((const uint8_t*)nullptr, 0);
+    return bson::document::value((const ustd::int8_t*)nullptr, 0);
 }
 bson::document::value collection::find_one_and_remove(
     const model::find_one_and_remove& /* model */) {
-    return bson::document::value((const uint8_t*)nullptr, 0);
+    return bson::document::value((const ustd::int8_t*)nullptr, 0);
 }
 
 bson::document::value collection::explain(const model::explain& /*model*/)
     const {
-    return bson::document::value((const uint8_t*)nullptr, 0);
+    return bson::document::value((const ustd::int8_t*)nullptr, 0);
 }
 
 result::distinct collection::distinct(const model::distinct& /* model */)
     const {
     return result::distinct();
 }
-int64_t collection::count(const model::count& /* model */) const { return 0; }
+std::int64_t collection::count(const model::count& /* model */) const { return 0; }
 
 void collection::drop() {
     bson_error_t error;

@@ -236,11 +236,11 @@ class builder {
 
     operator document_builder() { return document_builder(this); }
 
-    builder& key_append(const string_or_literal& key, int32_t i32);
+    builder& key_append(const string_or_literal& key, std::int32_t i32);
     builder& key_append(const string_or_literal& key, open_doc_t);
     builder& key_append(const string_or_literal& key, open_array_t);
 
-    builder& nokey_append(int32_t i32);
+    builder& nokey_append(std::int32_t i32);
     builder& nokey_append(open_doc_t);
     builder& nokey_append(close_doc_t);
     builder& nokey_append(open_array_t);

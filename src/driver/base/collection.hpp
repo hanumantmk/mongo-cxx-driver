@@ -69,15 +69,18 @@ class findable;
 class aggregatable;
 }  // namespace fluent
 
-class collection {
+class LIBMONGOCXX_EXPORT collection {
 
     friend class database;
 
    public:
+    collection(const collection&) = delete;
     collection(collection&& client);
-    ~collection();
 
+    collection& operator=(const collection&) = delete;
     collection& operator=(collection&& client);
+
+    ~collection();
 
     cursor find(const model::find& model) const;
     cursor aggregate(const model::aggregate& model) const;
@@ -97,15 +100,12 @@ class collection {
     bson::document::value explain(const model::explain& model) const;
     result::distinct distinct(const model::distinct& model) const;
 
-    int64_t count(const model::count& model) const;
+    std::int64_t count(const model::count& model) const;
 
     void drop();
 
    private:
     collection(client* client, database* database, std::string name);
-
-    collection(const collection& client) = delete;
-    collection& operator=(const collection& client) = delete;
 
     client* _client;
     database* _database;

@@ -36,7 +36,8 @@ builder::~builder() {
     }
 }
 
-builder& builder::key_append(const string_or_literal& key, int32_t i32) {
+builder& builder::key_append(const string_or_literal& key, std::int32_t i32) {
+>>>>>>> updates from code review pass 1 on headers
     if (_stack.back().is_array) {
         throw(std::runtime_error("in subarray"));
     }
@@ -71,7 +72,7 @@ builder& builder::key_append(const string_or_literal& key, open_array_t) {
     return *this;
 }
 
-builder& builder::nokey_append(int32_t i32) {
+builder& builder::nokey_append(std::int32_t i32) {
     if (!_stack.back().is_array) {
         throw(std::runtime_error("in subdocument"));
     }

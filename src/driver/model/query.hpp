@@ -24,16 +24,16 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-class query {
+class LIBMONGOCXX_EXPORT query {
 
     query& sort(const bson::document::view& ordering);
     bson::document::view sort() const;
 
-    query& limit(int32_t limit);
-    int32_t limit() const;
+    query& limit(std::int32_t limit);
+    std::int32_t limit() const;
 
-    query& skip(int32_t limit);
-    int32_t skip() const;
+    query& skip(std::int32_t limit);
+    std::int32_t skip() const;
 };
 
 }  // namespace model

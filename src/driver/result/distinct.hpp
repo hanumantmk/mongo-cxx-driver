@@ -20,7 +20,7 @@ namespace mongo {
 namespace driver {
 namespace result {
 
-class distinct {};
+class LIBMONGOCXX_EXPORT distinct {};
 
 }  // namespace result
 }  // namespace driver

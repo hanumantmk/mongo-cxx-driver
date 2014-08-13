@@ -22,17 +22,17 @@ namespace model {
 
 find::find(bson::document::view filter) : _filter(std::move(filter)) {}
 
-find& find::batch_size(int32_t batch_size) {
+find& find::batch_size(std::int32_t batch_size) {
     _batch_size = batch_size;
     return *this;
 }
 
-find& find::cursor_flags(int32_t cursor_flags) {
+find& find::cursor_flags(std::int32_t cursor_flags) {
     _cursor_flags = cursor_flags;
     return *this;
 }
 
-find& find::limit(int32_t limit) {
+find& find::limit(std::int32_t limit) {
     _limit = limit;
     return *this;
 }
@@ -47,7 +47,7 @@ find& find::projection(bson::document::view projection) {
     return *this;
 }
 
-find& find::skip(int32_t skip) {
+find& find::skip(std::int32_t skip) {
     _skip = skip;
     return *this;
 }
@@ -59,17 +59,17 @@ find& find::sort(bson::document::view ordering) {
 
 bson::document::view find::filter() const { return _filter; }
 
-optional<int32_t> find::batch_size() const { return _batch_size; }
+optional<std::int32_t> find::batch_size() const { return _batch_size; }
 
-optional<int32_t> find::cursor_flags() const { return _cursor_flags; }
+optional<std::int32_t> find::cursor_flags() const { return _cursor_flags; }
 
-optional<int32_t> find::limit() const { return _limit; }
+optional<std::int32_t> find::limit() const { return _limit; }
 
 optional<bson::document::view> find::modifiers() const { return _modifiers; }
 
 optional<bson::document::view> find::projection() const { return _projection; }
 
-optional<int32_t> find::skip() const { return _skip; }
+optional<std::int32_t> find::skip() const { return _skip; }
 
 optional<bson::document::view> find::sort() const { return _ordering; }
 

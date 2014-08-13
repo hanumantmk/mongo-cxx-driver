@@ -24,7 +24,7 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-class remove : write<remove> {
+class LIBMONGOCXX_EXPORT remove : write<remove> {
 
    public:
     remove(const bson::document::view& filter);

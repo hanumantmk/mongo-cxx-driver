@@ -26,7 +26,7 @@ namespace model {
 
 namespace details {
 
-class xupdate : public write<xupdate> {
+class LIBMONGOCXX_EXPORT xupdate : public write<xupdate> {
 
    public:
     xupdate(bson::document::view  filter, bson::document::view  update)

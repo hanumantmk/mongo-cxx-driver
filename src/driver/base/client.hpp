@@ -16,8 +16,6 @@
 
 #pragma once
 
-#include "mongoc.h"
-
 #include "driver/base/database.hpp"
 
 namespace mongo {
@@ -29,29 +27,27 @@ class options;
  * The client class is the entrypoint into the MongoDB driver. It acts as a logical gateway for
  * accessing the databases of MongoDB clusters. Databases that are accessed via a client inherit
  * all of the options specified on the client.
- *
- * @param options The options for this client.
- * @param client The client to copy.
  */
-class client {
+class LIBMONGOCXX_EXPORT client {
     friend class database;
     friend class collection;
 
    public:
     client(options options);
-    explicit client(client&& client);
-    ~client();
 
+    client(const client&) = delete;
+    explicit client(client&& client);
+
+    client& operator=(const client&) = delete;
     client& operator=(client&& client);
+
+    ~client();
 
     class database operator[](std::string database_name);
     class database database(std::string database_name);
 
    private:
-    client(const client& client) = delete;
-    client& operator=(const client& client) = delete;
-
-    mongoc_client_t* _client;
+    void* _client;
 };
 
 }  // namespace driver

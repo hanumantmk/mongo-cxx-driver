@@ -24,7 +24,7 @@ namespace mongo {
 namespace driver {
 namespace result {
 
-class write {
+class LIBMONGOCXX_EXPORT write {
    public:
     write(const bson::document::view& view);
     write(bson::document::value value);
@@ -41,8 +41,8 @@ class write {
     }
 
    private:
-    write(const write& rhs) = delete;
-    write& operator=(const write& rhs) = delete;
+    write(const write&) = delete;
+    write& operator=(const write&) = delete;
 
     bson::document::value _value;
 };

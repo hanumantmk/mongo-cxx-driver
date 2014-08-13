@@ -25,13 +25,15 @@ namespace driver {
 
 class collection;
 
-class cursor {
+class LIBMONGOCXX_EXPORT cursor {
 
     friend class collection;
 
    public:
+    cursor(const cursor&) = delete;
     cursor(cursor&& rhs);
 
+    cursor& operator=(const cursor&) = delete;
     cursor& operator=(cursor&& rhs);
 
     ~cursor();
@@ -43,9 +45,6 @@ class cursor {
 
    private:
     cursor(mongoc_cursor_t* cursor);
-
-    cursor(const cursor& cursor) = delete;
-    cursor& operator=(const cursor& cursor) = delete;
 
     mongoc_cursor_t* _cursor;
 };

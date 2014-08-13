@@ -23,7 +23,7 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-class insert : public write<insert> {
+class LIBMONGOCXX_EXPORT insert : public write<insert> {
 
    public:
     insert(bson::document::view document);

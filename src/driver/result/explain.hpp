@@ -20,7 +20,7 @@ namespace mongo {
 namespace driver {
 namespace result {
 
-class explain {};
+class LIBMONGOCXX_EXPORT explain {};
 
 }  // namespace result
 }  // namespace driver

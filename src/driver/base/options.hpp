@@ -26,7 +26,7 @@ namespace driver {
  *
  * @param mongodb_uri The MongoDB uri to extract options from.
  */
-class options {
+class LIBMONGOCXX_EXPORT options {
     friend class client;
 
    public:

@@ -26,7 +26,7 @@ namespace model {
 class write_concern;
 
 template <class derived>
-class write {
+class LIBMONGOCXX_EXPORT write {
 
    public:
     derived& write_concern(const write_concern* write_concern) {

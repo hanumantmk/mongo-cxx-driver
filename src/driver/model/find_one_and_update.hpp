@@ -24,7 +24,7 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-class find_one_and_update : public write<find_one_and_update> {
+class LIBMONGOCXX_EXPORT find_one_and_update : public write<find_one_and_update> {
 
    public:
     find_one_and_update(bson::document::view filter, bson::document::view update);
