@@ -16,6 +16,9 @@
 
 #pragma once
 
+#include "preamble.h"
+
+
 #include <string>
 
 namespace mongo {
@@ -26,7 +29,7 @@ namespace driver {
  *
  * @param mongodb_uri The MongoDB uri to extract options from.
  */
-class LIBMONGOCXX_EXPORT options {
+class MONGOCXX_EXPORT options {
     friend class client;
 
    public:

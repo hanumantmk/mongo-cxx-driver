@@ -16,6 +16,9 @@
 
 #pragma once
 
+#include "preamble.h"
+
+
 #include <cstdint>
 #include <memory>
 #include <set>
@@ -69,7 +72,7 @@ class findable;
 class aggregatable;
 }  // namespace fluent
 
-class LIBMONGOCXX_EXPORT collection {
+class MONGOCXX_EXPORT collection {
 
     friend class database;
 

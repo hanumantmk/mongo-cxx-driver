@@ -16,6 +16,9 @@
 
 #pragma once
 
+#include "preamble.h"
+
+
 #include "bson/document.hpp"
 #include "driver/model/write.hpp"
 
@@ -23,7 +26,7 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-class LIBMONGOCXX_EXPORT insert : public write<insert> {
+class MONGOCXX_EXPORT insert : public write<insert> {
 
    public:
     insert(bson::document::view document);

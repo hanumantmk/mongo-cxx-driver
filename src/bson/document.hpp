@@ -16,6 +16,11 @@
 
 #pragma once
 
+#include "preamble.h"
+
+
+#include "preamble.h"
+
 #include <iostream>
 #include <functional>
 #include <cstddef>
@@ -27,7 +32,7 @@
 
 namespace bson {
 
-enum class type : ustd::int8_t {
+enum class type : std::uint8_t {
     k_eod = 0x00,
     k_double = 0x01,
     k_utf8 = 0x02,
@@ -51,7 +56,7 @@ enum class type : ustd::int8_t {
     k_minkey = 0xFF
 };
 
-enum class binary_sub_type : ustd::int8_t {
+enum class binary_sub_type : std::uint8_t {
     k_binary = 0x00,
     k_function = 0x01,
     k_binary_deprecated = 0x02,
@@ -65,7 +70,7 @@ namespace document {
 class view;
 };
 
-class LIBMONGOCXX_EXPORT element {
+class MONGOCXX_EXPORT element {
     friend class document::view;
 
    public:
@@ -78,9 +83,9 @@ class LIBMONGOCXX_EXPORT element {
 
     const char* key() const;
 
-    std::tuple<const char*, ustd::int32_t> get_string_w_len() const;
+    std::tuple<const char*, std::uint32_t> get_string_w_len() const;
 
-    std::tuple<binary_sub_type, ustd::int32_t, const ustd::int8_t*> get_binary() const;
+    std::tuple<binary_sub_type, std::uint32_t, const std::uint8_t*> get_binary() const;
 
     const char* get_string() const;
     double get_double() const;
@@ -96,7 +101,7 @@ class LIBMONGOCXX_EXPORT element {
 
 namespace document {
 
-class LIBMONGOCXX_EXPORT view {
+class MONGOCXX_EXPORT view {
    public:
     class iterator : public std::iterator<std::forward_iterator_tag, element, std::ptrdiff_t,
                                           const element*, const element&> {
@@ -124,10 +129,10 @@ class LIBMONGOCXX_EXPORT view {
 
     element operator[](const char* key) const;
 
-    view(const ustd::int8_t* b, std::size_t l);
+    view(const std::uint8_t* b, std::size_t l);
     view();
 
-    const ustd::int8_t* get_buf() const;
+    const std::uint8_t* get_buf() const;
     std::size_t get_len() const;
 
    public:
@@ -141,15 +146,15 @@ class LIBMONGOCXX_EXPORT view {
     }
 
    protected:
-    const ustd::int8_t* buf;
+    const std::uint8_t* buf;
     std::size_t len;
 };
 
-class LIBMONGOCXX_EXPORT value : public view {
+class MONGOCXX_EXPORT value : public view {
    public:
     using view::iterator;
 
-    value(const ustd::int8_t* b, std::size_t l, std::function<void(void*)> dtor = free);
+    value(const std::uint8_t* b, std::size_t l, std::function<void(void*)> dtor = free);
     value(const view& view);
     value(value&& rhs);
     value& operator=(value&& rhs);
@@ -162,7 +167,7 @@ class LIBMONGOCXX_EXPORT value : public view {
     std::function<void(void*)> dtor;
 };
 
-class LIBMONGOCXX_EXPORT view_or_value {
+class MONGOCXX_EXPORT view_or_value {
    public:
     view_or_value(bson::document::view view);
     view_or_value(bson::document::value value);

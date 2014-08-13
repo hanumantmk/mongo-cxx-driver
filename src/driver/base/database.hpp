@@ -16,6 +16,9 @@
 
 #pragma once
 
+#include "preamble.h"
+
+
 #include <string>
 
 #include "mongoc.h"
@@ -35,7 +38,7 @@ class collection;
  * the class represents. It inherets all of its default settings from the client that calls it's
  * constructor.
  */
-class LIBMONGOCXX_EXPORT database {
+class MONGOCXX_EXPORT database {
 
     friend class client;
     friend class collection;

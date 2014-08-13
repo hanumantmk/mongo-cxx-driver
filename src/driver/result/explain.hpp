@@ -16,11 +16,14 @@
 
 #pragma once
 
+#include "preamble.h"
+
+
 namespace mongo {
 namespace driver {
 namespace result {
 
-class LIBMONGOCXX_EXPORT explain {};
+class MONGOCXX_EXPORT explain {};
 
 }  // namespace result
 }  // namespace driver

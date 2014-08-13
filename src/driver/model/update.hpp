@@ -16,6 +16,9 @@
 
 #pragma once
 
+#include "preamble.h"
+
+
 #include "bson/document.hpp"
 #include "driver/model/write.hpp"
 #include "driver/util/optional.hpp"
@@ -26,7 +29,7 @@ namespace model {
 
 namespace details {
 
-class LIBMONGOCXX_EXPORT xupdate : public write<xupdate> {
+class MONGOCXX_EXPORT xupdate : public write<xupdate> {
 
    public:
     xupdate(bson::document::view  filter, bson::document::view  update)

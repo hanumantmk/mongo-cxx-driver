@@ -16,6 +16,9 @@
 
 #pragma once
 
+#include "preamble.h"
+
+
 #include <cstdint>
 #include <string>
 
@@ -36,7 +39,7 @@ enum class QueryFlags {
     PARTIAL
 };
 
-class LIBMONGOCXX_EXPORT find : public read<find> {
+class MONGOCXX_EXPORT find : public read<find> {
 
    public:
     explicit find(bson::document::view filter);

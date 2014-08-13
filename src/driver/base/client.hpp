@@ -16,6 +16,9 @@
 
 #pragma once
 
+#include "preamble.h"
+
+
 #include "driver/base/database.hpp"
 
 namespace mongo {
@@ -28,7 +31,7 @@ class options;
  * accessing the databases of MongoDB clusters. Databases that are accessed via a client inherit
  * all of the options specified on the client.
  */
-class LIBMONGOCXX_EXPORT client {
+class MONGOCXX_EXPORT client {
     friend class database;
     friend class collection;
 
@@ -47,7 +50,7 @@ class LIBMONGOCXX_EXPORT client {
     class database database(std::string database_name);
 
    private:
-    void* _client;
+    mongoc_client_t* _client;
 };
 
 }  // namespace driver

@@ -110,20 +110,20 @@ result::write collection::removeOne(const model::remove& /* model */) {
 
 bson::document::value collection::find_one_and_replace(
     const model::find_one_and_replace& /* model */) {
-    return bson::document::value((const ustd::int8_t*)nullptr, 0);
+    return bson::document::value((const std::uint8_t*)nullptr, 0);
 }
 bson::document::value collection::find_one_and_update(
     const model::find_one_and_update& /* model */) {
-    return bson::document::value((const ustd::int8_t*)nullptr, 0);
+    return bson::document::value((const std::uint8_t*)nullptr, 0);
 }
 bson::document::value collection::find_one_and_remove(
     const model::find_one_and_remove& /* model */) {
-    return bson::document::value((const ustd::int8_t*)nullptr, 0);
+    return bson::document::value((const std::uint8_t*)nullptr, 0);
 }
 
 bson::document::value collection::explain(const model::explain& /*model*/)
     const {
-    return bson::document::value((const ustd::int8_t*)nullptr, 0);
+    return bson::document::value((const std::uint8_t*)nullptr, 0);
 }
 
 result::distinct collection::distinct(const model::distinct& /* model */)

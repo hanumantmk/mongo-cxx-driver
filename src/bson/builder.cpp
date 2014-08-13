@@ -37,7 +37,6 @@ builder::~builder() {
 }
 
 builder& builder::key_append(const string_or_literal& key, std::int32_t i32) {
->>>>>>> updates from code review pass 1 on headers
     if (_stack.back().is_array) {
         throw(std::runtime_error("in subarray"));
     }

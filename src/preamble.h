@@ -14,31 +14,4 @@
  * limitations under the License.
  */
 
-#pragma once
-
-#include "preamble.h"
-
-
-#include <cstdint>
-
-#include "bson/document.hpp"
-
-namespace mongo {
-namespace driver {
-namespace model {
-
-class MONGOCXX_EXPORT query {
-
-    query& sort(const bson::document::view& ordering);
-    bson::document::view sort() const;
-
-    query& limit(std::int32_t limit);
-    std::int32_t limit() const;
-
-    query& skip(std::int32_t limit);
-    std::int32_t skip() const;
-};
-
-}  // namespace model
-}  // namespace driver
-}  // namespace mongo
+#include "mongocxx_export.h"

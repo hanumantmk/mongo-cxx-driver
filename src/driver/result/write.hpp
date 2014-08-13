@@ -16,6 +16,9 @@
 
 #pragma once
 
+#include "preamble.h"
+
+
 #include <iostream>
 
 #include "bson/document.hpp"
@@ -24,7 +27,7 @@ namespace mongo {
 namespace driver {
 namespace result {
 
-class LIBMONGOCXX_EXPORT write {
+class MONGOCXX_EXPORT write {
    public:
     write(const bson::document::view& view);
     write(bson::document::value value);

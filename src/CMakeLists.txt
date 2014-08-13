@@ -1,4 +1,4 @@
-add_library(mongocxx
+add_library(mongocxx SHARED
     bson/builder.cpp
     bson/document.cpp
     bson/string_or_literal.cpp
@@ -16,6 +16,16 @@ add_library(mongocxx
     driver/util/libbson.cpp
     driver/util/optional.cpp
 )
+
+set_target_properties(mongocxx PROPERTIES DEFINE_SYMBOL MONGOCXX_EXPORTS)
+
+if (BUILD_SHARED_LIBS)
+    add_compiler_export_flags(MONGOCXX_EXPORT_FLAGS)
+    set_target_properties(mongocxx PROPERTIES COMPILE_FLAGS ${MONGOCXX_EXPORT_FLAGS})
+    set_target_properties(mongocxx PROPERTIES LINK_FLAGS ${MONGOCXX_EXPORT_FLAGS})
+endif()
+
+generate_export_header(mongocxx)
 
 target_link_libraries(mongocxx
     ${LIBMONGOC_LIBRARIES}

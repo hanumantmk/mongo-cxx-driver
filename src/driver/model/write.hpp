@@ -16,6 +16,9 @@
 
 #pragma once
 
+#include "preamble.h"
+
+
 #include <cstdint>
 #include "driver/util/optional.hpp"
 
@@ -26,7 +29,7 @@ namespace model {
 class write_concern;
 
 template <class derived>
-class LIBMONGOCXX_EXPORT write {
+class MONGOCXX_EXPORT write {
 
    public:
     derived& write_concern(const write_concern* write_concern) {

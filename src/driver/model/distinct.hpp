@@ -16,6 +16,9 @@
 
 #pragma once
 
+#include "preamble.h"
+
+
 #include <cstdint>
 #include <string>
 
@@ -27,7 +30,7 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-class LIBMONGOCXX_EXPORT distinct : public read<distinct> {
+class MONGOCXX_EXPORT distinct : public read<distinct> {
 
    public:
     distinct(std::string field_name);

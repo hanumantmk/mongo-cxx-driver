@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 2.8.6)
 project (libmongocxx)
 
 include(ExternalProject)
+include(GenerateExportHeader)
 
 set(libmongoc_RELEASE 0.98.0)
 
@@ -15,6 +16,7 @@ link_directories(
 
 include_directories(
     ${LIBMONGOC_INCLUDE_DIRS}
+    ${CMAKE_BINARY_DIR}/src
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 

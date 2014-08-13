@@ -16,6 +16,9 @@
 
 #pragma once
 
+#include "preamble.h"
+
+
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -27,7 +30,7 @@ namespace driver {
 
 class explain_result;
 
-class LIBMONGOCXX_EXPORT pipeline {
+class MONGOCXX_EXPORT pipeline {
    public:
     pipeline& geoNear(/*something*/);
     pipeline& group(bson::document::view group);

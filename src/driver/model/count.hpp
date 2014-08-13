@@ -16,6 +16,9 @@
 
 #pragma once
 
+#include "preamble.h"
+
+
 #include <cstdint>
 #include <string>
 
@@ -27,7 +30,7 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-class LIBMONGOCXX_EXPORT count : public ReadModel<count> {
+class MONGOCXX_EXPORT count : public ReadModel<count> {
 
    public:
     explicit count(bson::document::view filter);

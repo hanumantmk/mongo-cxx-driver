@@ -16,6 +16,9 @@
 
 #pragma once
 
+#include "preamble.h"
+
+
 #include "mongoc.h"
 
 #include "bson/document.hpp"
@@ -25,7 +28,7 @@ namespace driver {
 
 class collection;
 
-class LIBMONGOCXX_EXPORT cursor {
+class MONGOCXX_EXPORT cursor {
 
     friend class collection;
 
