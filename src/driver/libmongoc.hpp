@@ -24,16 +24,14 @@ namespace driver {
 namespace libmongoc {
 
 #ifdef MONGOCXX_DEBUG
-#  define MONGOCXX_LIBMONGOC_SYMBOL(name) \
-     extern util::mock<decltype(&mongoc_##name)> name;
-#  include "libmongoc_symbols.hpp"
-#  undef MONGOCXX_LIBMONGOC_SYMBOL
+#define MONGOCXX_LIBMONGOC_SYMBOL(name) extern util::mock<decltype(&mongoc_##name)> name;
+#include "libmongoc_symbols.hpp"
+#undef MONGOCXX_LIBMONGOC_SYMBOL
 #else
-#  define MONGOCXX_LIBMONGOC_SYMBOL(name) \
-     constexpr auto name = mongoc_##name;
-#  include "libmongoc_symbols.hpp"
-#  undef MONGOCXX_LIBMONGOC_SYMBOL
-#endif // MONGOCXX_DEBUG
+#define MONGOCXX_LIBMONGOC_SYMBOL(name) constexpr auto name = mongoc_##name;
+#include "libmongoc_symbols.hpp"
+#undef MONGOCXX_LIBMONGOC_SYMBOL
+#endif  // MONGOCXX_DEBUG
 
 }  // namespace libmongoc
 }  // namespace driver

@@ -31,7 +31,7 @@ namespace details {
 class MONGOCXX_EXPORT xupdate : public write<xupdate> {
 
    public:
-    xupdate(bson::document::view  filter, bson::document::view  update)
+    xupdate(bson::document::view filter, bson::document::view update)
         : _filter(std::move(filter)), _update(std::move(update)) {}
 
     bson::document::view filter() const { return _filter; }

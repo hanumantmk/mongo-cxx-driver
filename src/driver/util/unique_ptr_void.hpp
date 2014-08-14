@@ -20,8 +20,8 @@ namespace mongo {
 namespace driver {
 namespace util {
 
-using unique_ptr_void = std::unique_ptr<void, void(*)(void*)>;
+using unique_ptr_void = std::unique_ptr<void, void (*)(void*)>;
 
-} // namespace util
-} // namespace driver
-} // namespace mongo
+}  // namespace util
+}  // namespace driver
+}  // namespace mongo

@@ -25,6 +25,6 @@ T* cast(const unique_ptr_void& ptr) {
     return reinterpret_cast<T*>(ptr.get());
 }
 
-} // namespace util
-} // namespace driver
-} // namespace mongo
+}  // namespace util
+}  // namespace driver
+}  // namespace mongo

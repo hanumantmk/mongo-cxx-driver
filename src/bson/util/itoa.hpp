@@ -23,17 +23,17 @@ namespace bson {
 namespace util {
 
 class itoa {
-public:
+   public:
     itoa(uint32_t i);
 
     const char* c_str() const;
     std::size_t length() const;
 
-private:
-    const char *_str;
+   private:
+    const char* _str;
     uint8_t _len;
     char _buf[11];
 };
 
-} // namespace util
-} // namespace bson
+}  // namespace util
+}  // namespace bson

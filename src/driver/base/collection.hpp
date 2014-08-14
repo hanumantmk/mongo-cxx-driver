@@ -71,7 +71,7 @@ class aggregatable;
 }  // namespace fluent
 
 class MONGOCXX_EXPORT collection {
- 
+
     friend class database;
 
    public:

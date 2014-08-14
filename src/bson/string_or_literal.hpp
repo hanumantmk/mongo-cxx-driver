@@ -23,12 +23,10 @@
 namespace bson {
 
 class string_or_literal {
-public:
+   public:
     template <std::size_t n>
-    string_or_literal(const char(&v)[n]) :
-        _len(n-1),
-        _is_owning(false),
-        _literal(v) {}
+    string_or_literal(const char (&v)[n])
+        : _len(n - 1), _is_owning(false), _literal(v) {}
 
     string_or_literal();
 
@@ -44,7 +42,7 @@ public:
     std::size_t length() const;
     const char* c_str() const;
 
-private:
+   private:
     std::size_t _len;
     bool _is_owning;
 
@@ -52,7 +50,6 @@ private:
         std::string _string;
         const char* _literal;
     };
-
 };
 
 }  // namespace bson
