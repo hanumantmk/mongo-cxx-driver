@@ -24,7 +24,7 @@ namespace driver {
 namespace libmongoc {
 
 #ifdef MONGOCXX_DEBUG
-#define MONGOCXX_LIBMONGOC_SYMBOL(name) extern util::mock<decltype(&mongoc_##name)> name;
+#define MONGOCXX_LIBMONGOC_SYMBOL(name) extern mongo::util::mock<decltype(&mongoc_##name)> name;
 #include "libmongoc_symbols.hpp"
 #undef MONGOCXX_LIBMONGOC_SYMBOL
 #else
