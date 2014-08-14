@@ -18,7 +18,6 @@
 
 #include "driver/config/prelude.hpp"
 
-
 #include "bson/document.hpp"
 #include "driver/model/write.hpp"
 

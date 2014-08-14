@@ -18,7 +18,6 @@
 
 #include "driver/config/prelude.hpp"
 
-
 #include "mongoc.h"
 
 #include "bson/document.hpp"

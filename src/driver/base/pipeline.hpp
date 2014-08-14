@@ -18,7 +18,6 @@
 
 #include "driver/config/prelude.hpp"
 
-
 #include <cstdint>
 #include <string>
 #include <vector>

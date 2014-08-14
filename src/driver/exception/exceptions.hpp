@@ -16,6 +16,8 @@
 
 #pragma once
 
+#include "driver/config/prelude.hpp"
+
 #include <exception>
 
 /**

@@ -18,7 +18,6 @@
 
 #include "driver/config/prelude.hpp"
 
-
 namespace mongo {
 namespace driver {
 namespace result {
