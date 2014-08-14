@@ -33,8 +33,8 @@ class MONGOCXX_EXPORT options {
 
    public:
     options();
-    options(std::string mongodb_uri);
-    options(const char* mongodb_uri);
+    explicit options(std::string mongodb_uri);
+    explicit options(const char* mongodb_uri);
 
    private:
     std::string _mongodb_uri;

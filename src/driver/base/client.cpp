@@ -31,6 +31,10 @@ client& client::operator=(client&& rhs) {
     return *this;
 }
 
+client::client(std::string mongodb_uri) {
+    _client = mongoc_client_new(mongodb_uri.c_str());
+}
+
 client::client(options options)
 {
     _client = mongoc_client_new(options._mongodb_uri.c_str());

@@ -35,7 +35,8 @@ class MONGOCXX_EXPORT client {
     friend class collection;
 
    public:
-    client(options options);
+    explicit client(std::string mongodb_uri);
+    explicit client(options options);
 
     client(const client&) = delete;
     explicit client(client&& client);
