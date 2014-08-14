@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include "private/preamble.hpp"
+
 #include <cstdint>
 
 #include "mongoc.h"
@@ -37,7 +39,7 @@ using namespace bson::libbson;
 
 collection::collection(client* client, database* database, std::string name)
     : _client(client), _name(name) {
-    _collection = mongoc_client_get_collection(
+    _collection = libmongoc::client_get_collection(
         _client->_client, database->_name.c_str(), name.c_str());
 }
 
@@ -56,7 +58,7 @@ collection& collection::operator=(collection&& rhs) {
     return *this;
 }
 
-collection::~collection() { mongoc_collection_destroy(_collection); }
+collection::~collection() { libmongoc::collection_destroy(_collection); }
 
 cursor collection::find(const model::find& model) const {
     scoped_bson_t filter;
@@ -74,7 +76,7 @@ cursor collection::find(const model::find& model) const {
         filter.init_from_static(model.filter());
     }
 
-    return cursor(mongoc_collection_find(
+    return cursor(libmongoc::collection_find(
         _collection,
         (mongoc_query_flags_t)model.cursor_flags().value_or(0),
         model.skip().value_or(0),
@@ -135,7 +137,7 @@ std::int64_t collection::count(const model::count& /* model */) const { return 0
 void collection::drop() {
     bson_error_t error;
 
-    if (mongoc_collection_drop(_collection, &error)) {
+    if (libmongoc::collection_drop(_collection, &error)) {
         /* TODO handle errors */
     }
 }

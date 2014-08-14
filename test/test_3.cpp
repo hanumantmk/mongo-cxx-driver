@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "mongocxx.hpp"
+#include "driver/libmongoc.hpp"
 
 using namespace mongo::driver;
 
@@ -17,7 +18,58 @@ int main() {
     client client("mongodb://localhost");
     collection col(client["test"]["test"]);
 
+    libmongoc::collection_drop.interpose([](mongoc_collection_t *, bson_error_t *){
+        std::cout << "interposed drop" << std::endl;
+
+        return true;
+    }).times(3);
+
+    libmongoc::collection_drop.visit([](){
+        std::cout << "visited drop" << std::endl;
+    }).times(2);
+
+    libmongoc::collection_find.interpose([](){
+        std::cout << "interposed find" << std::endl;
+        return nullptr;
+    }).times(1);
+
+    libmongoc::collection_find.interpose((mongoc_cursor_t *)nullptr)
+        .drop_when([](
+            mongoc_collection_t           *collection,
+            mongoc_query_flags_t           flags,
+            uint32_t                       skip,
+            uint32_t                       limit,
+            uint32_t                       batch_size,
+            const bson_t                  *query,
+            const bson_t                  *fields,
+            const mongoc_read_prefs_t     *read_prefs
+        ) {
+            std::cout << "interposing find...\n";
+            return skip == 0;
+        });
+
+    libmongoc::collection_find.interpose(
+        (mongoc_cursor_t *)nullptr,
+        (mongoc_cursor_t *)nullptr,
+        (mongoc_cursor_t *)nullptr,
+        (mongoc_cursor_t *)nullptr
+    );
+
     col.drop();
+    col.drop();
+    col.drop();
+    col.drop();
+    col.drop();
+    col.drop();
+
+    col.find(model::find(doc));
+    col.find(model::find(doc).skip(1));
+    col.find(model::find(doc));
+    col.find(model::find(doc));
+    col.find(model::find(doc));
+    col.find(model::find(doc));
+    col.find(model::find(doc));
+    col.find(model::find(doc));
 
     bson_t bson;
     bson_init(&bson);

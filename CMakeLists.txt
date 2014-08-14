@@ -20,7 +20,7 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Werror -ggdb3 -O0 ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Werror -ggdb3 -O0 -DMONGOCXX_DEBUG ${CMAKE_CXX_FLAGS}")
 #set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Werror -ggdb3 -O0 -fsanitize=undefined,address ${CMAKE_CXX_FLAGS}")
 #set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Werror -ggdb3 -O2 ${CMAKE_CXX_FLAGS} -flto")
 

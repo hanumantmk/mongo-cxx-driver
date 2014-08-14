@@ -3,6 +3,7 @@ add_library(mongocxx SHARED
     bson/document.cpp
     bson/string_or_literal.cpp
     bson/util/itoa.cpp
+    driver/libmongoc.cpp
     driver/base/client.cpp
     driver/base/collection.cpp
     driver/base/cursor.cpp
