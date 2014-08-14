@@ -23,14 +23,13 @@
 #include <set>
 #include <string>
 
-#include "mongoc.h"
-
 #include "bson/document.hpp"
 
 #include "driver/base/cursor.hpp"
 #include "driver/result/distinct.hpp"
 #include "driver/result/explain.hpp"
 #include "driver/result/write.hpp"
+#include "driver/util/unique_ptr_void.hpp"
 
 namespace mongo {
 namespace driver {
@@ -72,18 +71,10 @@ class aggregatable;
 }  // namespace fluent
 
 class MONGOCXX_EXPORT collection {
-
+ 
     friend class database;
 
    public:
-    collection(const collection&) = delete;
-    collection(collection&& client);
-
-    collection& operator=(const collection&) = delete;
-    collection& operator=(collection&& client);
-
-    ~collection();
-
     cursor find(const model::find& model) const;
     cursor aggregate(const model::aggregate& model) const;
 
@@ -107,13 +98,11 @@ class MONGOCXX_EXPORT collection {
     void drop();
 
    private:
-    collection(client* client, database* database, std::string name);
+    collection(client* client, database* database, const std::string& collection_name);
 
     client* _client;
     database* _database;
-
-    std::string _name;
-    mongoc_collection_t* _collection;
+    util::unique_ptr_void _collection;
 };
 
 }  // namespace driver

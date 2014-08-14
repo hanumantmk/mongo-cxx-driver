@@ -17,6 +17,7 @@
 #pragma once
 
 #include "driver/config/prelude.hpp"
+#include "driver/util/unique_ptr_void.hpp"
 
 #include "mongoc.h"
 
@@ -32,23 +33,15 @@ class MONGOCXX_EXPORT cursor {
     friend class collection;
 
    public:
-    cursor(const cursor&) = delete;
-    cursor(cursor&& rhs);
-
-    cursor& operator=(const cursor&) = delete;
-    cursor& operator=(cursor&& rhs);
-
-    ~cursor();
-
     class iterator;
 
     iterator begin();
     iterator end();
 
    private:
-    cursor(mongoc_cursor_t* cursor);
+    cursor(void* cursor);
 
-    mongoc_cursor_t* _cursor;
+    util::unique_ptr_void _cursor;
 };
 
 class cursor::iterator
@@ -66,9 +59,9 @@ class cursor::iterator
     bool operator!=(const iterator& rhs) const;
 
    private:
-    iterator(mongoc_cursor_t* cursor);
+    iterator(cursor* cursor);
 
-    mongoc_cursor_t* _cursor;
+    cursor* _cursor;
     bson::document::view _doc;
     bool _at_end;
 };  // class iterator

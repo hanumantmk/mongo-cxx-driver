@@ -27,6 +27,7 @@
 #include "driver/model/find.hpp"
 #include "driver/model/insert.hpp"
 #include "driver/model/update.hpp"
+#include "driver/private/cast.hpp"
 #include "driver/result/write.hpp"
 #include "driver/result/distinct.hpp"
 #include "driver/request/insert.hpp"
@@ -37,28 +38,21 @@ namespace driver {
 
 using namespace bson::libbson;
 
-collection::collection(client* client, database* database, std::string name)
-    : _client(client), _name(name) {
-    _collection = libmongoc::client_get_collection(
-        _client->_client, database->_name.c_str(), name.c_str());
-}
+namespace {
+    static void mongoc_collection_dtor(void* collection_ptr) noexcept {
+        mongoc_collection_destroy(static_cast<mongoc_collection_t*>(collection_ptr));
+    }
+} // namespace
 
-collection::collection(collection&& rhs) {
-    _database = rhs._database;
-    _client = rhs._client;
-    _collection = rhs._collection;
-    _name = std::move(rhs._name);
-}
-
-collection& collection::operator=(collection&& rhs) {
-    _database = rhs._database;
-    _client = rhs._client;
-    _collection = rhs._collection;
-    _name = std::move(rhs._name);
-    return *this;
-}
-
-collection::~collection() { libmongoc::collection_destroy(_collection); }
+collection::collection(client* client, database* database, const std::string& collection_name)
+    : _client(client)
+    , _database(database)
+    , _collection(mongoc_client_get_collection(
+        util::cast<mongoc_client_t>(_client->_client),
+        mongoc_database_get_name(util::cast<mongoc_database_t>(_database->_database)),
+        collection_name.c_str()
+    ), mongoc_collection_dtor)
+{}
 
 cursor collection::find(const model::find& model) const {
     scoped_bson_t filter;
@@ -76,8 +70,8 @@ cursor collection::find(const model::find& model) const {
         filter.init_from_static(model.filter());
     }
 
-    return cursor(libmongoc::collection_find(
-        _collection,
+    return cursor(mongoc_collection_find(
+        util::cast<mongoc_collection_t>(_collection),
         (mongoc_query_flags_t)model.cursor_flags().value_or(0),
         model.skip().value_or(0),
         model.limit().value_or(0),
@@ -137,7 +131,7 @@ std::int64_t collection::count(const model::count& /* model */) const { return 0
 void collection::drop() {
     bson_error_t error;
 
-    if (libmongoc::collection_drop(_collection, &error)) {
+    if (mongoc_collection_drop(util::cast<mongoc_collection_t>(_collection), &error)) {
         /* TODO handle errors */
     }
 }

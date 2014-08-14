@@ -29,14 +29,13 @@
 # For more information, please refer to <http://unlicense.org/>
 
 import os
-import itertools
 import ycm_core
 
 # These are the compilation flags that will be used in case there's no
 # compilation database set (by default, one is not set).
 # CHANGE THIS LIST OF FLAGS. YES, THIS IS THE DROID YOU HAVE BEEN LOOKING FOR.
 
-flags = list(itertools.chain.from_iterable([
+flags = [
     '-Wall',
     '-Wextra',
     '-Werror',
@@ -54,7 +53,7 @@ flags = list(itertools.chain.from_iterable([
     '-I', '.',
     '-I', './include',
     '-I', './src',
-    os.popen("pkg-config --cflags libmongoc-1.0").read().rstrip().split(),
+    '-I', './build/src',
     '-isystem', './tests/gmock/gtest',
     '-isystem', './tests/gmock/gtest/include',
     '-isystem', './tests/gmock',
@@ -63,7 +62,9 @@ flags = list(itertools.chain.from_iterable([
     '-isystem', '/usr/local/include',
     '-isystem', '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/c++/v1',
     '-isystem', '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include',
-]))
+]
+
+flags = flags + os.popen("pkg-config --cflags libmongoc-1.0").read().rstrip().split()
 
 # Set this to the absolute path to the folder (NOT the file!) containing the
 # compile_commands.json file to use that instead of 'flags'. See here for

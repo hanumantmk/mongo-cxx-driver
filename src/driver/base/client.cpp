@@ -16,40 +16,33 @@
 
 #include "driver/base/client.hpp"
 #include "driver/base/options.hpp"
+#include "driver/private/cast.hpp"
+
+#include "mongoc.h"
 
 namespace mongo {
 namespace driver {
 
-client::client(client&& rhs) {
-    _client = rhs._client;
-    rhs._client = nullptr;
-}
+namespace {
+    static void mongoc_client_dtor(void* client_ptr) noexcept {
+        mongoc_client_destroy(static_cast<mongoc_client_t*>(client_ptr));
+    }
+} // namespace
 
-client& client::operator=(client&& rhs) {
-    _client = rhs._client;
-    rhs._client = nullptr;
-    return *this;
-}
-
-client::client(std::string mongodb_uri) {
-    _client = mongoc_client_new(mongodb_uri.c_str());
-}
+client::client(const std::string& mongodb_uri)
+    : _client(mongoc_client_new(mongodb_uri.c_str()), mongoc_client_dtor)
+{}
 
 client::client(options options)
-{
-    _client = mongoc_client_new(options._mongodb_uri.c_str());
+    : _client(mongoc_client_new(options._mongodb_uri.c_str()), mongoc_client_dtor)
+{}
+
+class database client::database(const std::string& database_name) {
+    return mongo::driver::database(this, database_name);
 }
 
-client::~client() {
-    mongoc_client_destroy(_client);
-}
-
-class database client::database(std::string database_name) {
-    return mongo::driver::database(this, std::move(database_name));
-}
-
-class database client::operator[](std::string database_name) {
-    return database(database_name);
+class database client::operator[](const std::string& database_name) {
+    return mongo::driver::database(this, database_name);
 }
 
 } // namespace driver

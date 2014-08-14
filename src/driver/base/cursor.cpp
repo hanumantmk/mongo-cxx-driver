@@ -20,26 +20,24 @@
 #include "bson.h"
 
 #include "driver/base/cursor.hpp"
+#include "driver/private/cast.hpp"
 
 namespace mongo {
 namespace driver {
 
-cursor::cursor(mongoc_cursor_t* cursor) : _cursor(cursor) {}
+namespace {
+    static void mongoc_cursor_dtor(void* cursor_ptr) noexcept {
+        if (cursor_ptr) {
+            mongoc_cursor_destroy(static_cast<mongoc_cursor_t*>(cursor_ptr));
+        }
+    }
+} // namespace
 
-cursor::cursor(cursor&& rhs) { _cursor = rhs._cursor; }
-
-cursor& cursor::operator=(cursor&& rhs) {
-    _cursor = rhs._cursor;
-    return *this;
-}
-
-cursor::~cursor() {
-    if (_cursor) mongoc_cursor_destroy(_cursor);
-}
+cursor::cursor(void* cursor) : _cursor(cursor, mongoc_cursor_dtor) {}
 
 cursor::iterator& cursor::iterator::operator++() {
     const bson_t* out;
-    if (mongoc_cursor_next(_cursor, &out)) {
+    if (mongoc_cursor_next(util::cast<mongoc_cursor_t>(_cursor->_cursor), &out)) {
         _doc = bson::document::view(bson_get_data(out), out->len);
     } else {
         _at_end = true;
@@ -48,11 +46,11 @@ cursor::iterator& cursor::iterator::operator++() {
     return *this;
 }
 
-cursor::iterator cursor::begin() { return iterator(_cursor); }
+cursor::iterator cursor::begin() { return iterator(this); }
 
 cursor::iterator cursor::end() { return iterator(nullptr); }
 
-cursor::iterator::iterator(mongoc_cursor_t* cursor)
+cursor::iterator::iterator(cursor* cursor)
     : _cursor(cursor), _at_end(!cursor) {
     if (cursor) operator++();
 }

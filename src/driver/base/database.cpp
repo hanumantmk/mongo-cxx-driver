@@ -16,36 +16,31 @@
 
 #include "driver/base/database.hpp"
 #include "driver/base/client.hpp"
+#include "driver/private/cast.hpp"
 
 namespace mongo {
 namespace driver {
 
-database::database(client* client, std::string name)
-    : _client(client), _name(name) {
-    _database = mongoc_client_get_database(_client->_client, name.c_str());
+namespace {
+    static void mongoc_database_dtor(void* database_ptr) noexcept {
+        mongoc_database_destroy(static_cast<mongoc_database_t*>(database_ptr));
+    }
+} // namespace
+
+database::database(client* client, const std::string& database_name)
+    : _client(client)
+    , _database(mongoc_client_get_database(
+        util::cast<mongoc_client_t>(_client->_client),
+        database_name.c_str()
+    ), mongoc_database_dtor)
+{}
+
+collection database::collection(const std::string& collection_name) {
+    return mongo::driver::collection(_client, this, collection_name);
 }
 
-database::database(database&& rhs) {
-    _database = rhs._database;
-    _client = rhs._client;
-    _name = std::move(rhs._name);
-}
-
-database& database::operator=(database&& rhs) {
-    _database = rhs._database;
-    _client = rhs._client;
-    _name = std::move(rhs._name);
-    return *this;
-}
-
-database::~database() { mongoc_database_destroy(_database); }
-
-collection database::collection(std::string collection_name) {
-    return mongo::driver::collection(_client, this, std::move(collection_name));
-}
-
-collection database::operator[](std::string collection_name) {
-    return collection(collection_name);
+collection database::operator[](const std::string& collection_name) {
+    return mongo::driver::collection(_client, this, collection_name);
 }
 
 } // namespace driver

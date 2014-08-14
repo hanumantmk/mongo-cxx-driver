@@ -18,11 +18,11 @@
 
 #include "driver/config/prelude.hpp"
 
+#include <memory>
 #include <string>
 
-#include "mongoc.h"
-
 #include "driver/base/collection.hpp"
+#include "driver/util/unique_ptr_void.hpp"
 
 namespace mongo {
 namespace driver {
@@ -33,9 +33,8 @@ class collection;
 /**
  * The database class serves as a representation of a MongoDB database. It acts as a gateway
  * for accessing collections that are contained within the particular database that an instance
- * of
- * the class represents. It inherets all of its default settings from the client that calls it's
- * constructor.
+ * of the class represents. It inherets all of its default settings from the client that calls
+ * it's constructor.
  */
 class MONGOCXX_EXPORT database {
 
@@ -43,25 +42,15 @@ class MONGOCXX_EXPORT database {
     friend class collection;
 
    public:
-    database(const database&) = delete;
-    database(database&& client);
-
-    database& operator=(const database&) = delete;
-    database& operator=(database&& client);
-
-    ~database();
-
-
-    class collection operator[](std::string collection_name);
-    class collection collection(std::string collection_name);
+    class collection operator[](const std::string& collection_name);
+    class collection collection(const std::string& collection_name);
 
    private:
-    database(client* client, std::string name);
+    database(client* client, const std::string& database_name);
 
     client* _client;
 
-    std::string _name;
-    mongoc_database_t* _database;
+    util::unique_ptr_void _database;
 };
 
 }  // namespace driver

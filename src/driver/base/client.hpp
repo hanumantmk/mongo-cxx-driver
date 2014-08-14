@@ -18,7 +18,10 @@
 
 #include "driver/config/prelude.hpp"
 
+#include <memory>
+
 #include "driver/base/database.hpp"
+#include "driver/util/unique_ptr_void.hpp"
 
 namespace mongo {
 namespace driver {
@@ -35,22 +38,14 @@ class MONGOCXX_EXPORT client {
     friend class collection;
 
    public:
-    explicit client(std::string mongodb_uri);
+    explicit client(const std::string& mongodb_uri);
     explicit client(options options);
 
-    client(const client&) = delete;
-    explicit client(client&& client);
-
-    client& operator=(const client&) = delete;
-    client& operator=(client&& client);
-
-    ~client();
-
-    class database operator[](std::string database_name);
-    class database database(std::string database_name);
+    class database operator[](const std::string& database_name);
+    class database database(const std::string& database_name);
 
    private:
-    mongoc_client_t* _client;
+    util::unique_ptr_void _client;
 };
 
 }  // namespace driver
