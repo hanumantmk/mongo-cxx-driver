@@ -21,11 +21,10 @@ namespace driver {
 namespace libmongoc {
 
 #ifdef MONGOCXX_DEBUG
-#  define MONGOCXX_LIBMONGOC_SYMBOL(name) \
-     util::mock<decltype(&mongoc_##name)> name(mongoc_##name);
-#  include "libmongoc_symbols.hpp"
-#  undef MONGOCXX_LIBMONGOC_SYMBOL
-#endif // MONGOCXX_DEBUG
+#define MONGOCXX_LIBMONGOC_SYMBOL(name) util::mock<decltype(&mongoc_##name)> name(mongoc_##name);
+#include "libmongoc_symbols.hpp"
+#undef MONGOCXX_LIBMONGOC_SYMBOL
+#endif  // MONGOCXX_DEBUG
 
 }  // namespace libmongoc
 }  // namespace driver

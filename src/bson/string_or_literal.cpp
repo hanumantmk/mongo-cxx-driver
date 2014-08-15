@@ -18,78 +18,69 @@
 
 namespace bson {
 
-    string_or_literal::string_or_literal() :
-        _len(0),
-        _is_owning(false),
-        _string("") {}
+string_or_literal::string_or_literal() : _len(0), _is_owning(false), _string("") {}
 
-    string_or_literal::string_or_literal(std::string v) :
-        _len(v.length()),
-        _is_owning(true),
-        _string(std::move(v)) {}
+string_or_literal::string_or_literal(std::string v)
+    : _len(v.length()), _is_owning(true), _string(std::move(v)) {}
 
-    string_or_literal& string_or_literal::operator=(const string_or_literal& rhs) {
-        _len = rhs._len;
-        _is_owning = rhs._is_owning;
+string_or_literal& string_or_literal::operator=(const string_or_literal& rhs) {
+    _len = rhs._len;
+    _is_owning = rhs._is_owning;
 
-        if (_is_owning) {
-            _string = rhs._string;
-        } else {
-            _literal = rhs._literal;
-        }
-
-        return *this;
+    if (_is_owning) {
+        _string = rhs._string;
+    } else {
+        _literal = rhs._literal;
     }
 
-    string_or_literal::string_or_literal(const string_or_literal& rhs) {
-        *this = rhs;
+    return *this;
+}
+
+string_or_literal::string_or_literal(const string_or_literal& rhs) { *this = rhs; }
+
+string_or_literal& string_or_literal::operator=(string_or_literal&& rhs) {
+    if (_is_owning && !rhs._is_owning) {
+        using string = std::string;
+
+        _string.~string();
     }
 
-    string_or_literal& string_or_literal::operator=(string_or_literal&& rhs) {
-        if (_is_owning && !rhs._is_owning) {
-            using string = std::string;
+    _len = rhs._len;
+    _is_owning = rhs._is_owning;
 
-            _string.~string();
-        }
-
-        _len = rhs._len;
-        _is_owning = rhs._is_owning;
-
-        if (_is_owning) {
-            _string = std::move(rhs._string);
-        } else {
-            _literal = rhs._literal;
-        }
-
-        rhs._is_owning = false;
-        rhs._literal = "";
-        rhs._len = 0;
-
-        return *this;
+    if (_is_owning) {
+        _string = std::move(rhs._string);
+    } else {
+        _literal = rhs._literal;
     }
 
-    string_or_literal::string_or_literal(string_or_literal&& rhs) : _is_owning(false) {
-        *this = std::move(rhs);
+    rhs._is_owning = false;
+    rhs._literal = "";
+    rhs._len = 0;
+
+    return *this;
+}
+
+string_or_literal::string_or_literal(string_or_literal&& rhs) : _is_owning(false) {
+    *this = std::move(rhs);
+}
+
+string_or_literal::~string_or_literal() {
+    if (_is_owning) {
+        using string = std::string;
+
+        _string.~string();
     }
+}
 
-    string_or_literal::~string_or_literal() {
-        if (_is_owning) {
-            using string = std::string;
+std::size_t string_or_literal::length() const { return _len; }
 
-            _string.~string();
-        }
+const char* string_or_literal::c_str() const {
+    if (_is_owning) {
+        return _string.c_str();
+    } else {
+        return _literal;
     }
+}
 
-    std::size_t string_or_literal::length() const {
-        return _len;
-    }
-
-    const char* string_or_literal::c_str() const {
-        if (_is_owning) {
-            return _string.c_str();
-        } else {
-            return _literal;
-        }
-    }
-
-} // namespace bson
+}  // namespace bson

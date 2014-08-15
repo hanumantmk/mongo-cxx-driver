@@ -22,18 +22,16 @@ namespace mongo {
 namespace driver {
 
 namespace {
-    static void mongoc_database_dtor(void* database_ptr) noexcept {
-        mongoc_database_destroy(static_cast<mongoc_database_t*>(database_ptr));
-    }
-} // namespace
+static void mongoc_database_dtor(void* database_ptr) noexcept {
+    mongoc_database_destroy(static_cast<mongoc_database_t*>(database_ptr));
+}
+}  // namespace
 
 database::database(client* client, const std::string& database_name)
-    : _client(client)
-    , _database(mongoc_client_get_database(
-        util::cast<mongoc_client_t>(_client->_client),
-        database_name.c_str()
-    ), mongoc_database_dtor)
-{}
+    : _client(client),
+      _database(mongoc_client_get_database(util::cast<mongoc_client_t>(_client->_client),
+                                           database_name.c_str()),
+                mongoc_database_dtor) {}
 
 collection database::collection(const std::string& collection_name) {
     return mongo::driver::collection(_client, this, collection_name);
@@ -43,5 +41,5 @@ collection database::operator[](const std::string& collection_name) {
     return mongo::driver::collection(_client, this, collection_name);
 }
 
-} // namespace driver
-} // namespace mongo
+}  // namespace driver
+}  // namespace mongo

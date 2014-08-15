@@ -181,7 +181,7 @@ class builder {
         value_builder(builder* builder) : _builder(builder), _is_array(true) {}
 
         value_builder(builder* builder, string_or_literal key)
-            : _builder(builder), _is_array(false), _key(key) {}
+            : _builder(builder), _is_array(false), _key(std::move(key)) {}
 
         array_ctx<value_builder> wrap_array() { return array_ctx<value_builder>(_builder); }
         key_ctx<value_builder> wrap_document() { return key_ctx<value_builder>(_builder); }

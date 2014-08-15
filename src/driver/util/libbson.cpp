@@ -23,26 +23,23 @@ static void doc_to_bson_t(const bson::document::view& doc, bson_t* bson) {
     bson_init_static(bson, doc.get_buf(), doc.get_len());
 }
 
-static void optional_doc_to_bson_t(
-    const mongo::driver::optional<bson::document::view>& doc, bson_t* bson) {
+static void optional_doc_to_bson_t(const mongo::driver::optional<bson::document::view>& doc,
+                                   bson_t* bson) {
     if (doc) {
         doc_to_bson_t(*doc, bson);
     }
 }
 
-scoped_bson_t::scoped_bson_t(
-    const mongo::driver::optional<bson::document::view>& doc)
+scoped_bson_t::scoped_bson_t(const mongo::driver::optional<bson::document::view>& doc)
     : _is_initialized(doc) {
     optional_doc_to_bson_t(doc, &_bson);
 }
 
-scoped_bson_t::scoped_bson_t(const bson::document::view& doc)
-    : _is_initialized(true) {
+scoped_bson_t::scoped_bson_t(const bson::document::view& doc) : _is_initialized(true) {
     doc_to_bson_t(doc, &_bson);
 }
 
-void scoped_bson_t::init_from_static(
-    const mongo::driver::optional<bson::document::view>& doc) {
+void scoped_bson_t::init_from_static(const mongo::driver::optional<bson::document::view>& doc) {
     _is_initialized = static_cast<bool>(doc);
     optional_doc_to_bson_t(doc, &_bson);
 }
@@ -68,10 +65,9 @@ scoped_bson_t::~scoped_bson_t() {
 bson_t* scoped_bson_t::bson() { return _is_initialized ? &_bson : nullptr; }
 
 bson::document::view scoped_bson_t::view() {
-    return _is_initialized
-               ? bson::document::view(bson_get_data(bson()), bson()->len)
-               : bson::document::view();
+    return _is_initialized ? bson::document::view(bson_get_data(bson()), bson()->len)
+                           : bson::document::view();
 }
 
-} // namespace libbson
-} // namespace bson
+}  // namespace libbson
+}  // namespace bson

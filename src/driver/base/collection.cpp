@@ -39,20 +39,19 @@ namespace driver {
 using namespace bson::libbson;
 
 namespace {
-    static void mongoc_collection_dtor(void* collection_ptr) noexcept {
-        mongoc_collection_destroy(static_cast<mongoc_collection_t*>(collection_ptr));
-    }
-} // namespace
+static void mongoc_collection_dtor(void* collection_ptr) noexcept {
+    mongoc_collection_destroy(static_cast<mongoc_collection_t*>(collection_ptr));
+}
+}  // namespace
 
 collection::collection(client* client, database* database, const std::string& collection_name)
-    : _client(client)
-    , _database(database)
-    , _collection(mongoc_client_get_collection(
-        util::cast<mongoc_client_t>(_client->_client),
-        mongoc_database_get_name(util::cast<mongoc_database_t>(_database->_database)),
-        collection_name.c_str()
-    ), mongoc_collection_dtor)
-{}
+    : _client(client),
+      _database(database),
+      _collection(mongoc_client_get_collection(
+                      util::cast<mongoc_client_t>(_client->_client),
+                      mongoc_database_get_name(util::cast<mongoc_database_t>(_database->_database)),
+                      collection_name.c_str()),
+                  mongoc_collection_dtor) {}
 
 cursor collection::find(const model::find& model) const {
     scoped_bson_t filter;
@@ -70,39 +69,22 @@ cursor collection::find(const model::find& model) const {
         filter.init_from_static(model.filter());
     }
 
-    return cursor(mongoc_collection_find(
-        util::cast<mongoc_collection_t>(_collection),
-        (mongoc_query_flags_t)model.cursor_flags().value_or(0),
-        model.skip().value_or(0),
-        model.limit().value_or(0),
-        model.batch_size().value_or(0),
-        filter.bson(),
-        projection.bson(),
-        nullptr
-    ));
+    return cursor(mongoc_collection_find(util::cast<mongoc_collection_t>(_collection),
+                                         (mongoc_query_flags_t)model.cursor_flags().value_or(0),
+                                         model.skip().value_or(0), model.limit().value_or(0),
+                                         model.batch_size().value_or(0), filter.bson(),
+                                         projection.bson(), nullptr));
 }
 
-cursor collection::aggregate(const model::aggregate& /* model */) const {
-    return cursor(nullptr);
-}
+cursor collection::aggregate(const model::aggregate& /* model */) const { return cursor(nullptr); }
 
-result::write collection::replaceOne(const model::replace& /* model */) {
-    return result::write();
-}
+result::write collection::replaceOne(const model::replace& /* model */) { return result::write(); }
 
-result::write collection::updateMany(const model::update& /* model */) {
-    return result::write();
-}
-result::write collection::removeMany(const model::remove& /* model */) {
-    return result::write();
-}
+result::write collection::updateMany(const model::update& /* model */) { return result::write(); }
+result::write collection::removeMany(const model::remove& /* model */) { return result::write(); }
 
-result::write collection::updateOne(const model::update& /* model */) {
-    return result::write();
-}
-result::write collection::removeOne(const model::remove& /* model */) {
-    return result::write();
-}
+result::write collection::updateOne(const model::update& /* model */) { return result::write(); }
+result::write collection::removeOne(const model::remove& /* model */) { return result::write(); }
 
 bson::document::value collection::find_one_and_replace(
     const model::find_one_and_replace& /* model */) {
@@ -117,13 +99,11 @@ bson::document::value collection::find_one_and_remove(
     return bson::document::value((const std::uint8_t*)nullptr, 0);
 }
 
-bson::document::value collection::explain(const model::explain& /*model*/)
-    const {
+bson::document::value collection::explain(const model::explain& /*model*/) const {
     return bson::document::value((const std::uint8_t*)nullptr, 0);
 }
 
-result::distinct collection::distinct(const model::distinct& /* model */)
-    const {
+result::distinct collection::distinct(const model::distinct& /* model */) const {
     return result::distinct();
 }
 std::int64_t collection::count(const model::count& /* model */) const { return 0; }
@@ -136,5 +116,5 @@ void collection::drop() {
     }
 }
 
-} // namespace driver
-} // namespace mongo
+}  // namespace driver
+}  // namespace mongo

@@ -40,13 +40,9 @@ itoa::itoa(uint32_t val) {
     }
 }
 
-const char* itoa::c_str() const {
-    return _str;
-}
+const char* itoa::c_str() const { return _str; }
 
-std::size_t itoa::length() const {
-    return _len;
-}
+std::size_t itoa::length() const { return _len; }
 
 }  // namespace util
 }  // namespace bson

@@ -143,8 +143,7 @@ builder& builder::nokey_append(close_array_t) {
 }
 
 document::view builder::view() const {
-    return document::view(bson_get_data(&_stack.front().bson),
-                          _stack.front().bson.len);
+    return document::view(bson_get_data(&_stack.front().bson), _stack.front().bson.len);
 }
 
 }  // namespace bson

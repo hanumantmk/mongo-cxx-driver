@@ -39,16 +39,15 @@ std::tuple<const char*, std::uint32_t> element::get_string_w_len() const {
     return std::tuple<const char*, std::uint32_t>(str, len);
 }
 
-std::tuple<binary_sub_type, std::uint32_t, const std::uint8_t*> element::get_binary()
-    const {
+std::tuple<binary_sub_type, std::uint32_t, const std::uint8_t*> element::get_binary() const {
     bson_subtype_t type;
     std::uint32_t len;
     const std::uint8_t* binary;
 
     bson_iter_binary(&_iter, &type, &len, &binary);
 
-    return std::tuple<binary_sub_type, std::uint32_t, const std::uint8_t*>(
-        binary_sub_type(type), len, binary);
+    return std::tuple<binary_sub_type, std::uint32_t, const std::uint8_t*>(binary_sub_type(type),
+                                                                           len, binary);
 }
 
 const char* element::get_string() const { return bson_iter_utf8(&_iter, nullptr); }
@@ -77,9 +76,7 @@ bool view::iterator::operator==(const iterator& rhs) const {
     return false;
 }
 
-bool view::iterator::operator!=(const iterator& rhs) const {
-    return !(*this == rhs);
-}
+bool view::iterator::operator!=(const iterator& rhs) const { return !(*this == rhs); }
 
 view::iterator view::begin() const {
     bson_t b;
@@ -114,8 +111,7 @@ value::value(const std::uint8_t* b, std::size_t l, std::function<void(void*)> dt
     : view(b, l), dtor(std::move(dtor)) {}
 
 value::value(const view& view)
-    : bson::document::view((std::uint8_t*)malloc((std::size_t)view.get_len()),
-                           view.get_len()),
+    : bson::document::view((std::uint8_t*)malloc((std::size_t)view.get_len()), view.get_len()),
       dtor(free) {
     std::memcpy((void*)buf, view.get_buf(), view.get_len());
 }

@@ -21,20 +21,14 @@ namespace mongo {
 namespace driver {
 
 namespace {
-    const char kDefaultURI[] = "mongodb://localhost:27017";
-} // namespace
+const char kDefaultURI[] = "mongodb://localhost:27017";
+}  // namespace
 
-options::options()
-    : _mongodb_uri(kDefaultURI)
-{}
+options::options() : _mongodb_uri(kDefaultURI) {}
 
-options::options(std::string mongodb_uri)
-    : _mongodb_uri(std::move(mongodb_uri))
-{}
+options::options(std::string mongodb_uri) : _mongodb_uri(std::move(mongodb_uri)) {}
 
-options::options(const char* mongodb_uri)
-    : _mongodb_uri(mongodb_uri)
-{}
+options::options(const char* mongodb_uri) : _mongodb_uri(mongodb_uri) {}
 
-} // namespace driver
-} // namespace mongo
+}  // namespace driver
+}  // namespace mongo

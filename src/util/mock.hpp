@@ -39,7 +39,7 @@ class mock<R (*)(Args...)> {
         friend class mock;
 
        public:
-        rule(callback callback) : _callback(callback) { times(1); }
+        rule(callback callback) : _callback(std::move(callback)) { times(1); }
 
         void times(int n) {
             return drop_when([n](Args...) mutable->bool {

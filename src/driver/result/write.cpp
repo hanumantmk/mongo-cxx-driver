@@ -35,6 +35,6 @@ write& write::operator=(write&& rhs) {
     return *this;
 }
 
-} // namespace result
-} // namespace driver
-} // namespace mongo
+}  // namespace result
+}  // namespace driver
+}  // namespace mongo
