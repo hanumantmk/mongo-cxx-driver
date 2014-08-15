@@ -54,6 +54,7 @@ flags = [
     '-I', './include',
     '-I', './src',
     '-I', './build/src',
+    '-DMONGOCXX_DEBUG',
     '-isystem', './tests/gmock/gtest',
     '-isystem', './tests/gmock/gtest/include',
     '-isystem', './tests/gmock',
