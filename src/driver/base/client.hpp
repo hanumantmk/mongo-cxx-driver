@@ -40,7 +40,6 @@ class LIBMONGOCXX_EXPORT client {
 
    private:
     util::unique_ptr_void _client;
-
 };
 
 }  // namespace driver
