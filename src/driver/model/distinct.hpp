@@ -29,7 +29,7 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-class MONGOCXX_EXPORT distinct : public read<distinct> {
+class LIBMONGOCXX_EXPORT distinct : public read<distinct> {
 
    public:
     distinct(std::string field_name);
@@ -52,3 +52,5 @@ class MONGOCXX_EXPORT distinct : public read<distinct> {
 }  // namespace model
 }  // namespace driver
 }  // namespace mongo
+
+#include "driver/config/postlude.hpp"

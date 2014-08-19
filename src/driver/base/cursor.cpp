@@ -33,7 +33,7 @@ static void mongoc_cursor_dtor(void* cursor_ptr) noexcept {
 }
 }  // namespace
 
-cursor::cursor(void* cursor) : _cursor(cursor, mongoc_cursor_dtor) {}
+cursor::cursor(void* cursor_ptr) : _cursor(cursor_ptr, mongoc_cursor_dtor) {}
 
 cursor::iterator& cursor::iterator::operator++() {
     const bson_t* out;
@@ -46,24 +46,34 @@ cursor::iterator& cursor::iterator::operator++() {
     return *this;
 }
 
-cursor::iterator cursor::begin() { return iterator(this); }
+cursor::iterator cursor::begin() {
+    return iterator(this);
+}
 
-cursor::iterator cursor::end() { return iterator(nullptr); }
+cursor::iterator cursor::end() {
+    return iterator(nullptr);
+}
 
 cursor::iterator::iterator(cursor* cursor) : _cursor(cursor), _at_end(!cursor) {
     if (cursor) operator++();
 }
 
-const bson::document::view& cursor::iterator::operator*() const { return _doc; }
+const bson::document::view& cursor::iterator::operator*() const {
+    return _doc;
+}
 
-const bson::document::view* cursor::iterator::operator->() const { return &_doc; }
+const bson::document::view* cursor::iterator::operator->() const {
+    return &_doc;
+}
 
 bool cursor::iterator::operator==(const cursor::iterator& rhs) const {
     if (_at_end == rhs._at_end) return true;
     return this == &rhs;
 }
 
-bool cursor::iterator::operator!=(const cursor::iterator& rhs) const { return !(*this == rhs); }
+bool cursor::iterator::operator!=(const cursor::iterator& rhs) const {
+    return !(*this == rhs);
+}
 
 }  // namespace driver
 }  // namespace mongo

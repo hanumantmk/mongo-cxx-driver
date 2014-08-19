@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-#include "mongocxx_export.h"
+#include "export.hpp"

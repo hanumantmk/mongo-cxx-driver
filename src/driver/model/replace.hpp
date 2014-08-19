@@ -25,7 +25,7 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-class MONGOCXX_EXPORT replace : write<replace> {
+class LIBMONGOCXX_EXPORT replace : write<replace> {
 
    public:
     replace(bson::document::view filter, bson::document::view replacement);
@@ -38,3 +38,5 @@ class MONGOCXX_EXPORT replace : write<replace> {
 }  // namespace model
 }  // namespace driver
 }  // namespace mongo
+
+#include "driver/config/postlude.hpp"

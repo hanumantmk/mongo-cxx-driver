@@ -20,16 +20,15 @@
 
 #include <exception>
 
-/**
- * MongoDB C++ Driver exception hierarchy
- *
- * std::exception
- *     L mongo::driver::Exception
- *         L mongo::driver::OperationException
- *             L mongo::driver::QueryException
- *             L mongo::driver::WriteException
- *         L mongo::driver::SocketException
- */
+/// MongoDB C++ Driver exception hierarchy
+///
+/// std::exception
+///     L mongo::driver::Exception
+///         L mongo::driver::OperationException
+///             L mongo::driver::QueryException
+///             L mongo::driver::WriteException
+///         L mongo::driver::SocketException
+///
 
 namespace mongo {
 namespace driver {
@@ -46,3 +45,5 @@ class authentication_exception : public operation_exception {};
 
 }  // namespace driver
 }  // namespace mongo
+
+#include "driver/config/postlude.hpp"

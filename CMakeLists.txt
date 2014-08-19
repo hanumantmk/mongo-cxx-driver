@@ -1,14 +1,14 @@
-cmake_minimum_required(VERSION 2.8.6)
+cmake_minimum_required(VERSION 2.8.8)
 
 project (libmongocxx)
 
 include(ExternalProject)
 include(GenerateExportHeader)
 
-set(libmongoc_RELEASE 0.98.0)
+set(WRAPPED_ABI_VERSION 1.0)
 
 find_package(PkgConfig)
-pkg_check_modules(LIBMONGOC libmongoc-1.0)
+pkg_check_modules(LIBMONGOC libmongoc-${WRAPPED_ABI_VERSION})
 
 link_directories(
     ${LIBMONGOC_LIBRARY_DIRS}

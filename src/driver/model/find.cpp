@@ -76,3 +76,5 @@ optional<bson::document::view> find::sort() const { return _ordering; }
 }  // namespace model
 }  // namespace driver
 }  // namespace mongo
+
+#include "driver/config/postlude.hpp"

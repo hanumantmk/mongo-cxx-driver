@@ -28,7 +28,7 @@ namespace model {
 class write_concern;
 
 template <class derived>
-class MONGOCXX_EXPORT write {
+class LIBMONGOCXX_EXPORT write {
 
    public:
     derived& write_concern(const write_concern* write_concern) {
@@ -45,3 +45,5 @@ class MONGOCXX_EXPORT write {
 }  // namespace model
 }  // namespace driver
 }  // namespace mongo
+
+#include "driver/config/postlude.hpp"

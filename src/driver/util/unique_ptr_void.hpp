@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+#pragma once
+
+#include "driver/config/prelude.hpp"
+
 #include <memory>
 
 namespace mongo {
@@ -25,3 +29,5 @@ using unique_ptr_void = std::unique_ptr<void, void (*)(void*)>;
 }  // namespace util
 }  // namespace driver
 }  // namespace mongo
+
+#include "driver/config/postlude.hpp"

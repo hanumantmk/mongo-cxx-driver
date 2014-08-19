@@ -1,25 +1,7 @@
-/**
- * Copyright 2014 MongoDB Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-#include "private/preamble.hpp"
 
 #include <cstdint>
 
-#include "mongoc.h"
-#include "bson.h"
+#include "driver/libmongoc.hpp"
 
 #include "driver/base/collection.hpp"
 #include "driver/base/client.hpp"
@@ -44,12 +26,9 @@ static void mongoc_collection_dtor(void* collection_ptr) noexcept {
 }
 }  // namespace
 
-collection::collection(client* client, database* database, const std::string& collection_name)
-    : _client(client),
-      _database(database),
-      _collection(mongoc_client_get_collection(
-                      util::cast<mongoc_client_t>(_client->_client),
-                      mongoc_database_get_name(util::cast<mongoc_database_t>(_database->_database)),
+collection::collection(const database& database, const std::string& collection_name)
+    : _collection(mongoc_database_get_collection(
+                      util::cast<mongoc_database_t>(database._database),
                       collection_name.c_str()),
                   mongoc_collection_dtor) {}
 

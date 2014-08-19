@@ -22,8 +22,10 @@ namespace mongo {
 namespace driver {
 namespace result {
 
-class MONGOCXX_EXPORT explain {};
+class LIBMONGOCXX_EXPORT explain {};
 
 }  // namespace result
 }  // namespace driver
 }  // namespace mongo
+
+#include "driver/config/postlude.hpp"

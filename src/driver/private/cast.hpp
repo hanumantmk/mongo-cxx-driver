@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+#pragma once
+
+#include "driver/config/prelude.hpp"
+
 #include "driver/util/unique_ptr_void.hpp"
 
 namespace mongo {
@@ -28,3 +32,5 @@ T* cast(const unique_ptr_void& ptr) {
 }  // namespace util
 }  // namespace driver
 }  // namespace mongo
+
+#include "driver/config/postlude.hpp"

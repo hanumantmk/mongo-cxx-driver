@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include "driver/libmongoc.hpp"
+
 #include "driver/base/database.hpp"
 #include "driver/base/client.hpp"
 #include "driver/private/cast.hpp"
@@ -27,18 +29,17 @@ static void mongoc_database_dtor(void* database_ptr) noexcept {
 }
 }  // namespace
 
-database::database(client* client, const std::string& database_name)
-    : _client(client),
-      _database(mongoc_client_get_database(util::cast<mongoc_client_t>(_client->_client),
+database::database(const client& client, const std::string& database_name)
+    : _database(mongoc_client_get_database(util::cast<mongoc_client_t>(client._client),
                                            database_name.c_str()),
                 mongoc_database_dtor) {}
 
 collection database::collection(const std::string& collection_name) {
-    return mongo::driver::collection(_client, this, collection_name);
+    return mongo::driver::collection(*this, collection_name);
 }
 
 collection database::operator[](const std::string& collection_name) {
-    return mongo::driver::collection(_client, this, collection_name);
+    return collection(collection_name);
 }
 
 }  // namespace driver

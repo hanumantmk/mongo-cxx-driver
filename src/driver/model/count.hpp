@@ -29,7 +29,7 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-class MONGOCXX_EXPORT count : public ReadModel<count> {
+class LIBMONGOCXX_EXPORT count : public ReadModel<count> {
 
    public:
     explicit count(bson::document::view filter);
@@ -59,3 +59,5 @@ class MONGOCXX_EXPORT count : public ReadModel<count> {
 }  // namesapce model
 }  // namespace driver
 }  // namespace mongo
+
+#include "driver/config/postlude.hpp"

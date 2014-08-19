@@ -26,7 +26,7 @@ namespace mongo {
 namespace driver {
 namespace result {
 
-class MONGOCXX_EXPORT write {
+class LIBMONGOCXX_EXPORT write {
    public:
     write(const bson::document::view& view);
     write(bson::document::value value);
@@ -52,3 +52,5 @@ class MONGOCXX_EXPORT write {
 }  // namespace result
 }  // namespace driver
 }  // namespace mongo
+
+#include "driver/config/postlude.hpp"

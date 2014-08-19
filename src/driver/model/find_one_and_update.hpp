@@ -26,7 +26,7 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-class MONGOCXX_EXPORT find_one_and_update : public write<find_one_and_update> {
+class LIBMONGOCXX_EXPORT find_one_and_update : public write<find_one_and_update> {
 
    public:
     find_one_and_update(bson::document::view filter, bson::document::view update);
@@ -57,3 +57,5 @@ class MONGOCXX_EXPORT find_one_and_update : public write<find_one_and_update> {
 }  // namespace model
 }  // namespace driver
 }  // namespace mongo
+
+#include "driver/config/postlude.hpp"

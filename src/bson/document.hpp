@@ -69,7 +69,7 @@ namespace document {
 class view;
 };
 
-class MONGOCXX_EXPORT element {
+class LIBMONGOCXX_EXPORT element {
     friend class document::view;
 
    public:
@@ -100,7 +100,7 @@ class MONGOCXX_EXPORT element {
 
 namespace document {
 
-class MONGOCXX_EXPORT view {
+class LIBMONGOCXX_EXPORT view {
    public:
     class iterator : public std::iterator<std::forward_iterator_tag, element, std::ptrdiff_t,
                                           const element*, const element&> {
@@ -149,7 +149,7 @@ class MONGOCXX_EXPORT view {
     std::size_t len;
 };
 
-class MONGOCXX_EXPORT value : public view {
+class LIBMONGOCXX_EXPORT value : public view {
    public:
     using view::iterator;
 
@@ -166,7 +166,7 @@ class MONGOCXX_EXPORT value : public view {
     std::function<void(void*)> dtor;
 };
 
-class MONGOCXX_EXPORT view_or_value {
+class LIBMONGOCXX_EXPORT view_or_value {
    public:
     view_or_value(bson::document::view view);
     view_or_value(bson::document::value value);

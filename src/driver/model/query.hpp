@@ -26,7 +26,7 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-class MONGOCXX_EXPORT query {
+class LIBMONGOCXX_EXPORT query {
 
     query& sort(const bson::document::view& ordering);
     bson::document::view sort() const;
@@ -41,3 +41,5 @@ class MONGOCXX_EXPORT query {
 }  // namespace model
 }  // namespace driver
 }  // namespace mongo
+
+#include "driver/config/postlude.hpp"

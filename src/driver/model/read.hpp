@@ -29,7 +29,7 @@ namespace model {
 class read_preference;
 
 template <class Derived>
-class MONGOCXX_EXPORT read {
+class LIBMONGOCXX_EXPORT read {
 
    public:
     Derived& max_time_ms(std::uint64_t max_time_ms) {
@@ -53,3 +53,5 @@ class MONGOCXX_EXPORT read {
 }  // namespace model
 }  // namespace driver
 }  // namespace mongo
+
+#include "driver/config/postlude.hpp"

@@ -26,7 +26,7 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-class MONGOCXX_EXPORT remove : write<remove> {
+class LIBMONGOCXX_EXPORT remove : write<remove> {
 
    public:
     remove(const bson::document::view& filter);
@@ -43,3 +43,5 @@ class MONGOCXX_EXPORT remove : write<remove> {
 }  // namespace model
 }  // namespace driver
 }  // namespace mongo
+
+#include "driver/config/postlude.hpp"

@@ -19,8 +19,6 @@
 #include "driver/config/prelude.hpp"
 
 #include <cstdint>
-#include <memory>
-#include <set>
 #include <string>
 
 #include "bson/document.hpp"
@@ -70,7 +68,7 @@ class findable;
 class aggregatable;
 }  // namespace fluent
 
-class MONGOCXX_EXPORT collection {
+class LIBMONGOCXX_EXPORT collection {
 
     friend class database;
 
@@ -98,12 +96,12 @@ class MONGOCXX_EXPORT collection {
     void drop();
 
    private:
-    collection(client* client, database* database, const std::string& collection_name);
+    collection(const database& database, const std::string& collection_name);
 
-    client* _client;
-    database* _database;
     util::unique_ptr_void _collection;
 };
 
 }  // namespace driver
 }  // namespace mongo
+
+#include "driver/config/postlude.hpp"

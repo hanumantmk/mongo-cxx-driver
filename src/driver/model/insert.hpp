@@ -25,7 +25,7 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-class MONGOCXX_EXPORT insert : public write<insert> {
+class LIBMONGOCXX_EXPORT insert : public write<insert> {
 
    public:
     insert(bson::document::view document);
@@ -38,3 +38,5 @@ class MONGOCXX_EXPORT insert : public write<insert> {
 }  // namespace model
 }  // namespace driver
 }  // namespace mongo
+
+#include "driver/config/postlude.hpp"

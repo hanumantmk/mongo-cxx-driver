@@ -23,18 +23,13 @@
 namespace mongo {
 namespace driver {
 
-/**
- * The options class represents a set of options for the MongoDB driver client.
- *
- * @param mongodb_uri The MongoDB uri to extract options from.
- */
-class MONGOCXX_EXPORT options {
+/// The options class represents a set of options for the MongoDB driver client.
+class LIBMONGOCXX_EXPORT options {
     friend class client;
 
    public:
     options();
     explicit options(std::string mongodb_uri);
-    explicit options(const char* mongodb_uri);
 
    private:
     std::string _mongodb_uri;
@@ -42,3 +37,5 @@ class MONGOCXX_EXPORT options {
 
 }  // namespace driver
 }  // namespace mongo
+
+#include "driver/config/postlude.hpp"

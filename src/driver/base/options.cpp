@@ -28,7 +28,7 @@ options::options() : _mongodb_uri(kDefaultURI) {}
 
 options::options(std::string mongodb_uri) : _mongodb_uri(std::move(mongodb_uri)) {}
 
-options::options(const char* mongodb_uri) : _mongodb_uri(mongodb_uri) {}
-
 }  // namespace driver
 }  // namespace mongo
+
+#include "driver/config/postlude.hpp"
