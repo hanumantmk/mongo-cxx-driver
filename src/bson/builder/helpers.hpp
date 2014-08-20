@@ -16,10 +16,20 @@
 
 #pragma once
 
-#include "bson/builder/helpers.hpp"
-#include "bson/builder/concrete.hpp"
-#include "bson/builder/array_ctx.hpp"
-#include "bson/builder/document_ctx.hpp"
-#include "bson/builder/key_ctx.hpp"
-#include "bson/builder/value_builder.hpp"
-#include "bson/builder/impl.hpp"
+namespace bson {
+
+namespace builder_helpers {
+    struct open_doc_t {};
+    extern open_doc_t open_doc;
+
+    struct open_array_t {};
+    extern open_array_t open_array;
+
+    struct close_doc_t {};
+    extern close_doc_t close_doc;
+
+    struct close_array_t {};
+    extern close_array_t close_array;
+};
+
+}

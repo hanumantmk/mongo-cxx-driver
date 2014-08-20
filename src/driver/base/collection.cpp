@@ -40,9 +40,8 @@ static void mongoc_collection_dtor(void* collection_ptr) noexcept {
 }  // namespace
 
 collection::collection(const database& database, const std::string& collection_name)
-    : _collection(mongoc_database_get_collection(
-                      util::cast<mongoc_database_t>(database._database),
-                      collection_name.c_str()),
+    : _collection(mongoc_database_get_collection(util::cast<mongoc_database_t>(database._database),
+                                                 collection_name.c_str()),
                   mongoc_collection_dtor) {}
 
 cursor collection::find(const model::find& model) const {
