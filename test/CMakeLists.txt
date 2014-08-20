@@ -2,7 +2,7 @@ enable_testing()
 
 macro(test t)
     add_executable(test_${t} test_${t}.cpp)
-    target_link_libraries(test_${t} mongocxx)
+    target_link_libraries(test_${t} mongocxx-static)
     add_test(test test_${t})
 endmacro()
 

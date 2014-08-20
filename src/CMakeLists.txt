@@ -1,38 +1,38 @@
-# TODO: use GLOB
-add_library(mongocxx SHARED
-    bson/builder.cpp
-    bson/document.cpp
-    bson/string_or_literal.cpp
-    bson/util/itoa.cpp
-    driver/libmongoc.cpp
-    driver/base/client.cpp
-    driver/base/collection.cpp
-    driver/base/cursor.cpp
-    driver/base/database.cpp
-    driver/base/options.cpp
-    driver/model/bulk.cpp
-    driver/model/find.cpp
-    driver/model/insert.cpp
-    driver/request/insert.cpp
-    driver/result/write.cpp
-    driver/util/libbson.cpp
-    driver/util/optional.cpp
-)
+add_library(mongocxx-shared SHARED)
+add_library(mongocxx-static STATIC)
 
-set_target_properties(mongocxx PROPERTIES
+add_compiler_export_flags(LIBMONGOCXX_EXPORT_FLAGS)
+
+set_target_properties(mongocxx-shared PROPERTIES
     DEFINE_SYMBOL LIBMONGOCXX_EXPORTS
+    OUTPUT_NAME mongocxx
+    COMPILE_FLAGS ${LIBMONGOCXX_EXPORT_FLAGS}
+    LINK_FLAGS ${LIBMONGOCXX_EXPORT_FLAGS}
 )
 
-if (BUILD_SHARED_LIBS)
-    add_compiler_export_flags(LIBMONGOCXX_EXPORT_FLAGS)
-    set_target_properties(mongocxx PROPERTIES COMPILE_FLAGS ${LIBMONGOCXX_EXPORT_FLAGS})
-    set_target_properties(mongocxx PROPERTIES LINK_FLAGS ${LIBMONGOCXX_EXPORT_FLAGS})
-endif()
+set_target_properties(mongocxx-static PROPERTIES
+    DEFINE_SYMBOL LIBMONGOCXX_EXPORTS
+    OUTPUT_NAME mongocxx
+    COMPILE_FLAGS ${LIBMONGOCXX_EXPORT_FLAGS}
+    LINK_FLAGS ${LIBMONGOCXX_EXPORT_FLAGS}
+)
 
-generate_export_header(mongocxx
+generate_export_header(mongocxx-shared
     EXPORT_MACRO_NAME LIBMONGOCXX_EXPORT
+    EXPORT_FILE_NAME export.hpp
 )
 
-target_link_libraries(mongocxx
+target_link_libraries(mongocxx-shared
     ${LIBMONGOC_LIBRARIES}
+    mongocxx-driver
+    mongocxx-bson
 )
+
+target_link_libraries(mongocxx-static
+    ${LIBMONGOC_LIBRARIES}
+    mongocxx-driver
+    mongocxx-bson
+)
+
+add_subdirectory(driver)
+add_subdirectory(bson)

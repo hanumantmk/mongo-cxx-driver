@@ -30,7 +30,7 @@ static void mongoc_client_dtor(void* client_ptr) noexcept {
 client::client(const std::string& mongodb_uri)
     : _client(mongoc_client_new(mongodb_uri.c_str()), mongoc_client_dtor) {}
 
-client::client(options options)
+client::client(const options& options)
     : _client(mongoc_client_new(options._mongodb_uri.c_str()), mongoc_client_dtor) {}
 
 class database client::database(const std::string& database_name) {
