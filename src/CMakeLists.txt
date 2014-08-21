@@ -1,5 +1,5 @@
-add_library(mongocxx-shared SHARED)
-add_library(mongocxx-static STATIC)
+add_library(mongocxx-shared SHARED mongocxx_shared.cpp)
+add_library(mongocxx-static STATIC mongocxx_static.cpp)
 
 add_compiler_export_flags(LIBMONGOCXX_EXPORT_FLAGS)
 

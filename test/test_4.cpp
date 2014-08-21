@@ -31,6 +31,12 @@ int main() {
             << [](document_builder builder) { builder << "lambda" << 12; } << my_functor()
             << close_doc;
 
+    builder << add_doc;
+
+#include "bson/builder/macros_on.hpp"
+    builder << "doc_macro" << DOC("baz" << ARRAY(DOC("quz" << ARRAY(1 << 2 << 3 << 4))));
+#include "bson/builder/macros_off.hpp"
+
     std::cout << builder.view() << std::endl;
 
     static_assert(util::is_functor<my_functor, void(document_builder)>::value,

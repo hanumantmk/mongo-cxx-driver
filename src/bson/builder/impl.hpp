@@ -32,4 +32,11 @@ builder::document_ctx<T>::operator value_builder() {
     return value_builder(_builder, _key);
 }
 
+template <typename Func>
+typename std::enable_if<util::is_functor<Func, void(document_builder)>::value, builder::key_ctx<builder>>::type builder::operator<<(
+    Func func) {
+    func(*this);
+    return builder::key_ctx<builder>(this);
+}
+
 }

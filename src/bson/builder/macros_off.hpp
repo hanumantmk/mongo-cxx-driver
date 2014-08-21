@@ -14,28 +14,8 @@
  * limitations under the License.
  */
 
-#pragma once
+#undef DOC
+#undef ARRAY
 
-#include <cstddef>
-#include <cstdint>
-
-#include "bson/string_or_literal.hpp"
-
-namespace bson {
-namespace util {
-
-class itoa {
-   public:
-    itoa(uint32_t i);
-
-    const char* c_str() const;
-    std::size_t length() const;
-
-   private:
-    const char* _str;
-    uint8_t _len;
-    char _buf[11];
-};
-
-}  // namespace util
-}  // namespace bson
+#pragma pop_macro("DOC")
+#pragma pop_macro("ARRAY")

@@ -25,7 +25,7 @@ namespace bson {
 class string_or_literal {
    public:
     template <std::size_t n>
-    string_or_literal(const char (&v)[n])
+    constexpr string_or_literal(const char (&v)[n])
         : _len(n - 1), _is_owning(false), _literal(v) {}
 
     string_or_literal();

@@ -39,6 +39,12 @@ class builder::key_ctx {
         return *this;
     }
 
+    template <typename Func>
+    typename std::enable_if<util::is_functor<Func, string_or_literal()>::value, document_ctx<key_ctx>>::type operator<<(
+        Func func) {
+        return (*this << func());
+    }
+
     Base operator<<(builder_helpers::close_doc_t) {
         _builder->nokey_append(builder_helpers::close_doc);
         return unwrap();

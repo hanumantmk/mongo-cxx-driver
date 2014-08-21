@@ -21,6 +21,7 @@
 #include "bson/document.hpp"
 #include "bson/builder/helpers.hpp"
 #include "bson/string_or_literal.hpp"
+#include "bson/util/functor.hpp"
 
 namespace bson {
 
@@ -49,6 +50,10 @@ class builder {
     ~builder();
 
     document_ctx<key_ctx<builder>> operator<<(string_or_literal rhs);
+
+    template <typename Func>
+    typename std::enable_if<util::is_functor<Func, void(builder::key_ctx<builder::closed_ctx>)>::value, key_ctx<builder>>::type operator<<(
+        Func func);
 
     operator key_ctx<closed_ctx>();
 

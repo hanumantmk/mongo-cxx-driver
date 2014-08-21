@@ -17,6 +17,8 @@
 #include "bson/builder.hpp"
 #include "bson/util/itoa.hpp"
 
+#include <vector>
+
 namespace bson {
 
 class builder::impl {

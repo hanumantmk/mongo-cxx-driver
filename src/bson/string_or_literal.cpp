@@ -18,28 +18,13 @@
 
 namespace bson {
 
-string_or_literal::string_or_literal() : _len(0), _is_owning(false), _string("") {}
+string_or_literal::string_or_literal() : _len(0), _is_owning(false), _literal("") {}
 
 string_or_literal::string_or_literal(std::string v)
     : _len(v.length()), _is_owning(true), _string(std::move(v)) {}
 
 string_or_literal& string_or_literal::operator=(const string_or_literal& rhs) {
-    _len = rhs._len;
-    _is_owning = rhs._is_owning;
-
     if (_is_owning) {
-        _string = rhs._string;
-    } else {
-        _literal = rhs._literal;
-    }
-
-    return *this;
-}
-
-string_or_literal::string_or_literal(const string_or_literal& rhs) { *this = rhs; }
-
-string_or_literal& string_or_literal::operator=(string_or_literal&& rhs) {
-    if (_is_owning && !rhs._is_owning) {
         using string = std::string;
 
         _string.~string();
@@ -49,7 +34,30 @@ string_or_literal& string_or_literal::operator=(string_or_literal&& rhs) {
     _is_owning = rhs._is_owning;
 
     if (_is_owning) {
-        _string = std::move(rhs._string);
+        new (&_string) std::string(rhs._string);
+    } else {
+        _literal = rhs._literal;
+    }
+
+    return *this;
+}
+
+string_or_literal::string_or_literal(const string_or_literal& rhs) : _is_owning(false) {
+    *this = rhs;
+}
+
+string_or_literal& string_or_literal::operator=(string_or_literal&& rhs) {
+    if (_is_owning) {
+        using string = std::string;
+
+        _string.~string();
+    }
+
+    _len = rhs._len;
+    _is_owning = rhs._is_owning;
+
+    if (_is_owning) {
+        new (&_string) std::string(std::move(rhs._string));
     } else {
         _literal = rhs._literal;
     }
