@@ -16,10 +16,49 @@ struct my_functor {
     void operator()(document_builder builder) { builder << "my_functor" << 42; }
 };
 
+struct magic_tag_t {};
+magic_tag_t magic_tag{};
+
+const string_or_literal* operator<(magic_tag_t m, const string_or_literal& sol) {
+    return &sol;
+}
+template <typename T>
+const string_or_literal* operator<(T&& t, magic_tag_t m) {
+    return nullptr;
+}
+template <typename T>
+const string_or_literal* operator<(const T& t, magic_tag_t m) {
+    return nullptr;
+}
+
+nullptr_t operator>(magic_tag_t m, const string_or_literal& sol) {
+    return nullptr;
+}
+template <typename T>
+T* operator>(T&& t, magic_tag_t m) {
+    return &t;
+}
+template <typename T>
+const T* operator>(const T& t, magic_tag_t m) {
+    return &t;
+}
+
+#define MAGIC(arg) \
+        *(true ? magic_tag < arg < magic_tag) \
+     << *(false ? magic_tag > arg > magic_tag)
+
+#define BSON(arg, arg2) MAGIC(arg) << MAGIC(arg2)
+
 int main() {
     using namespace builder_helpers;
 
     builder builder;
+
+    builder << BSON("foo" : 12, "bar": 13);
+
+    std::cout << builder.view() << std::endl;
+
+    builder.clear();
 
     add_doc(builder);
 
