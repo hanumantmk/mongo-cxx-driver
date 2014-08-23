@@ -33,6 +33,9 @@ int main() {
 
     builder << add_doc;
 
+    std::cout << builder.view() << std::endl;
+    builder.clear();
+
 #include "bson/builder/macros_on.hpp"
     builder << "doc_macro" << DOC("baz" << ARRAY(DOC("quz" << ARRAY(1 << 2 << 3 << 4))));
 #include "bson/builder/macros_off.hpp"

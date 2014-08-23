@@ -69,6 +69,8 @@ class builder {
 
     document::view view() const;
 
+    void clear();
+
    private:
 
     std::unique_ptr<impl> _impl;
