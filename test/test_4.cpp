@@ -1,3 +1,4 @@
+#include "bson_pp.h"
 #include "bson/document.hpp"
 #include "bson/builder.hpp"
 
@@ -19,19 +20,21 @@ struct my_functor {
 struct magic_tag_t {};
 magic_tag_t magic_tag{};
 
-const string_or_literal* operator<(magic_tag_t m, const string_or_literal& sol) {
-    return &sol;
+template <typename T>
+const T* operator<(magic_tag_t m, const T& t) {
+    return &t;
 }
 template <typename T>
-const string_or_literal* operator<(T&& t, magic_tag_t m) {
+nullptr_t operator<(T&& t, magic_tag_t m) {
     return nullptr;
 }
 template <typename T>
-const string_or_literal* operator<(const T& t, magic_tag_t m) {
+nullptr_t operator<(const T& t, magic_tag_t m) {
     return nullptr;
 }
 
-nullptr_t operator>(magic_tag_t m, const string_or_literal& sol) {
+template <typename T>
+nullptr_t operator>(magic_tag_t m, const T& sol) {
     return nullptr;
 }
 template <typename T>
@@ -43,18 +46,34 @@ const T* operator>(const T& t, magic_tag_t m) {
     return &t;
 }
 
-#define MAGIC(arg) \
-        *(true ? magic_tag < arg < magic_tag) \
-     << *(false ? magic_tag > arg > magic_tag)
+#define MAGIC(elem) \
+        *(true ? magic_tag < elem < magic_tag) \
+     << *(false ? magic_tag > elem > magic_tag)
 
-#define BSON(arg, arg2) MAGIC(arg) << MAGIC(arg2)
+#define ID(elem) elem
+
+#define BSON(...) BSON_MACRO_MAP(MAGIC, (<<), __VA_ARGS__)
+#define ARRAY(...) [](value_builder builder) { builder << open_array << BSON_MACRO_MAP(ID, (<<), __VA_ARGS__) << close_array; }
+#define DOC(...) [](value_builder builder) { builder << open_doc << BSON_MACRO_MAP(MAGIC, (<<), __VA_ARGS__) << close_doc; }
+#define CONCAT(builder) [](document_builder){} : builder
 
 int main() {
     using namespace builder_helpers;
 
     builder builder;
 
-    builder << BSON("foo" : 12, "bar": 13);
+    builder << BSON(
+        "foo" : 12,
+        "bar" : 13,
+        "baz" : 14,
+        "quz" : ARRAY(1, 2, 3, ARRAY(1,2,3,4, DOC("hello" : 12))),
+        "doc" : DOC(
+            "a" : 1,
+            "b" : 2,
+            "c" : 3
+        ),
+        CONCAT([](document_builder builder){ builder << "zzz" << 123; })
+    );
 
     std::cout << builder.view() << std::endl;
 
