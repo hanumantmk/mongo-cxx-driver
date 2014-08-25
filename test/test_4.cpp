@@ -21,28 +21,28 @@ struct magic_tag_t {};
 magic_tag_t magic_tag{};
 
 template <typename T>
-const T* operator<(magic_tag_t m, const T& t) {
+const T* operator<(magic_tag_t, const T& t) {
     return &t;
 }
 template <typename T>
-nullptr_t operator<(T&& t, magic_tag_t m) {
-    return nullptr;
+T* operator<(magic_tag_t, T&& t) {
+    return &t;
 }
 template <typename T>
-nullptr_t operator<(const T& t, magic_tag_t m) {
+std::nullptr_t operator<(const T&, magic_tag_t) {
     return nullptr;
 }
 
 template <typename T>
-nullptr_t operator>(magic_tag_t m, const T& sol) {
+std::nullptr_t operator>(magic_tag_t, const T&) {
     return nullptr;
 }
 template <typename T>
-T* operator>(T&& t, magic_tag_t m) {
+T* operator>(T&& t, magic_tag_t) {
     return &t;
 }
 template <typename T>
-const T* operator>(const T& t, magic_tag_t m) {
+const T* operator>(const T& t, magic_tag_t) {
     return &t;
 }
 
