@@ -14,29 +14,30 @@
  * limitations under the License.
  */
 
-#pragma once
-
-#include "bson/builder/array_ctx.hpp"
-#include "bson/builder/document_ctx.hpp"
-#include "bson/builder/value_builder.hpp"
+#include "bson/types.hpp"
 
 namespace bson {
 
-template <class T>
-builder::array_ctx<T>::operator value_builder() {
-    return value_builder(_builder);
+std::ostream& operator<<(std::ostream& out, type rhs) {
+    switch (static_cast<uint8_t>(rhs)) {
+#define MONGOCXX_ENUM(name, val) case val: out << #name; break;
+#include "bson/enums/type.hpp"
+#undef MONGOCXX_ENUM
+        default: out << "?";
+    }
+
+    return out;
 }
 
-template <class T>
-builder::document_ctx<T>::operator value_builder() {
-    return value_builder(_builder);
+std::ostream& operator<<(std::ostream& out, binary_sub_type rhs) {
+    switch (static_cast<uint8_t>(rhs)) {
+#define MONGOCXX_ENUM(name, val) case val: out << #name; break;
+#include "bson/enums/binary_sub_type.hpp"
+#undef MONGOCXX_ENUM
+        default: out << "?";
+    }
+
+    return out;
 }
 
-template <typename Func>
-typename std::enable_if<util::is_functor<Func, void(document_builder)>::value, builder::key_ctx<builder>>::type builder::operator<<(
-    Func func) {
-    func(*this);
-    return builder::key_ctx<builder>(this);
-}
-
-}
+} // namespace bson

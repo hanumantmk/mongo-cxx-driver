@@ -34,7 +34,7 @@ class builder::array_ctx {
     template <class T>
     typename std::enable_if<!(util::is_functor<T, void(array_builder)>::value || util::is_functor<T, void(value_builder)>::value || std::is_same<T, builder_helpers::close_doc_t>::value), array_ctx>::type& operator<<(
         const T& t) {
-        _builder->nokey_append(t);
+        _builder->value_append(t);
         return *this;
     }
 
@@ -46,17 +46,17 @@ class builder::array_ctx {
     }
 
     key_ctx<array_ctx> operator<<(builder_helpers::open_doc_t) {
-        _builder->nokey_append(builder_helpers::open_doc);
+        _builder->open_doc_append();
         return wrap_document();
     }
 
     array_ctx<array_ctx> operator<<(builder_helpers::open_array_t) {
-        _builder->nokey_append(builder_helpers::open_array);
+        _builder->open_array_append();
         return wrap_array();
     }
 
     Base operator<<(builder_helpers::close_array_t) {
-        _builder->nokey_append(builder_helpers::close_array);
+        _builder->close_array_append();
         return unwrap();
     }
 

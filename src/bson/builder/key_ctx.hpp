@@ -29,7 +29,8 @@ class builder::key_ctx {
     Base unwrap() { return Base(_builder); }
 
     document_ctx<key_ctx> operator<<(string_or_literal key) {
-        return document_ctx<key_ctx>(_builder, std::move(key));
+        _builder->key_append(std::move(key));
+        return document_ctx<key_ctx>(_builder);
     }
 
     template <typename Func>
@@ -46,7 +47,7 @@ class builder::key_ctx {
     }
 
     Base operator<<(builder_helpers::close_doc_t) {
-        _builder->nokey_append(builder_helpers::close_doc);
+        _builder->close_doc_append();
         return unwrap();
     }
 

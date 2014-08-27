@@ -28,11 +28,12 @@ class string_or_literal {
     constexpr string_or_literal(const char (&v)[n])
         : _len(n - 1), _is_owning(false), _literal(v) {}
 
+    explicit string_or_literal(std::string v);
+    explicit string_or_literal(const char* str, std::size_t len);
+
     string_or_literal();
 
-    string_or_literal(std::string v);
     string_or_literal(const string_or_literal& rhs);
-
     string_or_literal(string_or_literal&& rhs);
     string_or_literal& operator=(const string_or_literal& rhs);
     string_or_literal& operator=(string_or_literal&& rhs);
@@ -41,6 +42,8 @@ class string_or_literal {
 
     std::size_t length() const;
     const char* c_str() const;
+
+    friend std::ostream& operator<<(std::ostream& out, const string_or_literal& rhs);
 
    private:
     std::size_t _len;

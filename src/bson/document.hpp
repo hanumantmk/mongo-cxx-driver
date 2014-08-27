@@ -18,8 +18,6 @@
 
 #include "driver/config/prelude.hpp"
 
-#include "driver/config/prelude.hpp"
-
 #include <iostream>
 #include <functional>
 #include <cstddef>
@@ -28,46 +26,25 @@
 #include <tuple>
 
 #include "bson.h"
+#include "bson/string_or_literal.hpp"
 
 namespace bson {
 
-enum class type : std::uint8_t {
-    k_eod = 0x00,
-    k_double = 0x01,
-    k_utf8 = 0x02,
-    k_document = 0x03,
-    k_array = 0x04,
-    k_binary = 0x05,
-    k_undefined = 0x06,
-    k_oid = 0x07,
-    k_bool = 0x08,
-    k_date = 0x09,
-    k_null = 0x0A,
-    k_regex = 0x0B,
-    k_dbpointer = 0x0C,
-    k_code = 0x0D,
-    k_symbol = 0x0E,
-    k_codewscope = 0x0F,
-    k_int32 = 0x10,
-    k_timestamp = 0x11,
-    k_int64 = 0x12,
-    k_maxkey = 0x7F,
-    k_minkey = 0xFF
-};
+enum class type : std::uint8_t;
 
-enum class binary_sub_type : std::uint8_t {
-    k_binary = 0x00,
-    k_function = 0x01,
-    k_binary_deprecated = 0x02,
-    k_uuid_deprecated = 0x03,
-    k_uuid = 0x04,
-    k_md5 = 0x05,
-    k_user = 0x80
-};
+namespace types {
+    struct b_binary;
+    struct b_utf8;
+    struct b_double;
+    struct b_int32;
+    struct b_int64;
+    struct b_document;
+    struct b_array;
+}
 
 namespace document {
 class view;
-};
+}
 
 class LIBMONGOCXX_EXPORT element {
     friend class document::view;
@@ -80,19 +57,15 @@ class LIBMONGOCXX_EXPORT element {
 
     bson::type type() const;
 
-    const char* key() const;
+    string_or_literal key() const;
 
-    std::tuple<const char*, std::uint32_t> get_string_w_len() const;
-
-    std::tuple<binary_sub_type, std::uint32_t, const std::uint8_t*> get_binary() const;
-
-    const char* get_string() const;
-    double get_double() const;
-    std::int32_t get_int32() const;
-    std::int64_t get_int64() const;
-
-    document::view get_document() const;
-    document::view get_array() const;
+    types::b_binary get_binary() const;
+    types::b_utf8 get_string() const;
+    types::b_double get_double() const;
+    types::b_int32 get_int32() const;
+    types::b_int64 get_int64() const;
+    types::b_document get_document() const;
+    types::b_array get_array() const;
 
    private:
     bson_iter_t _iter;

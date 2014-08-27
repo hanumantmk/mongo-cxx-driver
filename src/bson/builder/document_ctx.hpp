@@ -24,8 +24,8 @@ namespace bson {
 template <class Base>
 class builder::document_ctx {
    public:
-    document_ctx(builder* builder, string_or_literal key)
-        : _builder(builder), _key(std::move(key)) {}
+    document_ctx(builder* builder)
+        : _builder(builder) {}
 
     Base unwrap() { return Base(_builder); }
 
@@ -35,7 +35,7 @@ class builder::document_ctx {
     template <class T>
     typename std::enable_if<!util::is_functor<T, void(value_builder)>::value, Base>::type operator<<(
         const T& t) {
-        _builder->key_append(_key, t);
+        _builder->value_append(t);
         return unwrap();
     }
 
@@ -47,12 +47,12 @@ class builder::document_ctx {
     }
 
     key_ctx<Base> operator<<(builder_helpers::open_doc_t) {
-        _builder->key_append(_key, builder_helpers::open_doc);
+        _builder->open_doc_append();
         return wrap_document();
     }
 
     array_ctx<Base> operator<<(builder_helpers::open_array_t) {
-        _builder->key_append(_key, builder_helpers::open_array);
+        _builder->open_array_append();
         return wrap_array();
     }
 

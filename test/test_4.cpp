@@ -18,10 +18,14 @@ struct my_functor {
 
 int main() {
     using namespace builder_helpers;
+    using namespace types;
 
     builder builder;
 
     add_doc(builder);
+
+    builder << "hello" << "world";
+    builder << "hello" << b_utf8{"world"};
 
     int x = 10;
 

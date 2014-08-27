@@ -3,6 +3,7 @@
 #include <cstring>
 
 #include "mongocxx.hpp"
+#include "bson/types.hpp"
 
 int main() {
     mongoc_init();
@@ -14,7 +15,7 @@ int main() {
     std::cout << "Doc: " << doc << std::endl;
 
     for (auto x : doc) {
-        std::cout << "type is: " << (int)(x.type()) << std::endl;
+        std::cout << "type is: " << x.type() << std::endl;
         std::cout << "value is: ";
 
         if (x.type() == bson::type::k_int32) {

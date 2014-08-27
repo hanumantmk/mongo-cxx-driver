@@ -25,47 +25,30 @@ namespace bson {
 
 class builder::value_builder {
    public:
-    value_builder(builder* builder) : _builder(builder), _is_array(true) {}
-
-    value_builder(builder* builder, string_or_literal key)
-        : _builder(builder), _is_array(false), _key(std::move(key)) {}
+    value_builder(builder* builder) : _builder(builder) {}
 
     array_ctx<value_builder> wrap_array() { return array_ctx<value_builder>(_builder); }
     key_ctx<value_builder> wrap_document() { return key_ctx<value_builder>(_builder); }
 
     key_ctx<value_builder> operator<<(builder_helpers::open_doc_t) {
-        if (_is_array) {
-            _builder->nokey_append(builder_helpers::open_doc);
-        } else {
-            _builder->key_append(_key, builder_helpers::open_doc);
-        }
+        _builder->open_doc_append();
 
         return wrap_document();
     }
 
     array_ctx<value_builder> operator<<(builder_helpers::open_array_t) {
-        if (_is_array) {
-            _builder->nokey_append(builder_helpers::open_array);
-        } else {
-            _builder->key_append(_key, builder_helpers::open_array);
-        }
+        _builder->open_array_append();
 
         return wrap_array();
     }
 
     template <class T>
     void operator<<(const T& t) {
-        if (_is_array) {
-            _builder->nokey_append(t);
-        } else {
-            _builder->key_append(_key, t);
-        }
+        _builder->value_append(t);
     }
 
    private:
     builder* _builder;
-    bool _is_array;
-    string_or_literal _key;
 };
 
 }

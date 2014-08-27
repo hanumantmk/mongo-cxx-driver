@@ -1021,7 +1021,11 @@ const char* kIndexTable =
     "998\0"
     "999\0";
 
-itoa::itoa(uint32_t val) {
+itoa::itoa(uint32_t val) : val(val) {
+    init();
+}
+
+void itoa::init() {
     if (val < 10) {
         _str = kIndexTable + (2 * val);
         _len = 1;
@@ -1046,6 +1050,16 @@ itoa::itoa(uint32_t val) {
         _str = _buf + i;
         _len = size - i;
     }
+}
+
+itoa::itoa() : itoa(0) {}
+
+itoa::itoa(const itoa& rhs) : itoa(rhs.val) {}
+
+itoa& itoa::operator=(const itoa& rhs) {
+    val = rhs.val;
+    init();
+    return *this;
 }
 
 const char* itoa::c_str() const { return _str; }

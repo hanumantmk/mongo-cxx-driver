@@ -23,3 +23,4 @@
 #include "bson/builder/key_ctx.hpp"
 #include "bson/builder/value_builder.hpp"
 #include "bson/builder/impl.hpp"
+#include "bson/types.hpp"

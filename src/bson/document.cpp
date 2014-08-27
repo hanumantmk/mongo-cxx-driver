@@ -18,6 +18,7 @@
 #include <cstring>
 
 #include "bson/document.hpp"
+#include "bson/types.hpp"
 
 namespace bson {
 
@@ -29,31 +30,34 @@ bool element::operator==(const element& rhs) const {
     return (_iter.raw == rhs._iter.raw && _iter.off == rhs._iter.off);
 }
 
-type element::type() const { return bson::type(bson_iter_type(&_iter)); }
+bson::type element::type() const { return static_cast<bson::type>(bson_iter_type(&_iter)); }
 
-const char* element::key() const { return bson_iter_key(&_iter); }
+string_or_literal element::key() const {
+    const char* key = bson_iter_key(&_iter);
 
-std::tuple<const char*, std::uint32_t> element::get_string_w_len() const {
-    std::uint32_t len;
-    const char* str = bson_iter_utf8(&_iter, &len);
-    return std::tuple<const char*, std::uint32_t>(str, len);
+    return string_or_literal{key, std::strlen(key)};
 }
 
-std::tuple<binary_sub_type, std::uint32_t, const std::uint8_t*> element::get_binary() const {
+types::b_binary element::get_binary() const {
     bson_subtype_t type;
     std::uint32_t len;
     const std::uint8_t* binary;
 
     bson_iter_binary(&_iter, &type, &len, &binary);
 
-    return std::tuple<binary_sub_type, std::uint32_t, const std::uint8_t*>(binary_sub_type(type),
-                                                                           len, binary);
+    return types::b_binary{static_cast<binary_sub_type>(type), len, binary};
 }
 
-const char* element::get_string() const { return bson_iter_utf8(&_iter, nullptr); }
-double element::get_double() const { return bson_iter_double(&_iter); }
-std::int32_t element::get_int32() const { return bson_iter_int32(&_iter); }
-std::int64_t element::get_int64() const { return bson_iter_int64(&_iter); }
+types::b_utf8 element::get_string() const {
+    uint32_t len;
+    const char* val = bson_iter_utf8(&_iter, &len);
+
+    return types::b_utf8{string_or_literal{val, len}};
+}
+
+types::b_double element::get_double() const { return bson_iter_double(&_iter); }
+types::b_int32 element::get_int32() const { return bson_iter_int32(&_iter); }
+types::b_int64  element::get_int64() const { return bson_iter_int64(&_iter); }
 
 namespace document {
 
@@ -135,22 +139,22 @@ value::~value() {
 }
 }
 
-document::view element::get_document() const {
+types::b_document element::get_document() const {
     const std::uint8_t* buf;
     std::uint32_t len;
 
     bson_iter_document(&_iter, &len, &buf);
 
-    return document::view(buf, len);
+    return types::b_document{document::view{buf, len}};
 }
 
-document::view element::get_array() const {
+types::b_array element::get_array() const {
     const std::uint8_t* buf;
     std::uint32_t len;
 
     bson_iter_array(&_iter, &len, &buf);
 
-    return document::view(buf, len);
+    return types::b_array{document::view{buf, len}};
 }
 
 }  // namespace bson

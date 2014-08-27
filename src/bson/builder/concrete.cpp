@@ -17,6 +17,7 @@
 #include "bson/builder.hpp"
 #include "bson/util/itoa.hpp"
 #include "bson/util/stack.hpp"
+#include "bson/types.hpp"
 
 #include <vector>
 
@@ -72,7 +73,23 @@ class builder::impl {
 
     void pop_back() { _stack.pop_back(); }
 
-    int next_key() { return _stack.back().n++; }
+    const string_or_literal& next_key() {
+        if (is_array()) {
+            itoa_key = _stack.back().n++;
+            user_key = string_or_literal{itoa_key.c_str(), itoa_key.length()};
+        } else if (! has_user_key) {
+            throw std::runtime_error("no user specified key and not in an array context");
+        }
+
+        has_user_key = false;
+
+        return user_key;
+    }
+
+    void push_key(string_or_literal sol) {
+        user_key = std::move(sol);
+        has_user_key = true;
+    }
 
     bson_t* root() { return _root; }
     bool is_array() {
@@ -111,11 +128,16 @@ class builder::impl {
     util::stack<frame, 4> _stack;
 
     uint8_t* _buf_ptr;
-    size_t _buf_len;
+    std::size_t _buf_len;
 
     bson_writer_t* _writer;
 
     bson_t* _root;
+
+    util::itoa itoa_key;
+    string_or_literal user_key;
+
+    bool has_user_key;
 };
 
 namespace builder_helpers {
@@ -138,58 +160,88 @@ builder::document_ctx<builder::key_ctx<builder>> builder::operator<<(string_or_l
     return ctx << std::move(rhs);
 }
 
-builder& builder::key_append(const string_or_literal& key, std::int32_t i32) {
+builder& builder::key_append(string_or_literal key) {
     if (_impl->is_array()) {
         throw(std::runtime_error("in subarray"));
     }
+    _impl->push_key(std::move(key));
 
-    bson_append_int32(_impl->back(), key.c_str(), key.length(), i32);
     return *this;
 }
 
-builder& builder::key_append(const string_or_literal& key, builder_helpers::open_doc_t) {
-    if (_impl->is_array()) {
-        throw(std::runtime_error("in subarray"));
-    }
+builder& builder::value_append(const types::b_double& value) {
+    const string_or_literal& key = _impl->next_key();
+
+    bson_append_double(_impl->back(), key.c_str(), key.length(), value.value);
+    return *this;
+}
+
+builder& builder::value_append(const types::b_utf8& value) {
+    const string_or_literal& key = _impl->next_key();
+
+    bson_append_utf8(_impl->back(), key.c_str(), key.length(), value.value.c_str(), value.value.length());
+    return *this;
+}
+
+builder& builder::value_append(const types::b_int32& value) {
+    const string_or_literal& key = _impl->next_key();
+
+    bson_append_int32(_impl->back(), key.c_str(), key.length(), value.value);
+    return *this;
+}
+
+builder& builder::value_append(const types::b_int64& value) {
+    const string_or_literal& key = _impl->next_key();
+
+    bson_append_int64(_impl->back(), key.c_str(), key.length(), value.value);
+    return *this;
+}
+
+builder& builder::value_append(double value) {
+    const string_or_literal& key = _impl->next_key();
+
+    bson_append_double(_impl->back(), key.c_str(), key.length(), value);
+    return *this;
+}
+
+builder& builder::value_append(const string_or_literal& value) {
+    const string_or_literal& key = _impl->next_key();
+
+    bson_append_utf8(_impl->back(), key.c_str(), key.length(), value.c_str(), value.length());
+    return *this;
+}
+
+builder& builder::value_append(std::int32_t value) {
+    const string_or_literal& key = _impl->next_key();
+
+    bson_append_int32(_impl->back(), key.c_str(), key.length(), value);
+    return *this;
+}
+
+builder& builder::value_append(std::int64_t value) {
+    const string_or_literal& key = _impl->next_key();
+
+    bson_append_int64(_impl->back(), key.c_str(), key.length(), value);
+    return *this;
+}
+
+builder& builder::open_doc_append() {
+    const string_or_literal& key = _impl->next_key();
 
     _impl->push_back_document(key.c_str(), key.length());
 
     return *this;
 }
 
-builder& builder::key_append(const string_or_literal& key, builder_helpers::open_array_t) {
-    if (_impl->is_array()) {
-        throw(std::runtime_error("in subarray"));
-    }
+builder& builder::open_array_append() {
+    const string_or_literal& key = _impl->next_key();
 
     _impl->push_back_array(key.c_str(), key.length());
 
     return *this;
 }
 
-builder& builder::nokey_append(std::int32_t i32) {
-    if (!_impl->is_array()) {
-        throw(std::runtime_error("in subdocument"));
-    }
-
-    util::itoa key(_impl->next_key());
-    bson_append_int32(_impl->back(), key.c_str(), key.length(), i32);
-
-    return *this;
-}
-
-builder& builder::nokey_append(builder_helpers::open_doc_t) {
-    if (!_impl->is_array()) {
-        throw(std::runtime_error("in subdocument"));
-    }
-
-    util::itoa key(_impl->next_key());
-    _impl->push_back_document(key.c_str(), key.length());
-
-    return *this;
-}
-
-builder& builder::nokey_append(builder_helpers::close_doc_t) {
+builder& builder::close_doc_append() {
     if (_impl->is_array()) {
         // TODO handle insufficient stack
         throw(std::runtime_error("in subdocument or insufficient stack"));
@@ -200,18 +252,7 @@ builder& builder::nokey_append(builder_helpers::close_doc_t) {
     return *this;
 }
 
-builder& builder::nokey_append(builder_helpers::open_array_t) {
-    if (!_impl->is_array()) {
-        throw(std::runtime_error("in subdocument"));
-    }
-
-    util::itoa key(_impl->next_key());
-    _impl->push_back_array(key.c_str(), key.length());
-
-    return *this;
-}
-
-builder& builder::nokey_append(builder_helpers::close_array_t) {
+builder& builder::close_array_append() {
     if (!_impl->is_array()) {
         // TODO handle stack
         throw(std::runtime_error("in subdocument or insufficient stack"));

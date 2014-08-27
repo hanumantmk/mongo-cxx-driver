@@ -14,34 +14,10 @@
  * limitations under the License.
  */
 
-#pragma once
-
-#include <cstddef>
-#include <cstdint>
-
-#include "bson/string_or_literal.hpp"
-
-namespace bson {
-namespace util {
-
-class itoa {
-   public:
-    itoa();
-    itoa(uint32_t i);
-    itoa(const itoa& rhs);
-    itoa& operator=(const itoa& rhs);
-
-    const char* c_str() const;
-    std::size_t length() const;
-
-   private:
-    void init();
-
-    uint32_t val;
-    const char* _str;
-    uint8_t _len;
-    char _buf[11];
-};
-
-}  // namespace util
-}  // namespace bson
+MONGOCXX_ENUM(k_binary, 0x00)
+MONGOCXX_ENUM(k_function, 0x01)
+MONGOCXX_ENUM(k_binary_deprecated, 0x02)
+MONGOCXX_ENUM(k_uuid_deprecated, 0x03)
+MONGOCXX_ENUM(k_uuid, 0x04)
+MONGOCXX_ENUM(k_md5, 0x05)
+MONGOCXX_ENUM(k_user, 0x80)
