@@ -16,8 +16,8 @@
 
 #pragma once
 
-#include <chrono>
 #include <iostream>
+#include <ctime>
 
 namespace bson {
 
@@ -31,6 +31,7 @@ public:
     oid();
 
     explicit oid(init_tag_t tag);
+    explicit oid(const char* bytes, std::size_t len);
     oid(const string_or_literal& sol);
 
     string_or_literal to_string() const;
@@ -44,10 +45,11 @@ public:
 
     explicit operator bool() const;
 
-    std::chrono::time_point<std::chrono::system_clock, std::chrono::milliseconds> get_time() const;
     std::time_t get_time_t() const;
 
     friend std::ostream& operator<<(std::ostream& out, const oid& rhs);
+
+    const char* bytes() const;
 
 private:
     friend int oid_compare(const oid& lhs, const oid& rhs);

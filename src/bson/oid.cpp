@@ -39,6 +39,12 @@ oid::oid(const string_or_literal& sol) : _is_valid(bson_oid_is_valid(sol.c_str()
     }
 }
 
+oid::oid(const char* bytes, std::size_t len) : _is_valid(len == 12) {
+    if (_is_valid) {
+        std::memcpy(_bytes, bytes, sizeof(_bytes));
+    }
+}
+
 string_or_literal oid::to_string() const {
     bson_oid_t oid;
     std::memcpy(&oid.bytes, _bytes, sizeof(oid.bytes));
@@ -53,15 +59,15 @@ oid::operator bool() const {
     return _is_valid;
 }
 
-std::chrono::time_point<std::chrono::system_clock, std::chrono::milliseconds> oid::get_time() const {
-    return std::chrono::system_clock::from_time_t(get_time_t());
-}
-
 std::time_t oid::get_time_t() const {
     bson_oid_t oid;
     std::memcpy(&oid.bytes, _bytes, sizeof(oid.bytes));
 
     return bson_oid_get_time_t(&oid);
+}
+
+const char* oid::bytes() const {
+    return _bytes;
 }
 
 int oid_compare(const oid& lhs, const oid& rhs) {
@@ -78,8 +84,8 @@ int oid_compare(const oid& lhs, const oid& rhs) {
     bson_oid_t lhs_oid;
     bson_oid_t rhs_oid;
 
-    std::memcpy(&lhs_oid.bytes, lhs, sizeof(lhs));
-    std::memcpy(&rhs_oid.bytes, rhs, sizeof(rhs));
+    std::memcpy(&lhs_oid.bytes, lhs.bytes(), sizeof(lhs));
+    std::memcpy(&rhs_oid.bytes, rhs.bytes(), sizeof(rhs));
 
     return bson_oid_compare(&lhs_oid, &rhs_oid);
 }

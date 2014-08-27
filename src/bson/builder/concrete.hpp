@@ -19,6 +19,7 @@
 #include <memory>
 
 #include "bson/document.hpp"
+#include "bson/types.hpp"
 #include "bson/builder/helpers.hpp"
 #include "bson/string_or_literal.hpp"
 #include "bson/util/functor.hpp"
@@ -64,11 +65,28 @@ class builder {
     builder& close_doc_append();
     builder& close_array_append();
 
-    builder& value_append(const types::b_utf8& value);
     builder& value_append(const types::b_double& value);
+    builder& value_append(const types::b_utf8& value);
+    builder& value_append(const types::b_document& value);
+    builder& value_append(const types::b_array& value);
+    builder& value_append(const types::b_binary& value);
+    builder& value_append(const types::b_undefined& value);
+    builder& value_append(const types::b_oid& value);
+    builder& value_append(const types::b_bool& value);
+    builder& value_append(const types::b_date& value);
+    builder& value_append(const types::b_null& value);
+    builder& value_append(const types::b_regex& value);
+    builder& value_append(const types::b_dbpointer& value);
+    builder& value_append(const types::b_code& value);
+    builder& value_append(const types::b_symbol& value);
+    builder& value_append(const types::b_codewscope& value);
     builder& value_append(const types::b_int32& value);
+    builder& value_append(const types::b_timestamp& value);
     builder& value_append(const types::b_int64& value);
-    builder& value_append(const string_or_literal& value);
+    builder& value_append(const types::b_minkey& value);
+    builder& value_append(const types::b_maxkey& value);
+
+    builder& value_append(string_or_literal value);
     builder& value_append(double value);
     builder& value_append(std::int32_t value);
     builder& value_append(std::int64_t value);

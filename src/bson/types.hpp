@@ -48,8 +48,6 @@ namespace types {
 
         double value;
 
-        b_double(double v) : value(v) {}
-
         operator double() {
             return value;
         }
@@ -141,8 +139,6 @@ namespace types {
 
         oid value;
 
-        b_oid(oid v) : value(v) {}
-
         friend std::ostream& operator<<(std::ostream& out, const b_oid& rhs) {
             out << "b_oid{ " << rhs.value << " }";
             return out;
@@ -153,8 +149,6 @@ namespace types {
         static constexpr auto type_id = type::k_bool;
 
         bool value;
-
-        b_bool(bool v) : value(v) {}
 
         operator bool() {
             return value;
@@ -170,8 +164,6 @@ namespace types {
         static constexpr auto type_id = type::k_date;
 
         int64_t value;
-
-        b_date(int64_t v) : value(v) {}
 
         operator int64_t() {
             return value;
@@ -207,10 +199,11 @@ namespace types {
     struct b_dbpointer {
         static constexpr auto type_id = type::k_dbpointer;
 
-        char bytes[12];
+        string_or_literal collection;
+        oid value;
 
-        friend std::ostream& operator<<(std::ostream& out, const b_dbpointer&) {
-            out << "b_dbpointer{}";
+        friend std::ostream& operator<<(std::ostream& out, const b_dbpointer& rhs) {
+            out << "b_dbpointer{ collection = " << rhs.collection << ", oid = " << rhs.value << " }";
             return out;
         }
     };
@@ -254,8 +247,6 @@ namespace types {
 
         int32_t value;
 
-        b_int32(int32_t v) : value(v) {}
-
         operator int32_t() {
             return value;
         }
@@ -269,8 +260,8 @@ namespace types {
     struct b_timestamp {
         static constexpr auto type_id = type::k_timestamp;
 
-        int32_t increment;
-        int32_t timestamp;
+        uint32_t increment;
+        uint32_t timestamp;
 
         friend std::ostream& operator<<(std::ostream& out, const b_timestamp& rhs) {
             out << "b_timestamp{ increment = " << rhs.increment << ", timestamp = " << rhs.timestamp
@@ -283,8 +274,6 @@ namespace types {
         static constexpr auto type_id = type::k_int64;
 
         int64_t value;
-
-        b_int64(int64_t v) : value(v) {}
 
         operator int64_t() {
             return value;

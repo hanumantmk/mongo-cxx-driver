@@ -55,9 +55,73 @@ types::b_utf8 element::get_string() const {
     return types::b_utf8{string_or_literal{val, len}};
 }
 
-types::b_double element::get_double() const { return bson_iter_double(&_iter); }
-types::b_int32 element::get_int32() const { return bson_iter_int32(&_iter); }
-types::b_int64  element::get_int64() const { return bson_iter_int64(&_iter); }
+types::b_double element::get_double() const { return types::b_double{bson_iter_double(&_iter)}; }
+types::b_int32 element::get_int32() const { return types::b_int32{bson_iter_int32(&_iter)}; }
+types::b_int64 element::get_int64() const { return types::b_int64{bson_iter_int64(&_iter)}; }
+types::b_undefined element::get_undefined() const { return types::b_undefined{}; }
+types::b_oid element::get_oid() const {
+    const bson_oid_t* boid = bson_iter_oid(&_iter);
+    oid v(reinterpret_cast<const char*>(boid->bytes), sizeof(boid->bytes));
+
+    return types::b_oid{v};
+}
+
+types::b_bool element::get_bool() const { return types::b_bool{bson_iter_bool(&_iter)}; }
+types::b_date element::get_date() const { return types::b_date{bson_iter_date_time(&_iter)}; }
+types::b_null element::get_null() const { return types::b_null{}; }
+
+types::b_regex element::get_regex() const {
+    const char* options;
+    const char* regex = bson_iter_regex(&_iter, &options);
+
+    return types::b_regex{string_or_literal{regex, std::strlen(regex)}, string_or_literal{options, std::strlen(options)}};
+}
+
+types::b_dbpointer element::get_dbpointer() const {
+    uint32_t collection_len;
+    const char* collection;
+    const bson_oid_t* boid;
+    bson_iter_dbpointer(&_iter, &collection_len, &collection, &boid);
+
+    oid v{reinterpret_cast<const char*>(boid->bytes), sizeof(boid->bytes)};
+
+    return types::b_dbpointer{string_or_literal{collection, collection_len}, v};
+}
+
+types::b_code element::get_code() const {
+    uint32_t len;
+    const char* code = bson_iter_code(&_iter, &len);
+
+    return types::b_code{string_or_literal{code, len}};
+}
+
+types::b_symbol element::get_symbol() const {
+    uint32_t len;
+    const char* symbol = bson_iter_symbol(&_iter, &len);
+
+    return types::b_symbol{string_or_literal{symbol, len}};
+}
+
+types::b_codewscope element::get_codewscope() const {
+    uint32_t code_len;
+    const uint8_t* scope_ptr;
+    uint32_t scope_len;
+    const char* code = bson_iter_codewscope(&_iter, &code_len, &scope_len, &scope_ptr);
+    document::view view(scope_ptr, scope_len);
+
+    return types::b_codewscope{string_or_literal{code, code_len}, view};
+}
+
+types::b_timestamp element::get_timestamp() const {
+    uint32_t timestamp;
+    uint32_t increment;
+    bson_iter_timestamp(&_iter, &timestamp, &increment);
+
+    return types::b_timestamp{timestamp, increment};
+}
+
+types::b_minkey element::get_minkey() const { return types::b_minkey{}; }
+types::b_maxkey element::get_maxkey() const { return types::b_maxkey{}; }
 
 namespace document {
 
