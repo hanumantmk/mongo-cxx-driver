@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "bson.h"
 #include "bson/builder.hpp"
 #include "bson/util/itoa.hpp"
 #include "bson/util/stack.hpp"

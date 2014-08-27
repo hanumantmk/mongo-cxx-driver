@@ -25,7 +25,6 @@
 #include <iterator>
 #include <tuple>
 
-#include "bson.h"
 #include "bson/string_or_literal.hpp"
 
 namespace bson {
@@ -64,7 +63,7 @@ class LIBMONGOCXX_EXPORT element {
 
    public:
     element();
-    element(const bson_iter_t& i);
+    element(const void* iter);
 
     bool operator==(const element& rhs) const;
 
@@ -94,7 +93,7 @@ class LIBMONGOCXX_EXPORT element {
     types::b_maxkey get_maxkey() const;
 
    private:
-    bson_iter_t _iter;
+    std::aligned_storage<64> _storage;
 };
 
 namespace document {
@@ -104,7 +103,7 @@ class LIBMONGOCXX_EXPORT view {
     class iterator : public std::iterator<std::forward_iterator_tag, element, std::ptrdiff_t,
                                           const element*, const element&> {
        public:
-        iterator(const bson_iter_t& i);
+        iterator(const void* iter);
 
         iterator(bool is_end);
 
@@ -134,14 +133,7 @@ class LIBMONGOCXX_EXPORT view {
     std::size_t get_len() const;
 
    public:
-    friend std::ostream& operator<<(std::ostream& out, const bson::document::view& doc) {
-        bson_t b;
-        bson_init_static(&b, doc.get_buf(), doc.get_len());
-        char* json = bson_as_json(&b, nullptr);
-        out << json;
-        bson_free(json);
-        return out;
-    }
+    friend std::ostream& operator<<(std::ostream& out, const bson::document::view& doc);
 
    protected:
     const std::uint8_t* buf;
