@@ -14,7 +14,7 @@ int main() {
 
     std::cout << "Doc: " << doc << std::endl;
 
-    for (auto x : doc) {
+    for (auto&& x : doc) {
         std::cout << "type is: " << x.type() << std::endl;
         std::cout << "value is: ";
 

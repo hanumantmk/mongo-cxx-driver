@@ -21,77 +21,94 @@
 #include "bson/document.hpp"
 #include "bson/types.hpp"
 
-#define CITER reinterpret_cast<const bson_iter_t *>(&_storage)
+#define CITER \
+    bson_iter_t iter; \
+    iter.raw = _raw; \
+    iter.len = _len; \
+    iter.next_off = _off; \
+    bson_iter_next(&iter) \
 
 namespace bson {
 
 element::element() {}
 
-element::element(const void* iter) {
-    bson_iter_t* dest = reinterpret_cast<bson_iter_t*>(&_storage);
+element::element(const void* iter_) {
+    const bson_iter_t* iter = reinterpret_cast<const bson_iter_t*>(iter_);
 
-    std::memcpy(dest, iter, sizeof(*dest));
+    _raw = iter->raw;
+    _len = iter->len;
+    _off = iter->off;
 }
 
-bool element::operator==(const element& rhs_) const {
-    const bson_iter_t *lhs = reinterpret_cast<const bson_iter_t *>(&_storage);
-    const bson_iter_t *rhs = reinterpret_cast<const bson_iter_t *>(&rhs_._storage);
+bool element::operator==(const element& rhs) const {
 
-    return (lhs->raw == rhs->raw && lhs->off == rhs->off);
+    return (_raw == rhs._raw && _off == rhs._off);
 }
 
-bson::type element::type() const { return static_cast<bson::type>(bson_iter_type(CITER)); }
+bson::type element::type() const { CITER; return static_cast<bson::type>(bson_iter_type(&iter)); }
 
 string_or_literal element::key() const {
-    const char* key = bson_iter_key(CITER);
+    CITER;
+
+    const char* key = bson_iter_key(&iter);
 
     return string_or_literal{key, std::strlen(key)};
 }
 
 types::b_binary element::get_binary() const {
+    CITER;
+
     bson_subtype_t type;
     std::uint32_t len;
     const std::uint8_t* binary;
 
-    bson_iter_binary(CITER, &type, &len, &binary);
+    bson_iter_binary(&iter, &type, &len, &binary);
 
     return types::b_binary{static_cast<binary_sub_type>(type), len, binary};
 }
 
 types::b_utf8 element::get_string() const {
+    CITER;
+
     uint32_t len;
-    const char* val = bson_iter_utf8(CITER, &len);
+    const char* val = bson_iter_utf8(&iter, &len);
 
     return types::b_utf8{string_or_literal{val, len}};
 }
 
-types::b_double element::get_double() const { return types::b_double{bson_iter_double(CITER)}; }
-types::b_int32 element::get_int32() const { return types::b_int32{bson_iter_int32(CITER)}; }
-types::b_int64 element::get_int64() const { return types::b_int64{bson_iter_int64(CITER)}; }
+types::b_double element::get_double() const { CITER; return types::b_double{bson_iter_double(&iter)}; }
+types::b_int32 element::get_int32() const { CITER; return types::b_int32{bson_iter_int32(&iter)}; }
+types::b_int64 element::get_int64() const { CITER; return types::b_int64{bson_iter_int64(&iter)}; }
 types::b_undefined element::get_undefined() const { return types::b_undefined{}; }
 types::b_oid element::get_oid() const {
-    const bson_oid_t* boid = bson_iter_oid(CITER);
+    CITER;
+
+    const bson_oid_t* boid = bson_iter_oid(&iter);
     oid v(reinterpret_cast<const char*>(boid->bytes), sizeof(boid->bytes));
 
     return types::b_oid{v};
 }
 
-types::b_bool element::get_bool() const { return types::b_bool{bson_iter_bool(CITER)}; }
-types::b_date element::get_date() const { return types::b_date{bson_iter_date_time(CITER)}; }
+types::b_bool element::get_bool() const { CITER; return types::b_bool{bson_iter_bool(&iter)}; }
+types::b_date element::get_date() const { CITER; return types::b_date{bson_iter_date_time(&iter)}; }
 types::b_null element::get_null() const { return types::b_null{}; }
 
 types::b_regex element::get_regex() const {
+    CITER;
+
     const char* options;
-    const char* regex = bson_iter_regex(CITER, &options);
+    const char* regex = bson_iter_regex(&iter, &options);
 
     return types::b_regex{string_or_literal{regex, std::strlen(regex)}, string_or_literal{options, std::strlen(options)}};
 }
 
 types::b_dbpointer element::get_dbpointer() const {
+    CITER;
+
     uint32_t collection_len;
     const char* collection;
     const bson_oid_t* boid;
-    bson_iter_dbpointer(CITER, &collection_len, &collection, &boid);
+    bson_iter_dbpointer(&iter, &collection_len, &collection, &boid);
 
     oid v{reinterpret_cast<const char*>(boid->bytes), sizeof(boid->bytes)};
 
@@ -99,33 +116,41 @@ types::b_dbpointer element::get_dbpointer() const {
 }
 
 types::b_code element::get_code() const {
+    CITER;
+
     uint32_t len;
-    const char* code = bson_iter_code(CITER, &len);
+    const char* code = bson_iter_code(&iter, &len);
 
     return types::b_code{string_or_literal{code, len}};
 }
 
 types::b_symbol element::get_symbol() const {
+    CITER;
+
     uint32_t len;
-    const char* symbol = bson_iter_symbol(CITER, &len);
+    const char* symbol = bson_iter_symbol(&iter, &len);
 
     return types::b_symbol{string_or_literal{symbol, len}};
 }
 
 types::b_codewscope element::get_codewscope() const {
+    CITER;
+
     uint32_t code_len;
     const uint8_t* scope_ptr;
     uint32_t scope_len;
-    const char* code = bson_iter_codewscope(CITER, &code_len, &scope_len, &scope_ptr);
+    const char* code = bson_iter_codewscope(&iter, &code_len, &scope_len, &scope_ptr);
     document::view view(scope_ptr, scope_len);
 
     return types::b_codewscope{string_or_literal{code, code_len}, view};
 }
 
 types::b_timestamp element::get_timestamp() const {
+    CITER;
+
     uint32_t timestamp;
     uint32_t increment;
-    bson_iter_timestamp(CITER, &timestamp, &increment);
+    bson_iter_timestamp(&iter, &timestamp, &increment);
 
     return types::b_timestamp{timestamp, increment};
 }
@@ -142,7 +167,18 @@ const element& view::iterator::operator*() const { return iter; }
 const element* view::iterator::operator->() const { return &iter; }
 
 view::iterator& view::iterator::operator++() {
-    is_end = !bson_iter_next(reinterpret_cast<bson_iter_t*>(&iter._storage));
+    bson_iter_t i;
+    i.raw = iter._raw;
+    i.len = iter._len;
+    i.next_off = iter._off;
+    bson_iter_next(&i);
+
+    is_end = !bson_iter_next(&i);
+
+    iter._raw = i.raw;
+    iter._len = i.len;
+    iter._off = i.off;
+
     return *this;
 }
 
@@ -176,7 +212,7 @@ element view::operator[](const char* key) const {
     bson_init_static(&b, buf, len);
     bson_iter_init_find(&iter, &b, key);
 
-    return element(&iter);
+    return element(reinterpret_cast<const void *>(&iter));
 }
 
 view::view(const std::uint8_t* b, std::size_t l) : buf(b), len(l) {}
@@ -223,19 +259,23 @@ std::ostream& operator<<(std::ostream& out, const bson::document::view& doc) {
 } // namespace document
 
 types::b_document element::get_document() const {
+    CITER;
+
     const std::uint8_t* buf;
     std::uint32_t len;
 
-    bson_iter_document(CITER, &len, &buf);
+    bson_iter_document(&iter, &len, &buf);
 
     return types::b_document{document::view{buf, len}};
 }
 
 types::b_array element::get_array() const {
+    CITER;
+
     const std::uint8_t* buf;
     std::uint32_t len;
 
-    bson_iter_array(CITER, &len, &buf);
+    bson_iter_array(&iter, &len, &buf);
 
     return types::b_array{document::view{buf, len}};
 }

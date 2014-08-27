@@ -23,7 +23,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <iterator>
-#include <tuple>
+#include <type_traits>
 
 #include "bson/string_or_literal.hpp"
 
@@ -93,7 +93,9 @@ class LIBMONGOCXX_EXPORT element {
     types::b_maxkey get_maxkey() const;
 
    private:
-    std::aligned_storage<64> _storage;
+    const uint8_t* _raw;
+    uint32_t _len;
+    uint32_t _off;
 };
 
 namespace document {
