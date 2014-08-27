@@ -2,15 +2,15 @@
 #include <memory>
 #include <cstring>
 
-#include "mongocxx.hpp"
 #include "bson/types.hpp"
+#include "bson/builder.hpp"
 
 int main() {
-    mongoc_init();
+    bson::builder builder;
 
-    bson_t* foo = BCON_NEW("hello", "world", "bar", BCON_INT32(10));
+    builder << "hello" << "world" << "bar" << 10;
 
-    bson::document::view doc(bson_get_data(foo), foo->len);
+    bson::document::view doc(builder.view());
 
     std::cout << "Doc: " << doc << std::endl;
 
@@ -29,8 +29,5 @@ int main() {
 
     std::cout << "key: " << doc["hello"].key() << std::endl;
 
-    bson_destroy(foo);
-
-    mongoc_cleanup();
     return 0;
 }

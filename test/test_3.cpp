@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "mongocxx.hpp"
+#include "bson/builder.hpp"
 #include "driver/libmongoc.hpp"
 
 using namespace mongo::driver;
@@ -11,9 +12,9 @@ using namespace mongo::driver;
 int main() {
     mongoc_init();
 
-    bson_t *foo = bson_new();
+    bson::builder builder;
 
-    bson::document::view doc(bson_get_data(foo), foo->len);
+    bson::document::view doc(builder.view());
 
     client client("mongodb://localhost");
     collection col(client["test"]["test"]);
@@ -58,12 +59,10 @@ int main() {
     col.find(model::find(doc));
     col.find(model::find(doc));
 
-    bson_t bson;
-    bson_init(&bson);
     for (int i = 0; i < 10; i++) {
-        bson_reinit(&bson);
+        builder.clear();
 
-        BSON_APPEND_INT32(&bson, "foo", i);
+        builder << "foo" << i;
     }
 
     /*
@@ -122,8 +121,6 @@ for (; x != col.end(); ++x) {
 std::cout << "bson is: " << *x << std::endl;
 }
 */
-
-    bson_destroy(foo);
 
     mongoc_cleanup();
     return 0;
