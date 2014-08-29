@@ -15,6 +15,7 @@
  */
 
 #include "bson/types.hpp"
+#include "bson/json.hpp"
 
 namespace bson {
 
@@ -39,5 +40,18 @@ std::ostream& operator<<(std::ostream& out, binary_sub_type rhs) {
 
     return out;
 }
+
+namespace types {
+
+#define MONGOCXX_ENUM(name, val) \
+    std::ostream& operator<<(std::ostream& out, const b_##name& rhs) { \
+        json_visitor jv(out, false, 0); \
+        jv.visit_value(rhs); \
+        return out; \
+    }
+#include "bson/enums/type.hpp"
+#undef MONGOCXX_ENUM
+
+} // namespace types
 
 } // namespace bson

@@ -27,17 +27,18 @@ namespace bson {
 
 class builder::impl {
    public:
-    impl()
-        : _buf_ptr(reinterpret_cast<uint8_t*>(bson_malloc(256))),
-          _buf_len(256),
-          _writer(bson_writer_new(&_buf_ptr, &_buf_len, 0, &bson_realloc_ctx, NULL)) {
-        bson_writer_begin(_writer, &_root);
+    impl() {
+        reinit();
     }
 
     ~impl() {
         _stack.~stack();
-        bson_writer_destroy(_writer);
-        bson_free(_buf_ptr);
+        if (_writer) {
+            bson_writer_destroy(_writer);
+        }
+        if (_buf_ptr) {
+            bson_free(_buf_ptr);
+        }
     }
 
     void clear() {
@@ -46,6 +47,29 @@ class builder::impl {
         }
 
         bson_writer_rollback(_writer);
+        bson_writer_begin(_writer, &_root);
+        has_user_key = false;
+    }
+
+    document::value steal() {
+        while (!_stack.empty()) {
+            _stack.pop_back();
+        }
+
+        auto rval = document::value{_buf_ptr, _buf_len};
+
+        _buf_ptr = nullptr;
+        bson_writer_destroy(_writer);
+        _writer = nullptr;
+
+        return rval;
+    }
+
+    void reinit() {
+        has_user_key = false;
+        _buf_ptr = reinterpret_cast<uint8_t*>(bson_malloc(256));
+        _buf_len = 256,
+        _writer = bson_writer_new(&_buf_ptr, &_buf_len, 0, &bson_realloc_ctx, NULL);
         bson_writer_begin(_writer, &_root);
     }
 
@@ -275,7 +299,7 @@ builder& builder::value_append(const types::b_code& value) {
 builder& builder::value_append(const types::b_symbol& value) {
     const string_or_literal& key = _impl->next_key();
 
-    bson_append_code(_impl->back(), key.c_str(), key.length(), value.symbol.c_str());
+    bson_append_symbol(_impl->back(), key.c_str(), key.length(), value.symbol.c_str(), value.symbol.length());
     return *this;
 }
 
@@ -379,6 +403,10 @@ builder& builder::close_array_append() {
 }
 
 document::view builder::view() const {
+    return document::view(bson_get_data(_impl->root()), _impl->root()->len);
+}
+
+document::value builder::extract() {
     return document::view(bson_get_data(_impl->root()), _impl->root()->len);
 }
 

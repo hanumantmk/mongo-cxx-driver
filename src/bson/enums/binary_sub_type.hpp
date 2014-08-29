@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-MONGOCXX_ENUM(k_binary, 0x00)
-MONGOCXX_ENUM(k_function, 0x01)
-MONGOCXX_ENUM(k_binary_deprecated, 0x02)
-MONGOCXX_ENUM(k_uuid_deprecated, 0x03)
-MONGOCXX_ENUM(k_uuid, 0x04)
-MONGOCXX_ENUM(k_md5, 0x05)
-MONGOCXX_ENUM(k_user, 0x80)
+MONGOCXX_ENUM(binary, 0x00)
+MONGOCXX_ENUM(function, 0x01)
+MONGOCXX_ENUM(binary_deprecated, 0x02)
+MONGOCXX_ENUM(uuid_deprecated, 0x03)
+MONGOCXX_ENUM(uuid, 0x04)
+MONGOCXX_ENUM(md5, 0x05)
+MONGOCXX_ENUM(user, 0x80)

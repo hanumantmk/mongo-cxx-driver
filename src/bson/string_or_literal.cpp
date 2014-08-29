@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
+#include <cstring>
 #include "bson/string_or_literal.hpp"
 
 namespace bson {
 
 string_or_literal::string_or_literal() : _len(0), _is_owning(false), _literal("") {}
+
+string_or_literal::string_or_literal(const char* str)
+    : _len(std::strlen(str)), _is_owning(false), _literal(str) {}
 
 string_or_literal::string_or_literal(const char* str, std::size_t len)
     : _len(len), _is_owning(false), _literal(str) {}
@@ -95,8 +99,7 @@ const char* string_or_literal::c_str() const {
 }
 
 std::ostream& operator<<(std::ostream& out, const string_or_literal& rhs) {
-    out << "string_or_literal{ _is_owning = " << rhs._is_owning << ", value = \"" << rhs.c_str()
-        << "\", length = " << rhs.length() << " }";
+    out << "\"" << rhs.c_str() << "\"";
 
     return out;
 }

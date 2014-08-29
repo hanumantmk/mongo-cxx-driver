@@ -26,12 +26,24 @@
 #include <type_traits>
 
 #include "bson/string_or_literal.hpp"
+#include "bson/builder/helpers.hpp"
 
 namespace bson {
 
-enum class type : std::uint8_t;
+enum class type : std::uint8_t {
+#define MONGOCXX_ENUM(name, val) k_##name = val,
+#include "bson/enums/type.hpp"
+#undef MONGOCXX_ENUM
+};
+
+enum class binary_sub_type : std::uint8_t {
+#define MONGOCXX_ENUM(name, val) k_##name = val,
+#include "bson/enums/binary_sub_type.hpp"
+#undef MONGOCXX_ENUM
+};
 
 namespace types {
+    struct b_eod;
     struct b_double;
     struct b_utf8;
     struct b_document;
@@ -71,8 +83,9 @@ class LIBMONGOCXX_EXPORT element {
 
     string_or_literal key() const;
 
+    types::b_eod get_eod() const;
     types::b_double get_double() const;
-    types::b_utf8 get_string() const;
+    types::b_utf8 get_utf8() const;
     types::b_document get_document() const;
     types::b_array get_array() const;
     types::b_binary get_binary() const;
@@ -91,6 +104,8 @@ class LIBMONGOCXX_EXPORT element {
     types::b_int64 get_int64() const;
     types::b_minkey get_minkey() const;
     types::b_maxkey get_maxkey() const;
+
+    friend std::ostream& operator<<(std::ostream& out, const element& element);
 
    private:
     const uint8_t* _raw;
@@ -134,7 +149,6 @@ class LIBMONGOCXX_EXPORT view {
     const std::uint8_t* get_buf() const;
     std::size_t get_len() const;
 
-   public:
     friend std::ostream& operator<<(std::ostream& out, const bson::document::view& doc);
 
    protected:

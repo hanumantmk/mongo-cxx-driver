@@ -21,7 +21,7 @@ int main() {
         if (x.type() == bson::type::k_int32) {
             std::cout << x.get_int32();
         } else {
-            std::cout << x.get_string();
+            std::cout << x.get_utf8();
         }
 
         std::cout << std::endl;

@@ -25,23 +25,14 @@
 
 namespace bson {
 
-enum class type : std::uint8_t {
-#define MONGOCXX_ENUM(name, val) name = val,
-#include "bson/enums/type.hpp"
-#undef MONGOCXX_ENUM
-};
-
 std::ostream& operator<<(std::ostream& out, type rhs);
-
-enum class binary_sub_type : std::uint8_t {
-#define MONGOCXX_ENUM(name, val) name = val,
-#include "bson/enums/binary_sub_type.hpp"
-#undef MONGOCXX_ENUM
-};
-
 std::ostream& operator<<(std::ostream& out, binary_sub_type rhs);
 
 namespace types {
+
+    struct b_eod {
+        static constexpr auto type_id = type::k_eod;
+    };
 
     struct b_double {
         static constexpr auto type_id = type::k_double;
@@ -52,10 +43,6 @@ namespace types {
             return value;
         }
 
-        friend std::ostream& operator<<(std::ostream& out, const b_double& rhs) {
-            out << "b_double{ value = " << rhs.value << " }";
-            return out;
-        }
     };
 
     struct b_utf8 {
@@ -63,21 +50,8 @@ namespace types {
 
         string_or_literal value;
 
-        template <std::size_t n>
-        constexpr explicit b_utf8(const char (&v)[n])
-            : value(v) {}
-
-        explicit b_utf8(string_or_literal v) : value(std::move(v)) {}
-
-        explicit b_utf8(std::string v) : value(std::move(v)) {}
-
         operator string_or_literal() {
             return value;
-        }
-
-        friend std::ostream& operator<<(std::ostream& out, const b_utf8& rhs) {
-            out << "b_utf8{ value = " << rhs.value << " }";
-            return out;
         }
     };
     
@@ -89,11 +63,6 @@ namespace types {
         operator document::view() {
             return value;
         }
-
-        friend std::ostream& operator<<(std::ostream& out, const b_document& rhs) {
-            out << "b_document{ value = " << rhs.value << " }";
-            return out;
-        }
     };
 
     struct b_array {
@@ -104,11 +73,6 @@ namespace types {
         operator document::view() {
             return value;
         }
-
-        friend std::ostream& operator<<(std::ostream& out, const b_array& rhs) {
-            out << "b_array{ value = " << rhs.value << " }";
-            return out;
-        }
     };
 
     struct b_binary {
@@ -117,32 +81,16 @@ namespace types {
         binary_sub_type sub_type;
         uint32_t size;
         const uint8_t* bytes;
-
-        friend std::ostream& operator<<(std::ostream& out, const b_binary& rhs) {
-            out << "b_binary{ size = " << rhs.size << ", sub_type = " << rhs.sub_type
-                << ", bytes = " << static_cast<const void*>(rhs.bytes) << " }";
-            return out;
-        }
     };
 
     struct b_undefined {
         static constexpr auto type_id = type::k_undefined;
-
-        friend std::ostream& operator<<(std::ostream& out, const b_undefined&) {
-            out << "b_undefined{}";
-            return out;
-        }
     };
 
     struct b_oid {
         static constexpr auto type_id = type::k_oid;
 
         oid value;
-
-        friend std::ostream& operator<<(std::ostream& out, const b_oid& rhs) {
-            out << "b_oid{ " << rhs.value << " }";
-            return out;
-        }
     };
 
     struct b_bool {
@@ -152,11 +100,6 @@ namespace types {
 
         operator bool() {
             return value;
-        }
-
-        friend std::ostream& operator<<(std::ostream& out, const b_bool& rhs) {
-            out << "b_bool{ " << rhs.value << " }";
-            return out;
         }
     };
 
@@ -168,20 +111,10 @@ namespace types {
         operator int64_t() {
             return value;
         }
-
-        friend std::ostream& operator<<(std::ostream& out, const b_date& rhs) {
-            out << "b_date{ " << std::ctime(&rhs.value) << " }";
-            return out;
-        }
     };
 
     struct b_null {
         static constexpr auto type_id = type::k_null;
-
-        friend std::ostream& operator<<(std::ostream& out, const b_null&) {
-            out << "b_null{}";
-            return out;
-        }
     };
 
     struct b_regex {
@@ -189,11 +122,6 @@ namespace types {
 
         string_or_literal regex;
         string_or_literal options;
-
-        friend std::ostream& operator<<(std::ostream& out, const b_regex& rhs) {
-            out << "b_regex{ regex = " << rhs.regex << ", options = " << rhs.options << " }";
-            return out;
-        }
     };
 
     struct b_dbpointer {
@@ -201,11 +129,6 @@ namespace types {
 
         string_or_literal collection;
         oid value;
-
-        friend std::ostream& operator<<(std::ostream& out, const b_dbpointer& rhs) {
-            out << "b_dbpointer{ collection = " << rhs.collection << ", oid = " << rhs.value << " }";
-            return out;
-        }
     };
 
     struct b_code {
@@ -213,9 +136,8 @@ namespace types {
 
         string_or_literal code;
 
-        friend std::ostream& operator<<(std::ostream& out, const b_code& rhs) {
-            out << "b_code{ code = " << rhs.code << " }";
-            return out;
+        operator string_or_literal() {
+            return code;
         }
     };
 
@@ -224,9 +146,8 @@ namespace types {
 
         string_or_literal symbol;
 
-        friend std::ostream& operator<<(std::ostream& out, const b_symbol& rhs) {
-            out << "b_symbol{ symbol = " << rhs.symbol << " }";
-            return out;
+        operator string_or_literal() {
+            return symbol;
         }
     };
 
@@ -235,11 +156,6 @@ namespace types {
 
         string_or_literal code;
         document::view scope;
-
-        friend std::ostream& operator<<(std::ostream& out, const b_codewscope& rhs) {
-            out << "b_codewscope{ code = " << rhs.code << ", scope = " << rhs.scope << " }";
-            return out;
-        }
     };
 
     struct b_int32 {
@@ -250,11 +166,6 @@ namespace types {
         operator int32_t() {
             return value;
         }
-
-        friend std::ostream& operator<<(std::ostream& out, const b_int32& rhs) {
-            out << "b_int32{ value = " << rhs.value << " }";
-            return out;
-        }
     };
 
     struct b_timestamp {
@@ -262,12 +173,6 @@ namespace types {
 
         uint32_t increment;
         uint32_t timestamp;
-
-        friend std::ostream& operator<<(std::ostream& out, const b_timestamp& rhs) {
-            out << "b_timestamp{ increment = " << rhs.increment << ", timestamp = " << rhs.timestamp
-                << " }";
-            return out;
-        }
     };
 
     struct b_int64 {
@@ -278,30 +183,20 @@ namespace types {
         operator int64_t() {
             return value;
         }
-
-        friend std::ostream& operator<<(std::ostream& out, const b_int64& rhs) {
-            out << "b_int64{ value = " << rhs.value << " }";
-            return out;
-        }
     };
 
     struct b_minkey {
         static constexpr auto type_id = type::k_minkey;
-
-        friend std::ostream& operator<<(std::ostream& out, const b_minkey&) {
-            out << "b_minkey{}";
-            return out;
-        }
     };
 
     struct b_maxkey {
         static constexpr auto type_id = type::k_maxkey;
-
-        friend std::ostream& operator<<(std::ostream& out, const b_maxkey&) {
-            out << "b_maxkey{}";
-            return out;
-        }
     };
+
+#define MONGOCXX_ENUM(name, val) \
+    std::ostream& operator<<(std::ostream& out, const b_##name& rhs);
+#include "bson/enums/type.hpp"
+#undef MONGOCXX_ENUM
 
 } // namespace types
 } // namespace bson

@@ -47,7 +47,7 @@ oid::oid(const char* bytes, std::size_t len) : _is_valid(len == 12) {
 
 string_or_literal oid::to_string() const {
     bson_oid_t oid;
-    std::memcpy(&oid.bytes, _bytes, sizeof(oid.bytes));
+    std::memcpy(oid.bytes, _bytes, sizeof(oid.bytes));
     char str[25];
 
     bson_oid_to_string(&oid, str);
@@ -61,7 +61,7 @@ oid::operator bool() const {
 
 std::time_t oid::get_time_t() const {
     bson_oid_t oid;
-    std::memcpy(&oid.bytes, _bytes, sizeof(oid.bytes));
+    std::memcpy(oid.bytes, _bytes, sizeof(oid.bytes));
 
     return bson_oid_get_time_t(&oid);
 }
@@ -84,8 +84,8 @@ int oid_compare(const oid& lhs, const oid& rhs) {
     bson_oid_t lhs_oid;
     bson_oid_t rhs_oid;
 
-    std::memcpy(&lhs_oid.bytes, lhs.bytes(), sizeof(lhs));
-    std::memcpy(&rhs_oid.bytes, rhs.bytes(), sizeof(rhs));
+    std::memcpy(lhs_oid.bytes, lhs.bytes(), sizeof(lhs));
+    std::memcpy(rhs_oid.bytes, rhs.bytes(), sizeof(rhs));
 
     return bson_oid_compare(&lhs_oid, &rhs_oid);
 }
@@ -115,7 +115,13 @@ bool operator!=(const oid& lhs, const oid& rhs) {
 }
 
 std::ostream& operator<<(std::ostream& out, const oid& rhs) {
-    out << rhs.to_string();
+    bson_oid_t oid;
+    std::memcpy(oid.bytes, rhs._bytes, sizeof(oid.bytes));
+    char str[25];
+
+    bson_oid_to_string(&oid, str);
+
+    out << str;
 
     return out;
 }

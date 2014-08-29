@@ -20,6 +20,7 @@
 #include "bson.h"
 #include "bson/document.hpp"
 #include "bson/types.hpp"
+#include "bson/json.hpp"
 
 #define CITER \
     bson_iter_t iter; \
@@ -67,7 +68,9 @@ types::b_binary element::get_binary() const {
     return types::b_binary{static_cast<binary_sub_type>(type), len, binary};
 }
 
-types::b_utf8 element::get_string() const {
+types::b_eod element::get_eod() const { return types::b_eod{}; }
+
+types::b_utf8 element::get_utf8() const {
     CITER;
 
     uint32_t len;
@@ -247,12 +250,10 @@ value::~value() {
         dtor((void*)buf);
     }
 }
-std::ostream& operator<<(std::ostream& out, const bson::document::view& doc) {
-    bson_t b;
-    bson_init_static(&b, doc.get_buf(), doc.get_len());
-    char* json = bson_as_json(&b, nullptr);
-    out << json;
-    bson_free(json);
+std::ostream& operator<<(std::ostream& out, const bson::document::view& view) {
+    json_visitor v(out, false, 0);
+    v.visit_value(types::b_document{view});
+
     return out;
 }
 
@@ -278,6 +279,18 @@ types::b_array element::get_array() const {
     bson_iter_array(&iter, &len, &buf);
 
     return types::b_array{document::view{buf, len}};
+}
+
+std::ostream& operator<<(std::ostream& out, const element& element) {
+    json_visitor v(out, false, 0);
+
+    switch ((int)element.type()) {
+#define MONGOCXX_ENUM(name, val) case val: out << element.key() << " : "; v.visit_value(element.get_##name()); break;
+#include "bson/enums/type.hpp"
+#undef MONGOCXX_ENUM
+    }
+
+    return out;
 }
 
 }  // namespace bson

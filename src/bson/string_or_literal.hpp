@@ -28,8 +28,9 @@ class string_or_literal {
     constexpr string_or_literal(const char (&v)[n])
         : _len(n - 1), _is_owning(false), _literal(v) {}
 
-    explicit string_or_literal(std::string v);
-    explicit string_or_literal(const char* str, std::size_t len);
+    string_or_literal(std::string v);
+    string_or_literal(const char* str, std::size_t len);
+    string_or_literal(const char* str);
 
     string_or_literal();
 

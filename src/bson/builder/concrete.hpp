@@ -93,6 +93,7 @@ class builder {
 
 
     document::view view() const;
+    document::value extract();
 
     void clear();
 
