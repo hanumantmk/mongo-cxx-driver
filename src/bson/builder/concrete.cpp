@@ -27,9 +27,7 @@ namespace bson {
 
 class builder::impl {
    public:
-    impl() {
-        reinit();
-    }
+    impl() { reinit(); }
 
     ~impl() {
         _stack.~stack();
@@ -69,7 +67,7 @@ class builder::impl {
         has_user_key = false;
         _buf_ptr = reinterpret_cast<uint8_t*>(bson_malloc(256));
         _buf_len = 256,
-        _writer = bson_writer_new(&_buf_ptr, &_buf_len, 0, &bson_realloc_ctx, NULL);
+        _writer = bson_writer_new(&_buf_ptr, &_buf_len, 0, &bson_realloc_ctx, nullptr);
         bson_writer_begin(_writer, &_root);
     }
 
@@ -103,7 +101,7 @@ class builder::impl {
         if (is_array()) {
             itoa_key = _stack.back().n++;
             user_key = string_or_literal{itoa_key.c_str(), itoa_key.length()};
-        } else if (! has_user_key) {
+        } else if (!has_user_key) {
             throw std::runtime_error("no user specified key and not in an array context");
         }
 
@@ -205,7 +203,8 @@ builder& builder::value_append(const types::b_double& value) {
 builder& builder::value_append(const types::b_utf8& value) {
     const string_or_literal& key = _impl->next_key();
 
-    bson_append_utf8(_impl->back(), key.c_str(), key.length(), value.value.c_str(), value.value.length());
+    bson_append_utf8(_impl->back(), key.c_str(), key.length(), value.value.c_str(),
+                     value.value.length());
     return *this;
 }
 
@@ -275,7 +274,8 @@ builder& builder::value_append(const types::b_null&) {
 builder& builder::value_append(const types::b_regex& value) {
     const string_or_literal& key = _impl->next_key();
 
-    bson_append_regex(_impl->back(), key.c_str(), key.length(), value.regex.c_str(), value.options.c_str());
+    bson_append_regex(_impl->back(), key.c_str(), key.length(), value.regex.c_str(),
+                      value.options.c_str());
     return *this;
 }
 
@@ -299,7 +299,8 @@ builder& builder::value_append(const types::b_code& value) {
 builder& builder::value_append(const types::b_symbol& value) {
     const string_or_literal& key = _impl->next_key();
 
-    bson_append_symbol(_impl->back(), key.c_str(), key.length(), value.symbol.c_str(), value.symbol.length());
+    bson_append_symbol(_impl->back(), key.c_str(), key.length(), value.symbol.c_str(),
+                       value.symbol.length());
     return *this;
 }
 
@@ -309,7 +310,8 @@ builder& builder::value_append(const types::b_codewscope& value) {
     bson_t bson;
     bson_init_static(&bson, value.scope.get_buf(), value.scope.get_len());
 
-    bson_append_code_with_scope(_impl->back(), key.c_str(), key.length(), value.code.c_str(), &bson);
+    bson_append_code_with_scope(_impl->back(), key.c_str(), key.length(), value.code.c_str(),
+                                &bson);
     return *this;
 }
 
@@ -323,7 +325,8 @@ builder& builder::value_append(const types::b_int32& value) {
 builder& builder::value_append(const types::b_timestamp& value) {
     const string_or_literal& key = _impl->next_key();
 
-    bson_append_timestamp(_impl->back(), key.c_str(), key.length(), value.increment, value.timestamp);
+    bson_append_timestamp(_impl->back(), key.c_str(), key.length(), value.increment,
+                          value.timestamp);
     return *this;
 }
 

@@ -26,12 +26,14 @@ add_custom_target(modernize
     clang-modernize
         -p ${CMAKE_BINARY_DIR}/compile_commands.json
         -include ${CMAKE_CURRENT_SOURCE_DIR}
+        -exclude ${CMAKE_CURRENT_SOURCE_DIR}/test
         -format
     VERBATIM
 )
 
 add_custom_target(format
     perl -nle "/file/ or next; print ((split /: (.*)/)[1])" ${CMAKE_BINARY_DIR}/compile_commands.json |
+    grep -v 'catch.hpp' |
     xargs clang-format -i
     VERBATIM
 )

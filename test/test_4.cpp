@@ -24,7 +24,8 @@ int main() {
 
     add_doc(builder);
 
-    builder << "hello" << "world";
+    builder << "hello"
+            << "world";
     builder << "hello" << b_utf8{"world"};
 
     int x = 10;

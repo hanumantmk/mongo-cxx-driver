@@ -22,12 +22,12 @@
 #include "bson/types.hpp"
 #include "bson/json.hpp"
 
-#define CITER \
-    bson_iter_t iter; \
-    iter.raw = _raw; \
-    iter.len = _len; \
+#define CITER             \
+    bson_iter_t iter;     \
+    iter.raw = _raw;      \
+    iter.len = _len;      \
     iter.next_off = _off; \
-    bson_iter_next(&iter) \
+    bson_iter_next(&iter)
 
 namespace bson {
 
@@ -46,7 +46,10 @@ bool element::operator==(const element& rhs) const {
     return (_raw == rhs._raw && _off == rhs._off);
 }
 
-bson::type element::type() const { CITER; return static_cast<bson::type>(bson_iter_type(&iter)); }
+bson::type element::type() const {
+    CITER;
+    return static_cast<bson::type>(bson_iter_type(&iter));
+}
 
 string_or_literal element::key() const {
     CITER;
@@ -68,7 +71,9 @@ types::b_binary element::get_binary() const {
     return types::b_binary{static_cast<binary_sub_type>(type), len, binary};
 }
 
-types::b_eod element::get_eod() const { return types::b_eod{}; }
+types::b_eod element::get_eod() const {
+    return types::b_eod{};
+}
 
 types::b_utf8 element::get_utf8() const {
     CITER;
@@ -79,10 +84,21 @@ types::b_utf8 element::get_utf8() const {
     return types::b_utf8{string_or_literal{val, len}};
 }
 
-types::b_double element::get_double() const { CITER; return types::b_double{bson_iter_double(&iter)}; }
-types::b_int32 element::get_int32() const { CITER; return types::b_int32{bson_iter_int32(&iter)}; }
-types::b_int64 element::get_int64() const { CITER; return types::b_int64{bson_iter_int64(&iter)}; }
-types::b_undefined element::get_undefined() const { return types::b_undefined{}; }
+types::b_double element::get_double() const {
+    CITER;
+    return types::b_double{bson_iter_double(&iter)};
+}
+types::b_int32 element::get_int32() const {
+    CITER;
+    return types::b_int32{bson_iter_int32(&iter)};
+}
+types::b_int64 element::get_int64() const {
+    CITER;
+    return types::b_int64{bson_iter_int64(&iter)};
+}
+types::b_undefined element::get_undefined() const {
+    return types::b_undefined{};
+}
 types::b_oid element::get_oid() const {
     CITER;
 
@@ -92,9 +108,17 @@ types::b_oid element::get_oid() const {
     return types::b_oid{v};
 }
 
-types::b_bool element::get_bool() const { CITER; return types::b_bool{bson_iter_bool(&iter)}; }
-types::b_date element::get_date() const { CITER; return types::b_date{bson_iter_date_time(&iter)}; }
-types::b_null element::get_null() const { return types::b_null{}; }
+types::b_bool element::get_bool() const {
+    CITER;
+    return types::b_bool{bson_iter_bool(&iter)};
+}
+types::b_date element::get_date() const {
+    CITER;
+    return types::b_date{bson_iter_date_time(&iter)};
+}
+types::b_null element::get_null() const {
+    return types::b_null{};
+}
 
 types::b_regex element::get_regex() const {
     CITER;
@@ -102,7 +126,8 @@ types::b_regex element::get_regex() const {
     const char* options;
     const char* regex = bson_iter_regex(&iter, &options);
 
-    return types::b_regex{string_or_literal{regex, std::strlen(regex)}, string_or_literal{options, std::strlen(options)}};
+    return types::b_regex{string_or_literal{regex, std::strlen(regex)},
+                          string_or_literal{options, std::strlen(options)}};
 }
 
 types::b_dbpointer element::get_dbpointer() const {
@@ -158,8 +183,12 @@ types::b_timestamp element::get_timestamp() const {
     return types::b_timestamp{timestamp, increment};
 }
 
-types::b_minkey element::get_minkey() const { return types::b_minkey{}; }
-types::b_maxkey element::get_maxkey() const { return types::b_maxkey{}; }
+types::b_minkey element::get_minkey() const {
+    return types::b_minkey{};
+}
+types::b_maxkey element::get_maxkey() const {
+    return types::b_maxkey{};
+}
 
 namespace document {
 
@@ -215,7 +244,7 @@ element view::operator[](const char* key) const {
     bson_init_static(&b, buf, len);
     bson_iter_init_find(&iter, &b, key);
 
-    return element(reinterpret_cast<const void *>(&iter));
+    return element(reinterpret_cast<const void*>(&iter));
 }
 
 view::view(const std::uint8_t* b, std::size_t l) : buf(b), len(l) {}
@@ -257,7 +286,7 @@ std::ostream& operator<<(std::ostream& out, const bson::document::view& view) {
     return out;
 }
 
-} // namespace document
+}  // namespace document
 
 types::b_document element::get_document() const {
     CITER;
@@ -285,7 +314,11 @@ std::ostream& operator<<(std::ostream& out, const element& element) {
     json_visitor v(out, false, 0);
 
     switch ((int)element.type()) {
-#define MONGOCXX_ENUM(name, val) case val: out << element.key() << " : "; v.visit_value(element.get_##name()); break;
+#define MONGOCXX_ENUM(name, val)             \
+    case val:                                \
+        out << element.key() << " : ";       \
+        v.visit_value(element.get_##name()); \
+        break;
 #include "bson/enums/type.hpp"
 #undef MONGOCXX_ENUM
     }

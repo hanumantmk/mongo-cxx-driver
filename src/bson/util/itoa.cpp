@@ -1021,9 +1021,7 @@ const char* kIndexTable =
     "998\0"
     "999\0";
 
-itoa::itoa(uint32_t val) : val(val) {
-    init();
-}
+itoa::itoa(uint32_t val) : val(val) { init(); }
 
 void itoa::init() {
     if (val < 10) {

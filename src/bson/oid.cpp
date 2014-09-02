@@ -27,7 +27,7 @@ oid::oid() : _is_valid(false) {}
 
 oid::oid(init_tag_t) : _is_valid(true) {
     bson_oid_t oid;
-    bson_oid_init(&oid, NULL);
+    bson_oid_init(&oid, nullptr);
 
     std::memcpy(_bytes, oid.bytes, sizeof(oid.bytes));
 }
@@ -55,9 +55,7 @@ string_or_literal oid::to_string() const {
     return string_or_literal(str);
 }
 
-oid::operator bool() const {
-    return _is_valid;
-}
+oid::operator bool() const { return _is_valid; }
 
 std::time_t oid::get_time_t() const {
     bson_oid_t oid;
@@ -66,12 +64,10 @@ std::time_t oid::get_time_t() const {
     return bson_oid_get_time_t(&oid);
 }
 
-const char* oid::bytes() const {
-    return _bytes;
-}
+const char* oid::bytes() const { return _bytes; }
 
 int oid_compare(const oid& lhs, const oid& rhs) {
-    if (! lhs._is_valid || ! rhs._is_valid) {
+    if (!lhs._is_valid || !rhs._is_valid) {
         if (lhs._is_valid) {
             return 1;
         } else if (rhs._is_valid) {
@@ -90,29 +86,17 @@ int oid_compare(const oid& lhs, const oid& rhs) {
     return bson_oid_compare(&lhs_oid, &rhs_oid);
 }
 
-bool operator<(const oid& lhs, const oid& rhs) {
-    return oid_compare(lhs, rhs) < 0;
-}
+bool operator<(const oid& lhs, const oid& rhs) { return oid_compare(lhs, rhs) < 0; }
 
-bool operator>(const oid& lhs, const oid& rhs) {
-    return oid_compare(lhs, rhs) > 0;
-}
+bool operator>(const oid& lhs, const oid& rhs) { return oid_compare(lhs, rhs) > 0; }
 
-bool operator<=(const oid& lhs, const oid& rhs) {
-    return oid_compare(lhs, rhs) <= 0;
-}
+bool operator<=(const oid& lhs, const oid& rhs) { return oid_compare(lhs, rhs) <= 0; }
 
-bool operator>=(const oid& lhs, const oid& rhs) {
-    return oid_compare(lhs, rhs) >= 0;
-}
+bool operator>=(const oid& lhs, const oid& rhs) { return oid_compare(lhs, rhs) >= 0; }
 
-bool operator==(const oid& lhs, const oid& rhs) {
-    return oid_compare(lhs, rhs) == 0;
-}
+bool operator==(const oid& lhs, const oid& rhs) { return oid_compare(lhs, rhs) == 0; }
 
-bool operator!=(const oid& lhs, const oid& rhs) {
-    return oid_compare(lhs, rhs) != 0;
-}
+bool operator!=(const oid& lhs, const oid& rhs) { return oid_compare(lhs, rhs) != 0; }
 
 std::ostream& operator<<(std::ostream& out, const oid& rhs) {
     bson_oid_t oid;
@@ -126,4 +110,4 @@ std::ostream& operator<<(std::ostream& out, const oid& rhs) {
     return out;
 }
 
-} // namespace bson
+}  // namespace bson

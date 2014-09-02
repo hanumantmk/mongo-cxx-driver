@@ -8,7 +8,9 @@
 int main() {
     bson::builder builder;
 
-    builder << "hello" << "world" << "bar" << 10;
+    builder << "hello"
+            << "world"
+            << "bar" << 10;
 
     bson::document::view doc(builder.view());
 
