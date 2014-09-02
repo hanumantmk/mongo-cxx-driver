@@ -87,6 +87,13 @@ class builder {
     builder& value_append(const types::b_maxkey& value);
 
     builder& value_append(string_or_literal value);
+
+    template <std::size_t n>
+    builder& value_append(const char (&v)[n]) {
+        return value_append(string_or_literal{v, n - 1});
+    }
+
+    builder& value_append(bool value);
     builder& value_append(double value);
     builder& value_append(std::int32_t value);
     builder& value_append(std::int64_t value);

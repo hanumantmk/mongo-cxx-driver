@@ -33,8 +33,8 @@ class builder::array_ctx {
 
     template <class T>
     typename std::enable_if<!(util::is_functor<T, void(array_builder)>::value || util::is_functor<T, void(value_builder)>::value || std::is_same<T, builder_helpers::close_doc_t>::value), array_ctx>::type& operator<<(
-        const T& t) {
-        _builder->value_append(t);
+        T&& t) {
+        _builder->value_append(std::forward<T>(t));
         return *this;
     }
 

@@ -43,8 +43,8 @@ class builder::value_builder {
     }
 
     template <class T>
-    void operator<<(const T& t) {
-        _builder->value_append(t);
+    void operator<<(T&& t) {
+        _builder->value_append(std::forward<T>(t));
     }
 
    private:

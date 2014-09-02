@@ -21,9 +21,6 @@ namespace bson {
 
 string_or_literal::string_or_literal() : _len(0), _is_owning(false), _literal("") {}
 
-string_or_literal::string_or_literal(const char* str)
-    : _len(std::strlen(str)), _is_owning(false), _literal(str) {}
-
 string_or_literal::string_or_literal(const char* str, std::size_t len)
     : _len(len), _is_owning(false), _literal(str) {}
 

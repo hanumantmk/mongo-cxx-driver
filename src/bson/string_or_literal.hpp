@@ -30,7 +30,6 @@ class string_or_literal {
 
     string_or_literal(std::string v);
     string_or_literal(const char* str, std::size_t len);
-    string_or_literal(const char* str);
 
     string_or_literal();
 

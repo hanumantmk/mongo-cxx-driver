@@ -367,6 +367,10 @@ builder& builder::value_append(std::int64_t value) {
     return value_append(types::b_int64{value});
 }
 
+builder& builder::value_append(bool value) {
+    return value_append(types::b_bool{value});
+}
+
 builder& builder::open_doc_append() {
     const string_or_literal& key = _impl->next_key();
 

@@ -121,7 +121,7 @@ TEST_CASE("builder appends bool", "[bson::builder]") {
     bson_init(&expected);
     builder b;
 
-    SECTION("true works") {
+    SECTION("b_bool true works") {
         bson_append_bool(&expected, "foo", -1, 1);
 
         b << "foo" << types::b_bool{true};
@@ -129,10 +129,26 @@ TEST_CASE("builder appends bool", "[bson::builder]") {
         bson_eq_builder(&expected, b);
     }
 
-    SECTION("false works") {
+    SECTION("raw true works") {
+        bson_append_bool(&expected, "foo", -1, 1);
+
+        b << "foo" << true;
+
+        bson_eq_builder(&expected, b);
+    }
+
+    SECTION("b_bool false works") {
         bson_append_bool(&expected, "foo", -1, 0);
 
         b << "foo" << types::b_bool{false};
+
+        bson_eq_builder(&expected, b);
+    }
+
+    SECTION("raw false works") {
+        bson_append_bool(&expected, "foo", -1, 0);
+
+        b << "foo" << false;
 
         bson_eq_builder(&expected, b);
     }

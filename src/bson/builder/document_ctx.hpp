@@ -34,8 +34,8 @@ class builder::document_ctx {
 
     template <class T>
     typename std::enable_if<!util::is_functor<T, void(value_builder)>::value, Base>::type operator<<(
-        const T& t) {
-        _builder->value_append(t);
+        T&& t) {
+        _builder->value_append(std::forward<T>(t));
         return unwrap();
     }
 

@@ -48,6 +48,9 @@ namespace types {
     struct b_utf8 {
         static constexpr auto type_id = type::k_utf8;
 
+        template <typename T>
+        explicit b_utf8(T&& value) : value(std::forward<T>(value)) {}
+
         string_or_literal value;
 
         operator string_or_literal() {
@@ -120,6 +123,11 @@ namespace types {
     struct b_regex {
         static constexpr auto type_id = type::k_regex;
 
+        template <typename T, typename U>
+        explicit b_regex(T&& regex, U&& options) :
+            regex(std::forward<T>(regex)),
+            options(std::forward<U>(options)) {}
+
         string_or_literal regex;
         string_or_literal options;
     };
@@ -134,6 +142,10 @@ namespace types {
     struct b_code {
         static constexpr auto type_id = type::k_code;
 
+        template <typename T>
+        explicit b_code(T&& code) :
+            code(std::forward<T>(code)) {}
+
         string_or_literal code;
 
         operator string_or_literal() {
@@ -144,6 +156,10 @@ namespace types {
     struct b_symbol {
         static constexpr auto type_id = type::k_symbol;
 
+        template <typename T>
+        explicit b_symbol(T&& symbol) :
+            symbol(std::forward<T>(symbol)) {}
+
         string_or_literal symbol;
 
         operator string_or_literal() {
@@ -153,6 +169,11 @@ namespace types {
 
     struct b_codewscope {
         static constexpr auto type_id = type::k_codewscope;
+
+        template <typename T, typename U>
+        explicit b_codewscope(T&& code, U&& scope) :
+            code(std::forward<T>(code)),
+            scope(std::forward<U>(scope)) {}
 
         string_or_literal code;
         document::view scope;
