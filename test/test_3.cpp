@@ -50,14 +50,14 @@ int main() {
     col.drop();
     col.drop();
 
-    col.find(model::find(doc));
-    col.find(model::find(doc).skip(1));
-    col.find(model::find(doc));
-    col.find(model::find(doc));
-    col.find(model::find(doc));
-    col.find(model::find(doc));
-    col.find(model::find(doc));
-    col.find(model::find(doc));
+    col.find(model::find().criteria(doc));
+    col.find(model::find().criteria(doc).skip(1));
+    col.find(model::find().criteria(doc));
+    col.find(model::find().criteria(doc));
+    col.find(model::find().criteria(doc));
+    col.find(model::find().criteria(doc));
+    col.find(model::find().criteria(doc));
+    col.find(model::find().criteria(doc));
 
     for (int i = 0; i < 10; i++) {
         builder.clear();

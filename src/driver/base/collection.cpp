@@ -49,7 +49,7 @@ cursor collection::find(const model::find& model) const {
     scoped_bson_t projection(model.projection());
 
     if (model.modifiers()) {
-        scoped_bson_t query(model.filter());
+        scoped_bson_t query(model.criteria());
         scoped_bson_t modifiers(model.modifiers());
 
         filter.init();
@@ -57,7 +57,7 @@ cursor collection::find(const model::find& model) const {
         BSON_APPEND_DOCUMENT(filter.bson(), "&query", query.bson());
         bson_concat(filter.bson(), modifiers.bson());
     } else {
-        filter.init_from_static(model.filter());
+        filter.init_from_static(model.criteria());
     }
 
     return cursor(mongoc_collection_find(util::cast<mongoc_collection_t>(_collection),
@@ -69,13 +69,13 @@ cursor collection::find(const model::find& model) const {
 
 cursor collection::aggregate(const model::aggregate& /* model */) const { return cursor(nullptr); }
 
-result::write collection::replaceOne(const model::replace& /* model */) { return result::write(); }
+result::write collection::replace_one(const model::replace& /* model */) { return result::write(); }
 
-result::write collection::updateMany(const model::update& /* model */) { return result::write(); }
-result::write collection::removeMany(const model::remove& /* model */) { return result::write(); }
+result::write collection::update_many(const model::update& /* model */) { return result::write(); }
+result::write collection::remove_many(const model::remove& /* model */) { return result::write(); }
 
-result::write collection::updateOne(const model::update& /* model */) { return result::write(); }
-result::write collection::removeOne(const model::remove& /* model */) { return result::write(); }
+result::write collection::update_one(const model::update& /* model */) { return result::write(); }
+result::write collection::remove_one(const model::remove& /* model */) { return result::write(); }
 
 bson::document::value collection::find_one_and_replace(
     const model::find_one_and_replace& /* model */) {

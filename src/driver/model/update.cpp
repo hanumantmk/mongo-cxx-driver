@@ -12,48 +12,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
-
-#include "driver/config/prelude.hpp"
-
-#include "bson/document.hpp"
-#include "driver/model/write.hpp"
-#include "driver/util/optional.hpp"
+#include "driver/model/update.hpp"
 
 namespace mongo {
 namespace driver {
 namespace model {
-
 namespace details {
 
-class LIBMONGOCXX_EXPORT xupdate : public write<xupdate> {
+xupdate::xupdate(bson::document::view criteria, bson::document::view update)
+    : _criteria(std::move(criteria))
+    , _update(std::move(update))
+{}
 
-   public:
-    xupdate(bson::document::view criteria, bson::document::view update);
+xupdate& xupdate::multi(bool multi) {
+    _multi = multi;
+    return *this;
+}
 
-    bson::document::view criteria() const;
-    bson::document::view update() const;
+xupdate& xupdate::upsert(bool upsert) {
+    _upsert = upsert;
+    return *this;
+}
 
-    xupdate& multi(bool multi);
-    xupdate& upsert(bool upsert);
+optional<bool> xupdate::multi() const {
+    return _multi;
+}
 
-    optional<bool> multi() const;
-    optional<bool> upsert() const;
-
-   private:
-    bson::document::view _criteria;
-    bson::document::view _update;
-
-    optional<bool> _multi;
-    optional<bool> _upsert;
-};
+optional<bool> xupdate::upsert() const {
+    return _upsert;
+}
 
 }  // namespace details
-
-using update = details::xupdate;
-
 }  // namespace model
 }  // namespace driver
 }  // namespace mongo
-
-#include "driver/config/postlude.hpp"

@@ -18,10 +18,15 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-find::find(bson::document::view filter) : _filter(std::move(filter)) {}
+find::find() {}
 
 find& find::batch_size(std::int32_t batch_size) {
     _batch_size = batch_size;
+    return *this;
+}
+
+find& find::criteria(bson::document::view criteria) {
+    _criteria = criteria;
     return *this;
 }
 
@@ -55,7 +60,7 @@ find& find::sort(bson::document::view ordering) {
     return *this;
 }
 
-bson::document::view find::filter() const { return _filter; }
+optional<bson::document::view> find::criteria() const { return _criteria; }
 
 optional<std::int32_t> find::batch_size() const { return _batch_size; }
 

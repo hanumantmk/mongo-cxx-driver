@@ -14,36 +14,34 @@
 
 #pragma once
 
+#include "driver/config/prelude.hpp"
+
+#include <vector>
+
 #include "driver/model/write.hpp"
+#include "driver/util/optional.hpp"
 
 namespace mongo {
 namespace driver {
+namespace model {
 
-/*
- *    class WriteRequest;
- *
- *    template <class T>
- *    class BulkWriteModel : public write<BulkWriteModel<T>> {
- *    public:
- *        BulkWriteModel(const T& requests, bool ordered)
- *            : _requests(requests), _ordered(ordered)
- *        {
- *        }
- *
- *        const T& requests() const { return _requests; }
- *        bool ordered() const { return _ordered; }
- *
- *    private:
- *
- *        const T& _requests;
- *        bool _ordered;
- *    };
- *
- *    template <class T>
- *    inline BulkWriteModel<T> make_bulk_write_model(const T& requests, bool
- *ordered) {
- *        return BulkWriteModel<T>(requests, ordered);
- *    }
- */
-}
-}
+    class bulk_write : public write<bulk_write> {
+    public:
+        bulk_write(std::vector<write> operations);
+
+        bulk_write& ordered(bool ordered);
+
+        std::vector<write> operations() const;
+        optional<bool> ordered() const;
+
+    private:
+        std::vector<write> _operations;
+        optional<bool> _ordered;
+
+    };
+
+}  // namespace model
+}  // namespace driver
+}  // namespace mongo
+
+#include "driver/config/postlude.hpp"

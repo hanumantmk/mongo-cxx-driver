@@ -37,6 +37,7 @@ class read_preference;
 
 namespace model {
 class aggregate;
+class bulk_write;
 class find;
 class find_one_and_replace;
 class find_one_and_remove;
@@ -59,6 +60,7 @@ namespace result {
 class write;
 class explain;
 class distinct;
+class bulk_write;
 }  // namespace result
 
 namespace fluent {
@@ -74,13 +76,15 @@ class LIBMONGOCXX_EXPORT collection {
     cursor find(const model::find& model) const;
     cursor aggregate(const model::aggregate& model) const;
 
-    result::write insertOne(const model::insert& model);
-    result::write insertMany(const model::insert& model);
-    result::write replaceOne(const model::replace& model);
-    result::write updateOne(const model::update& model);
-    result::write updateMany(const model::update& model);
-    result::write removeOne(const model::remove& model);
-    result::write removeMany(const model::remove& model);
+    result::write insert_one(const model::insert& model);
+    result::write insert_many(const model::insert& model);
+    result::write replace_one(const model::replace& model);
+    result::write update_one(const model::update& model);
+    result::write update_many(const model::update& model);
+    result::write remove_one(const model::remove& model);
+    result::write remove_many(const model::remove& model);
+
+    result::bulk_write bulkwrite(const model::bulk_write);
 
     bson::document::value find_one_and_replace(const model::find_one_and_replace& model);
     bson::document::value find_one_and_update(const model::find_one_and_update& model);

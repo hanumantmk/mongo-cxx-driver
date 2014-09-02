@@ -30,24 +30,22 @@ namespace model {
 class LIBMONGOCXX_EXPORT count : public ReadModel<count> {
 
    public:
-    explicit count(bson::document::view filter);
+    count();
 
-    count& filter(bson::document::view filter);
+    count& criteria(bson::document::view criteria);
     count& hint(bson::document::view hint);
     count& limit(std::int32_t limit);
     count& max_time_ms(std::int64_t max_time_ms);
     count& skip(std::int32_t skip);
 
-    bson::document::view filter() const;
-
+    optional<bson::document::view> criteria() const;
     optional<bson::document::view> hint() const;
     optional<std::int32_t> limit() const;
     optional<std::int64_t> max_time_ms() const;
     optional<std::int32_t> skip() const;
 
    private:
-    bson::document::view _filter;
-
+    optional<bson::document::view> _criteria;
     optional<bson::document::view> _hint;
     optional<std::int32_t> _limit;
     optional<std::int64_t> _max_time_ms;

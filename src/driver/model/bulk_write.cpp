@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "driver/model/bulk.hpp"
+#include "driver/model/bulk_write.hpp"
 
 namespace mongo {
 namespace driver {}
