@@ -18,19 +18,20 @@
 
 #include "bson/document.hpp"
 #include "driver/model/write.hpp"
+#include "driver/util/optional.hpp"
 
 namespace mongo {
 namespace driver {
 namespace model {
 
-class LIBMONGOCXX_EXPORT insert : public write<insert> {
+class LIBMONGOCXX_EXPORT remove_one : write<remove_one> {
 
    public:
-    insert(bson::document::view document);
-    bson::document::view document() const;
+    remove_one(const bson::document::view& criteria);
 
    private:
-    bson::document::view _document;
+    bson::document::view _criteria;
+
 };
 
 }  // namespace model

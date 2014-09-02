@@ -25,20 +25,21 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-    class bulk_write : public write<bulk_write> {
-    public:
-        bulk_write(std::vector<write> operations);
+// TODO: make generic template class for iterable vs vector
+class LIBMONGOCXX_EXPORT bulk_write : public write<bulk_write> {
+public:
+    bulk_write(std::vector<write> operations);
 
-        bulk_write& ordered(bool ordered);
+    bulk_write& ordered(bool ordered);
 
-        std::vector<write> operations() const;
-        optional<bool> ordered() const;
+    std::vector<write> operations() const;
+    optional<bool> ordered() const;
 
-    private:
-        std::vector<write> _operations;
-        optional<bool> _ordered;
+private:
+    std::vector<write> _operations;
+    optional<bool> _ordered;
 
-    };
+};
 
 }  // namespace model
 }  // namespace driver

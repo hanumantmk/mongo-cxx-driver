@@ -12,29 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
-
-#include "bson/document.hpp"
-
-#include "driver/model/insert_one.hpp"
-#include "driver/request/write.hpp"
+#include "driver/model/update_many.hpp"
 
 namespace mongo {
 namespace driver {
 namespace model {
 
-/*
- *    class InsertRequest : public WriteRequest {
- *    public:
- *        InsertRequest(const bson::document::view& doc);
- *        InsertRequest(const insert& model);
- *
- *    private:
- *        virtual void add(mongoc_bulk_operation_t* bulk) const;
- *
- *        bson::document::view _doc;
- *    };
- */
+update_many::update_many(bson::document::view criteria, bson::document::view update)
+    : _criteria(std::move(criteria))
+    , _update(std::move(update))
+{}
+
+update_many& update_many::upsert(bool upsert) {
+    _upsert = upsert;
+    return *this;
+}
+
+optional<bool> update_many::upsert() const {
+    return _upsert;
+}
 
 }  // namespace model
 }  // namespace driver

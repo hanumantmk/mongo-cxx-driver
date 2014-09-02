@@ -16,27 +16,22 @@
 
 #include "driver/config/prelude.hpp"
 
-#include <cstdint>
-
 #include "bson/document.hpp"
+
+#include <cstdint>
 
 namespace mongo {
 namespace driver {
-namespace model {
+namespace result {
 
-class LIBMONGOCXX_EXPORT query {
-
-    query& sort(const bson::document::view& ordering);
-    bson::document::view sort() const;
-
-    query& limit(std::int32_t limit);
-    std::int32_t limit() const;
-
-    query& skip(std::int32_t limit);
-    std::int32_t skip() const;
+struct LIBMONGOCXX_EXPORT update {
+    bool is_acknowledged;
+    std::int64_t matched_count;
+    std::int64_t modified_count;
+    bson::element upserted_id;
 };
 
-}  // namespace model
+}  // namespace result
 }  // namespace driver
 }  // namespace mongo
 

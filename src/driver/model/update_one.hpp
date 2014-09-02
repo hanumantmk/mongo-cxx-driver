@@ -14,28 +14,37 @@
 
 #pragma once
 
-#include "bson/document.hpp"
+#include "driver/config/prelude.hpp"
 
-#include "driver/model/insert_one.hpp"
-#include "driver/request/write.hpp"
+#include "bson/document.hpp"
+#include "driver/model/write.hpp"
+#include "driver/util/optional.hpp"
 
 namespace mongo {
 namespace driver {
 namespace model {
 
-/*
- *    class InsertRequest : public WriteRequest {
- *    public:
- *        InsertRequest(const bson::document::view& doc);
- *        InsertRequest(const insert& model);
- *
- *    private:
- *        virtual void add(mongoc_bulk_operation_t* bulk) const;
- *
- *        bson::document::view _doc;
- *    };
- */
+class LIBMONGOCXX_EXPORT update_one : public write<update_one> {
+
+   public:
+    update_one(bson::document::view criteria, bson::document::view update);
+
+    bson::document::view criteria() const;
+    bson::document::view update() const;
+
+    update_one& upsert(bool upsert);
+
+    optional<bool> upsert() const;
+
+   private:
+    bson::document::view _criteria;
+    bson::document::view _update;
+
+    optional<bool> _upsert;
+};
 
 }  // namespace model
 }  // namespace driver
 }  // namespace mongo
+
+#include "driver/config/postlude.hpp"

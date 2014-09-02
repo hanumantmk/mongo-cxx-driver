@@ -42,18 +42,16 @@ class find;
 class find_one_and_replace;
 class find_one_and_remove;
 class find_one_and_update;
-class remove;
-class insert;
-class replace;
+class remove_one;
+class remove_many;
+class insert_one;
+class insert_many;
+class replace_one;
+class update_one;
+class update_many;
 class distinct;
 class count;
 class explain;
-
-namespace details {
-class xupdate;
-}
-
-using update = details::xupdate;
 }  // namespace model
 
 namespace result {
@@ -76,13 +74,13 @@ class LIBMONGOCXX_EXPORT collection {
     cursor find(const model::find& model) const;
     cursor aggregate(const model::aggregate& model) const;
 
-    result::write insert_one(const model::insert& model);
-    result::write insert_many(const model::insert& model);
-    result::write replace_one(const model::replace& model);
-    result::write update_one(const model::update& model);
-    result::write update_many(const model::update& model);
-    result::write remove_one(const model::remove& model);
-    result::write remove_many(const model::remove& model);
+    result::write insert_one(const model::insert_one& model);
+    result::write insert_many(const model::insert_many& model);
+    result::write replace_one(const model::replace_one& model);
+    result::write update_one(const model::update_one& model);
+    result::write update_many(const model::update_many& model);
+    result::write remove_one(const model::remove_one& model);
+    result::write remove_many(const model::remove_many& model);
 
     result::bulk_write bulkwrite(const model::bulk_write);
 

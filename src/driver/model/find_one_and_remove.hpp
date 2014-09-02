@@ -27,18 +27,18 @@ namespace model {
 class LIBMONGOCXX_EXPORT find_one_and_remove : public write<find_one_and_remove> {
 
    public:
-    find_one_and_remove(bson::document::view filter);
+    find_one_and_remove(bson::document::view criteria);
 
     find_one_and_remove& projection(bson::document::view projection);
     find_one_and_remove& sort(bson::document::view ordering);
 
-    bson::document::view filter() const;
+    bson::document::view criteria() const;
 
     optional<bson::document::view> projection() const;
     optional<bson::document::view> sort() const;
 
    private:
-    bson::document::view _filter;
+    bson::document::view _criteria;
 
     optional<bson::document::view> _projection;
     optional<bson::document::view> _ordering;

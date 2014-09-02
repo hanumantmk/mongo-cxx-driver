@@ -12,16 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "driver/model/insert.hpp"
+#pragma once
+
+#include "driver/config/prelude.hpp"
+
+#include "bson/document.hpp"
+#include "driver/model/write.hpp"
+#include "driver/util/optional.hpp"
 
 namespace mongo {
 namespace driver {
 namespace model {
 
-insert::insert(bson::document::view document) : _document(std::move(document)) {}
+class LIBMONGOCXX_EXPORT remove_many : write<remove_many> {
 
-bson::document::view insert::document() const { return _document; }
+   public:
+    remove_many(const bson::document::view& criteria);
+
+   private:
+    bson::document::view _criteria;
+
+};
 
 }  // namespace model
 }  // namespace driver
 }  // namespace mongo
+
+#include "driver/config/postlude.hpp"

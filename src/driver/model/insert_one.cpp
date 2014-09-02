@@ -12,37 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "driver/model/update.hpp"
+#include "driver/model/insert_one.hpp"
 
 namespace mongo {
 namespace driver {
 namespace model {
-namespace details {
 
-xupdate::xupdate(bson::document::view criteria, bson::document::view update)
-    : _criteria(std::move(criteria))
-    , _update(std::move(update))
-{}
+insert_one::insert_one(bson::document::view document) : _document(std::move(document)) {}
 
-xupdate& xupdate::multi(bool multi) {
-    _multi = multi;
-    return *this;
-}
+bson::document::view insert_one::document() const { return _document; }
 
-xupdate& xupdate::upsert(bool upsert) {
-    _upsert = upsert;
-    return *this;
-}
-
-optional<bool> xupdate::multi() const {
-    return _multi;
-}
-
-optional<bool> xupdate::upsert() const {
-    return _upsert;
-}
-
-}  // namespace details
 }  // namespace model
 }  // namespace driver
 }  // namespace mongo

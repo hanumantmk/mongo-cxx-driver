@@ -20,8 +20,8 @@
 #include "driver/base/client.hpp"
 #include "driver/model/aggregate.hpp"
 #include "driver/model/find.hpp"
-#include "driver/model/insert.hpp"
-#include "driver/model/update.hpp"
+#include "driver/model/insert_one.hpp"
+#include "driver/model/update_one.hpp"
 #include "driver/private/cast.hpp"
 #include "driver/result/write.hpp"
 #include "driver/result/distinct.hpp"
@@ -69,13 +69,13 @@ cursor collection::find(const model::find& model) const {
 
 cursor collection::aggregate(const model::aggregate& /* model */) const { return cursor(nullptr); }
 
-result::write collection::replace_one(const model::replace& /* model */) { return result::write(); }
+result::write collection::replace_one(const model::replace_one& /* model */) { return result::write(); }
 
-result::write collection::update_many(const model::update& /* model */) { return result::write(); }
-result::write collection::remove_many(const model::remove& /* model */) { return result::write(); }
+result::write collection::update_many(const model::update_many& /* model */) { return result::write(); }
+result::write collection::remove_many(const model::remove_many& /* model */) { return result::write(); }
 
-result::write collection::update_one(const model::update& /* model */) { return result::write(); }
-result::write collection::remove_one(const model::remove& /* model */) { return result::write(); }
+result::write collection::update_one(const model::update_one& /* model */) { return result::write(); }
+result::write collection::remove_one(const model::remove_one& /* model */) { return result::write(); }
 
 bson::document::value collection::find_one_and_replace(
     const model::find_one_and_replace& /* model */) {

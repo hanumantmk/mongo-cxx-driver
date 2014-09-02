@@ -14,28 +14,25 @@
 
 #pragma once
 
+#include "driver/config/prelude.hpp"
+
 #include "bson/document.hpp"
 
-#include "driver/model/insert_one.hpp"
-#include "driver/request/write.hpp"
+#include <cstdint>
 
 namespace mongo {
 namespace driver {
-namespace model {
+namespace result {
 
-/*
- *    class InsertRequest : public WriteRequest {
- *    public:
- *        InsertRequest(const bson::document::view& doc);
- *        InsertRequest(const insert& model);
- *
- *    private:
- *        virtual void add(mongoc_bulk_operation_t* bulk) const;
- *
- *        bson::document::view _doc;
- *    };
- */
+struct LIBMONGOCXX_EXPORT replace_one {
+    bool is_acknowledged;
+    std::int64_t matched_count;
+    std::int64_t modified_count;
+    bson::element upserted_id;
+};
 
-}  // namespace model
+}  // namespace result
 }  // namespace driver
 }  // namespace mongo
+
+#include "driver/config/postlude.hpp"

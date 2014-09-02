@@ -24,18 +24,23 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-class LIBMONGOCXX_EXPORT remove : write<remove> {
+class LIBMONGOCXX_EXPORT update_many : public write<update_many> {
 
    public:
-    remove(const bson::document::view& filter);
+    update_many(bson::document::view criteria, bson::document::view update);
 
-    remove& multi(bool multi);
-    optional<bool> multi();
+    bson::document::view criteria() const;
+    bson::document::view update() const;
+
+    update_many& upsert(bool upsert);
+
+    optional<bool> upsert() const;
 
    private:
-    bson::document::view _filter;
+    bson::document::view _criteria;
+    bson::document::view _update;
 
-    optional<bool> _multi;
+    optional<bool> _upsert;
 };
 
 }  // namespace model

@@ -14,28 +14,30 @@
 
 #pragma once
 
-#include "bson/document.hpp"
+#include <vector>
 
-#include "driver/model/insert_one.hpp"
-#include "driver/request/write.hpp"
+#include "driver/config/prelude.hpp"
+
+#include "bson/document.hpp"
+#include "driver/model/write.hpp"
 
 namespace mongo {
 namespace driver {
 namespace model {
 
-/*
- *    class InsertRequest : public WriteRequest {
- *    public:
- *        InsertRequest(const bson::document::view& doc);
- *        InsertRequest(const insert& model);
- *
- *    private:
- *        virtual void add(mongoc_bulk_operation_t* bulk) const;
- *
- *        bson::document::view _doc;
- *    };
- */
+//TODO: make generic template class for iterable vs vector
+class LIBMONGOCXX_EXPORT insert_many : public write<insert_many> {
+
+   public:
+    insert_many(std::vector<bson::document::view> document);
+    std::vector<bson::document::view> document() const;
+
+   private:
+    std::vector<bson::document::view> _document;
+};
 
 }  // namespace model
 }  // namespace driver
 }  // namespace mongo
+
+#include "driver/config/postlude.hpp"

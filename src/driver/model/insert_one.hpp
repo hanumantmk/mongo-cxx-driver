@@ -23,14 +23,14 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-class LIBMONGOCXX_EXPORT replace : write<replace> {
+class LIBMONGOCXX_EXPORT insert_one : public write<insert_one> {
 
    public:
-    replace(bson::document::view filter, bson::document::view replacement);
+    insert_one(bson::document::view document);
+    bson::document::view document() const;
 
    private:
-    bson::document::view _filter;
-    bson::document::view _replacement;
+    bson::document::view _document;
 };
 
 }  // namespace model

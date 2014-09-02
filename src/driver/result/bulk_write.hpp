@@ -16,43 +16,29 @@
 
 #include "driver/config/prelude.hpp"
 
-#include "bson/document.hpp"
-#include "driver/model/write.hpp"
-#include "driver/util/optional.hpp"
+#include <cstdint>
+#include <map>
+
+#include "bson/types.hpp"
 
 namespace mongo {
 namespace driver {
-namespace model {
+namespace result {
 
-namespace details {
+struct LIBMONGOCXX_EXPORT bulk_write {
+    bool is_acknowledged;
 
-class LIBMONGOCXX_EXPORT xupdate : public write<xupdate> {
+    std::int64_t inserted_count;
+    std::int64_t matched_count;
+    std::int64_t modified_count;
+    std::int64_t removed_count;
+    std::int64_t upserted_count;
 
-   public:
-    xupdate(bson::document::view criteria, bson::document::view update);
+    std::map<std::size_t, bson::element> inserted_ids;
+    std::map<std::size_t, bson::element> upserted_ids;
+}
 
-    bson::document::view criteria() const;
-    bson::document::view update() const;
-
-    xupdate& multi(bool multi);
-    xupdate& upsert(bool upsert);
-
-    optional<bool> multi() const;
-    optional<bool> upsert() const;
-
-   private:
-    bson::document::view _criteria;
-    bson::document::view _update;
-
-    optional<bool> _multi;
-    optional<bool> _upsert;
-};
-
-}  // namespace details
-
-using update = details::xupdate;
-
-}  // namespace model
+}  // namespace result
 }  // namespace driver
 }  // namespace mongo
 
