@@ -316,7 +316,7 @@ std::ostream& operator<<(std::ostream& out, const element& element) {
     switch ((int)element.type()) {
 #define MONGOCXX_ENUM(name, val)             \
     case val:                                \
-        out << element.key() << " : ";       \
+        v.visit_key(element.key());          \
         v.visit_value(element.get_##name()); \
         break;
 #include "bson/enums/type.hpp"
