@@ -184,6 +184,12 @@ builder::document_ctx<builder::key_ctx<builder>> builder::operator<<(string_or_l
     return ctx << std::move(rhs);
 }
 
+builder& builder::operator<<(builder_helpers::concat concat) {
+    concat_append(concat);
+
+    return *this;
+}
+
 builder& builder::key_append(string_or_literal key) {
     if (_impl->is_array()) {
         throw(std::runtime_error("in subarray"));
@@ -363,6 +369,10 @@ builder& builder::value_append(std::int32_t value) {
     return value_append(types::b_int32{value});
 }
 
+builder& builder::value_append(const oid& value) {
+    return value_append(types::b_oid{value});
+}
+
 builder& builder::value_append(std::int64_t value) {
     return value_append(types::b_int64{value});
 }
@@ -383,6 +393,41 @@ builder& builder::open_array_append() {
     const string_or_literal& key = _impl->next_key();
 
     _impl->push_back_array(key.c_str(), key.length());
+
+    return *this;
+}
+
+builder& builder::concat_append(const document::view& view) {
+    bson_t other;
+    bson_init_static(&other, view.get_buf(), view.get_len());
+
+    if (_impl->is_array()) {
+        bson_iter_t iter;
+        bson_iter_init(&iter, &other);
+
+        while (bson_iter_next(&iter)) {
+            const string_or_literal& key = _impl->next_key();
+
+            bson_append_iter(_impl->back(), key.c_str(), key.length(), &iter);
+        }
+
+    } else {
+        bson_concat(_impl->back(), &other);
+    }
+
+    return *this;
+}
+
+builder& builder::value_append(const element& value) {
+    const string_or_literal& key = _impl->next_key();
+
+    bson_iter_t iter;
+    iter.raw = value._raw;
+    iter.len = value._len;
+    iter.next_off = value._off;
+    bson_iter_next(&iter);
+
+    bson_append_iter(_impl->back(), key.c_str(), key.length(), &iter);
 
     return *this;
 }

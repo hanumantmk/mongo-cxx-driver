@@ -50,6 +50,11 @@ class builder::array_ctx {
         return wrap_document();
     }
 
+    array_ctx operator<<(builder_helpers::concat concat) {
+        _builder->concat_append(concat);
+        return *this;
+    }
+
     array_ctx<array_ctx> operator<<(builder_helpers::open_array_t) {
         _builder->open_array_append();
         return wrap_array();

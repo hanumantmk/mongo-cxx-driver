@@ -30,6 +30,8 @@ namespace builder_helpers {
 
     struct close_array_t {};
     extern close_array_t close_array;
+
+    struct concat;
 };
 
 }

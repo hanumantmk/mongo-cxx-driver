@@ -56,6 +56,8 @@ class builder {
     typename std::enable_if<util::is_functor<Func, void(builder::key_ctx<builder::closed_ctx>)>::value, key_ctx<builder>>::type operator<<(
         Func func);
 
+    builder& operator<<(builder_helpers::concat concat);
+
     operator key_ctx<closed_ctx>();
 
     builder& key_append(string_or_literal key);
@@ -64,6 +66,7 @@ class builder {
     builder& open_array_append();
     builder& close_doc_append();
     builder& close_array_append();
+    builder& concat_append(const document::view& view);
 
     builder& value_append(const types::b_double& value);
     builder& value_append(const types::b_utf8& value);
@@ -86,6 +89,8 @@ class builder {
     builder& value_append(const types::b_minkey& value);
     builder& value_append(const types::b_maxkey& value);
 
+    builder& value_append(const element& value);
+
     builder& value_append(string_or_literal value);
 
     template <std::size_t n>
@@ -97,6 +102,7 @@ class builder {
     builder& value_append(double value);
     builder& value_append(std::int32_t value);
     builder& value_append(std::int64_t value);
+    builder& value_append(const oid& value);
 
 
     document::view view() const;
@@ -108,6 +114,16 @@ class builder {
 
     std::unique_ptr<impl> _impl;
 };
+
+namespace builder_helpers {
+    struct concat {
+        document::view view;
+
+        operator document::view() const {
+            return view;
+        }
+    };
+}
 
 typedef builder::array_ctx<builder::closed_ctx> array_builder;
 typedef builder::key_ctx<builder::closed_ctx> document_builder;

@@ -46,6 +46,11 @@ class builder::key_ctx {
         return (*this << func());
     }
 
+    key_ctx operator<<(builder_helpers::concat concat) {
+        _builder->concat_append(concat);
+        return *this;
+    }
+
     Base operator<<(builder_helpers::close_doc_t) {
         _builder->close_doc_append();
         return unwrap();

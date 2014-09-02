@@ -109,9 +109,17 @@ TEST_CASE("builder appends oid", "[bson::builder]") {
 
     builder b;
 
-    b << "foo" << types::b_oid{bson::oid{(char*)oid.bytes, 12}};
+    SECTION("b_oid works") {
+        b << "foo" << types::b_oid{bson::oid{(char*)oid.bytes, 12}};
 
-    bson_eq_builder(&expected, b);
+        bson_eq_builder(&expected, b);
+    }
+
+    SECTION("raw oid works") {
+        b << "foo" << bson::oid{(char*)oid.bytes, 12};
+
+        bson_eq_builder(&expected, b);
+    }
 
     bson_destroy(&expected);
 }
@@ -437,4 +445,65 @@ TEST_CASE("builder appends inline nested", "[bson::builder]") {
     bson_destroy(&foo);
     bson_destroy(&bar);
     bson_destroy(&third);
+}
+
+TEST_CASE("builder appends concat", "[bson::builder]") {
+    using namespace builder_helpers;
+
+    bson_t expected, child;
+
+    bson_init(&expected);
+    bson_init(&child);
+
+    builder b;
+
+    SECTION("document context works") {
+        bson_append_utf8(&child, "hello", -1, "world", -1);
+        bson_append_document(&expected, "foo", -1, &child);
+
+        builder child_builder;
+
+        child_builder << "hello" << "world";
+
+        b << "foo" << open_doc << concat{child_builder.view()} << close_doc;
+
+        bson_eq_builder(&expected, b);
+    }
+
+    SECTION("array context works") {
+        bson_append_utf8(&child, "0", -1, "bar", -1);
+        bson_append_utf8(&child, "1", -1, "baz", -1);
+        bson_append_array(&expected, "foo", -1, &child);
+
+        builder child_builder;
+
+        child_builder << "0" << "baz";
+
+        b << "foo" << open_array << "bar" << concat{child_builder.view()} << close_array;
+
+        bson_eq_builder(&expected, b);
+    }
+
+    bson_destroy(&child);
+    bson_destroy(&expected);
+}
+
+TEST_CASE("builder appends element", "[bson::builder]") {
+    using namespace builder_helpers;
+
+    bson_t expected;
+    bson_init(&expected);
+
+    builder b;
+    builder tmp;
+
+    bson_append_int32(&expected, "foo", -1, 999);
+
+    tmp << "foo" << 999;
+
+    b << "foo" << tmp.view()["foo"];
+
+    bson_eq_builder(&expected, b);
+
+    bson_destroy(&expected);
 }

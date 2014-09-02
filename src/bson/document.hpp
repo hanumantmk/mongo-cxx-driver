@@ -70,8 +70,11 @@ namespace document {
 class view;
 }
 
+class builder;
+
 class LIBMONGOCXX_EXPORT element {
     friend class document::view;
+    friend class builder;
 
    public:
     element();
