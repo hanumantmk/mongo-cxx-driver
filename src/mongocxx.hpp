@@ -34,6 +34,4 @@
 #include "driver/model/update_many.hpp"
 #include "driver/model/update_one.hpp"
 
-#include "driver/result/distinct.hpp"
-#include "driver/result/explain.hpp"
 #include "driver/result/write.hpp"

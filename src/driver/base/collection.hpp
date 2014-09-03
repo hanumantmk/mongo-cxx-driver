@@ -22,8 +22,6 @@
 #include "bson/document.hpp"
 
 #include "driver/base/cursor.hpp"
-#include "driver/result/distinct.hpp"
-#include "driver/result/explain.hpp"
 #include "driver/result/write.hpp"
 #include "driver/util/unique_ptr_void.hpp"
 

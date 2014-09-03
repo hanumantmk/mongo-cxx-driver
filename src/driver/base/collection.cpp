@@ -24,7 +24,6 @@
 #include "driver/model/update_one.hpp"
 #include "driver/private/cast.hpp"
 #include "driver/result/write.hpp"
-#include "driver/result/distinct.hpp"
 #include "driver/request/insert.hpp"
 #include "driver/util/libbson.hpp"
 
@@ -104,9 +103,12 @@ bson::document::value collection::explain(const model::explain& /*model*/) const
     return bson::document::value((const std::uint8_t*)nullptr, 0);
 }
 
+#if 0
 result::distinct collection::distinct(const model::distinct& /* model */) const {
     return result::distinct();
 }
+#endif
+
 std::int64_t collection::count(const model::count& /* model */) const { return 0; }
 
 void collection::drop() {
