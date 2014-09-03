@@ -26,7 +26,7 @@
 
 namespace bson {
 
-class builder {
+class LIBMONGOCXX_EXPORT builder {
 
    public:
     template <class T>
@@ -116,7 +116,7 @@ class builder {
 };
 
 namespace builder_helpers {
-    struct concat {
+    struct LIBMONGOCXX_EXPORT concat {
         document::view view;
 
         operator document::view() const {
