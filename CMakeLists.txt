@@ -5,6 +5,9 @@ project (libmongocxx)
 include(ExternalProject)
 include(GenerateExportHeader)
 
+# Ensure that RPATH is used on OSX
+set(CMAKE_MACOSX_RPATH 1)
+
 set(WRAPPED_ABI_VERSION 1.0)
 
 find_package(PkgConfig)
