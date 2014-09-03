@@ -19,18 +19,14 @@ namespace driver {
 namespace model {
 
 update_many::update_many(bson::document::view criteria, bson::document::view update)
-    : _criteria(std::move(criteria))
-    , _update(std::move(update))
-{}
+    : _criteria(std::move(criteria)), _update(std::move(update)) {}
 
 update_many& update_many::upsert(bool upsert) {
     _upsert = upsert;
     return *this;
 }
 
-optional<bool> update_many::upsert() const {
-    return _upsert;
-}
+optional<bool> update_many::upsert() const { return _upsert; }
 
 }  // namespace model
 }  // namespace driver

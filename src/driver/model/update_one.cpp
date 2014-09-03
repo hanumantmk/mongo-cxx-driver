@@ -19,18 +19,14 @@ namespace driver {
 namespace model {
 
 update_one::update_one(bson::document::view criteria, bson::document::view update)
-    : _criteria(std::move(criteria))
-    , _update(std::move(update))
-{}
+    : _criteria(std::move(criteria)), _update(std::move(update)) {}
 
 update_one& update_one::upsert(bool upsert) {
     _upsert = upsert;
     return *this;
 }
 
-optional<bool> update_one::upsert() const {
-    return _upsert;
-}
+optional<bool> update_one::upsert() const { return _upsert; }
 
 }  // namespace model
 }  // namespace driver

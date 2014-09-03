@@ -69,13 +69,23 @@ cursor collection::find(const model::find& model) const {
 
 cursor collection::aggregate(const model::aggregate& /* model */) const { return cursor(nullptr); }
 
-result::write collection::replace_one(const model::replace_one& /* model */) { return result::write(); }
+result::write collection::replace_one(const model::replace_one& /* model */) {
+    return result::write();
+}
 
-result::write collection::update_many(const model::update_many& /* model */) { return result::write(); }
-result::write collection::remove_many(const model::remove_many& /* model */) { return result::write(); }
+result::write collection::update_many(const model::update_many& /* model */) {
+    return result::write();
+}
+result::write collection::remove_many(const model::remove_many& /* model */) {
+    return result::write();
+}
 
-result::write collection::update_one(const model::update_one& /* model */) { return result::write(); }
-result::write collection::remove_one(const model::remove_one& /* model */) { return result::write(); }
+result::write collection::update_one(const model::update_one& /* model */) {
+    return result::write();
+}
+result::write collection::remove_one(const model::remove_one& /* model */) {
+    return result::write();
+}
 
 bson::document::value collection::find_one_and_replace(
     const model::find_one_and_replace& /* model */) {

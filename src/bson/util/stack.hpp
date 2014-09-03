@@ -23,7 +23,7 @@
 namespace bson {
 namespace util {
 
-template<typename T, size_t size>
+template<typename T, std::size_t size>
 class stack
 {
 public:
@@ -39,7 +39,7 @@ public:
       }
 
       while (! _buckets.empty()) {
-         delete(_buckets.back());
+         operator delete(_buckets.back());
          _buckets.pop_back();
       }
    }
@@ -69,6 +69,14 @@ public:
    void pop_back()
    {
       _dec();
+   }
+
+   void unsafe_reset() {
+       _bucket_index = 0;
+       if (! _buckets.empty()) {
+           _bucket_iter = _buckets.begin();
+       }
+       _is_empty = true;
    }
 
 private:

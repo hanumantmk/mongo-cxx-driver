@@ -463,7 +463,8 @@ TEST_CASE("builder appends concat", "[bson::builder]") {
 
         builder child_builder;
 
-        child_builder << "hello" << "world";
+        child_builder << "hello"
+                      << "world";
 
         b << "foo" << open_doc << concat{child_builder.view()} << close_doc;
 
@@ -477,7 +478,8 @@ TEST_CASE("builder appends concat", "[bson::builder]") {
 
         builder child_builder;
 
-        child_builder << "0" << "baz";
+        child_builder << "0"
+                      << "baz";
 
         b << "foo" << open_array << "bar" << concat{child_builder.view()} << close_array;
 

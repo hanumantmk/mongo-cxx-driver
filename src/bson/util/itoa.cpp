@@ -1060,6 +1060,12 @@ itoa& itoa::operator=(const itoa& rhs) {
     return *this;
 }
 
+itoa& itoa::operator=(uint32_t i) {
+    val = i;
+    init();
+    return *this;
+}
+
 const char* itoa::c_str() const { return _str; }
 
 std::size_t itoa::length() const { return _len; }

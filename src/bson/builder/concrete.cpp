@@ -21,31 +21,30 @@
 #include "bson/types.hpp"
 
 #include <cstring>
+#include <deque>
 #include <vector>
 
 namespace bson {
 
 class builder::impl {
    public:
-    impl() { reinit(); }
+    impl() : has_user_key(false) { bson_init(&_root); }
 
     ~impl() {
-        _stack.~stack();
-        if (_writer) {
-            bson_writer_destroy(_writer);
-        }
-        if (_buf_ptr) {
-            bson_free(_buf_ptr);
-        }
-    }
-
-    void clear() {
         while (!_stack.empty()) {
             _stack.pop_back();
         }
 
-        bson_writer_rollback(_writer);
-        bson_writer_begin(_writer, &_root);
+        bson_destroy(&_root);
+    }
+
+    void reinit() {
+        while (!_stack.empty()) {
+            _stack.pop_back();
+        }
+
+        bson_reinit(&_root);
+
         has_user_key = false;
     }
 
@@ -54,45 +53,27 @@ class builder::impl {
             _stack.pop_back();
         }
 
-        auto rval = document::value{_buf_ptr, _buf_len};
+        uint32_t buf_len;
+        uint8_t* buf_ptr = bson_destroy_with_steal(&_root, true, &buf_len);
+        bson_init(&_root);
 
-        _buf_ptr = nullptr;
-        bson_writer_destroy(_writer);
-        _writer = nullptr;
-
-        return rval;
-    }
-
-    void reinit() {
-        has_user_key = false;
-        _buf_ptr = reinterpret_cast<uint8_t*>(bson_malloc(256));
-        _buf_len = 256,
-        _writer = bson_writer_new(&_buf_ptr, &_buf_len, 0, &bson_realloc_ctx, nullptr);
-        bson_writer_begin(_writer, &_root);
+        return document::value{buf_ptr, buf_len};
     }
 
     bson_t* back() {
         if (_stack.empty()) {
-            return _root;
+            return &_root;
         } else {
             return &_stack.back().bson;
         }
     }
 
     void push_back_document(const char* key, std::size_t len) {
-        if (_stack.empty()) {
-            _stack.emplace_back(_root, key, len, false);
-        } else {
-            _stack.emplace_back(back(), key, len, false);
-        }
+        _stack.emplace_back(back(), key, len, false);
     }
 
     void push_back_array(const char* key, std::size_t len) {
-        if (_stack.empty()) {
-            _stack.emplace_back(_root, key, len, true);
-        } else {
-            _stack.emplace_back(back(), key, len, true);
-        }
+        _stack.emplace_back(back(), key, len, true);
     }
 
     void pop_back() { _stack.pop_back(); }
@@ -115,14 +96,9 @@ class builder::impl {
         has_user_key = true;
     }
 
-    bson_t* root() { return _root; }
-    bool is_array() {
-        if (_stack.empty()) {
-            return false;
-        } else {
-            return _stack.back().is_array;
-        }
-    }
+    bson_t* root() { return &_root; }
+
+    bool is_array() { return _stack.empty() ? false : _stack.back().is_array; }
 
    private:
     struct frame {
@@ -151,12 +127,7 @@ class builder::impl {
 
     util::stack<frame, 4> _stack;
 
-    uint8_t* _buf_ptr;
-    std::size_t _buf_len;
-
-    bson_writer_t* _writer;
-
-    bson_t* _root;
+    bson_t _root;
 
     util::itoa itoa_key;
     string_or_literal user_key;
@@ -190,127 +161,111 @@ builder& builder::operator<<(builder_helpers::concat concat) {
     return *this;
 }
 
-builder& builder::key_append(string_or_literal key) {
+void builder::key_append(string_or_literal key) {
     if (_impl->is_array()) {
         throw(std::runtime_error("in subarray"));
     }
     _impl->push_key(std::move(key));
-
-    return *this;
 }
 
-builder& builder::value_append(const types::b_double& value) {
+void builder::value_append(const types::b_double& value) {
     const string_or_literal& key = _impl->next_key();
 
     bson_append_double(_impl->back(), key.c_str(), key.length(), value.value);
-    return *this;
 }
 
-builder& builder::value_append(const types::b_utf8& value) {
+void builder::value_append(const types::b_utf8& value) {
     const string_or_literal& key = _impl->next_key();
 
     bson_append_utf8(_impl->back(), key.c_str(), key.length(), value.value.c_str(),
                      value.value.length());
-    return *this;
 }
 
-builder& builder::value_append(const types::b_document& value) {
+void builder::value_append(const types::b_document& value) {
     const string_or_literal& key = _impl->next_key();
     bson_t bson;
     bson_init_static(&bson, value.value.get_buf(), value.value.get_len());
 
     bson_append_document(_impl->back(), key.c_str(), key.length(), &bson);
-    return *this;
 }
 
-builder& builder::value_append(const types::b_array& value) {
+void builder::value_append(const types::b_array& value) {
     const string_or_literal& key = _impl->next_key();
     bson_t bson;
     bson_init_static(&bson, value.value.get_buf(), value.value.get_len());
 
     bson_append_array(_impl->back(), key.c_str(), key.length(), &bson);
-    return *this;
 }
 
-builder& builder::value_append(const types::b_binary& value) {
+void builder::value_append(const types::b_binary& value) {
     const string_or_literal& key = _impl->next_key();
 
     bson_append_binary(_impl->back(), key.c_str(), key.length(),
                        static_cast<bson_subtype_t>(value.sub_type), value.bytes, value.size);
-    return *this;
 }
 
-builder& builder::value_append(const types::b_undefined&) {
+void builder::value_append(const types::b_undefined&) {
     const string_or_literal& key = _impl->next_key();
 
     bson_append_undefined(_impl->back(), key.c_str(), key.length());
-    return *this;
 }
 
-builder& builder::value_append(const types::b_oid& value) {
+void builder::value_append(const types::b_oid& value) {
     const string_or_literal& key = _impl->next_key();
     bson_oid_t oid;
     std::memcpy(&oid.bytes, value.value.bytes(), sizeof(oid.bytes));
 
     bson_append_oid(_impl->back(), key.c_str(), key.length(), &oid);
-    return *this;
 }
 
-builder& builder::value_append(const types::b_bool& value) {
+void builder::value_append(const types::b_bool& value) {
     const string_or_literal& key = _impl->next_key();
 
     bson_append_bool(_impl->back(), key.c_str(), key.length(), value.value);
-    return *this;
 }
 
-builder& builder::value_append(const types::b_date& value) {
+void builder::value_append(const types::b_date& value) {
     const string_or_literal& key = _impl->next_key();
 
     bson_append_date_time(_impl->back(), key.c_str(), key.length(), value.value);
-    return *this;
 }
 
-builder& builder::value_append(const types::b_null&) {
+void builder::value_append(const types::b_null&) {
     const string_or_literal& key = _impl->next_key();
 
     bson_append_null(_impl->back(), key.c_str(), key.length());
-    return *this;
 }
 
-builder& builder::value_append(const types::b_regex& value) {
+void builder::value_append(const types::b_regex& value) {
     const string_or_literal& key = _impl->next_key();
 
     bson_append_regex(_impl->back(), key.c_str(), key.length(), value.regex.c_str(),
                       value.options.c_str());
-    return *this;
 }
 
-builder& builder::value_append(const types::b_dbpointer& value) {
+void builder::value_append(const types::b_dbpointer& value) {
     const string_or_literal& key = _impl->next_key();
 
     bson_oid_t oid;
     std::memcpy(&oid.bytes, value.value.bytes(), sizeof(oid.bytes));
 
     bson_append_dbpointer(_impl->back(), key.c_str(), key.length(), value.collection.c_str(), &oid);
-    return *this;
 }
 
-builder& builder::value_append(const types::b_code& value) {
+void builder::value_append(const types::b_code& value) {
     const string_or_literal& key = _impl->next_key();
 
     bson_append_code(_impl->back(), key.c_str(), key.length(), value.code.c_str());
-    return *this;
 }
 
-builder& builder::value_append(const types::b_symbol& value) {
+void builder::value_append(const types::b_symbol& value) {
     const string_or_literal& key = _impl->next_key();
 
     bson_append_symbol(_impl->back(), key.c_str(), key.length(), value.symbol.c_str(),
                        value.symbol.length());
-    return *this;
 }
 
-builder& builder::value_append(const types::b_codewscope& value) {
+void builder::value_append(const types::b_codewscope& value) {
     const string_or_literal& key = _impl->next_key();
 
     bson_t bson;
@@ -318,86 +273,76 @@ builder& builder::value_append(const types::b_codewscope& value) {
 
     bson_append_code_with_scope(_impl->back(), key.c_str(), key.length(), value.code.c_str(),
                                 &bson);
-    return *this;
 }
 
-builder& builder::value_append(const types::b_int32& value) {
+void builder::value_append(const types::b_int32& value) {
     const string_or_literal& key = _impl->next_key();
 
     bson_append_int32(_impl->back(), key.c_str(), key.length(), value.value);
-    return *this;
 }
 
-builder& builder::value_append(const types::b_timestamp& value) {
+void builder::value_append(const types::b_timestamp& value) {
     const string_or_literal& key = _impl->next_key();
 
     bson_append_timestamp(_impl->back(), key.c_str(), key.length(), value.increment,
                           value.timestamp);
-    return *this;
 }
 
-builder& builder::value_append(const types::b_int64& value) {
+void builder::value_append(const types::b_int64& value) {
     const string_or_literal& key = _impl->next_key();
 
     bson_append_int64(_impl->back(), key.c_str(), key.length(), value.value);
-    return *this;
 }
 
-builder& builder::value_append(const types::b_minkey&) {
+void builder::value_append(const types::b_minkey&) {
     const string_or_literal& key = _impl->next_key();
 
     bson_append_minkey(_impl->back(), key.c_str(), key.length());
-    return *this;
 }
 
-builder& builder::value_append(const types::b_maxkey&) {
+void builder::value_append(const types::b_maxkey&) {
     const string_or_literal& key = _impl->next_key();
 
     bson_append_maxkey(_impl->back(), key.c_str(), key.length());
-    return *this;
 }
 
-builder& builder::value_append(double value) {
-    return value_append(types::b_double{value});
+void builder::value_append(double value) {
+    value_append(types::b_double{value});
 }
 
-builder& builder::value_append(string_or_literal value) {
-    return value_append(types::b_utf8{std::move(value)});
+void builder::value_append(string_or_literal value) {
+    value_append(types::b_utf8{std::move(value)});
 }
 
-builder& builder::value_append(std::int32_t value) {
-    return value_append(types::b_int32{value});
+void builder::value_append(std::int32_t value) {
+    value_append(types::b_int32{value});
 }
 
-builder& builder::value_append(const oid& value) {
-    return value_append(types::b_oid{value});
+void builder::value_append(const oid& value) {
+    value_append(types::b_oid{value});
 }
 
-builder& builder::value_append(std::int64_t value) {
-    return value_append(types::b_int64{value});
+void builder::value_append(std::int64_t value) {
+    value_append(types::b_int64{value});
 }
 
-builder& builder::value_append(bool value) {
-    return value_append(types::b_bool{value});
+void builder::value_append(bool value) {
+    value_append(types::b_bool{value});
 }
 
-builder& builder::open_doc_append() {
+void builder::open_doc_append() {
     const string_or_literal& key = _impl->next_key();
 
     _impl->push_back_document(key.c_str(), key.length());
-
-    return *this;
 }
 
-builder& builder::open_array_append() {
+void builder::open_array_append() {
     const string_or_literal& key = _impl->next_key();
 
     _impl->push_back_array(key.c_str(), key.length());
-
-    return *this;
 }
 
-builder& builder::concat_append(const document::view& view) {
+void builder::concat_append(const document::view& view) {
     bson_t other;
     bson_init_static(&other, view.get_buf(), view.get_len());
 
@@ -414,11 +359,9 @@ builder& builder::concat_append(const document::view& view) {
     } else {
         bson_concat(_impl->back(), &other);
     }
-
-    return *this;
 }
 
-builder& builder::value_append(const element& value) {
+void builder::value_append(const element& value) {
     const string_or_literal& key = _impl->next_key();
 
     bson_iter_t iter;
@@ -428,30 +371,24 @@ builder& builder::value_append(const element& value) {
     bson_iter_next(&iter);
 
     bson_append_iter(_impl->back(), key.c_str(), key.length(), &iter);
-
-    return *this;
 }
 
-builder& builder::close_doc_append() {
+void builder::close_doc_append() {
     if (_impl->is_array()) {
         // TODO handle insufficient stack
         throw(std::runtime_error("in subdocument or insufficient stack"));
     }
 
     _impl->pop_back();
-
-    return *this;
 }
 
-builder& builder::close_array_append() {
+void builder::close_array_append() {
     if (!_impl->is_array()) {
         // TODO handle stack
         throw(std::runtime_error("in subdocument or insufficient stack"));
     }
 
     _impl->pop_back();
-
-    return *this;
 }
 
 document::view builder::view() const {
@@ -462,6 +399,6 @@ document::value builder::extract() {
     return document::view(bson_get_data(_impl->root()), _impl->root()->len);
 }
 
-void builder::clear() { _impl->clear(); }
+void builder::clear() { _impl->reinit(); }
 
 }  // namespace bson

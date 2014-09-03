@@ -60,50 +60,49 @@ class LIBMONGOCXX_EXPORT builder {
 
     operator key_ctx<closed_ctx>();
 
-    builder& key_append(string_or_literal key);
+    void key_append(string_or_literal key);
 
-    builder& open_doc_append();
-    builder& open_array_append();
-    builder& close_doc_append();
-    builder& close_array_append();
-    builder& concat_append(const document::view& view);
+    void open_doc_append();
+    void open_array_append();
+    void close_doc_append();
+    void close_array_append();
+    void concat_append(const document::view& view);
 
-    builder& value_append(const types::b_double& value);
-    builder& value_append(const types::b_utf8& value);
-    builder& value_append(const types::b_document& value);
-    builder& value_append(const types::b_array& value);
-    builder& value_append(const types::b_binary& value);
-    builder& value_append(const types::b_undefined& value);
-    builder& value_append(const types::b_oid& value);
-    builder& value_append(const types::b_bool& value);
-    builder& value_append(const types::b_date& value);
-    builder& value_append(const types::b_null& value);
-    builder& value_append(const types::b_regex& value);
-    builder& value_append(const types::b_dbpointer& value);
-    builder& value_append(const types::b_code& value);
-    builder& value_append(const types::b_symbol& value);
-    builder& value_append(const types::b_codewscope& value);
-    builder& value_append(const types::b_int32& value);
-    builder& value_append(const types::b_timestamp& value);
-    builder& value_append(const types::b_int64& value);
-    builder& value_append(const types::b_minkey& value);
-    builder& value_append(const types::b_maxkey& value);
+    void value_append(const types::b_double& value);
+    void value_append(const types::b_utf8& value);
+    void value_append(const types::b_document& value);
+    void value_append(const types::b_array& value);
+    void value_append(const types::b_binary& value);
+    void value_append(const types::b_undefined& value);
+    void value_append(const types::b_oid& value);
+    void value_append(const types::b_bool& value);
+    void value_append(const types::b_date& value);
+    void value_append(const types::b_null& value);
+    void value_append(const types::b_regex& value);
+    void value_append(const types::b_dbpointer& value);
+    void value_append(const types::b_code& value);
+    void value_append(const types::b_symbol& value);
+    void value_append(const types::b_codewscope& value);
+    void value_append(const types::b_int32& value);
+    void value_append(const types::b_timestamp& value);
+    void value_append(const types::b_int64& value);
+    void value_append(const types::b_minkey& value);
+    void value_append(const types::b_maxkey& value);
 
-    builder& value_append(const element& value);
+    void value_append(const element& value);
 
-    builder& value_append(string_or_literal value);
+    void value_append(string_or_literal value);
 
     template <std::size_t n>
-    builder& value_append(const char (&v)[n]) {
-        return value_append(string_or_literal{v, n - 1});
+    void value_append(const char (&v)[n]) {
+        value_append(string_or_literal{v, n - 1});
     }
 
-    builder& value_append(bool value);
-    builder& value_append(double value);
-    builder& value_append(std::int32_t value);
-    builder& value_append(std::int64_t value);
-    builder& value_append(const oid& value);
-
+    void value_append(bool value);
+    void value_append(double value);
+    void value_append(std::int32_t value);
+    void value_append(std::int64_t value);
+    void value_append(const oid& value);
 
     document::view view() const;
     document::value extract();

@@ -30,6 +30,7 @@ class itoa {
     itoa(uint32_t i);
     itoa(const itoa& rhs);
     itoa& operator=(const itoa& rhs);
+    itoa& operator=(uint32_t i);
 
     const char* c_str() const;
     std::size_t length() const;
