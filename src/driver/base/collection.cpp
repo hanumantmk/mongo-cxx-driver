@@ -170,7 +170,8 @@ cursor collection::find(const model::find& model) const {
 cursor collection::aggregate(const model::aggregate& /* model */) { return cursor(nullptr); }
 
 result::insert_one collection::insert_one(const model::insert_one& model) {
-    model.document();
+    result::bulk_write res(bulk_write(model::bulk_write(false).append(model::write{model})));
+
     result::insert_one result;
     result.is_acknowledged = true;
     return result;
