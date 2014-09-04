@@ -27,6 +27,9 @@ static void mongoc_client_dtor(void* client_ptr) noexcept {
 }
 }  // namespace
 
+client::client()
+    : _client(mongoc_client_new("localhost:27017"), mongoc_client_dtor) {}
+
 client::client(const std::string& mongodb_uri)
     : _client(mongoc_client_new(mongodb_uri.c_str()), mongoc_client_dtor) {}
 

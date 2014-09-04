@@ -16,7 +16,7 @@
 
 #include "driver/config/prelude.hpp"
 
-#include "bson/document.hpp"
+#include "bson/types.hpp"
 
 namespace mongo {
 namespace driver {
@@ -25,7 +25,7 @@ namespace result {
 struct LIBMONGOCXX_EXPORT insert_one {
     bool is_acknowledged;
     bson::element inserted_id;
-}
+};
 
 }  // namespace result
 }  // namespace driver

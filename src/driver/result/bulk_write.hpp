@@ -36,7 +36,7 @@ struct LIBMONGOCXX_EXPORT bulk_write {
 
     std::map<std::size_t, bson::element> inserted_ids;
     std::map<std::size_t, bson::element> upserted_ids;
-}
+};
 
 }  // namespace result
 }  // namespace driver

@@ -16,9 +16,9 @@
 
 #include "driver/config/prelude.hpp"
 
-#include "bson/document.hpp"
-
 #include <cstdint>
+
+#include "bson/types.hpp"
 
 namespace mongo {
 namespace driver {

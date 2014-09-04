@@ -17,5 +17,6 @@ add_executable(new_tests
     bson_builder.cpp
     bson_util_itoa.cpp
     bson_string_or_literal.cpp
+    collection.cpp
 )
 target_link_libraries(new_tests mongocxx-static)

@@ -53,10 +53,12 @@ class explain;
 }  // namespace model
 
 namespace result {
-class write;
-class explain;
-class distinct;
-class bulk_write;
+struct bulk_write;
+struct insert_one;
+struct insert_many;
+struct replace_one;
+struct update;
+struct remove;
 }  // namespace result
 
 namespace fluent {
@@ -72,13 +74,13 @@ class LIBMONGOCXX_EXPORT collection {
     cursor find(const model::find& model) const;
     cursor aggregate(const model::aggregate& model) const;
 
-    result::write insert_one(const model::insert_one& model);
-    result::write insert_many(const model::insert_many& model);
-    result::write replace_one(const model::replace_one& model);
-    result::write update_one(const model::update_one& model);
-    result::write update_many(const model::update_many& model);
-    result::write remove_one(const model::remove_one& model);
-    result::write remove_many(const model::remove_many& model);
+    result::insert_one insert_one(const model::insert_one& model);
+    result::insert_many insert_many(const model::insert_many& model);
+    result::replace_one replace_one(const model::replace_one& model);
+    result::update update_one(const model::update_one& model);
+    result::update update_many(const model::update_many& model);
+    result::remove remove_one(const model::remove_one& model);
+    result::remove remove_many(const model::remove_many& model);
 
     result::bulk_write bulkwrite(const model::bulk_write);
 
@@ -87,7 +89,7 @@ class LIBMONGOCXX_EXPORT collection {
     bson::document::value find_one_and_remove(const model::find_one_and_remove& model);
 
     bson::document::value explain(const model::explain& model) const;
-    result::distinct distinct(const model::distinct& model) const;
+    bson::document::value distinct(const model::distinct& model) const;
 
     std::int64_t count(const model::count& model) const;
 

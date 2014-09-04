@@ -16,16 +16,16 @@
 
 #include "driver/config/prelude.hpp"
 
-#include "bson/document.hpp"
+#include <cstdint>
 
 namespace mongo {
 namespace driver {
 namespace result {
 
-struct LIBMONGOCXX_EXPORT insert_one {
+struct LIBMONGOCXX_EXPORT remove {
     bool is_acknowledged;
-    bson::element inserted_id;
-}
+    std::int64_t removed_count;
+};
 
 }  // namespace result
 }  // namespace driver

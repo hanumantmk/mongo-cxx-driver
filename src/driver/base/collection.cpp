@@ -23,7 +23,13 @@
 #include "driver/model/insert_one.hpp"
 #include "driver/model/update_one.hpp"
 #include "driver/private/cast.hpp"
-#include "driver/result/write.hpp"
+#include "driver/result/bulk_write.hpp"
+#include "driver/result/insert_many.hpp"
+#include "driver/result/insert_one.hpp"
+#include "driver/result/remove.hpp"
+#include "driver/result/remove.hpp"
+#include "driver/result/replace_one.hpp"
+#include "driver/result/update.hpp"
 #include "driver/request/insert.hpp"
 #include "driver/util/libbson.hpp"
 
@@ -68,22 +74,30 @@ cursor collection::find(const model::find& model) const {
 
 cursor collection::aggregate(const model::aggregate& /* model */) const { return cursor(nullptr); }
 
-result::write collection::replace_one(const model::replace_one& /* model */) {
-    return result::write();
+result::insert_one collection::insert_one(const model::insert_one& model) {
+    model.document();
+    result::insert_one result;
+    result.is_acknowledged = true;
+    return result;
 }
 
-result::write collection::update_many(const model::update_many& /* model */) {
-    return result::write();
-}
-result::write collection::remove_many(const model::remove_many& /* model */) {
-    return result::write();
+result::replace_one collection::replace_one(const model::replace_one& /* model */) {
+    return result::replace_one();
 }
 
-result::write collection::update_one(const model::update_one& /* model */) {
-    return result::write();
+result::update collection::update_many(const model::update_many& /* model */) {
+    return result::update();
 }
-result::write collection::remove_one(const model::remove_one& /* model */) {
-    return result::write();
+result::remove collection::remove_many(const model::remove_many& /* model */) {
+    return result::remove();
+}
+
+result::update collection::update_one(const model::update_one& /* model */) {
+    return result::update();
+}
+
+result::remove collection::remove_one(const model::remove_one& /* model */) {
+    return result::remove();
 }
 
 bson::document::value collection::find_one_and_replace(
