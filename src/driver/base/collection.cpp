@@ -36,6 +36,8 @@
 #include "driver/result/bulk_write.hpp"
 #include "driver/request/insert.hpp"
 #include "driver/util/libbson.hpp"
+#include "driver/model/bulk_write.hpp"
+#include "driver/model/write.hpp"
 
 namespace mongo {
 namespace driver {
@@ -54,9 +56,92 @@ collection::collection(const database& database, const std::string& collection_n
                   mongoc_collection_dtor) {}
 
 result::bulk_write collection::bulk_write(const model::bulk_write& model) {
-    
-}
+    using namespace model;
 
+    mongoc_bulk_operation_t* b = mongoc_collection_create_bulk_operation(util::cast<mongoc_collection_t>(_collection), model.ordered(), NULL);
+
+    result::bulk_write rval;
+
+    std::size_t index = 0;
+
+    for (auto&& operation : model.operations()) {
+        switch (operation.type()) {
+            case write_type::kInsertOne: {
+                scoped_bson_t doc(operation.get_insert_one().document());
+
+                mongoc_bulk_operation_insert(b, doc.bson());
+                break;
+            }
+            case write_type::kInsertMany: {
+                for (auto&& x : operation.get_insert_many().document()) {
+                    scoped_bson_t doc(x);
+
+                    mongoc_bulk_operation_insert(b, doc.bson());
+                }
+                break;
+            }
+            case write_type::kUpdateOne: {
+                scoped_bson_t criteria(operation.get_update_one().criteria());
+                scoped_bson_t update(operation.get_update_one().update());
+                bool upsert = operation.get_update_one().upsert().value_or(false);
+
+                mongoc_bulk_operation_update_one(b, criteria.bson(), update.bson(), upsert);
+                break;
+            }
+            case write_type::kUpdateMany: {
+                scoped_bson_t criteria(operation.get_update_many().criteria());
+                scoped_bson_t update(operation.get_update_many().update());
+                bool upsert = operation.get_update_many().upsert().value_or(false);
+
+                mongoc_bulk_operation_update(b, criteria.bson(), update.bson(), upsert);
+                break;
+            }
+            case write_type::kRemoveOne: {
+                scoped_bson_t criteria(operation.get_remove_one().criteria());
+
+                mongoc_bulk_operation_remove_one(b, criteria.bson());
+
+                break;
+            }
+            case write_type::kRemoveMany: {
+                scoped_bson_t criteria(operation.get_remove_many().criteria());
+
+                mongoc_bulk_operation_remove(b, criteria.bson());
+
+                break;
+            }
+            case write_type::kReplaceOne: {
+                scoped_bson_t criteria(operation.get_replace_one().criteria());
+                scoped_bson_t replace(operation.get_replace_one().replacement());
+                bool upsert = operation.get_replace_one().upsert().value_or(false);
+
+                mongoc_bulk_operation_replace_one(b, criteria.bson(), replace.bson(), upsert);
+                break;
+            }
+            case write_type::kUninitialized: break; // TODO: something exceptiony
+        }
+
+        index++;
+    }
+
+    bson_t reply;
+    bson_error_t error;
+
+    if (! mongoc_bulk_operation_execute(b, &reply, &error)) {
+        throw std::runtime_error(error.message);
+    }
+
+    bson::document::view reply_view{bson_get_data(&reply), reply.len};
+
+    rval.is_acknowledged = true;
+    rval.inserted_count = reply_view["nInserted"].get_int32();
+    rval.matched_count = reply_view["nMatched"].get_int32();
+    rval.modified_count = reply_view["nModified"].get_int32();
+    rval.removed_count = reply_view["nRemoved"].get_int32();
+    rval.upserted_count = reply_view["nUpserted"].get_int32();
+
+    return rval;
+}
 
 cursor collection::find(const model::find& model) const {
     using namespace bson;

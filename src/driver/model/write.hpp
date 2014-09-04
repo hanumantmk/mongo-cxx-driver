@@ -60,6 +60,16 @@ public:
 
     ~write();
 
+    write_type type() const;
+
+    const insert_one& get_insert_one() const;
+    const insert_many& get_insert_many() const;
+    const update_one& get_update_one() const;
+    const update_many& get_update_many() const;
+    const remove_one& get_remove_one() const;
+    const remove_many& get_remove_many() const;
+    const replace_one& get_replace_one() const;
+
 private:
     void destroy_member();
 

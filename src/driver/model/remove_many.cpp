@@ -12,35 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "driver/model/bulk_write.hpp"
-
-#include "mongoc.h"
-#include "driver/private/cast.hpp"
-#include "driver/util/libbson.hpp"
+#include "driver/model/remove_many.hpp"
 
 namespace mongo {
 namespace driver {
 namespace model {
 
-using namespace bson::libbson;
+remove_many::remove_many(const bson::document::view& criteria) : _criteria(criteria) {}
 
-bulk_write::bulk_write(bool ordered) :
-    _ordered(ordered) {}
-
-bulk_write& bulk_write::append(write operation) {
-    _operations.emplace_back(std::move(operation));
-
-    return *this;
+const bson::document::view& remove_many::criteria() const {
+    return _criteria;
 }
-
-bool bulk_write::ordered() const {
-    return _ordered;
-}
-
-const std::vector<write> & bulk_write::operations() const {
-    return _operations;
-}
-
 
 }  // namespace model
 }  // namespace driver

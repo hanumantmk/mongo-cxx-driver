@@ -19,18 +19,16 @@
 #include "driver/config/prelude.hpp"
 
 #include "bson/document.hpp"
-#include "driver/model/write.hpp"
 
 namespace mongo {
 namespace driver {
 namespace model {
 
-//TODO: make generic template class for iterable vs vector
-class LIBMONGOCXX_EXPORT insert_many : public write<insert_many> {
+class LIBMONGOCXX_EXPORT insert_many {
 
    public:
     insert_many(std::vector<bson::document::view> document);
-    std::vector<bson::document::view> document() const;
+    const std::vector<bson::document::view>& document() const;
 
    private:
     std::vector<bson::document::view> _document;

@@ -20,14 +20,15 @@
 
 #include "driver/model/write.hpp"
 #include "driver/util/optional.hpp"
-#include "driver/util/unique_ptr_void.hpp"
 
 namespace mongo {
 namespace driver {
+class collection;
+
 namespace model {
 
 class LIBMONGOCXX_EXPORT bulk_write {
-    friend class collection;
+    friend class mongo::driver::collection;
 
 public:
     bulk_write(bool ordered);
@@ -37,14 +38,19 @@ public:
         for (auto&& x : container) {
             append(x);
         }
+
+        return *this;
     }
 
-    bulk_write& append(const write& operation);
+    bulk_write& append(write operation);
 
     bool ordered() const;
 
+    const std::vector<write>& operations() const;
+
 private:
-    util::unique_ptr_void _impl;
+    bool _ordered;
+    std::vector<write> _operations;
 };
 
 }  // namespace model

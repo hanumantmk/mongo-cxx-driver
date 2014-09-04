@@ -17,17 +17,18 @@
 #include "driver/config/prelude.hpp"
 
 #include "bson/document.hpp"
-#include "driver/model/write.hpp"
 #include "driver/util/optional.hpp"
 
 namespace mongo {
 namespace driver {
 namespace model {
 
-class LIBMONGOCXX_EXPORT remove_many : write<remove_many> {
+class LIBMONGOCXX_EXPORT remove_many {
 
    public:
     remove_many(const bson::document::view& criteria);
+
+    const bson::document::view& criteria() const;
 
    private:
     bson::document::view _criteria;

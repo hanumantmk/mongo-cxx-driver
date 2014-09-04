@@ -18,13 +18,13 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-write::write(insert_one value) : _type(write_type::kInsertOne), _insert_one(value) {}
-write::write(insert_many value) : _type(write_type::kInsertMany), _insert_many(value) {}
-write::write(remove_one value) : _type(write_type::kRemoveOne), _remove_one(value) {}
-write::write(remove_many value) : _type(write_type::kRemoveMany), _remove_many(value) {}
-write::write(update_one value) : _type(write_type::kUpdateOne), _update_one(value) {}
-write::write(update_many value) : _type(write_type::kUpdateMany), _update_many(value) {}
-write::write(replace_one value) : _type(write_type::kReplaceOne), _replace_one(value) {}
+write::write(insert_one value) : _type(write_type::kInsertOne), _insert_one(std::move(value)) {}
+write::write(insert_many value) : _type(write_type::kInsertMany), _insert_many(std::move(value)) {}
+write::write(remove_one value) : _type(write_type::kRemoveOne), _remove_one(std::move(value)) {}
+write::write(remove_many value) : _type(write_type::kRemoveMany), _remove_many(std::move(value)) {}
+write::write(update_one value) : _type(write_type::kUpdateOne), _update_one(std::move(value)) {}
+write::write(update_many value) : _type(write_type::kUpdateMany), _update_many(std::move(value)) {}
+write::write(replace_one value) : _type(write_type::kReplaceOne), _replace_one(std::move(value)) {}
 
 write::write(write&& rhs) : _type(write_type::kUninitialized) {
     *this = std::move(rhs);
@@ -63,6 +63,16 @@ write& write::operator=(write&& rhs) {
 
     return *this;
 }
+
+write_type write::type() const { return _type; }
+
+const insert_one& write::get_insert_one() const { return _insert_one; }
+const insert_many& write::get_insert_many() const { return _insert_many; }
+const update_one& write::get_update_one() const { return _update_one; }
+const update_many& write::get_update_many() const { return _update_many; }
+const remove_one& write::get_remove_one() const { return _remove_one; }
+const remove_many& write::get_remove_many() const { return _remove_many; }
+const replace_one& write::get_replace_one() const { return _replace_one; }
 
 write::~write() {
     destroy_member();

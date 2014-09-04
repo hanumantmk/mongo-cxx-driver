@@ -24,6 +24,7 @@
 #include <cstdint>
 #include <iterator>
 #include <type_traits>
+#include <memory>
 
 #include "bson/string_or_literal.hpp"
 #include "bson/builder/helpers.hpp"
@@ -159,21 +160,18 @@ class LIBMONGOCXX_EXPORT view {
     std::size_t len;
 };
 
-class LIBMONGOCXX_EXPORT value : public view {
+class LIBMONGOCXX_EXPORT value {
    public:
-    using view::iterator;
-
-    value(const std::uint8_t* b, std::size_t l, std::function<void(void*)> dtor = free);
+    value(const std::uint8_t* b, std::size_t l, void(*dtor)(void*) = free);
     value(const view& view);
-    value(value&& rhs);
-    value& operator=(value&& rhs);
-    ~value();
+
+    document::view view() const;
+    operator document::view () const;
 
    private:
-    value(const value& rhs) = delete;
-    value& operator=(const value& rhs) = delete;
+    std::unique_ptr<void, void(*)(void*)> _buf;
 
-    std::function<void(void*)> dtor;
+    std::size_t _len;
 };
 
 class LIBMONGOCXX_EXPORT view_or_value {
@@ -186,14 +184,17 @@ class LIBMONGOCXX_EXPORT view_or_value {
 
     ~view_or_value();
 
+    document::view view() const;
+    operator document::view () const;
+
    private:
     view_or_value(const bson::document::view_or_value& view) = delete;
     view_or_value& operator=(const bson::document::view_or_value& view) = delete;
 
     bool _is_view;
     union {
-        bson::document::view view;
-        bson::document::value value;
+        bson::document::view _view;
+        bson::document::value _value;
     };
 };
 }

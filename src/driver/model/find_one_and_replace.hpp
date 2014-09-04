@@ -17,14 +17,13 @@
 #include "driver/config/prelude.hpp"
 
 #include "bson/document.hpp"
-#include "driver/model/write.hpp"
 #include "driver/util/optional.hpp"
 
 namespace mongo {
 namespace driver {
 namespace model {
 
-class LIBMONGOCXX_EXPORT find_one_and_replace : public write<find_one_and_replace> {
+class LIBMONGOCXX_EXPORT find_one_and_replace {
 
    public:
     find_one_and_replace(bson::document::view criteria, bson::document::view replacement);
