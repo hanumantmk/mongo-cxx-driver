@@ -20,25 +20,31 @@
 
 #include "driver/model/write.hpp"
 #include "driver/util/optional.hpp"
+#include "driver/util/unique_ptr_void.hpp"
 
 namespace mongo {
 namespace driver {
 namespace model {
 
-// TODO: make generic template class for iterable vs vector
-class LIBMONGOCXX_EXPORT bulk_write : public write<bulk_write> {
+class LIBMONGOCXX_EXPORT bulk_write {
+    friend class collection;
+
 public:
-    bulk_write(std::vector<write> operations);
+    bulk_write(bool ordered);
 
-    bulk_write& ordered(bool ordered);
+    template <typename T>
+    bulk_write& append(const T& container) {
+        for (auto&& x : container) {
+            append(x);
+        }
+    }
 
-    std::vector<write> operations() const;
-    optional<bool> ordered() const;
+    bulk_write& append(const write& operation);
+
+    bool ordered() const;
 
 private:
-    std::vector<write> _operations;
-    optional<bool> _ordered;
-
+    util::unique_ptr_void _impl;
 };
 
 }  // namespace model

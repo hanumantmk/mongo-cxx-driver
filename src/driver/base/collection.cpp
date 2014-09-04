@@ -14,6 +14,8 @@
 
 #include <cstdint>
 
+#include "bson/builder.hpp"
+
 #include "driver/libmongoc.hpp"
 
 #include "driver/base/collection.hpp"
@@ -30,6 +32,8 @@
 #include "driver/result/remove.hpp"
 #include "driver/result/replace_one.hpp"
 #include "driver/result/update.hpp"
+#include "driver/result/write.hpp"
+#include "driver/result/bulk_write.hpp"
 #include "driver/request/insert.hpp"
 #include "driver/util/libbson.hpp"
 
@@ -49,18 +53,24 @@ collection::collection(const database& database, const std::string& collection_n
                                                  collection_name.c_str()),
                   mongoc_collection_dtor) {}
 
+result::bulk_write collection::bulk_write(const model::bulk_write& model) {
+    
+}
+
+
 cursor collection::find(const model::find& model) const {
+    using namespace bson;
+
+    builder filter_builder;
+
     scoped_bson_t filter;
     scoped_bson_t projection(model.projection());
 
     if (model.modifiers()) {
-        scoped_bson_t query(model.criteria());
-        scoped_bson_t modifiers(model.modifiers());
+        filter_builder << "$query" << types::b_document{model.criteria().value_or(document::view{})}
+                       << builder_helpers::concat{model.modifiers().value_or(document::view{})};
 
-        filter.init();
-
-        BSON_APPEND_DOCUMENT(filter.bson(), "&query", query.bson());
-        bson_concat(filter.bson(), modifiers.bson());
+        filter.init_from_static(filter_builder.view());
     } else {
         filter.init_from_static(model.criteria());
     }
@@ -72,7 +82,7 @@ cursor collection::find(const model::find& model) const {
                                          projection.bson(), nullptr));
 }
 
-cursor collection::aggregate(const model::aggregate& /* model */) const { return cursor(nullptr); }
+cursor collection::aggregate(const model::aggregate& /* model */) { return cursor(nullptr); }
 
 result::insert_one collection::insert_one(const model::insert_one& model) {
     model.document();
@@ -116,12 +126,6 @@ bson::document::value collection::find_one_and_remove(
 bson::document::value collection::explain(const model::explain& /*model*/) const {
     return bson::document::value((const std::uint8_t*)nullptr, 0);
 }
-
-#if 0
-result::distinct collection::distinct(const model::distinct& /* model */) const {
-    return result::distinct();
-}
-#endif
 
 std::int64_t collection::count(const model::count& /* model */) const { return 0; }
 

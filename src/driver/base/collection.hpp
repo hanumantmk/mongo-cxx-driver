@@ -59,6 +59,8 @@ struct insert_many;
 struct replace_one;
 struct update;
 struct remove;
+class  write;
+class  bulk_write;
 }  // namespace result
 
 namespace fluent {
@@ -72,7 +74,7 @@ class LIBMONGOCXX_EXPORT collection {
 
    public:
     cursor find(const model::find& model) const;
-    cursor aggregate(const model::aggregate& model) const;
+    cursor aggregate(const model::aggregate& model);
 
     result::insert_one insert_one(const model::insert_one& model);
     result::insert_many insert_many(const model::insert_many& model);
@@ -82,7 +84,7 @@ class LIBMONGOCXX_EXPORT collection {
     result::remove remove_one(const model::remove_one& model);
     result::remove remove_many(const model::remove_many& model);
 
-    result::bulk_write bulkwrite(const model::bulk_write);
+    result::bulk_write bulk_write(const model::bulk_write& model);
 
     bson::document::value find_one_and_replace(const model::find_one_and_replace& model);
     bson::document::value find_one_and_update(const model::find_one_and_update& model);

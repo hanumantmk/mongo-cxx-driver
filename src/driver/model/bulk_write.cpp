@@ -14,6 +14,30 @@
 
 #include "driver/model/bulk_write.hpp"
 
+#include "mongoc.h"
+#include "driver/private/cast.hpp"
+
 namespace mongo {
-namespace driver {}
+namespace driver {
+namespace model {
+
+namespace {
+static void mongoc_bulk_operation_dtor(void* bulk_operation_ptr) noexcept {
+    mongoc_bulk_operation_destroy(static_cast<mongoc_bulk_operation_t*>(bulk_operation_ptr));
 }
+}  // namespace
+
+bulk_write::bulk_write(bool ordered) :
+    _impl(mongoc_bulk_operation_new(ordered), mongoc_bulk_operation_dtor) {}
+
+
+bulk_write& bulk_write::append(const write& operation) {
+    mongoc_bulk_operation_util::cast<mongoc_bulk_operation_t>(_impl)
+}
+
+bool ordered() const;
+
+
+}  // namespace model
+}  // namespace driver
+}  // namespace mongo

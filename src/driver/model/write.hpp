@@ -18,6 +18,13 @@
 
 #include <cstdint>
 #include "driver/util/optional.hpp"
+#include "driver/model/insert_one.hpp"
+#include "driver/model/insert_many.hpp"
+#include "driver/model/remove_one.hpp"
+#include "driver/model/remove_many.hpp"
+#include "driver/model/update_one.hpp"
+#include "driver/model/update_many.hpp"
+#include "driver/model/replace_one.hpp"
 
 namespace mongo {
 namespace driver {
@@ -25,19 +32,48 @@ namespace model {
 
 class write_concern;
 
-template <class derived>
+enum class write_type {
+    kInsertOne,
+    kInsertMany,
+    kRemoveOne,
+    kRemoveMany,
+    kUpdateOne,
+    kUpdateMany,
+    kReplaceOne,
+    kUninitialized,
+};
+
 class LIBMONGOCXX_EXPORT write {
+public:
+    write(insert_one value);
+    write(insert_many value);
+    write(update_one value);
+    write(update_many value);
+    write(remove_one value);
+    write(remove_many value);
+    write(replace_one value);
 
-   public:
-    derived& write_concern(const write_concern* write_concern) {
-        _write_concern = &write_concern;
-        return *this;
-    }
+    write(write&& rhs);
+    write& operator=(write&& rhs);
+    write(const write& rhs) = delete;
+    write& operator=(const write& rhs) = delete;
 
-    optional<class write_concern*> write_concern() const { return _write_concern; }
+    ~write();
 
-   protected:
-    optional<const class write_concern*> _write_concern;
+private:
+    void destroy_member();
+
+    write_type _type;
+
+    union {
+        insert_one _insert_one;
+        insert_many _insert_many;
+        update_one _update_one;
+        update_many _update_many;
+        remove_one _remove_one;
+        remove_many _remove_many;
+        replace_one _replace_one;
+    };
 };
 
 }  // namespace model

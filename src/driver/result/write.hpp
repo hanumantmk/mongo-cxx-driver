@@ -28,23 +28,17 @@ class LIBMONGOCXX_EXPORT write {
    public:
     write(const bson::document::view& view);
     write(bson::document::value value);
-    ~write();
-    write(write&& rhs);
-    write& operator=(write&& rhs);
 
     /* TODO replace this: */
     write();
 
     friend std::ostream& operator<<(std::ostream& out, const write& doc) {
-        out << doc._value;
+        out << doc._value.view();
         return out;
     }
 
    private:
-    write(const write&) = delete;
-    write& operator=(const write&) = delete;
-
-    bson::document::value _value;
+    bson::document::view_or_value _value;
 };
 
 }  // namespace result
