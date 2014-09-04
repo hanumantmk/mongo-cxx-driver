@@ -57,7 +57,7 @@ namespace types {
             return value;
         }
     };
-    
+
     struct b_document {
         static constexpr auto type_id = type::k_document;
 
