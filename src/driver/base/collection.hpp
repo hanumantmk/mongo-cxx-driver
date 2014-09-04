@@ -60,7 +60,6 @@ struct replace_one;
 struct update;
 struct remove;
 class  write;
-class  bulk_write;
 }  // namespace result
 
 namespace fluent {
