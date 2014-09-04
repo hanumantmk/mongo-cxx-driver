@@ -42,16 +42,19 @@ element::element(const void* iter_) {
 }
 
 bool element::operator==(const element& rhs) const {
-
     return (_raw == rhs._raw && _off == rhs._off);
 }
 
 bson::type element::type() const {
+    if (_raw == NULL) { return bson::type::k_eod; }
+
     CITER;
     return static_cast<bson::type>(bson_iter_type(&iter));
 }
 
 string_or_literal element::key() const {
+    if (_raw == NULL) { return string_or_literal{""}; }
+
     CITER;
 
     const char* key = bson_iter_key(&iter);
