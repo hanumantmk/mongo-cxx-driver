@@ -21,6 +21,8 @@
 
 #include "bson/document.hpp"
 
+#include "driver/model/find.hpp"
+#include "driver/model/count.hpp"
 #include "driver/base/cursor.hpp"
 #include "driver/result/write.hpp"
 #include "driver/util/unique_ptr_void.hpp"
@@ -74,7 +76,9 @@ class LIBMONGOCXX_EXPORT collection {
     friend class database;
 
    public:
-    cursor find(const model::find& model) const;
+    cursor find(const model::find& model = model::find{}) const;
+    optional<bson::document::value> find_one(const model::find& model = model::find{}) const;
+
     cursor aggregate(const model::aggregate& model);
 
     result::insert_one insert_one(const model::insert_one& model);
@@ -94,7 +98,7 @@ class LIBMONGOCXX_EXPORT collection {
     bson::document::value explain(const model::explain& model) const;
     bson::document::value distinct(const model::distinct& model) const;
 
-    std::int64_t count(const model::count& model) const;
+    std::int64_t count(const model::count& model = model::count{}) const;
 
     void drop();
 

@@ -27,11 +27,22 @@ namespace model {
 class LIBMONGOCXX_EXPORT insert_many {
 
    public:
-    insert_many(std::vector<bson::document::view> document);
-    const std::vector<bson::document::view>& document() const;
+    template <typename T>
+    insert_many(const T& documents) : insert_many() {
+        for (auto&& x : documents) {
+            insert_one(x);
+        }
+    }
+
+    insert_many();
+
+    insert_many& insert_one(bson::document::view view);
+
+    const std::vector<bson::document::view>& documents() const;
 
    private:
-    std::vector<bson::document::view> _document;
+    std::vector<bson::document::view> _documents;
+
 };
 
 }  // namespace model

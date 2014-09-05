@@ -105,6 +105,7 @@ class LIBMONGOCXX_EXPORT builder {
     void value_append(const oid& value);
 
     document::view view() const;
+    operator document::view() const;
     document::value extract();
 
     void clear();

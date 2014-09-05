@@ -254,7 +254,10 @@ element view::operator[](const char* key) const {
 }
 
 view::view(const std::uint8_t* b, std::size_t l) : buf(b), len(l) {}
-view::view() : buf(nullptr), len(0) {}
+
+static uint8_t kDefaultView[5] = { 5, 0, 0, 0, 0 };
+
+view::view() : buf(kDefaultView), len(5) {}
 
 const std::uint8_t* view::get_buf() const { return buf; }
 std::size_t view::get_len() const { return len; }

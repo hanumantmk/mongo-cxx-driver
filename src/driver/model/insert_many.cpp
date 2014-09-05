@@ -18,10 +18,16 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-insert_many::insert_many(std::vector<bson::document::view> document) : _document(std::move(document)) {}
+insert_many::insert_many() {}
 
-const std::vector<bson::document::view>& insert_many::document() const {
-    return _document;
+insert_many& insert_many::insert_one(bson::document::view view) {
+    _documents.emplace_back(std::move(view));
+
+    return *this;
+}
+
+const std::vector<bson::document::view>& insert_many::documents() const {
+    return _documents;
 }
 
 }  // namespace model

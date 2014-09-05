@@ -108,6 +108,12 @@ cursor collection::find(const model::find& model) const {
                                          projection.bson(), nullptr));
 }
 
+optional<bson::document::value> collection::find_one(const model::find& model) const {
+    model::find copy(model);
+    copy.limit(1);
+    return bson::document::value{*find(copy).begin()};
+}
+
 cursor collection::aggregate(const model::aggregate& /* model */) { return cursor(nullptr); }
 
 result::insert_one collection::insert_one(const model::insert_one& model) {
@@ -117,6 +123,14 @@ result::insert_one collection::insert_one(const model::insert_one& model) {
     result.is_acknowledged = true;
     return result;
 }
+
+result::insert_many collection::insert_many(const model::insert_many& model) {
+    result::bulk_write res(bulk_write(model::bulk_write(false).append(model)));
+    result::insert_many result;
+    result.is_acknowledged = true;
+    return result;
+}
+
 
 result::replace_one collection::replace_one(const model::replace_one& /* model */) {
     return result::replace_one();
@@ -129,12 +143,18 @@ result::remove collection::remove_many(const model::remove_many& /* model */) {
     return result::remove();
 }
 
-result::update collection::update_one(const model::update_one& /* model */) {
-    return result::update();
+result::update collection::update_one(const model::update_one& model) {
+    result::bulk_write res(bulk_write(model::bulk_write(false).append(model)));
+    result::update result;
+    result.is_acknowledged = true;
+    return result;
 }
 
-result::remove collection::remove_one(const model::remove_one& /* model */) {
-    return result::remove();
+result::remove collection::remove_one(const model::remove_one& model) {
+    result::bulk_write res(bulk_write(model::bulk_write(false).append(model)));
+    result::remove result;
+    result.is_acknowledged = true;
+    return result;
 }
 
 bson::document::value collection::find_one_and_replace(
@@ -154,7 +174,19 @@ bson::document::value collection::explain(const model::explain& /*model*/) const
     return bson::document::value((const std::uint8_t*)nullptr, 0);
 }
 
-std::int64_t collection::count(const model::count& /* model */) const { return 0; }
+std::int64_t collection::count(const model::count& model) const {
+    scoped_bson_t criteria{model.criteria()};
+    bson_error_t error;
+    auto result = mongoc_collection_count(_impl->collection_t, static_cast<mongoc_query_flags_t>(0),
+                                          criteria.bson(), model.skip().value_or(0),
+                                          model.limit().value_or(0), nullptr, &error);
+
+    /* TODO throw an exception if error
+    if (result < 0)
+    */
+
+    return result;
+}
 
 void collection::drop() {
     bson_error_t error;

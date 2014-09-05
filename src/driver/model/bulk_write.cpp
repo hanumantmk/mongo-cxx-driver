@@ -43,7 +43,7 @@ bulk_write& bulk_write::append(write operation_t) {
             break;
         }
         case write_type::kInsertMany: {
-            for (auto&& x : operation_t.get_insert_many().document()) {
+            for (auto&& x : operation_t.get_insert_many().documents()) {
                 scoped_bson_t doc(x);
 
                 mongoc_bulk_operation_insert(_impl->operation_t, doc.bson());

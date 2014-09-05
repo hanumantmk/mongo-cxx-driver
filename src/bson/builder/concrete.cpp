@@ -395,6 +395,10 @@ document::view builder::view() const {
     return document::view(bson_get_data(_impl->root()), _impl->root()->len);
 }
 
+builder::operator document::view() const {
+    return view();
+}
+
 document::value builder::extract() {
     return document::view(bson_get_data(_impl->root()), _impl->root()->len);
 }

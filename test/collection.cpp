@@ -11,6 +11,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
     client mongodb_client;
     database db = mongodb_client["test"];
     collection coll = db["mongo-cxx-driver"];
+    coll.drop();
 
     SECTION("insert and read single document", "[collection]") {
         bson::builder b;
@@ -34,8 +35,172 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
     }
 
     SECTION("insert and read multiple documents", "[collection]") {
-        bson::builder b;
-        b << "_id" << bson::oid{}
-          << "x" << 1;
+        bson::builder b1, b2;
+
+        b1 << "_id" << 1;
+        b2 << "_id" << 2;
+
+        std::vector<bson::document::view> inserts { b1, b2 };
+        result::insert_many result = coll.insert_many(inserts);
+
+        REQUIRE(result.is_acknowledged == true);
+
+        auto cursor = coll.find();
+
+        std::int32_t sum = 0;
+        for (auto&& doc: cursor) {
+            sum += doc["_id"].get_int32();
+        }
+
+        REQUIRE(sum == 3);
+    }
+
+    SECTION("insert and update single document", "[collection]") {
+        using namespace bson::builder_helpers;
+        bson::builder b1;
+        b1 << "_id" << 1;
+
+        coll.insert_one(b1.view());
+
+        auto doc = coll.find_one();
+        REQUIRE(doc);
+        REQUIRE(doc->view()["_id"].get_int32() == 1);
+
+        bson::builder update_doc;
+        update_doc << "$set" << open_doc << "changed" << true << close_doc;
+
+        coll.update_one(model::update_one(b1, update_doc));
+
+        auto updated = coll.find_one();
+        REQUIRE(updated);
+        REQUIRE(updated->view()["changed"].get_bool() == true);
+    }
+
+    SECTION("non-matching upsert creates document", "[collection]") {
+        using namespace bson::builder_helpers;
+        bson::builder b1;
+        b1 << "_id" << 1;
+
+        bson::builder update_doc;
+        update_doc << "$set" << open_doc << "changed" << true << close_doc;
+
+        coll.update_one(model::update_one(b1, update_doc).upsert(true));
+
+        auto updated = coll.find_one();
+        REQUIRE(updated);
+        REQUIRE(updated->view()["changed"].get_bool() == true);
+        REQUIRE(coll.count() == 1);
+    }
+
+    SECTION("matching upsert updates document", "[collection]") {
+        using namespace bson::builder_helpers;
+        bson::builder b1;
+        b1 << "_id" << 1;
+
+        coll.insert_one(b1.view());
+
+        bson::builder update_doc;
+        update_doc << "$set" << open_doc << "changed" << true << close_doc;
+
+        coll.update_one(model::update_one(b1, update_doc).upsert(true));
+
+        auto updated = coll.find_one();
+        REQUIRE(updated);
+        REQUIRE(updated->view()["changed"].get_bool() == true);
+        REQUIRE(coll.count() == 1);
+    }
+
+    SECTION("matching upsert updates document", "[collection]") {
+        bson::builder b1;
+        b1 << "x" << 1;
+        model::insert_many docs { std::initializer_list<bson::document::view>{b1, b1, b1} };
+        coll.insert_many(docs);
+
+        coll.insert_one(bson::document::view{});
+        REQUIRE(coll.count(b1.view()) == 3);
+        REQUIRE(coll.count() == 4);
+    }
+
+    SECTION("document replacement", "[collection]") {
+        bson::builder b1;
+        b1 << "x" << 1;
+        coll.insert_one(b1.view());
+
+        bson::builder b2;
+        b2 << "x" << 2;
+
+        coll.replace_one(model::replace_one(b1, b2));
+
+        auto replaced = coll.find_one(b2.view());
+
+        REQUIRE(replaced);
+        REQUIRE(coll.count() == 1);
+    }
+
+    SECTION("document remove one removes only one in the presence of multiple matches", "[collection]") {
+        bson::builder b1;
+        b1 << "x" << 1;
+        model::insert_many docs { std::initializer_list<bson::document::view>{b1, b1, b1} };
+        coll.insert_many(docs);
+
+        REQUIRE(coll.count() == 3);
+
+        coll.remove_one(b1.view());
+
+        REQUIRE(coll.count() == 2);
+    }
+
+    SECTION("filtered document remove one works", "[collection]") {
+        bson::builder b1;
+        b1 << "x" << 1;
+
+        coll.insert_one(b1.view());
+
+        bson::builder b2;
+        b2 << "x" << 2;
+
+        coll.insert_one(b2.view());
+        coll.insert_one(b2.view());
+
+        REQUIRE(coll.count() == 3);
+
+        coll.remove_one(b2.view());
+
+        REQUIRE(coll.count() == 2);
+
+        auto cursor = coll.find();
+
+        unsigned seen = 0;
+        for (auto&& x : cursor) {
+            seen |= x["x"].get_int32();
+        }
+
+        REQUIRE( seen == 3 );
+
+        coll.remove_one(b2.view());
+
+        REQUIRE(coll.count() == 1);
+
+        cursor = coll.find();
+
+        seen = 0;
+        for (auto&& x : cursor) {
+            seen |= x["x"].get_int32();
+        }
+
+        REQUIRE( seen == 1 );
+
+        coll.remove_one(b2.view());
+
+        REQUIRE(coll.count() == 1);
+
+        cursor = coll.find();
+
+        seen = 0;
+        for (auto&& x : cursor) {
+            seen |= x["x"].get_int32();
+        }
+
+        REQUIRE( seen == 1 );
     }
 }
