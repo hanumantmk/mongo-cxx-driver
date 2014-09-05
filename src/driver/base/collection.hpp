@@ -91,9 +91,9 @@ class LIBMONGOCXX_EXPORT collection {
 
     result::bulk_write bulk_write(const model::bulk_write& model);
 
-    bson::document::value find_one_and_replace(const model::find_one_and_replace& model);
-    bson::document::value find_one_and_update(const model::find_one_and_update& model);
-    bson::document::value find_one_and_remove(const model::find_one_and_remove& model);
+    optional<bson::document::value> find_one_and_replace(const model::find_one_and_replace& model);
+    optional<bson::document::value> find_one_and_update(const model::find_one_and_update& model);
+    optional<bson::document::value> find_one_and_remove(const model::find_one_and_remove& model);
 
     bson::document::value explain(const model::explain& model) const;
     bson::document::value distinct(const model::distinct& model) const;

@@ -25,6 +25,9 @@
 #include "driver/base/client.hpp"
 #include "driver/model/aggregate.hpp"
 #include "driver/model/find.hpp"
+#include "driver/model/find_one_and_replace.hpp"
+#include "driver/model/find_one_and_remove.hpp"
+#include "driver/model/find_one_and_update.hpp"
 #include "driver/model/insert_one.hpp"
 #include "driver/model/update_one.hpp"
 #include "driver/private/cast.hpp"
@@ -62,17 +65,20 @@ result::bulk_write collection::bulk_write(const model::bulk_write& model) {
     mongoc_bulk_operation_set_database(b, _impl->database->_impl->name.c_str());
     mongoc_bulk_operation_set_collection(b, _impl->name.c_str());
     mongoc_bulk_operation_set_client(b, util::cast<mongoc_client_t>(_impl->client->_client));
+    mongoc_bulk_operation_set_write_concern(b, mongoc_collection_get_write_concern(_impl->collection_t));
 
     result::bulk_write result;
 
-    bson_t reply;
+    scoped_bson_t reply;
+    reply.flag_init();
+
     bson_error_t error;
 
-    if (! mongoc_bulk_operation_execute(b, &reply, &error)) {
+    if (! mongoc_bulk_operation_execute(b, reply.bson(), &error)) {
         throw std::runtime_error(error.message);
     }
 
-    bson::document::view reply_view{bson_get_data(&reply), reply.len};
+    bson::document::view reply_view = reply.view();
 
     result.is_acknowledged = true;
     result.inserted_count = reply_view["nInserted"].get_int32();
@@ -139,8 +145,11 @@ result::replace_one collection::replace_one(const model::replace_one& /* model *
 result::update collection::update_many(const model::update_many& /* model */) {
     return result::update();
 }
-result::remove collection::remove_many(const model::remove_many& /* model */) {
-    return result::remove();
+result::remove collection::remove_many(const model::remove_many& model) {
+    result::bulk_write res(bulk_write(model::bulk_write(false).append(model)));
+    result::remove result;
+    result.is_acknowledged = true;
+    return result;
 }
 
 result::update collection::update_one(const model::update_one& model) {
@@ -157,17 +166,126 @@ result::remove collection::remove_one(const model::remove_one& model) {
     return result;
 }
 
-bson::document::value collection::find_one_and_replace(
-    const model::find_one_and_replace& /* model */) {
-    return bson::document::value((const std::uint8_t*)nullptr, 0);
+optional<bson::document::value> collection::find_one_and_replace(const model::find_one_and_replace& model) {
+    scoped_bson_t criteria{model.criteria()};
+    scoped_bson_t sort{model.sort()};
+    scoped_bson_t replacement{model.replacement()};
+    scoped_bson_t projection{model.projection()};
+    scoped_bson_t reply;
+    reply.flag_init();
+
+    bson_error_t error;
+
+    bool r = mongoc_collection_find_and_modify(
+        _impl->collection_t,
+        criteria.bson(),
+        sort.bson(),
+        replacement.bson(),
+        projection.bson(),
+        false,
+        model.upsert().value_or(false),
+        model.return_replacement().value_or(false),
+        reply.bson(),
+        &error);
+
+    if (!r) {
+        throw std::runtime_error("shits fucked");
+    }
+
+    bson::document::view result = reply.view();
+
+    if (result["value"].type() == bson::type::k_null) {
+        return optional<bson::document::value>{};
+    } else {
+        using namespace bson::builder_helpers;
+
+        bson::builder b;
+
+        b << concat{result["value"].get_document()};
+
+        return b.extract();
+    }
 }
-bson::document::value collection::find_one_and_update(
-    const model::find_one_and_update& /* model */) {
-    return bson::document::value((const std::uint8_t*)nullptr, 0);
+
+optional<bson::document::value> collection::find_one_and_update(const model::find_one_and_update& model) {
+    scoped_bson_t criteria{model.criteria()};
+    scoped_bson_t sort{model.sort()};
+    scoped_bson_t update{model.update()};
+    scoped_bson_t projection{model.projection()};
+    scoped_bson_t reply;
+    reply.flag_init();
+
+    bson_error_t error;
+
+    bool r = mongoc_collection_find_and_modify(
+        _impl->collection_t,
+        criteria.bson(),
+        sort.bson(),
+        update.bson(),
+        projection.bson(),
+        false,
+        model.upsert().value_or(false),
+        model.return_replacement().value_or(false),
+        reply.bson(),
+        &error);
+
+    if (!r) {
+        throw std::runtime_error("shits fucked");
+    }
+
+    bson::document::view result = reply.view();
+
+    if (result["value"].type() == bson::type::k_null) {
+        return optional<bson::document::value>{};
+    } else {
+        using namespace bson::builder_helpers;
+
+        bson::builder b;
+
+        b << concat{result["value"].get_document()};
+
+        return b.extract();
+    }
 }
-bson::document::value collection::find_one_and_remove(
-    const model::find_one_and_remove& /* model */) {
-    return bson::document::value((const std::uint8_t*)nullptr, 0);
+
+optional<bson::document::value> collection::find_one_and_remove(const model::find_one_and_remove& model) {
+    scoped_bson_t criteria{model.criteria()};
+    scoped_bson_t sort{model.sort()};
+    scoped_bson_t projection{model.projection()};
+    scoped_bson_t reply;
+    reply.flag_init();
+
+    bson_error_t error;
+
+    bool r = mongoc_collection_find_and_modify(
+        _impl->collection_t,
+        criteria.bson(),
+        sort.bson(),
+        nullptr,
+        projection.bson(),
+        true,
+        false,
+        false,
+        reply.bson(),
+        &error);
+
+    if (!r) {
+        throw std::runtime_error("shits fucked");
+    }
+
+    bson::document::view result = reply.view();
+
+    if (result["value"].type() == bson::type::k_null) {
+        return optional<bson::document::value>{};
+    } else {
+        using namespace bson::builder_helpers;
+
+        bson::builder b;
+
+        b << concat{result["value"].get_document()};
+
+        return b.extract();
+    }
 }
 
 bson::document::value collection::explain(const model::explain& /*model*/) const {

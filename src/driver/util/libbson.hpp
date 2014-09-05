@@ -32,6 +32,7 @@ class scoped_bson_t {
     void init_from_static(const mongo::driver::optional<bson::document::view>& doc);
     void init_from_static(const bson::document::view& doc);
     void init();
+    void flag_init();
 
     ~scoped_bson_t();
 

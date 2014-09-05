@@ -30,6 +30,7 @@ public:
     const class database* database;
     const class client* client;
     std::string name;
+    optional<bson::document::value> find_and_modify();
 };
 
 }  // namespace driver

@@ -15,7 +15,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
 
     SECTION("insert and read single document", "[collection]") {
         bson::builder b;
-        b << "_id" << bson::oid{}
+        b << "_id" << bson::oid{bson::oid::init_tag}
           << "x" << 1;
 
         result::insert_one result = coll.insert_one(b.view());
@@ -137,19 +137,6 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
         REQUIRE(coll.count() == 1);
     }
 
-    SECTION("document remove one removes only one in the presence of multiple matches", "[collection]") {
-        bson::builder b1;
-        b1 << "x" << 1;
-        model::insert_many docs { std::initializer_list<bson::document::view>{b1, b1, b1} };
-        coll.insert_many(docs);
-
-        REQUIRE(coll.count() == 3);
-
-        coll.remove_one(b1.view());
-
-        REQUIRE(coll.count() == 2);
-    }
-
     SECTION("filtered document remove one works", "[collection]") {
         bson::builder b1;
         b1 << "x" << 1;
@@ -202,5 +189,153 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
         }
 
         REQUIRE( seen == 1 );
+    }
+
+    SECTION("remove many works", "[collection]") {
+        bson::builder b1;
+        b1 << "x" << 1;
+
+        coll.insert_one(b1.view());
+
+        bson::builder b2;
+        b2 << "x" << 2;
+
+        coll.insert_one(b2.view());
+        coll.insert_one(b2.view());
+
+        REQUIRE(coll.count() == 3);
+
+        coll.remove_many(b2.view());
+
+        REQUIRE(coll.count() == 1);
+
+        auto cursor = coll.find();
+
+        unsigned seen = 0;
+        for (auto&& x : cursor) {
+            seen |= x["x"].get_int32();
+        }
+
+        REQUIRE( seen == 1 );
+
+        coll.remove_many(b2.view());
+
+        REQUIRE(coll.count() == 1);
+
+        cursor = coll.find();
+
+        seen = 0;
+        for (auto&& x : cursor) {
+            seen |= x["x"].get_int32();
+        }
+
+        REQUIRE( seen == 1 );
+    }
+
+    SECTION("find_one_and_replace works", "[collection]") {
+        bson::builder b1;
+        b1 << "x" << 1;
+
+        coll.insert_one(b1.view());
+        coll.insert_one(b1.view());
+
+        REQUIRE(coll.count() == 2);
+
+        bson::builder criteria;
+        bson::builder replacement;
+
+        criteria << "x" << 1;
+        replacement << "x" << 2;
+
+        SECTION("without return replacement returns original") {
+            auto doc = coll.find_one_and_replace(model::find_one_and_replace{criteria, replacement});
+
+            REQUIRE(doc);
+
+            REQUIRE(doc->view()["x"].get_int32() == 1);
+        }
+
+        SECTION("with return replacement returns new") {
+            auto doc = coll.find_one_and_replace(model::find_one_and_replace{criteria, replacement}.return_replacement(true));
+
+            REQUIRE(doc);
+            REQUIRE(doc->view()["x"].get_int32() == 2);
+        }
+
+        SECTION("bad criteria returns negative optional") {
+            bson::builder bad_criteria;
+            bad_criteria << "x" << 3;
+
+            auto doc = coll.find_one_and_replace(model::find_one_and_replace{bad_criteria, replacement});
+
+            REQUIRE(! doc);
+        }
+    }
+
+    SECTION("find_one_and_update works", "[collection]") {
+        using namespace bson::builder_helpers;
+
+        bson::builder b1;
+        b1 << "x" << 1;
+
+        coll.insert_one(b1.view());
+        coll.insert_one(b1.view());
+
+        REQUIRE(coll.count() == 2);
+
+        bson::builder criteria;
+        bson::builder update;
+
+        criteria << "x" << 1;
+        update << "$set" << open_doc << "x" << 2 << close_doc;
+
+        SECTION("without return update returns original") {
+            auto doc = coll.find_one_and_update(model::find_one_and_update{criteria, update});
+
+            REQUIRE(doc);
+
+            REQUIRE(doc->view()["x"].get_int32() == 1);
+        }
+
+        SECTION("with return update returns new") {
+            auto doc = coll.find_one_and_update(model::find_one_and_update{criteria, update}.return_replacement(true));
+
+            REQUIRE(doc);
+            REQUIRE(doc->view()["x"].get_int32() == 2);
+        }
+
+        SECTION("bad criteria returns negative optional") {
+            bson::builder bad_criteria;
+            bad_criteria << "x" << 3;
+
+            auto doc = coll.find_one_and_update(model::find_one_and_update{bad_criteria, update});
+
+            REQUIRE(! doc);
+        }
+    }
+
+    SECTION("find_one_and_remove works", "[collection]") {
+        using namespace bson::builder_helpers;
+
+        bson::builder b1;
+        b1 << "x" << 1;
+
+        coll.insert_one(b1.view());
+        coll.insert_one(b1.view());
+
+        REQUIRE(coll.count() == 2);
+
+        bson::builder criteria;
+
+        criteria << "x" << 1;
+
+        SECTION("remove one removes one and returns it") {
+            auto doc = coll.find_one_and_remove(model::find_one_and_remove{criteria});
+
+            REQUIRE(doc);
+
+            REQUIRE(doc->view()["x"].get_int32() == 1);
+            REQUIRE(coll.count() == 1);
+        }
     }
 }

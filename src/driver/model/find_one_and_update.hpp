@@ -29,7 +29,7 @@ class LIBMONGOCXX_EXPORT find_one_and_update {
     find_one_and_update(bson::document::view criteria, bson::document::view update);
 
     find_one_and_update& projection(bson::document::view projection);
-    find_one_and_update& return_replacement(bool multi);
+    find_one_and_update& return_replacement(bool return_replacement);
     find_one_and_update& sort(bson::document::view ordering);
     find_one_and_update& upsert(bool upsert);
 
