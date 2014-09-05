@@ -14,6 +14,7 @@
 
 #include "driver/libmongoc.hpp"
 
+#include "driver/base/private/database.hpp"
 #include "driver/base/database.hpp"
 #include "driver/base/client.hpp"
 #include "driver/private/cast.hpp"
@@ -21,16 +22,17 @@
 namespace mongo {
 namespace driver {
 
-namespace {
-static void mongoc_database_dtor(void* database_ptr) noexcept {
-    mongoc_database_destroy(static_cast<mongoc_database_t*>(database_ptr));
-}
-}  // namespace
+database::database(database&&) = default;
+database& database::operator=(database&&) = default;
+database::~database() = default;
 
-database::database(const client& client, const std::string& database_name)
-    : _database(mongoc_client_get_database(util::cast<mongoc_client_t>(client._client),
-                                           database_name.c_str()),
-                mongoc_database_dtor) {}
+database::database(const class client& client, const std::string& database_name)
+    : _impl(new impl{mongoc_client_get_database(util::cast<mongoc_client_t>(client._client),
+                                           database_name.c_str()), &client, database_name.c_str()}) {}
+
+const std::string& database::name() const {
+    return _impl->name;
+}
 
 collection database::collection(const std::string& collection_name) {
     return mongo::driver::collection(*this, collection_name);

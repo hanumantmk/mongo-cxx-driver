@@ -60,7 +60,7 @@ find& find::sort(bson::document::view ordering) {
     return *this;
 }
 
-optional<bson::document::view> find::criteria() const { return _criteria; }
+bson::document::view find::criteria() const { return _criteria; }
 
 optional<std::int32_t> find::batch_size() const { return _batch_size; }
 

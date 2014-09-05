@@ -69,6 +69,8 @@ class aggregatable;
 
 class LIBMONGOCXX_EXPORT collection {
 
+    class impl;
+
     friend class database;
 
    public:
@@ -96,10 +98,14 @@ class LIBMONGOCXX_EXPORT collection {
 
     void drop();
 
+    collection(collection&& rhs);
+    collection& operator=(collection&& rhs);
+    ~collection();
+
    private:
     collection(const database& database, const std::string& collection_name);
 
-    util::unique_ptr_void _collection;
+    std::unique_ptr<impl> _impl;
 };
 
 }  // namespace driver

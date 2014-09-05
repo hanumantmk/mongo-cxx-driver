@@ -18,6 +18,9 @@
 
 #include "driver/libmongoc.hpp"
 
+#include "driver/base/private/collection.hpp"
+#include "driver/base/private/database.hpp"
+#include "driver/model/private/bulk_write.hpp"
 #include "driver/base/collection.hpp"
 #include "driver/base/client.hpp"
 #include "driver/model/aggregate.hpp"
@@ -44,85 +47,23 @@ namespace driver {
 
 using namespace bson::libbson;
 
-namespace {
-static void mongoc_collection_dtor(void* collection_ptr) noexcept {
-    mongoc_collection_destroy(static_cast<mongoc_collection_t*>(collection_ptr));
-}
-}  // namespace
+collection::collection(collection&&) = default;
+collection& collection::operator=(collection&&) = default;
+collection::~collection() = default;
 
 collection::collection(const database& database, const std::string& collection_name)
-    : _collection(mongoc_database_get_collection(util::cast<mongoc_database_t>(database._database),
-                                                 collection_name.c_str()),
-                  mongoc_collection_dtor) {}
+    : _impl(new impl{mongoc_database_get_collection(database._impl->database_t,
+                                                 collection_name.c_str()), &database, database._impl->client, collection_name.c_str()}) {}
 
 result::bulk_write collection::bulk_write(const model::bulk_write& model) {
     using namespace model;
 
-    mongoc_bulk_operation_t* b = mongoc_collection_create_bulk_operation(util::cast<mongoc_collection_t>(_collection), model.ordered(), NULL);
+    mongoc_bulk_operation_t* b = model._impl->operation_t;
+    mongoc_bulk_operation_set_database(b, _impl->database->_impl->name.c_str());
+    mongoc_bulk_operation_set_collection(b, _impl->name.c_str());
+    mongoc_bulk_operation_set_client(b, util::cast<mongoc_client_t>(_impl->client->_client));
 
-    result::bulk_write rval;
-
-    std::size_t index = 0;
-
-    for (auto&& operation : model.operations()) {
-        switch (operation.type()) {
-            case write_type::kInsertOne: {
-                scoped_bson_t doc(operation.get_insert_one().document());
-
-                mongoc_bulk_operation_insert(b, doc.bson());
-                break;
-            }
-            case write_type::kInsertMany: {
-                for (auto&& x : operation.get_insert_many().document()) {
-                    scoped_bson_t doc(x);
-
-                    mongoc_bulk_operation_insert(b, doc.bson());
-                }
-                break;
-            }
-            case write_type::kUpdateOne: {
-                scoped_bson_t criteria(operation.get_update_one().criteria());
-                scoped_bson_t update(operation.get_update_one().update());
-                bool upsert = operation.get_update_one().upsert().value_or(false);
-
-                mongoc_bulk_operation_update_one(b, criteria.bson(), update.bson(), upsert);
-                break;
-            }
-            case write_type::kUpdateMany: {
-                scoped_bson_t criteria(operation.get_update_many().criteria());
-                scoped_bson_t update(operation.get_update_many().update());
-                bool upsert = operation.get_update_many().upsert().value_or(false);
-
-                mongoc_bulk_operation_update(b, criteria.bson(), update.bson(), upsert);
-                break;
-            }
-            case write_type::kRemoveOne: {
-                scoped_bson_t criteria(operation.get_remove_one().criteria());
-
-                mongoc_bulk_operation_remove_one(b, criteria.bson());
-
-                break;
-            }
-            case write_type::kRemoveMany: {
-                scoped_bson_t criteria(operation.get_remove_many().criteria());
-
-                mongoc_bulk_operation_remove(b, criteria.bson());
-
-                break;
-            }
-            case write_type::kReplaceOne: {
-                scoped_bson_t criteria(operation.get_replace_one().criteria());
-                scoped_bson_t replace(operation.get_replace_one().replacement());
-                bool upsert = operation.get_replace_one().upsert().value_or(false);
-
-                mongoc_bulk_operation_replace_one(b, criteria.bson(), replace.bson(), upsert);
-                break;
-            }
-            case write_type::kUninitialized: break; // TODO: something exceptiony
-        }
-
-        index++;
-    }
+    result::bulk_write result;
 
     bson_t reply;
     bson_error_t error;
@@ -133,14 +74,14 @@ result::bulk_write collection::bulk_write(const model::bulk_write& model) {
 
     bson::document::view reply_view{bson_get_data(&reply), reply.len};
 
-    rval.is_acknowledged = true;
-    rval.inserted_count = reply_view["nInserted"].get_int32();
-    rval.matched_count = reply_view["nMatched"].get_int32();
-    rval.modified_count = reply_view["nModified"].get_int32();
-    rval.removed_count = reply_view["nRemoved"].get_int32();
-    rval.upserted_count = reply_view["nUpserted"].get_int32();
+    result.is_acknowledged = true;
+    result.inserted_count = reply_view["nInserted"].get_int32();
+    result.matched_count = reply_view["nMatched"].get_int32();
+    result.modified_count = reply_view["nModified"].get_int32();
+    result.removed_count = reply_view["nRemoved"].get_int32();
+    result.upserted_count = reply_view["nUpserted"].get_int32();
 
-    return rval;
+    return result;
 }
 
 cursor collection::find(const model::find& model) const {
@@ -152,7 +93,7 @@ cursor collection::find(const model::find& model) const {
     scoped_bson_t projection(model.projection());
 
     if (model.modifiers()) {
-        filter_builder << "$query" << types::b_document{model.criteria().value_or(document::view{})}
+        filter_builder << "$query" << types::b_document{model.criteria()}
                        << builder_helpers::concat{model.modifiers().value_or(document::view{})};
 
         filter.init_from_static(filter_builder.view());
@@ -160,7 +101,7 @@ cursor collection::find(const model::find& model) const {
         filter.init_from_static(model.criteria());
     }
 
-    return cursor(mongoc_collection_find(util::cast<mongoc_collection_t>(_collection),
+    return cursor(mongoc_collection_find(_impl->collection_t,
                                          (mongoc_query_flags_t)model.cursor_flags().value_or(0),
                                          model.skip().value_or(0), model.limit().value_or(0),
                                          model.batch_size().value_or(0), filter.bson(),
@@ -218,7 +159,7 @@ std::int64_t collection::count(const model::count& /* model */) const { return 0
 void collection::drop() {
     bson_error_t error;
 
-    if (mongoc_collection_drop(util::cast<mongoc_collection_t>(_collection), &error)) {
+    if (mongoc_collection_drop(_impl->collection_t, &error)) {
         /* TODO handle errors */
     }
 }

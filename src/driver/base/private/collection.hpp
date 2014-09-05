@@ -16,29 +16,22 @@
 
 #include "driver/config/prelude.hpp"
 
-#include <cstdint>
-#include <map>
+#include "driver/base/collection.hpp"
 
-#include "bson/types.hpp"
+#include "mongoc.h"
 
 namespace mongo {
 namespace driver {
-namespace result {
 
-struct LIBMONGOCXX_EXPORT bulk_write {
-    bool is_acknowledged;
-
-    std::int64_t inserted_count;
-    std::int64_t matched_count;
-    std::int64_t modified_count;
-    std::int64_t removed_count;
-    std::int64_t upserted_count;
-
-    std::map<std::size_t, bson::element> inserted_ids;
-    std::map<std::size_t, bson::element> upserted_ids;
+class collection::impl {
+public:
+    ~impl() { mongoc_collection_destroy(collection_t); }
+    mongoc_collection_t * collection_t;
+    const class database* database;
+    const class client* client;
+    std::string name;
 };
 
-}  // namespace result
 }  // namespace driver
 }  // namespace mongo
 
