@@ -18,7 +18,7 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-find::find() {}
+find::find(bson::document::view view) : _criteria(view) {}
 
 find& find::batch_size(std::int32_t batch_size) {
     _batch_size = batch_size;

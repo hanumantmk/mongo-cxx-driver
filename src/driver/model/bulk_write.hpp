@@ -17,8 +17,10 @@
 #include "driver/config/prelude.hpp"
 
 #include <vector>
+#include <type_traits>
 
 #include "driver/model/write.hpp"
+#include "driver/util/is_iterable.hpp"
 #include "driver/util/optional.hpp"
 
 namespace mongo {
@@ -34,7 +36,7 @@ public:
     bulk_write(bool ordered);
 
     template <typename T>
-    bulk_write& append(const T& container) {
+    typename std::enable_if<util::is_iterable<T>::value, bulk_write&>::type append(const T& container) {
         for (auto&& x : container) {
             append(x);
         }

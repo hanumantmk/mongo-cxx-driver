@@ -5,7 +5,7 @@
 
 using namespace mongo::driver;
 
-TEST_CASE("collection CRUD functionality", "[driver::collection]") {
+TEST_CASE("CRUD functionality", "[driver::collection]") {
 
     mongoc_init();
     client mongodb_client;
@@ -17,13 +17,12 @@ TEST_CASE("collection CRUD functionality", "[driver::collection]") {
         b << "_id" << bson::oid{}
           << "x" << 1;
 
-        model::insert_one single = model::insert_one(b.view());
-        result::insert_one result = coll.insert_one(single);
+        result::insert_one result = coll.insert_one(b.view());
 
         REQUIRE(result.is_acknowledged == true);
-//        REQUIRE(result.inserted_id.type() == bson::type::k_oid);
+        //REQUIRE(result.inserted_id.type() == bson::type::k_oid);
 
-        auto cursor = coll.find(model::find().criteria(b.view()));
+        auto cursor = coll.find(b.view());
 
         std::size_t i = 0;
         for (auto&& x: cursor) {
@@ -32,5 +31,11 @@ TEST_CASE("collection CRUD functionality", "[driver::collection]") {
         }
 
         REQUIRE(i == 1);
+    }
+
+    SECTION("insert and read multiple documents", "[collection]") {
+        bson::builder b;
+        b << "_id" << bson::oid{}
+          << "x" << 1;
     }
 }

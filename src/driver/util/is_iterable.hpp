@@ -14,35 +14,25 @@
 
 #pragma once
 
-#include "driver/config/prelude.hpp"
-
-#include <cstdint>
-#include <map>
-
-#include "bson/types.hpp"
-
 namespace mongo {
 namespace driver {
-namespace result {
+namespace util {
 
-struct LIBMONGOCXX_EXPORT bulk_write {
-    bool is_acknowledged;
+template <typename T>
+class is_iterable {
+private:
+  typedef char Yes;
+  typedef Yes No[2];
 
-    std::int64_t inserted_count;
-    std::int64_t matched_count;
-    std::int64_t modified_count;
-    std::int64_t removed_count;
-    std::int64_t upserted_count;
+  template<typename C> static auto Test(void*)
+    -> decltype(size_t{std::declval<C const>().begin()}, Yes{});
 
-    std::map<std::size_t, bson::element> inserted_ids;
-    std::map<std::size_t, bson::element> upserted_ids;
+  template<typename> static No& Test(...);
 
-    // TODO: make class and private and shit
-    bson::document::value _storage;
+public:
+    static bool const value = sizeof(Test<T>(0)) == sizeof(Yes);
 };
 
-}  // namespace result
-}  // namespace driver
-}  // namespace mongo
-
-#include "driver/config/postlude.hpp"
+}
+}
+}
