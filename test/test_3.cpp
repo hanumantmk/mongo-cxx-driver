@@ -12,12 +12,14 @@ using namespace mongo::driver;
 int main() {
     mongoc_init();
 
+#if 0
     bson::builder builder;
 
     bson::document::view doc(builder.view());
 
     client client("mongodb://localhost");
     collection col(client["test"]["test"]);
+
 
     libmongoc::collection_drop.interpose([](mongoc_collection_t *, bson_error_t *) {
                                              std::cout << "interposed drop" << std::endl;
@@ -121,6 +123,7 @@ for (; x != col.end(); ++x) {
 std::cout << "bson is: " << *x << std::endl;
 }
 */
+#endif
 
     mongoc_cleanup();
     return 0;

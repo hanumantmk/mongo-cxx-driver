@@ -80,8 +80,8 @@ int oid_compare(const oid& lhs, const oid& rhs) {
     bson_oid_t lhs_oid;
     bson_oid_t rhs_oid;
 
-    std::memcpy(lhs_oid.bytes, lhs.bytes(), sizeof(lhs));
-    std::memcpy(rhs_oid.bytes, rhs.bytes(), sizeof(rhs));
+    std::memcpy(lhs_oid.bytes, lhs.bytes(), sizeof(lhs_oid.bytes));
+    std::memcpy(rhs_oid.bytes, rhs.bytes(), sizeof(rhs_oid.bytes));
 
     return bson_oid_compare(&lhs_oid, &rhs_oid);
 }

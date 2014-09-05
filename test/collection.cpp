@@ -97,7 +97,8 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
         bson::builder b1;
         b1 << "_id" << 1;
 
-        coll.insert_one(b1.view());
+//        coll.insert_one(b1.view());
+        coll.insert_one([](){bson::builder b; b << "_id" << 1; return b;}().view());
 
         bson::builder update_doc;
         update_doc << "$set" << open_doc << "changed" << true << close_doc;
