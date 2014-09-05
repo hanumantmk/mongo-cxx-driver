@@ -19,19 +19,18 @@
 namespace bson {
 
 namespace builder_helpers {
-    struct open_doc_t {};
-    extern open_doc_t open_doc;
+struct open_doc_t {};
+extern open_doc_t open_doc;
 
-    struct open_array_t {};
-    extern open_array_t open_array;
+struct open_array_t {};
+extern open_array_t open_array;
 
-    struct close_doc_t {};
-    extern close_doc_t close_doc;
+struct close_doc_t {};
+extern close_doc_t close_doc;
 
-    struct close_array_t {};
-    extern close_array_t close_array;
+struct close_array_t {};
+extern close_array_t close_array;
 
-    struct concat;
+struct concat;
 };
-
 }

@@ -50,5 +50,4 @@ class builder::value_builder {
    private:
     builder* _builder;
 };
-
 }

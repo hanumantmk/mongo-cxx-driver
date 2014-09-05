@@ -28,13 +28,9 @@ update_many& update_many::upsert(bool upsert) {
 
 optional<bool> update_many::upsert() const { return _upsert; }
 
-bson::document::view update_many::criteria() const {
-    return _criteria;
-}
+bson::document::view update_many::criteria() const { return _criteria; }
 
-bson::document::view update_many::update() const {
-    return _update;
-}
+bson::document::view update_many::update() const { return _update; }
 
 }  // namespace model
 }  // namespace driver

@@ -32,7 +32,6 @@ class LIBMONGOCXX_EXPORT remove_many {
 
    private:
     bson::document::view _criteria;
-
 };
 
 }  // namespace model

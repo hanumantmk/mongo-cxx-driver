@@ -18,9 +18,8 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-find_one_and_update::find_one_and_update(bson::document::view criteria, bson::document::view update) :
-    _criteria(criteria), _update(update)
-{}
+find_one_and_update::find_one_and_update(bson::document::view criteria, bson::document::view update)
+    : _criteria(criteria), _update(update) {}
 
 find_one_and_update& find_one_and_update::projection(bson::document::view projection) {
     _projection = projection;
@@ -44,25 +43,13 @@ find_one_and_update& find_one_and_update::upsert(bool upsert) {
     return *this;
 }
 
-bson::document::view find_one_and_update::criteria() const {
-    return _criteria;
-}
-bson::document::view find_one_and_update::update() const {
-    return _update;
-}
+bson::document::view find_one_and_update::criteria() const { return _criteria; }
+bson::document::view find_one_and_update::update() const { return _update; }
 
-optional<bson::document::view> find_one_and_update::projection() const {
-    return _projection;
-}
-optional<bool> find_one_and_update::return_replacement() const {
-    return _return_replacement;
-}
-optional<bson::document::view> find_one_and_update::sort() const {
-    return _ordering;
-}
-optional<bool> find_one_and_update::upsert() const {
-    return _upsert;
-}
+optional<bson::document::view> find_one_and_update::projection() const { return _projection; }
+optional<bool> find_one_and_update::return_replacement() const { return _return_replacement; }
+optional<bson::document::view> find_one_and_update::sort() const { return _ordering; }
+optional<bool> find_one_and_update::upsert() const { return _upsert; }
 
 }  // namespace model
 }  // namespace driver

@@ -72,5 +72,4 @@ class builder::array_ctx {
    private:
     builder* _builder;
 };
-
 }

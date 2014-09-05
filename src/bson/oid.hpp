@@ -24,7 +24,7 @@ namespace bson {
 class string_or_literal;
 
 class oid {
-public:
+   public:
     struct init_tag_t {};
     static constexpr init_tag_t init_tag{};
 
@@ -51,11 +51,11 @@ public:
 
     const char* bytes() const;
 
-private:
+   private:
     friend int oid_compare(const oid& lhs, const oid& rhs);
 
     bool _is_valid;
     char _bytes[12];
 };
 
-} // namespace bson
+}  // namespace bson

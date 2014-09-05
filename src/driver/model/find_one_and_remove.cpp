@@ -18,9 +18,7 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-find_one_and_remove::find_one_and_remove(bson::document::view criteria) 
-    : _criteria(criteria)
-{}
+find_one_and_remove::find_one_and_remove(bson::document::view criteria) : _criteria(criteria) {}
 
 find_one_and_remove& find_one_and_remove::projection(bson::document::view projection) {
     _projection = projection;
@@ -32,17 +30,11 @@ find_one_and_remove& find_one_and_remove::sort(bson::document::view ordering) {
     return *this;
 }
 
-bson::document::view find_one_and_remove::criteria() const {
-    return _criteria;
-}
+bson::document::view find_one_and_remove::criteria() const { return _criteria; }
 
-optional<bson::document::view> find_one_and_remove::projection() const {
-    return _projection;
-}
+optional<bson::document::view> find_one_and_remove::projection() const { return _projection; }
 
-optional<bson::document::view> find_one_and_remove::sort() const {
-    return _ordering;
-}
+optional<bson::document::view> find_one_and_remove::sort() const { return _ordering; }
 
 }  // namespace model
 }  // namespace driver

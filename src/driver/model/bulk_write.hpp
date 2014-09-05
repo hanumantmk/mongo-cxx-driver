@@ -35,11 +35,12 @@ class LIBMONGOCXX_EXPORT bulk_write {
 
     class impl;
 
-public:
+   public:
     bulk_write(bool ordered);
 
     template <typename T>
-    typename std::enable_if<util::is_iterable<T>::value, bulk_write&>::type append(const T& container) {
+    typename std::enable_if<util::is_iterable<T>::value, bulk_write&>::type append(
+        const T& container) {
         for (auto&& x : container) {
             append(x);
         }
@@ -55,9 +56,8 @@ public:
     bulk_write& operator=(bulk_write&&);
     ~bulk_write();
 
-private:
+   private:
     std::unique_ptr<impl> _impl;
-
 };
 
 }  // namespace model

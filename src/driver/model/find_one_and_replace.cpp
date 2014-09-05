@@ -18,10 +18,9 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-find_one_and_replace::find_one_and_replace(bson::document::view criteria, bson::document::view replacement)
-    : _criteria(criteria)
-    , _replacement(replacement)
-{}
+find_one_and_replace::find_one_and_replace(bson::document::view criteria,
+                                           bson::document::view replacement)
+    : _criteria(criteria), _replacement(replacement) {}
 
 find_one_and_replace& find_one_and_replace::projection(bson::document::view projection) {
     _projection = projection;
@@ -43,29 +42,17 @@ find_one_and_replace& find_one_and_replace::upsert(bool upsert) {
     return *this;
 }
 
-bson::document::view find_one_and_replace::criteria() const {
-    return _criteria;
-}
+bson::document::view find_one_and_replace::criteria() const { return _criteria; }
 
-bson::document::view find_one_and_replace::replacement() const {
-    return _replacement;
-}
+bson::document::view find_one_and_replace::replacement() const { return _replacement; }
 
-optional<bson::document::view> find_one_and_replace::projection() const {
-    return _projection;
-}
+optional<bson::document::view> find_one_and_replace::projection() const { return _projection; }
 
-optional<bool> find_one_and_replace::return_replacement() const {
-    return _return_replacement;
-}
+optional<bool> find_one_and_replace::return_replacement() const { return _return_replacement; }
 
-optional<bson::document::view> find_one_and_replace::sort() const {
-    return _ordering;
-}
+optional<bson::document::view> find_one_and_replace::sort() const { return _ordering; }
 
-optional<bool> find_one_and_replace::upsert() const {
-    return _upsert;
-}
+optional<bool> find_one_and_replace::upsert() const { return _upsert; }
 
 }  // namespace model
 }  // namespace driver

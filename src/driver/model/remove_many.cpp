@@ -20,9 +20,7 @@ namespace model {
 
 remove_many::remove_many(const bson::document::view& criteria) : _criteria(criteria) {}
 
-const bson::document::view& remove_many::criteria() const {
-    return _criteria;
-}
+const bson::document::view& remove_many::criteria() const { return _criteria; }
 
 }  // namespace model
 }  // namespace driver

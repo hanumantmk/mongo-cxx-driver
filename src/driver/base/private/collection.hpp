@@ -24,9 +24,9 @@ namespace mongo {
 namespace driver {
 
 class collection::impl {
-public:
+   public:
     ~impl() { mongoc_collection_destroy(collection_t); }
-    mongoc_collection_t * collection_t;
+    mongoc_collection_t* collection_t;
     const class database* database;
     const class client* client;
     std::string name;

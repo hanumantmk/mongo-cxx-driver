@@ -22,22 +22,20 @@ namespace driver {
 static void log_handler(mongoc_log_level_t, const char *, const char *, void *) {}
 
 class LIBMONGOCXX_EXPORT instance::impl {
-public:
+   public:
     impl() {
         mongoc_init();
 
         mongoc_log_set_handler(log_handler, nullptr);
     }
 
-    ~impl() {
-        mongoc_cleanup();
-    }
+    ~impl() { mongoc_cleanup(); }
 };
 
 instance::instance() : _impl(new impl{}) {}
 
-instance::instance(instance&&) = default;
-instance& instance::operator=(instance&&) = default;
+instance::instance(instance &&) = default;
+instance &instance::operator=(instance &&) = default;
 instance::~instance() = default;
 
 }  // namespace driver

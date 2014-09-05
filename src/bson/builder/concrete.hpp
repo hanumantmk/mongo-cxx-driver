@@ -111,18 +111,15 @@ class LIBMONGOCXX_EXPORT builder {
     void clear();
 
    private:
-
     std::unique_ptr<impl> _impl;
 };
 
 namespace builder_helpers {
-    struct LIBMONGOCXX_EXPORT concat {
-        document::view view;
+struct LIBMONGOCXX_EXPORT concat {
+    document::view view;
 
-        operator document::view() const {
-            return view;
-        }
-    };
+    operator document::view() const { return view; }
+};
 }
 
 typedef builder::array_ctx<builder::closed_ctx> array_builder;

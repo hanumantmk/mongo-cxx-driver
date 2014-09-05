@@ -57,7 +57,8 @@ collection::~collection() = default;
 
 collection::collection(const database& database, const std::string& collection_name)
     : _impl(new impl{mongoc_database_get_collection(database._impl->database_t,
-                                                 collection_name.c_str()), &database, database._impl->client, collection_name.c_str()}) {}
+                                                    collection_name.c_str()),
+                     &database, database._impl->client, collection_name.c_str()}) {}
 
 result::bulk_write collection::bulk_write(const model::bulk_write& model) {
     using namespace model;
@@ -66,7 +67,8 @@ result::bulk_write collection::bulk_write(const model::bulk_write& model) {
     mongoc_bulk_operation_set_database(b, _impl->database->_impl->name.c_str());
     mongoc_bulk_operation_set_collection(b, _impl->name.c_str());
     mongoc_bulk_operation_set_client(b, util::cast<mongoc_client_t>(_impl->client->_client));
-    mongoc_bulk_operation_set_write_concern(b, mongoc_collection_get_write_concern(_impl->collection_t));
+    mongoc_bulk_operation_set_write_concern(
+        b, mongoc_collection_get_write_concern(_impl->collection_t));
 
     result::bulk_write result;
 
@@ -75,7 +77,7 @@ result::bulk_write collection::bulk_write(const model::bulk_write& model) {
 
     bson_error_t error;
 
-    if (! mongoc_bulk_operation_execute(b, reply.bson(), &error)) {
+    if (!mongoc_bulk_operation_execute(b, reply.bson(), &error)) {
         throw std::runtime_error(error.message);
     }
 
@@ -108,11 +110,10 @@ cursor collection::find(const model::find& model) const {
         filter.init_from_static(model.criteria());
     }
 
-    return cursor(mongoc_collection_find(_impl->collection_t,
-                                         (mongoc_query_flags_t)model.cursor_flags().value_or(0),
-                                         model.skip().value_or(0), model.limit().value_or(0),
-                                         model.batch_size().value_or(0), filter.bson(),
-                                         projection.bson(), nullptr));
+    return cursor(mongoc_collection_find(
+        _impl->collection_t, (mongoc_query_flags_t)model.cursor_flags().value_or(0),
+        model.skip().value_or(0), model.limit().value_or(0), model.batch_size().value_or(0),
+        filter.bson(), projection.bson(), nullptr));
 }
 
 optional<bson::document::value> collection::find_one(const model::find& model) const {
@@ -167,7 +168,6 @@ result::insert_many collection::insert_many(const model::insert_many& model) {
     return result;
 }
 
-
 result::replace_one collection::replace_one(const model::replace_one& /* model */) {
     return result::replace_one();
 }
@@ -196,7 +196,8 @@ result::remove collection::remove_one(const model::remove_one& model) {
     return result;
 }
 
-optional<bson::document::value> collection::find_one_and_replace(const model::find_one_and_replace& model) {
+optional<bson::document::value> collection::find_one_and_replace(
+    const model::find_one_and_replace& model) {
     scoped_bson_t criteria{model.criteria()};
     scoped_bson_t sort{model.sort()};
     scoped_bson_t replacement{model.replacement()};
@@ -207,16 +208,9 @@ optional<bson::document::value> collection::find_one_and_replace(const model::fi
     bson_error_t error;
 
     bool r = mongoc_collection_find_and_modify(
-        _impl->collection_t,
-        criteria.bson(),
-        sort.bson(),
-        replacement.bson(),
-        projection.bson(),
-        false,
-        model.upsert().value_or(false),
-        model.return_replacement().value_or(false),
-        reply.bson(),
-        &error);
+        _impl->collection_t, criteria.bson(), sort.bson(), replacement.bson(), projection.bson(),
+        false, model.upsert().value_or(false), model.return_replacement().value_or(false),
+        reply.bson(), &error);
 
     if (!r) {
         throw std::runtime_error("shits fucked");
@@ -237,7 +231,8 @@ optional<bson::document::value> collection::find_one_and_replace(const model::fi
     }
 }
 
-optional<bson::document::value> collection::find_one_and_update(const model::find_one_and_update& model) {
+optional<bson::document::value> collection::find_one_and_update(
+    const model::find_one_and_update& model) {
     scoped_bson_t criteria{model.criteria()};
     scoped_bson_t sort{model.sort()};
     scoped_bson_t update{model.update()};
@@ -248,15 +243,8 @@ optional<bson::document::value> collection::find_one_and_update(const model::fin
     bson_error_t error;
 
     bool r = mongoc_collection_find_and_modify(
-        _impl->collection_t,
-        criteria.bson(),
-        sort.bson(),
-        update.bson(),
-        projection.bson(),
-        false,
-        model.upsert().value_or(false),
-        model.return_replacement().value_or(false),
-        reply.bson(),
+        _impl->collection_t, criteria.bson(), sort.bson(), update.bson(), projection.bson(), false,
+        model.upsert().value_or(false), model.return_replacement().value_or(false), reply.bson(),
         &error);
 
     if (!r) {
@@ -278,7 +266,8 @@ optional<bson::document::value> collection::find_one_and_update(const model::fin
     }
 }
 
-optional<bson::document::value> collection::find_one_and_remove(const model::find_one_and_remove& model) {
+optional<bson::document::value> collection::find_one_and_remove(
+    const model::find_one_and_remove& model) {
     scoped_bson_t criteria{model.criteria()};
     scoped_bson_t sort{model.sort()};
     scoped_bson_t projection{model.projection()};
@@ -287,17 +276,9 @@ optional<bson::document::value> collection::find_one_and_remove(const model::fin
 
     bson_error_t error;
 
-    bool r = mongoc_collection_find_and_modify(
-        _impl->collection_t,
-        criteria.bson(),
-        sort.bson(),
-        nullptr,
-        projection.bson(),
-        true,
-        false,
-        false,
-        reply.bson(),
-        &error);
+    bool r = mongoc_collection_find_and_modify(_impl->collection_t, criteria.bson(), sort.bson(),
+                                               nullptr, projection.bson(), true, false, false,
+                                               reply.bson(), &error);
 
     if (!r) {
         throw std::runtime_error("shits fucked");

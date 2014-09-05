@@ -24,8 +24,7 @@ namespace bson {
 template <class Base>
 class builder::document_ctx {
    public:
-    document_ctx(builder* builder)
-        : _builder(builder) {}
+    document_ctx(builder* builder) : _builder(builder) {}
 
     Base unwrap() { return Base(_builder); }
 
@@ -62,5 +61,4 @@ class builder::document_ctx {
     builder* _builder;
     string_or_literal _key;
 };
-
 }

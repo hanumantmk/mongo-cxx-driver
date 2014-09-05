@@ -38,5 +38,4 @@ typename std::enable_if<util::is_functor<Func, void(document_builder)>::value, b
     func(*this);
     return builder::key_ctx<builder>(this);
 }
-
 }

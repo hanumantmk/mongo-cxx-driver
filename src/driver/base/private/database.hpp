@@ -24,7 +24,7 @@ namespace mongo {
 namespace driver {
 
 class database::impl {
-public:
+   public:
     ~impl() { mongoc_database_destroy(database_t); }
     mongoc_database_t* database_t;
     const class client* client;

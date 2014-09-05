@@ -26,20 +26,33 @@ write::write(update_one value) : _type(write_type::kUpdateOne), _update_one(std:
 write::write(update_many value) : _type(write_type::kUpdateMany), _update_many(std::move(value)) {}
 write::write(replace_one value) : _type(write_type::kReplaceOne), _replace_one(std::move(value)) {}
 
-write::write(write&& rhs) : _type(write_type::kUninitialized) {
-    *this = std::move(rhs);
-}
+write::write(write&& rhs) : _type(write_type::kUninitialized) { *this = std::move(rhs); }
 
 void write::destroy_member() {
     switch (_type) {
-        case write_type::kInsertOne: _insert_one.~insert_one(); break;
-        case write_type::kInsertMany: _insert_many.~insert_many(); break;
-        case write_type::kUpdateOne: _update_one.~update_one(); break;
-        case write_type::kUpdateMany: _update_many.~update_many(); break;
-        case write_type::kRemoveOne: _remove_one.~remove_one(); break;
-        case write_type::kRemoveMany: _remove_many.~remove_many(); break;
-        case write_type::kReplaceOne: _replace_one.~replace_one(); break;
-        case write_type::kUninitialized: break;
+        case write_type::kInsertOne:
+            _insert_one.~insert_one();
+            break;
+        case write_type::kInsertMany:
+            _insert_many.~insert_many();
+            break;
+        case write_type::kUpdateOne:
+            _update_one.~update_one();
+            break;
+        case write_type::kUpdateMany:
+            _update_many.~update_many();
+            break;
+        case write_type::kRemoveOne:
+            _remove_one.~remove_one();
+            break;
+        case write_type::kRemoveMany:
+            _remove_many.~remove_many();
+            break;
+        case write_type::kReplaceOne:
+            _replace_one.~replace_one();
+            break;
+        case write_type::kUninitialized:
+            break;
     }
 
     _type = write_type::kUninitialized;
@@ -49,14 +62,29 @@ write& write::operator=(write&& rhs) {
     destroy_member();
 
     switch (rhs._type) {
-        case write_type::kInsertOne: _insert_one = std::move(rhs._insert_one); break;
-        case write_type::kInsertMany: _insert_many = std::move(rhs._insert_many); break;
-        case write_type::kUpdateOne: _update_one = std::move(rhs._update_one); break;
-        case write_type::kUpdateMany: _update_many = std::move(rhs._update_many); break;
-        case write_type::kRemoveOne: _remove_one = std::move(rhs._remove_one); break;
-        case write_type::kRemoveMany: _remove_many = std::move(rhs._remove_many); break;
-        case write_type::kReplaceOne: _replace_one = std::move(rhs._replace_one); break;
-        case write_type::kUninitialized: break;
+        case write_type::kInsertOne:
+            _insert_one = std::move(rhs._insert_one);
+            break;
+        case write_type::kInsertMany:
+            _insert_many = std::move(rhs._insert_many);
+            break;
+        case write_type::kUpdateOne:
+            _update_one = std::move(rhs._update_one);
+            break;
+        case write_type::kUpdateMany:
+            _update_many = std::move(rhs._update_many);
+            break;
+        case write_type::kRemoveOne:
+            _remove_one = std::move(rhs._remove_one);
+            break;
+        case write_type::kRemoveMany:
+            _remove_many = std::move(rhs._remove_many);
+            break;
+        case write_type::kReplaceOne:
+            _replace_one = std::move(rhs._replace_one);
+            break;
+        case write_type::kUninitialized:
+            break;
     }
 
     _type = rhs._type;
@@ -74,9 +102,7 @@ const remove_one& write::get_remove_one() const { return _remove_one; }
 const remove_many& write::get_remove_many() const { return _remove_many; }
 const replace_one& write::get_replace_one() const { return _replace_one; }
 
-write::~write() {
-    destroy_member();
-}
+write::~write() { destroy_member(); }
 
 }  // namespace model
 }  // namespace driver

@@ -26,9 +26,7 @@ insert_many& insert_many::insert_one(bson::document::view view) {
     return *this;
 }
 
-const std::vector<bson::document::view>& insert_many::documents() const {
-    return _documents;
-}
+const std::vector<bson::document::view>& insert_many::documents() const { return _documents; }
 
 }  // namespace model
 }  // namespace driver

@@ -24,14 +24,13 @@ namespace driver {
 class instance {
     class impl;
 
-public:
-
+   public:
     instance();
     instance(instance&&);
     instance& operator=(instance&&);
     ~instance();
 
-private:
+   private:
     std::unique_ptr<impl> _impl;
 };
 

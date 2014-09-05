@@ -50,25 +50,15 @@ count& count::skip(std::int32_t skip) {
     return *this;
 }
 
-bson::document::view count::criteria() const {
-    return _criteria;
-}
+bson::document::view count::criteria() const { return _criteria; }
 
-optional<bson::document::view> count::hint() const {
-    return _hint;
-}
+optional<bson::document::view> count::hint() const { return _hint; }
 
-optional<std::int32_t> count::limit() const {
-    return _limit;
-}
+optional<std::int32_t> count::limit() const { return _limit; }
 
-optional<std::int64_t> count::max_time_ms() const {
-    return _max_time_ms;
-}
+optional<std::int64_t> count::max_time_ms() const { return _max_time_ms; }
 
-optional<std::int32_t> count::skip() const {
-    return _skip;
-}
+optional<std::int32_t> count::skip() const { return _skip; }
 
 }  // namesapce model
 }  // namespace driver

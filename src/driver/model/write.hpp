@@ -44,7 +44,7 @@ enum class write_type {
 };
 
 class LIBMONGOCXX_EXPORT write {
-public:
+   public:
     write(insert_one value);
     write(insert_many value);
     write(update_one value);
@@ -70,7 +70,7 @@ public:
     const remove_many& get_remove_many() const;
     const replace_one& get_replace_one() const;
 
-private:
+   private:
     void destroy_member();
 
     write_type _type;

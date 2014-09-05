@@ -18,12 +18,9 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-remove_one::remove_one(const bson::document::view& criteria) : _criteria(criteria) {
-}
+remove_one::remove_one(const bson::document::view& criteria) : _criteria(criteria) {}
 
-const bson::document::view& remove_one::criteria() const {
-    return _criteria;
-}
+const bson::document::view& remove_one::criteria() const { return _criteria; }
 
 }  // namespace model
 }  // namespace driver

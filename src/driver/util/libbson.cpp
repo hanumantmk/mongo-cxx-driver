@@ -52,9 +52,7 @@ void scoped_bson_t::init() {
     bson_init(&_bson);
 }
 
-void scoped_bson_t::flag_init() {
-    _is_initialized = true;
-}
+void scoped_bson_t::flag_init() { _is_initialized = true; }
 
 scoped_bson_t::scoped_bson_t() : _is_initialized(false) {}
 

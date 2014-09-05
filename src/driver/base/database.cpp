@@ -28,11 +28,10 @@ database::~database() = default;
 
 database::database(const class client& client, const std::string& database_name)
     : _impl(new impl{mongoc_client_get_database(util::cast<mongoc_client_t>(client._client),
-                                           database_name.c_str()), &client, database_name.c_str()}) {}
+                                                database_name.c_str()),
+                     &client, database_name.c_str()}) {}
 
-const std::string& database::name() const {
-    return _impl->name;
-}
+const std::string& database::name() const { return _impl->name; }
 
 collection database::collection(const std::string& collection_name) {
     return mongo::driver::collection(*this, collection_name);

@@ -61,7 +61,7 @@ struct insert_many;
 struct replace_one;
 struct update;
 struct remove;
-class  write;
+class write;
 }  // namespace result
 
 namespace fluent {

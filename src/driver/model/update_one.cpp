@@ -28,13 +28,9 @@ update_one& update_one::upsert(bool upsert) {
 
 optional<bool> update_one::upsert() const { return _upsert; }
 
-bson::document::view update_one::criteria() const {
-    return _criteria;
-}
+bson::document::view update_one::criteria() const { return _criteria; }
 
-bson::document::view update_one::update() const {
-    return _update;
-}
+bson::document::view update_one::update() const { return _update; }
 
 }  // namespace model
 }  // namespace driver

@@ -29,9 +29,8 @@ bulk_write::bulk_write(bulk_write&&) = default;
 bulk_write& bulk_write::operator=(bulk_write&&) = default;
 bulk_write::~bulk_write() = default;
 
-bulk_write::bulk_write(bool ordered) :
-    _impl(new impl{ordered, mongoc_bulk_operation_new(ordered)})
-{}
+bulk_write::bulk_write(bool ordered)
+    : _impl(new impl{ordered, mongoc_bulk_operation_new(ordered)}) {}
 
 bulk_write& bulk_write::append(write operation_t) {
 
@@ -55,7 +54,8 @@ bulk_write& bulk_write::append(write operation_t) {
             scoped_bson_t update(operation_t.get_update_one().update());
             bool upsert = operation_t.get_update_one().upsert().value_or(false);
 
-            mongoc_bulk_operation_update_one(_impl->operation_t, criteria.bson(), update.bson(), upsert);
+            mongoc_bulk_operation_update_one(_impl->operation_t, criteria.bson(), update.bson(),
+                                             upsert);
             break;
         }
         case write_type::kUpdateMany: {
@@ -63,7 +63,8 @@ bulk_write& bulk_write::append(write operation_t) {
             scoped_bson_t update(operation_t.get_update_many().update());
             bool upsert = operation_t.get_update_many().upsert().value_or(false);
 
-            mongoc_bulk_operation_update(_impl->operation_t, criteria.bson(), update.bson(), upsert);
+            mongoc_bulk_operation_update(_impl->operation_t, criteria.bson(), update.bson(),
+                                         upsert);
             break;
         }
         case write_type::kRemoveOne: {
@@ -85,18 +86,18 @@ bulk_write& bulk_write::append(write operation_t) {
             scoped_bson_t replace(operation_t.get_replace_one().replacement());
             bool upsert = operation_t.get_replace_one().upsert().value_or(false);
 
-            mongoc_bulk_operation_replace_one(_impl->operation_t, criteria.bson(), replace.bson(), upsert);
+            mongoc_bulk_operation_replace_one(_impl->operation_t, criteria.bson(), replace.bson(),
+                                              upsert);
             break;
         }
-        case write_type::kUninitialized: break; // TODO: something exceptiony
+        case write_type::kUninitialized:
+            break;  // TODO: something exceptiony
     }
 
     return *this;
 }
 
-bool bulk_write::ordered() const {
-    return _impl->ordered;
-}
+bool bulk_write::ordered() const { return _impl->ordered; }
 
 }  // namespace model
 }  // namespace driver

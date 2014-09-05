@@ -24,7 +24,7 @@ namespace driver {
 namespace model {
 
 class bulk_write::impl {
- public:
+   public:
     ~impl() { mongoc_bulk_operation_destroy(operation_t); }
     bool ordered;
     mongoc_bulk_operation_t* operation_t;

@@ -46,14 +46,18 @@ bool element::operator==(const element& rhs) const {
 }
 
 bson::type element::type() const {
-    if (_raw == NULL) { return bson::type::k_eod; }
+    if (_raw == NULL) {
+        return bson::type::k_eod;
+    }
 
     CITER;
     return static_cast<bson::type>(bson_iter_type(&iter));
 }
 
 string_or_literal element::key() const {
-    if (_raw == NULL) { return string_or_literal{""}; }
+    if (_raw == NULL) {
+        return string_or_literal{""};
+    }
 
     CITER;
 
@@ -255,19 +259,18 @@ element view::operator[](const string_or_literal& key) const {
 
 view::view(const std::uint8_t* b, std::size_t l) : buf(b), len(l) {}
 
-static uint8_t kDefaultView[5] = { 5, 0, 0, 0, 0 };
+static uint8_t kDefaultView[5] = {5, 0, 0, 0, 0};
 
 view::view() : buf(kDefaultView), len(5) {}
 
 const std::uint8_t* view::get_buf() const { return buf; }
 std::size_t view::get_len() const { return len; }
 
-value::value(const std::uint8_t* b, std::size_t l, void(*dtor)(void*))
+value::value(const std::uint8_t* b, std::size_t l, void (*dtor)(void*))
     : _buf((void*)b, dtor), _len(l) {}
 
 value::value(const document::view& view)
-    : _buf(malloc((std::size_t)view.get_len()), free),
-      _len(view.get_len()) {
+    : _buf(malloc((std::size_t)view.get_len()), free), _len(view.get_len()) {
     std::memcpy(_buf.get(), view.get_buf(), view.get_len());
 }
 
@@ -275,19 +278,16 @@ document::view value::view() const {
     return document::view{(uint8_t*)_buf.get(), _len};
 }
 
-value::operator document::view() const {
-    return view();
-}
+value::operator document::view() const { return view(); }
 
 view_or_value::view_or_value(bson::document::view view) : _is_view(true), _view(std::move(view)) {}
-view_or_value::view_or_value(bson::document::value value) : _is_view(false), _value(std::move(value)) {}
+view_or_value::view_or_value(bson::document::value value)
+    : _is_view(false), _value(std::move(value)) {}
 
-view_or_value::view_or_value(view_or_value&& rhs) : _is_view(true) {
-    *this = std::move(rhs);
-}
+view_or_value::view_or_value(view_or_value&& rhs) : _is_view(true) { *this = std::move(rhs); }
 
 view_or_value& view_or_value::operator=(view_or_value&& rhs) {
-    if (! _is_view) {
+    if (!_is_view) {
         rhs._value.~value();
     }
 
@@ -305,7 +305,7 @@ view_or_value& view_or_value::operator=(view_or_value&& rhs) {
 }
 
 view_or_value::~view_or_value() {
-    if (! _is_view) {
+    if (!_is_view) {
         _value.~value();
     }
 }
@@ -318,9 +318,7 @@ document::view view_or_value::view() const {
     }
 }
 
-view_or_value::operator document::view () const {
-    return view();
-}
+view_or_value::operator document::view() const { return view(); }
 
 std::ostream& operator<<(std::ostream& out, const bson::document::view& view) {
     json_visitor v(out, false, 0);

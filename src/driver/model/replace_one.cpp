@@ -18,7 +18,8 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-replace_one::replace_one(bson::document::view criteria, bson::document::view replacement) : _criteria(criteria), _replacement(replacement) {}
+replace_one::replace_one(bson::document::view criteria, bson::document::view replacement)
+    : _criteria(criteria), _replacement(replacement) {}
 
 replace_one& replace_one::upsert(bool upsert) {
     _upsert = upsert;
@@ -26,17 +27,11 @@ replace_one& replace_one::upsert(bool upsert) {
     return *this;
 }
 
-const bson::document::view& replace_one::criteria() const {
-    return _criteria;
-}
+const bson::document::view& replace_one::criteria() const { return _criteria; }
 
-const bson::document::view& replace_one::replacement() const {
-    return _replacement;
-}
+const bson::document::view& replace_one::replacement() const { return _replacement; }
 
-optional<bool> replace_one::upsert() const {
-    return _upsert;
-}
+optional<bool> replace_one::upsert() const { return _upsert; }
 
 }  // namespace model
 }  // namespace driver

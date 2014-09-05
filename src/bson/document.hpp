@@ -44,27 +44,27 @@ enum class binary_sub_type : std::uint8_t {
 };
 
 namespace types {
-    struct b_eod;
-    struct b_double;
-    struct b_utf8;
-    struct b_document;
-    struct b_array;
-    struct b_binary;
-    struct b_undefined;
-    struct b_oid;
-    struct b_bool;
-    struct b_date;
-    struct b_null;
-    struct b_regex;
-    struct b_dbpointer;
-    struct b_code;
-    struct b_symbol;
-    struct b_codewscope;
-    struct b_int32;
-    struct b_timestamp;
-    struct b_int64;
-    struct b_minkey;
-    struct b_maxkey;
+struct b_eod;
+struct b_double;
+struct b_utf8;
+struct b_document;
+struct b_array;
+struct b_binary;
+struct b_undefined;
+struct b_oid;
+struct b_bool;
+struct b_date;
+struct b_null;
+struct b_regex;
+struct b_dbpointer;
+struct b_code;
+struct b_symbol;
+struct b_codewscope;
+struct b_int32;
+struct b_timestamp;
+struct b_int64;
+struct b_minkey;
+struct b_maxkey;
 }
 
 namespace document {
@@ -162,14 +162,14 @@ class LIBMONGOCXX_EXPORT view {
 
 class LIBMONGOCXX_EXPORT value {
    public:
-    value(const std::uint8_t* b, std::size_t l, void(*dtor)(void*) = free);
+    value(const std::uint8_t* b, std::size_t l, void (*dtor)(void*) = free);
     value(const view& view);
 
     document::view view() const;
-    operator document::view () const;
+    operator document::view() const;
 
    private:
-    std::unique_ptr<void, void(*)(void*)> _buf;
+    std::unique_ptr<void, void (*)(void*)> _buf;
 
     std::size_t _len;
 };
@@ -185,7 +185,7 @@ class LIBMONGOCXX_EXPORT view_or_value {
     ~view_or_value();
 
     document::view view() const;
-    operator document::view () const;
+    operator document::view() const;
 
    private:
     view_or_value(const bson::document::view_or_value& view) = delete;

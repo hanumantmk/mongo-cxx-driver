@@ -22,26 +22,21 @@
 namespace mongo {
 namespace driver {
 
-    class pipeline::impl {
-    public:
-        impl() : _sink(&_builder) {
-            _builder << "pipeline" << bson::builder_helpers::open_array;
-        }
+class pipeline::impl {
+   public:
+    impl() : _sink(&_builder) { _builder << "pipeline" << bson::builder_helpers::open_array; }
 
-        bson::array_builder& sink() {
-            return _sink;
-        }
+    bson::array_builder& sink() { return _sink; }
 
-        bson::document::view view() {
-            _builder.close_array_append();
-            return _builder.view()["pipeline"].get_array().value;
-        }
+    bson::document::view view() {
+        _builder.close_array_append();
+        return _builder.view()["pipeline"].get_array().value;
+    }
 
-    private:
-
-        bson::builder _builder;
-        bson::array_builder _sink;
-    };
+   private:
+    bson::builder _builder;
+    bson::array_builder _sink;
+};
 
 }  // namespace driver
 }  // namespace mongo

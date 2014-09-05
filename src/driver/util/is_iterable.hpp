@@ -20,19 +20,19 @@ namespace util {
 
 template <typename T>
 class is_iterable {
-private:
-  typedef char Yes;
-  typedef Yes No[2];
+   private:
+    typedef char Yes;
+    typedef Yes No[2];
 
-  template<typename C> static auto Test(void*)
-    -> decltype(size_t{std::declval<C const>().begin()}, Yes{});
+    template <typename C>
+    static auto Test(void*) -> decltype(size_t{std::declval<C const>().begin()}, Yes{});
 
-  template<typename> static No& Test(...);
+    template <typename>
+    static No& Test(...);
 
-public:
+   public:
     static bool const value = sizeof(Test<T>(0)) == sizeof(Yes);
 };
-
 }
 }
 }

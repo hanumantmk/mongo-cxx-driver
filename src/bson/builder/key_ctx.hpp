@@ -61,5 +61,4 @@ class builder::key_ctx {
    private:
     builder* _builder;
 };
-
 }
