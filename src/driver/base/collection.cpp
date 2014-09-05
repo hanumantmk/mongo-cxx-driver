@@ -20,6 +20,7 @@
 
 #include "driver/base/private/collection.hpp"
 #include "driver/base/private/database.hpp"
+#include "driver/base/private/pipeline.hpp"
 #include "driver/model/private/bulk_write.hpp"
 #include "driver/base/collection.hpp"
 #include "driver/base/client.hpp"
@@ -120,7 +121,36 @@ optional<bson::document::value> collection::find_one(const model::find& model) c
     return bson::document::value{*find(copy).begin()};
 }
 
-cursor collection::aggregate(const model::aggregate& /* model */) { return cursor(nullptr); }
+cursor collection::aggregate(const model::aggregate& model) {
+    using namespace bson::builder_helpers;
+
+    scoped_bson_t pipeline(model.pipeline()._impl->view());
+
+    bson::builder b;
+
+    if (model.allow_disk_use()) {
+        /* TODO */
+    }
+    if (model.use_cursor()) {
+        auto inner = b << "cursor" << open_doc;
+
+        if (model.batch_size()) {
+            inner << "batchSize" << *model.batch_size();
+        }
+
+        inner << close_doc;
+    }
+
+    if (model.max_time_ms()) {
+        /* TODO */
+    }
+
+    scoped_bson_t options(b.view());
+
+    return cursor(mongoc_collection_aggregate(_impl->collection_t,
+                                              static_cast<mongoc_query_flags_t>(0), pipeline.bson(),
+                                              options.bson(), nullptr));
+}
 
 result::insert_one collection::insert_one(const model::insert_one& model) {
     result::bulk_write res(bulk_write(model::bulk_write(false).append(model)));

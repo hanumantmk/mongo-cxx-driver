@@ -97,8 +97,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
         bson::builder b1;
         b1 << "_id" << 1;
 
-//        coll.insert_one(b1.view());
-        coll.insert_one([](){bson::builder b; b << "_id" << 1; return b;}().view());
+        coll.insert_one(b1.view());
 
         bson::builder update_doc;
         update_doc << "$set" << open_doc << "changed" << true << close_doc;
@@ -338,5 +337,23 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
             REQUIRE(doc->view()["x"].get_int32() == 1);
             REQUIRE(coll.count() == 1);
         }
+    }
+
+    SECTION("aggregate some shit", "[collection]") {
+        bson::builder b1;
+        b1 << "x" << 1;
+
+        bson::builder b2;
+        b2 << "x" << 2;
+
+        coll.insert_one(b1.view());
+        coll.insert_one(b2.view());
+        coll.insert_one(b2.view());
+
+        pipeline p;
+        p.match(b1.view());
+
+        model::aggregate aggregation(std::move(p));
+        auto results = coll.aggregate(aggregation);
     }
 }

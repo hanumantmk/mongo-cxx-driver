@@ -23,7 +23,9 @@
 #include "driver/base/cursor.hpp"
 #include "driver/base/database.hpp"
 #include "driver/base/options.hpp"
+#include "driver/base/pipeline.hpp"
 
+#include "driver/model/aggregate.hpp"
 #include "driver/model/find.hpp"
 #include "driver/model/find_one_and_remove.hpp"
 #include "driver/model/find_one_and_replace.hpp"
@@ -41,5 +43,3 @@
 #include "driver/result/remove.hpp"
 #include "driver/result/replace_one.hpp"
 #include "driver/result/update.hpp"
-
-#include "driver/result/write.hpp"

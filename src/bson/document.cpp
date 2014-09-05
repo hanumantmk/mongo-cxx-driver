@@ -240,13 +240,13 @@ view::iterator view::begin() const {
 
 view::iterator view::end() const { return iterator(true); }
 
-element view::operator[](const char* key) const {
+element view::operator[](const string_or_literal& key) const {
     bson_t b;
     bson_iter_t iter;
 
     bson_init_static(&b, buf, len);
 
-    if (bson_iter_init_find(&iter, &b, key)) {
+    if (bson_iter_init_find(&iter, &b, key.c_str())) {
         return element(reinterpret_cast<const void*>(&iter));
     } else {
         return element{};
