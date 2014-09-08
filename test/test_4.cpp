@@ -34,8 +34,7 @@ int main() {
     builder << "foo" << 35 << "bar" << open_doc << "baz" << open_array << add_array << close_array
             << add_doc << [&](key_ctx<> builder) { builder << "lambda" << x++; }
             << [=](key_ctx<> builder) { builder << "lambda" << x; }
-            << [](key_ctx<> builder) { builder << "lambda" << 12; } << my_functor()
-            << close_doc;
+            << [](key_ctx<> builder) { builder << "lambda" << 12; } << my_functor() << close_doc;
 
     builder << add_doc;
 
@@ -48,11 +47,9 @@ int main() {
 
     std::cout << builder.view() << std::endl;
 
-    static_assert(util::is_functor<my_functor, void(key_ctx<>)>::value,
-                  "types should match");
+    static_assert(util::is_functor<my_functor, void(key_ctx<>)>::value, "types should match");
     static_assert(!util::is_functor<my_functor, void(int)>::value, "types shouldn't match");
-    static_assert(!util::is_functor<my_functor, int(key_ctx<>)>::value,
-                  "types shouldn't match");
+    static_assert(!util::is_functor<my_functor, int(key_ctx<>)>::value, "types shouldn't match");
 
     static_assert(util::is_functor<decltype(add_doc), void(key_ctx<>)>::value,
                   "types should match");

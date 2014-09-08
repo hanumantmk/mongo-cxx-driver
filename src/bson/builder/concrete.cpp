@@ -29,7 +29,9 @@ namespace builder {
 
 class concrete::impl {
    public:
-    impl(bool is_array) : _root_is_array(is_array), _n(0), _has_user_key(false) { bson_init(&_root); }
+    impl(bool is_array) : _root_is_array(is_array), _n(0), _has_user_key(false) {
+        bson_init(&_root);
+    }
 
     ~impl() {
         while (!_stack.empty()) {
@@ -379,11 +381,8 @@ bson::document::view concrete::view() const {
 
 concrete::operator bson::document::view() const { return view(); }
 
-bson::document::value concrete::extract() {
-    return _impl->steal();
-}
+bson::document::value concrete::extract() { return _impl->steal(); }
 
 void concrete::clear() { _impl->reinit(); }
-
 }
 }  // namespace bson

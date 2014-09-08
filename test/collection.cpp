@@ -15,18 +15,17 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
 
     SECTION("insert and read single document", "[collection]") {
         bson::builder::document b;
-        b << "_id" << bson::oid{bson::oid::init_tag}
-          << "x" << 1;
+        b << "_id" << bson::oid{bson::oid::init_tag} << "x" << 1;
 
         result::insert_one result = coll.insert_one(b.view());
 
         REQUIRE(result.is_acknowledged == true);
-        //REQUIRE(result.inserted_id.type() == bson::type::k_oid);
+        // REQUIRE(result.inserted_id.type() == bson::type::k_oid);
 
         auto cursor = coll.find(b.view());
 
         std::size_t i = 0;
-        for (auto&& x: cursor) {
+        for (auto&& x : cursor) {
             REQUIRE(x["_id"].get_oid().value == b.view()["_id"].get_oid().value);
             i++;
         }
@@ -40,7 +39,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
         b1 << "_id" << 1;
         b2 << "_id" << 2;
 
-        std::vector<bson::document::view> inserts { b1, b2 };
+        std::vector<bson::document::view> inserts{b1, b2};
         result::insert_many result = coll.insert_many(inserts);
 
         REQUIRE(result.is_acknowledged == true);
@@ -48,7 +47,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
         auto cursor = coll.find();
 
         std::int32_t sum = 0;
-        for (auto&& doc: cursor) {
+        for (auto&& doc : cursor) {
             sum += doc["_id"].get_int32();
         }
 
@@ -113,7 +112,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
     SECTION("matching upsert updates document", "[collection]") {
         bson::builder::document b1;
         b1 << "x" << 1;
-        model::insert_many docs { std::initializer_list<bson::document::view>{b1, b1, b1} };
+        model::insert_many docs{std::initializer_list<bson::document::view>{b1, b1, b1}};
         coll.insert_many(docs);
 
         coll.insert_one(bson::document::view{});
@@ -162,7 +161,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
             seen |= x["x"].get_int32();
         }
 
-        REQUIRE( seen == 3 );
+        REQUIRE(seen == 3);
 
         coll.remove_one(b2.view());
 
@@ -175,7 +174,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
             seen |= x["x"].get_int32();
         }
 
-        REQUIRE( seen == 1 );
+        REQUIRE(seen == 1);
 
         coll.remove_one(b2.view());
 
@@ -188,7 +187,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
             seen |= x["x"].get_int32();
         }
 
-        REQUIRE( seen == 1 );
+        REQUIRE(seen == 1);
     }
 
     SECTION("remove many works", "[collection]") {
@@ -216,7 +215,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
             seen |= x["x"].get_int32();
         }
 
-        REQUIRE( seen == 1 );
+        REQUIRE(seen == 1);
 
         coll.remove_many(b2.view());
 
@@ -229,7 +228,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
             seen |= x["x"].get_int32();
         }
 
-        REQUIRE( seen == 1 );
+        REQUIRE(seen == 1);
     }
 
     SECTION("find_one_and_replace works", "[collection]") {
@@ -248,7 +247,8 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
         replacement << "x" << 2;
 
         SECTION("without return replacement returns original") {
-            auto doc = coll.find_one_and_replace(model::find_one_and_replace{criteria, replacement});
+            auto doc =
+                coll.find_one_and_replace(model::find_one_and_replace{criteria, replacement});
 
             REQUIRE(doc);
 
@@ -256,7 +256,8 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
         }
 
         SECTION("with return replacement returns new") {
-            auto doc = coll.find_one_and_replace(model::find_one_and_replace{criteria, replacement}.return_replacement(true));
+            auto doc = coll.find_one_and_replace(
+                model::find_one_and_replace { criteria, replacement }.return_replacement(true));
 
             REQUIRE(doc);
             REQUIRE(doc->view()["x"].get_int32() == 2);
@@ -266,9 +267,10 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
             bson::builder::document bad_criteria;
             bad_criteria << "x" << 3;
 
-            auto doc = coll.find_one_and_replace(model::find_one_and_replace{bad_criteria, replacement});
+            auto doc =
+                coll.find_one_and_replace(model::find_one_and_replace{bad_criteria, replacement});
 
-            REQUIRE(! doc);
+            REQUIRE(!doc);
         }
     }
 
@@ -298,7 +300,8 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
         }
 
         SECTION("with return update returns new") {
-            auto doc = coll.find_one_and_update(model::find_one_and_update{criteria, update}.return_replacement(true));
+            auto doc = coll.find_one_and_update(
+                model::find_one_and_update { criteria, update }.return_replacement(true));
 
             REQUIRE(doc);
             REQUIRE(doc->view()["x"].get_int32() == 2);
@@ -310,7 +313,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
 
             auto doc = coll.find_one_and_update(model::find_one_and_update{bad_criteria, update});
 
-            REQUIRE(! doc);
+            REQUIRE(!doc);
         }
     }
 
