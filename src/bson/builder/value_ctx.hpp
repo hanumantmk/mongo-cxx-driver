@@ -17,38 +17,50 @@
 #pragma once
 
 #include "bson/builder/concrete.hpp"
-#include "bson/builder/array_ctx.hpp"
-#include "bson/builder/document_ctx.hpp"
-#include "bson/builder/key_ctx.hpp"
+#include "bson/builder/closed_ctx.hpp"
+#include "bson/builder/helpers.hpp"
+#include "bson/builder/forward_decls.hpp"
+#include "bson/util/functor.hpp"
 
 namespace bson {
 namespace builder {
 
+template <class Base = closed_ctx>
 class value_ctx {
    public:
     value_ctx(concrete* concrete) : _concrete(concrete) {}
 
-    array_ctx<value_ctx> wrap_array() { return array_ctx<value_ctx>(_concrete); }
-    key_ctx<value_ctx> wrap_document() { return key_ctx<value_ctx>(_concrete); }
+    template <class T>
+    typename std::enable_if<!util::is_functor<T, void(single_ctx)>::value, Base>::type operator<<(
+        T&& t) {
+        _concrete->value_append(std::forward<T>(t));
+        return unwrap();
+    }
 
-    key_ctx<value_ctx> operator<<(builder::helpers::open_doc_t) {
+    template <typename Func>
+    typename std::enable_if<util::is_functor<Func, void(single_ctx)>::value, Base>::type operator<<(
+        Func func) {
+        func(*this);
+        return unwrap();
+    }
+
+    key_ctx<Base> operator<<(builder::helpers::open_doc_t) {
         _concrete->open_doc_append();
-
         return wrap_document();
     }
 
-    array_ctx<value_ctx> operator<<(builder::helpers::open_array_t) {
+    array_ctx<Base> operator<<(builder::helpers::open_array_t) {
         _concrete->open_array_append();
-
         return wrap_array();
     }
 
-    template <class T>
-    void operator<<(T&& t) {
-        _concrete->value_append(std::forward<T>(t));
-    }
+    operator single_ctx();
 
    private:
+    Base unwrap() { return Base(_concrete); }
+    array_ctx<Base> wrap_array() { return array_ctx<Base>(_concrete); }
+    key_ctx<Base> wrap_document() { return key_ctx<Base>(_concrete); }
+
     concrete* _concrete;
 };
 }

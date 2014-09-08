@@ -4,7 +4,7 @@
 using namespace bson;
 using namespace bson::builder;
 
-void add_value(value_ctx builder) { builder << 4; }
+void add_value(single_ctx builder) { builder << 4; }
 
 void add_array(array_ctx<> builder) { builder << 1 << 2 << 3 << add_value; }
 

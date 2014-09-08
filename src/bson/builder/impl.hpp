@@ -17,20 +17,20 @@
 #pragma once
 
 #include "bson/builder/array_ctx.hpp"
-#include "bson/builder/document_ctx.hpp"
 #include "bson/builder/value_ctx.hpp"
+#include "bson/builder/single_ctx.hpp"
 
 namespace bson {
 namespace builder {
 
 template <class T>
-array_ctx<T>::operator value_ctx() {
-    return value_ctx(_concrete);
+array_ctx<T>::operator single_ctx() {
+    return single_ctx(_concrete);
 }
 
 template <class T>
-document_ctx<T>::operator value_ctx() {
-    return value_ctx(_concrete);
+value_ctx<T>::operator single_ctx() {
+    return single_ctx(_concrete);
 }
 
 }

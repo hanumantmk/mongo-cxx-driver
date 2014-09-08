@@ -30,20 +30,15 @@ class array_ctx {
    public:
     array_ctx(concrete* concrete) : _concrete(concrete) {}
 
-    Base unwrap() { return Base(_concrete); }
-
-    array_ctx<array_ctx> wrap_array() { return array_ctx<array_ctx>(_concrete); }
-    key_ctx<array_ctx> wrap_document() { return key_ctx<array_ctx>(_concrete); }
-
     template <class T>
-    typename std::enable_if<!(util::is_functor<T, void(array_ctx<>)>::value || util::is_functor<T, void(value_ctx)>::value || std::is_same<T, builder::helpers::close_doc_t>::value), array_ctx>::type& operator<<(
+    typename std::enable_if<!(util::is_functor<T, void(array_ctx<>)>::value || util::is_functor<T, void(single_ctx)>::value || std::is_same<T, builder::helpers::close_doc_t>::value), array_ctx>::type& operator<<(
         T&& t) {
         _concrete->value_append(std::forward<T>(t));
         return *this;
     }
 
     template <typename Func>
-    typename std::enable_if<(util::is_functor<Func, void(array_ctx<>)>::value || util::is_functor<Func, void(value_ctx)>::value), array_ctx>::type& operator<<(
+    typename std::enable_if<(util::is_functor<Func, void(array_ctx<>)>::value || util::is_functor<Func, void(single_ctx)>::value), array_ctx>::type& operator<<(
         Func func) {
         func(*this);
         return *this;
@@ -71,9 +66,13 @@ class array_ctx {
 
     operator array_ctx<>() { return array_ctx<>(_concrete); }
 
-    operator value_ctx();
+    operator single_ctx();
 
    private:
+    Base unwrap() { return Base(_concrete); }
+    array_ctx<array_ctx> wrap_array() { return array_ctx<array_ctx>(_concrete); }
+    key_ctx<array_ctx> wrap_document() { return key_ctx<array_ctx>(_concrete); }
+
     concrete* _concrete;
 };
 }

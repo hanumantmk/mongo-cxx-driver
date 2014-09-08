@@ -16,13 +16,40 @@
 
 #pragma once
 
-#include "bson/builder/helpers.hpp"
 #include "bson/builder/concrete.hpp"
 #include "bson/builder/array_ctx.hpp"
 #include "bson/builder/value_ctx.hpp"
 #include "bson/builder/key_ctx.hpp"
-#include "bson/builder/single_ctx.hpp"
-#include "bson/builder/array.hpp"
-#include "bson/builder/document.hpp"
-#include "bson/builder/impl.hpp"
-#include "bson/types.hpp"
+
+namespace bson {
+namespace builder {
+
+class single_ctx {
+   public:
+    single_ctx(concrete* concrete) : _concrete(concrete) {}
+
+    array_ctx<single_ctx> wrap_array() { return array_ctx<single_ctx>(_concrete); }
+    key_ctx<single_ctx> wrap_document() { return key_ctx<single_ctx>(_concrete); }
+
+    key_ctx<single_ctx> operator<<(builder::helpers::open_doc_t) {
+        _concrete->open_doc_append();
+
+        return wrap_document();
+    }
+
+    array_ctx<single_ctx> operator<<(builder::helpers::open_array_t) {
+        _concrete->open_array_append();
+
+        return wrap_array();
+    }
+
+    template <class T>
+    void operator<<(T&& t) {
+        _concrete->value_append(std::forward<T>(t));
+    }
+
+   private:
+    concrete* _concrete;
+};
+}
+}

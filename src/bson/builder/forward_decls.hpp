@@ -24,11 +24,11 @@ namespace builder {
     template <class T>
     class array_ctx;
     template <class T>
-    class document_ctx;
+    class value_ctx;
     template <class T>
     class key_ctx;
 
-    class value_ctx;
+    class single_ctx;
 
     struct closed_ctx;
 }

@@ -18,7 +18,7 @@
 
 #include "bson/builder/concrete.hpp"
 #include "bson/builder/closed_ctx.hpp"
-#include "bson/builder/document_ctx.hpp"
+#include "bson/builder/value_ctx.hpp"
 #include "bson/util/functor.hpp"
 
 namespace bson {
@@ -29,11 +29,9 @@ class key_ctx {
    public:
     key_ctx(concrete* concrete) : _concrete(concrete) {}
 
-    Base unwrap() { return Base(_concrete); }
-
-    document_ctx<key_ctx> operator<<(string_or_literal key) {
+    value_ctx<key_ctx> operator<<(string_or_literal key) {
         _concrete->key_append(std::move(key));
-        return document_ctx<key_ctx>(_concrete);
+        return value_ctx<key_ctx>(_concrete);
     }
 
     template <typename Func>
@@ -44,7 +42,7 @@ class key_ctx {
     }
 
     template <typename Func>
-    typename std::enable_if<util::is_functor<Func, string_or_literal()>::value, document_ctx<key_ctx>>::type operator<<(
+    typename std::enable_if<util::is_functor<Func, string_or_literal()>::value, value_ctx<key_ctx>>::type operator<<(
         Func func) {
         return (*this << func());
     }
@@ -62,6 +60,8 @@ class key_ctx {
     operator key_ctx<>() { return key_ctx<>(_concrete); }
 
    private:
+    Base unwrap() { return Base(_concrete); }
+
     concrete* _concrete;
 };
 
