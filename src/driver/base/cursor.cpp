@@ -18,24 +18,23 @@
 #include "bson.h"
 
 #include "driver/base/cursor.hpp"
+#include "driver/base/private/cursor.hpp"
 #include "driver/private/cast.hpp"
 
 namespace mongo {
 namespace driver {
 
-namespace {
-static void mongoc_cursor_dtor(void* cursor_ptr) noexcept {
-    if (cursor_ptr) {
-        mongoc_cursor_destroy(static_cast<mongoc_cursor_t*>(cursor_ptr));
-    }
-}
-}  // namespace
+cursor::cursor(cursor&&) = default;
+cursor& cursor::operator=(cursor&&) = default;
+cursor::~cursor() = default;
 
-cursor::cursor(void* cursor_ptr) : _cursor(cursor_ptr, mongoc_cursor_dtor) {}
+cursor::cursor(void* cursor_ptr)
+    : _impl(new impl{static_cast<mongoc_cursor_t*>(cursor_ptr)})
+{}
 
 cursor::iterator& cursor::iterator::operator++() {
     const bson_t* out;
-    if (mongoc_cursor_next(util::cast<mongoc_cursor_t>(_cursor->_cursor), &out)) {
+    if (mongoc_cursor_next(_cursor->_impl->cursor_t, &out)) {
         _doc = bson::document::view(bson_get_data(out), out->len);
     } else {
         _at_end = true;

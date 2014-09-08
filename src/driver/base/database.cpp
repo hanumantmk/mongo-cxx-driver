@@ -14,9 +14,9 @@
 
 #include "driver/libmongoc.hpp"
 
-#include "driver/base/private/database.hpp"
 #include "driver/base/database.hpp"
 #include "driver/base/client.hpp"
+#include "driver/base/private/database.hpp"
 #include "driver/private/cast.hpp"
 
 namespace mongo {
