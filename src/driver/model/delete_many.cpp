@@ -12,30 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
-
-#include "driver/config/prelude.hpp"
-
-#include "bson/document.hpp"
-#include "driver/util/optional.hpp"
+#include "driver/model/delete_many.hpp"
 
 namespace mongo {
 namespace driver {
 namespace model {
 
-class LIBMONGOCXX_EXPORT remove_many {
+delete_many::delete_many(bson::document::view criteria) : _criteria(std::move(criteria)) {}
 
-   public:
-     remove_many(bson::document::view criteria);
-
-    const bson::document::view& criteria() const;
-
-   private:
-    bson::document::view _criteria;
-};
+const bson::document::view& delete_many::criteria() const { return _criteria; }
 
 }  // namespace model
 }  // namespace driver
 }  // namespace mongo
-
-#include "driver/config/postlude.hpp"

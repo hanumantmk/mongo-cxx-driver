@@ -22,7 +22,7 @@ namespace mongo {
 namespace driver {
 namespace result {
 
-struct LIBMONGOCXX_EXPORT remove {
+struct LIBMONGOCXX_EXPORT delete_result {
     bool is_acknowledged;
     std::int64_t removed_count;
 };

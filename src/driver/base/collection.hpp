@@ -40,10 +40,10 @@ class aggregate;
 class bulk_write;
 class find;
 class find_one_and_replace;
-class find_one_and_remove;
+class find_one_and_delete;
 class find_one_and_update;
-class remove_one;
-class remove_many;
+class delete_one;
+class delete_many;
 class insert_one;
 class insert_many;
 class replace_one;
@@ -60,7 +60,7 @@ struct insert_one;
 struct insert_many;
 struct replace_one;
 struct update;
-struct remove;
+struct delete_result;
 class write;
 }  // namespace result
 
@@ -86,14 +86,14 @@ class LIBMONGOCXX_EXPORT collection {
     result::replace_one replace_one(const model::replace_one& model);
     result::update update_one(const model::update_one& model);
     result::update update_many(const model::update_many& model);
-    result::remove remove_one(const model::remove_one& model);
-    result::remove remove_many(const model::remove_many& model);
+    result::delete_result delete_one(const model::delete_one& model);
+    result::delete_result delete_many(const model::delete_many& model);
 
     result::bulk_write bulk_write(const model::bulk_write& model);
 
     optional<bson::document::value> find_one_and_replace(const model::find_one_and_replace& model);
     optional<bson::document::value> find_one_and_update(const model::find_one_and_update& model);
-    optional<bson::document::value> find_one_and_remove(const model::find_one_and_remove& model);
+    optional<bson::document::value> find_one_and_delete(const model::find_one_and_delete& model);
 
     bson::document::value explain(const model::explain& model) const;
     bson::document::value distinct(const model::distinct& model) const;

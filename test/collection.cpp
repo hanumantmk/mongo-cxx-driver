@@ -136,7 +136,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
         REQUIRE(coll.count() == 1);
     }
 
-    SECTION("filtered document remove one works", "[collection]") {
+    SECTION("filtered document delete one works", "[collection]") {
         bson::builder::document b1;
         b1 << "x" << 1;
 
@@ -150,7 +150,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
 
         REQUIRE(coll.count() == 3);
 
-        coll.remove_one(b2.view());
+        coll.delete_one(b2.view());
 
         REQUIRE(coll.count() == 2);
 
@@ -163,7 +163,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
 
         REQUIRE(seen == 3);
 
-        coll.remove_one(b2.view());
+        coll.delete_one(b2.view());
 
         REQUIRE(coll.count() == 1);
 
@@ -176,7 +176,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
 
         REQUIRE(seen == 1);
 
-        coll.remove_one(b2.view());
+        coll.delete_one(b2.view());
 
         REQUIRE(coll.count() == 1);
 
@@ -190,7 +190,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
         REQUIRE(seen == 1);
     }
 
-    SECTION("remove many works", "[collection]") {
+    SECTION("delete many works", "[collection]") {
         bson::builder::document b1;
         b1 << "x" << 1;
 
@@ -204,7 +204,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
 
         REQUIRE(coll.count() == 3);
 
-        coll.remove_many(b2.view());
+        coll.delete_many(b2.view());
 
         REQUIRE(coll.count() == 1);
 
@@ -217,7 +217,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
 
         REQUIRE(seen == 1);
 
-        coll.remove_many(b2.view());
+        coll.delete_many(b2.view());
 
         REQUIRE(coll.count() == 1);
 
@@ -317,7 +317,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
         }
     }
 
-    SECTION("find_one_and_remove works", "[collection]") {
+    SECTION("find_one_and_delete works", "[collection]") {
         using namespace bson::builder::helpers;
 
         bson::builder::document b1;
@@ -332,8 +332,8 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
 
         criteria << "x" << 1;
 
-        SECTION("remove one removes one and returns it") {
-            auto doc = coll.find_one_and_remove(model::find_one_and_remove{criteria});
+        SECTION("delete one deletes one and returns it") {
+            auto doc = coll.find_one_and_delete(model::find_one_and_delete{criteria});
 
             REQUIRE(doc);
 

@@ -12,36 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
-
-#include "driver/config/prelude.hpp"
-
-#include "bson/document.hpp"
-#include "driver/util/optional.hpp"
+#include "driver/model/find_one_and_delete.hpp"
 
 namespace mongo {
 namespace driver {
 namespace model {
 
-class LIBMONGOCXX_EXPORT find_one_and_remove {
+find_one_and_delete::find_one_and_delete(bson::document::view criteria)
+    : _criteria(std::move(criteria)) {}
 
-   public:
-    find_one_and_remove(bson::document::view criteria);
+find_one_and_delete& find_one_and_delete::projection(bson::document::view projection) {
+    _projection = projection;
+    return *this;
+}
 
-    find_one_and_remove& projection(bson::document::view projection);
-    find_one_and_remove& sort(bson::document::view ordering);
+find_one_and_delete& find_one_and_delete::sort(bson::document::view ordering) {
+    _ordering = ordering;
+    return *this;
+}
 
-    bson::document::view criteria() const;
+bson::document::view find_one_and_delete::criteria() const { return _criteria; }
 
-    optional<bson::document::view> projection() const;
-    optional<bson::document::view> sort() const;
+optional<bson::document::view> find_one_and_delete::projection() const { return _projection; }
 
-   private:
-    bson::document::view _criteria;
-
-    optional<bson::document::view> _projection;
-    optional<bson::document::view> _ordering;
-};
+optional<bson::document::view> find_one_and_delete::sort() const { return _ordering; }
 
 }  // namespace model
 }  // namespace driver

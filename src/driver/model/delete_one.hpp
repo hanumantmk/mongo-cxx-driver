@@ -23,10 +23,10 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-class LIBMONGOCXX_EXPORT remove_one {
+class LIBMONGOCXX_EXPORT delete_one {
 
    public:
-     remove_one(bson::document::view criteria);
+     delete_one(bson::document::view criteria);
 
     const bson::document::view& criteria() const;
 

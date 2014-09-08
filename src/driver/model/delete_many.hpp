@@ -12,30 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "driver/model/find_one_and_remove.hpp"
+#pragma once
+
+#include "driver/config/prelude.hpp"
+
+#include "bson/document.hpp"
+#include "driver/util/optional.hpp"
 
 namespace mongo {
 namespace driver {
 namespace model {
 
-find_one_and_remove::find_one_and_remove(bson::document::view criteria)
-    : _criteria(std::move(criteria)) {}
+class LIBMONGOCXX_EXPORT delete_many {
 
-find_one_and_remove& find_one_and_remove::projection(bson::document::view projection) {
-    _projection = projection;
-    return *this;
-}
+   public:
+     delete_many(bson::document::view criteria);
 
-find_one_and_remove& find_one_and_remove::sort(bson::document::view ordering) {
-    _ordering = ordering;
-    return *this;
-}
+    const bson::document::view& criteria() const;
 
-bson::document::view find_one_and_remove::criteria() const { return _criteria; }
-
-optional<bson::document::view> find_one_and_remove::projection() const { return _projection; }
-
-optional<bson::document::view> find_one_and_remove::sort() const { return _ordering; }
+   private:
+    bson::document::view _criteria;
+};
 
 }  // namespace model
 }  // namespace driver

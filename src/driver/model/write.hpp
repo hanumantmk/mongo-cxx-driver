@@ -20,8 +20,8 @@
 #include "driver/util/optional.hpp"
 #include "driver/model/insert_one.hpp"
 #include "driver/model/insert_many.hpp"
-#include "driver/model/remove_one.hpp"
-#include "driver/model/remove_many.hpp"
+#include "driver/model/delete_one.hpp"
+#include "driver/model/delete_many.hpp"
 #include "driver/model/update_one.hpp"
 #include "driver/model/update_many.hpp"
 #include "driver/model/replace_one.hpp"
@@ -35,8 +35,8 @@ class write_concern;
 enum class write_type {
     kInsertOne,
     kInsertMany,
-    kRemoveOne,
-    kRemoveMany,
+    kDeleteOne,
+    kDeleteMany,
     kUpdateOne,
     kUpdateMany,
     kReplaceOne,
@@ -49,8 +49,8 @@ class LIBMONGOCXX_EXPORT write {
     write(insert_many value);
     write(update_one value);
     write(update_many value);
-    write(remove_one value);
-    write(remove_many value);
+    write(delete_one value);
+    write(delete_many value);
     write(replace_one value);
 
     write(write&& rhs);
@@ -66,8 +66,8 @@ class LIBMONGOCXX_EXPORT write {
     const insert_many& get_insert_many() const;
     const update_one& get_update_one() const;
     const update_many& get_update_many() const;
-    const remove_one& get_remove_one() const;
-    const remove_many& get_remove_many() const;
+    const delete_one& get_delete_one() const;
+    const delete_many& get_delete_many() const;
     const replace_one& get_replace_one() const;
 
    private:
@@ -80,8 +80,8 @@ class LIBMONGOCXX_EXPORT write {
         insert_many _insert_many;
         update_one _update_one;
         update_many _update_many;
-        remove_one _remove_one;
-        remove_many _remove_many;
+        delete_one _delete_one;
+        delete_many _delete_many;
         replace_one _replace_one;
     };
 };

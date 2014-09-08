@@ -67,15 +67,15 @@ bulk_write& bulk_write::append(write operation_t) {
                                          upsert);
             break;
         }
-        case write_type::kRemoveOne: {
-            scoped_bson_t criteria(operation_t.get_remove_one().criteria());
+        case write_type::kDeleteOne: {
+            scoped_bson_t criteria(operation_t.get_delete_one().criteria());
 
             mongoc_bulk_operation_remove_one(_impl->operation_t, criteria.bson());
 
             break;
         }
-        case write_type::kRemoveMany: {
-            scoped_bson_t criteria(operation_t.get_remove_many().criteria());
+        case write_type::kDeleteMany: {
+            scoped_bson_t criteria(operation_t.get_delete_many().criteria());
 
             mongoc_bulk_operation_remove(_impl->operation_t, criteria.bson());
 

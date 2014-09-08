@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "driver/model/remove_one.hpp"
+#include "driver/model/delete_one.hpp"
 
 namespace mongo {
 namespace driver {
 namespace model {
 
-remove_one::remove_one(bson::document::view criteria) : _criteria(std::move(criteria)) {}
+delete_one::delete_one(bson::document::view criteria) : _criteria(std::move(criteria)) {}
 
-const bson::document::view& remove_one::criteria() const { return _criteria; }
+const bson::document::view& delete_one::criteria() const { return _criteria; }
 
 }  // namespace model
 }  // namespace driver

@@ -27,7 +27,7 @@
 #include "driver/model/aggregate.hpp"
 #include "driver/model/find.hpp"
 #include "driver/model/find_one_and_replace.hpp"
-#include "driver/model/find_one_and_remove.hpp"
+#include "driver/model/find_one_and_delete.hpp"
 #include "driver/model/find_one_and_update.hpp"
 #include "driver/model/insert_one.hpp"
 #include "driver/model/update_one.hpp"
@@ -35,8 +35,7 @@
 #include "driver/result/bulk_write.hpp"
 #include "driver/result/insert_many.hpp"
 #include "driver/result/insert_one.hpp"
-#include "driver/result/remove.hpp"
-#include "driver/result/remove.hpp"
+#include "driver/result/delete.hpp"
 #include "driver/result/replace_one.hpp"
 #include "driver/result/update.hpp"
 #include "driver/result/write.hpp"
@@ -87,7 +86,7 @@ result::bulk_write collection::bulk_write(const model::bulk_write& model) {
     result.inserted_count = reply_view["nInserted"].get_int32();
     result.matched_count = reply_view["nMatched"].get_int32();
     result.modified_count = reply_view["nModified"].get_int32();
-    result.removed_count = reply_view["nRemoved"].get_int32();
+    result.deleted_count = reply_view["nRemoved"].get_int32();
     result.upserted_count = reply_view["nUpserted"].get_int32();
 
     return result;
@@ -175,9 +174,10 @@ result::replace_one collection::replace_one(const model::replace_one& /* model *
 result::update collection::update_many(const model::update_many& /* model */) {
     return result::update();
 }
-result::remove collection::remove_many(const model::remove_many& model) {
+
+result::delete_result collection::delete_many(const model::delete_many& model) {
     result::bulk_write res(bulk_write(model::bulk_write(false).append(model)));
-    result::remove result;
+    result::delete_result result;
     result.is_acknowledged = true;
     return result;
 }
@@ -189,9 +189,9 @@ result::update collection::update_one(const model::update_one& model) {
     return result;
 }
 
-result::remove collection::remove_one(const model::remove_one& model) {
+result::delete_result collection::delete_one(const model::delete_one& model) {
     result::bulk_write res(bulk_write(model::bulk_write(false).append(model)));
-    result::remove result;
+    result::delete_result result;
     result.is_acknowledged = true;
     return result;
 }
@@ -266,8 +266,8 @@ optional<bson::document::value> collection::find_one_and_update(
     }
 }
 
-optional<bson::document::value> collection::find_one_and_remove(
-    const model::find_one_and_remove& model) {
+optional<bson::document::value> collection::find_one_and_delete(
+    const model::find_one_and_delete& model) {
     scoped_bson_t criteria{model.criteria()};
     scoped_bson_t sort{model.sort()};
     scoped_bson_t projection{model.projection()};
