@@ -66,7 +66,7 @@ class LIBMONGOCXX_EXPORT concrete {
     void value_append(const types::b_minkey& value);
     void value_append(const types::b_maxkey& value);
 
-    void value_append(const element& value);
+    void value_append(const document::element& value);
 
     void value_append(string_or_literal value);
 

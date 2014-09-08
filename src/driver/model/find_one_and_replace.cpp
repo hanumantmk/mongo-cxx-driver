@@ -20,7 +20,7 @@ namespace model {
 
 find_one_and_replace::find_one_and_replace(bson::document::view criteria,
                                            bson::document::view replacement)
-    : _criteria(criteria), _replacement(replacement) {}
+    : _criteria(std::move(criteria)), _replacement(std::move(replacement)) {}
 
 find_one_and_replace& find_one_and_replace::projection(bson::document::view projection) {
     _projection = projection;

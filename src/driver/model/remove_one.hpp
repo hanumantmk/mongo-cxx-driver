@@ -26,7 +26,7 @@ namespace model {
 class LIBMONGOCXX_EXPORT remove_one {
 
    public:
-    remove_one(const bson::document::view& criteria);
+     remove_one(bson::document::view criteria);
 
     const bson::document::view& criteria() const;
 

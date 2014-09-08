@@ -34,8 +34,8 @@ struct LIBMONGOCXX_EXPORT bulk_write {
     std::int64_t removed_count;
     std::int64_t upserted_count;
 
-    std::map<std::size_t, bson::element> inserted_ids;
-    std::map<std::size_t, bson::element> upserted_ids;
+    std::map<std::size_t, bson::document::element> inserted_ids;
+    std::map<std::size_t, bson::document::element> upserted_ids;
 };
 
 }  // namespace result

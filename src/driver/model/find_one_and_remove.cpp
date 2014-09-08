@@ -18,7 +18,8 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-find_one_and_remove::find_one_and_remove(bson::document::view criteria) : _criteria(criteria) {}
+find_one_and_remove::find_one_and_remove(bson::document::view criteria)
+    : _criteria(std::move(criteria)) {}
 
 find_one_and_remove& find_one_and_remove::projection(bson::document::view projection) {
     _projection = projection;

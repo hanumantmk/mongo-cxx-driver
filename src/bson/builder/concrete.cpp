@@ -341,7 +341,7 @@ void concrete::concat_append(const bson::document::view& view) {
     }
 }
 
-void concrete::value_append(const element& value) {
+void concrete::value_append(const bson::document::element& value) {
     const string_or_literal& key = _impl->next_key();
 
     bson_iter_t iter;

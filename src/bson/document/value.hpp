@@ -16,23 +16,28 @@
 
 #include "driver/config/prelude.hpp"
 
-#include <cstdint>
-#include <map>
+#include <memory>
 
-#include "bson/types.hpp"
+#include "bson/document/view.hpp"
 
-namespace mongo {
-namespace driver {
-namespace result {
+namespace bson {
+namespace document {
 
-struct LIBMONGOCXX_EXPORT insert_many {
-    bool is_acknowledged;
-    std::map<std::size_t, bson::document::element> inserted_ids;
-    std::int32_t inserted_count;
+class LIBMONGOCXX_EXPORT value {
+   public:
+    value(const std::uint8_t* b, std::size_t l, void (*dtor)(void*) = free);
+    value(const view& view);
+
+    document::view view() const;
+    operator document::view() const;
+
+   private:
+    std::unique_ptr<void, void (*)(void*)> _buf;
+
+    std::size_t _len;
 };
 
-}  // namespace result
-}  // namespace driver
-}  // namespace mongo
+}  // namespace document
+}  // namespace bson
 
 #include "driver/config/postlude.hpp"

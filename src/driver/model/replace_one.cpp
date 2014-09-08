@@ -19,7 +19,7 @@ namespace driver {
 namespace model {
 
 replace_one::replace_one(bson::document::view criteria, bson::document::view replacement)
-    : _criteria(criteria), _replacement(replacement) {}
+    : _criteria(std::move(criteria)), _replacement(std::move(replacement)) {}
 
 replace_one& replace_one::upsert(bool upsert) {
     _upsert = upsert;

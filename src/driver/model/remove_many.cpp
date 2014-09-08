@@ -18,7 +18,7 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-remove_many::remove_many(const bson::document::view& criteria) : _criteria(criteria) {}
+remove_many::remove_many(bson::document::view criteria) : _criteria(std::move(criteria)) {}
 
 const bson::document::view& remove_many::criteria() const { return _criteria; }
 

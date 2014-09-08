@@ -25,6 +25,17 @@
 
 namespace bson {
 
+enum class type : std::uint8_t {
+#define MONGOCXX_ENUM(name, val) k_##name = val,
+#include "bson/enums/type.hpp"
+#undef MONGOCXX_ENUM
+};
+
+enum class binary_sub_type : std::uint8_t {
+#define MONGOCXX_ENUM(name, val) k_##name = val,
+#include "bson/enums/binary_sub_type.hpp"
+#undef MONGOCXX_ENUM
+};
 std::ostream& operator<<(std::ostream& out, type rhs);
 std::ostream& operator<<(std::ostream& out, binary_sub_type rhs);
 

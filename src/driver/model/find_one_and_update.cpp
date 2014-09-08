@@ -19,7 +19,7 @@ namespace driver {
 namespace model {
 
 find_one_and_update::find_one_and_update(bson::document::view criteria, bson::document::view update)
-    : _criteria(criteria), _update(update) {}
+    : _criteria(std::move(criteria)), _update(std::move(update)) {}
 
 find_one_and_update& find_one_and_update::projection(bson::document::view projection) {
     _projection = projection;

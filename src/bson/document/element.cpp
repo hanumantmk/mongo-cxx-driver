@@ -1,24 +1,22 @@
-/**
- * Copyright 2014 MongoDB Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2014 MongoDB Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 #include <cstdlib>
 #include <cstring>
 
 #include "bson.h"
-#include "bson/document.hpp"
+#include "bson/document/element.hpp"
 #include "bson/types.hpp"
 #include "bson/json.hpp"
 
@@ -30,6 +28,7 @@
     bson_iter_next(&iter)
 
 namespace bson {
+namespace document {
 
 element::element() : _raw(nullptr) {}
 
@@ -46,7 +45,7 @@ bool element::operator==(const element& rhs) const {
 }
 
 bson::type element::type() const {
-    if (_raw == NULL) {
+    if (_raw == nullptr) {
         return bson::type::k_eod;
     }
 
@@ -55,7 +54,7 @@ bson::type element::type() const {
 }
 
 string_or_literal element::key() const {
-    if (_raw == NULL) {
+    if (_raw == nullptr) {
         return string_or_literal{""};
     }
 
@@ -197,138 +196,6 @@ types::b_maxkey element::get_maxkey() const {
     return types::b_maxkey{};
 }
 
-namespace document {
-
-view::iterator::iterator(const void* i) : iter(i), is_end(false) {}
-view::iterator::iterator(bool is_end) : is_end(is_end) {}
-
-const element& view::iterator::operator*() const { return iter; }
-const element* view::iterator::operator->() const { return &iter; }
-
-view::iterator& view::iterator::operator++() {
-    bson_iter_t i;
-    i.raw = iter._raw;
-    i.len = iter._len;
-    i.next_off = iter._off;
-    bson_iter_next(&i);
-
-    is_end = !bson_iter_next(&i);
-
-    iter._raw = i.raw;
-    iter._len = i.len;
-    iter._off = i.off;
-
-    return *this;
-}
-
-bool view::iterator::operator==(const iterator& rhs) const {
-    if (is_end && rhs.is_end) return true;
-    if (is_end || rhs.is_end) return false;
-    return iter == rhs.iter;
-
-    return false;
-}
-
-bool view::iterator::operator!=(const iterator& rhs) const { return !(*this == rhs); }
-
-view::iterator view::begin() const {
-    bson_t b;
-    bson_iter_t iter;
-
-    bson_init_static(&b, buf, len);
-    bson_iter_init(&iter, &b);
-    bson_iter_next(&iter);
-
-    return iterator(&iter);
-}
-
-view::iterator view::end() const { return iterator(true); }
-
-element view::operator[](const string_or_literal& key) const {
-    bson_t b;
-    bson_iter_t iter;
-
-    bson_init_static(&b, buf, len);
-
-    if (bson_iter_init_find(&iter, &b, key.c_str())) {
-        return element(reinterpret_cast<const void*>(&iter));
-    } else {
-        return element{};
-    }
-}
-
-view::view(const std::uint8_t* b, std::size_t l) : buf(b), len(l) {}
-
-static uint8_t kDefaultView[5] = {5, 0, 0, 0, 0};
-
-view::view() : buf(kDefaultView), len(5) {}
-
-const std::uint8_t* view::get_buf() const { return buf; }
-std::size_t view::get_len() const { return len; }
-
-value::value(const std::uint8_t* b, std::size_t l, void (*dtor)(void*))
-    : _buf((void*)b, dtor), _len(l) {}
-
-value::value(const document::view& view)
-    : _buf(malloc((std::size_t)view.get_len()), free), _len(view.get_len()) {
-    std::memcpy(_buf.get(), view.get_buf(), view.get_len());
-}
-
-document::view value::view() const {
-    return document::view{(uint8_t*)_buf.get(), _len};
-}
-
-value::operator document::view() const { return view(); }
-
-view_or_value::view_or_value(bson::document::view view) : _is_view(true), _view(std::move(view)) {}
-view_or_value::view_or_value(bson::document::value value)
-    : _is_view(false), _value(std::move(value)) {}
-
-view_or_value::view_or_value(view_or_value&& rhs) : _is_view(true) { *this = std::move(rhs); }
-
-view_or_value& view_or_value::operator=(view_or_value&& rhs) {
-    if (!_is_view) {
-        rhs._value.~value();
-    }
-
-    if (_is_view) {
-        _view = std::move(rhs._view);
-    } else {
-        _value = std::move(rhs._value);
-    }
-
-    _is_view = rhs._is_view;
-
-    rhs._is_view = true;
-
-    return *this;
-}
-
-view_or_value::~view_or_value() {
-    if (!_is_view) {
-        _value.~value();
-    }
-}
-
-document::view view_or_value::view() const {
-    if (_is_view) {
-        return _view;
-    } else {
-        return _value.view();
-    }
-}
-
-view_or_value::operator document::view() const { return view(); }
-
-std::ostream& operator<<(std::ostream& out, const bson::document::view& view) {
-    json_visitor v(out, false, 0);
-    v.visit_value(types::b_document{view});
-
-    return out;
-}
-
-}  // namespace document
-
 types::b_document element::get_document() const {
     CITER;
 
@@ -367,4 +234,5 @@ std::ostream& operator<<(std::ostream& out, const element& element) {
     return out;
 }
 
+}  // namespace document
 }  // namespace bson
