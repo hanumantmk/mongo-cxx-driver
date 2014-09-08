@@ -1,18 +1,16 @@
-/**
- * Copyright 2014 MongoDB Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2014 MongoDB Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 #include "bson/util/itoa.hpp"
 
@@ -1021,17 +1019,17 @@ const char* kIndexTable =
     "998\0"
     "999\0";
 
-itoa::itoa(uint32_t val) : val(val) { init(); }
+itoa::itoa(uint32_t val) : _val(val) { init(); }
 
 void itoa::init() {
-    if (val < 10) {
-        _str = kIndexTable + (2 * val);
+    if (_val < 10) {
+        _str = kIndexTable + (2 * _val);
         _len = 1;
-    } else if (val < 100) {
-        _str = kIndexTable + (2 * 10) + (3 * (val - 10));
+    } else if (_val < 100) {
+        _str = kIndexTable + (2 * 10) + (3 * (_val - 10));
         _len = 2;
-    } else if (val < 1000) {
-        _str = kIndexTable + (2 * 10) + (3 * 90) + (4 * (val - 100));
+    } else if (_val < 1000) {
+        _str = kIndexTable + (2 * 10) + (3 * 90) + (4 * (_val - 100));
         _len = 3;
     } else {
         int size = sizeof(_buf) - 1;
@@ -1039,10 +1037,10 @@ void itoa::init() {
 
         _buf[i] = '\0';
 
-        while (val > 0) {
+        while (_val > 0) {
             i--;
-            _buf[i] = (val % 10) + '0';
-            val = val / 10;
+            _buf[i] = (_val % 10) + '0';
+            _val = _val / 10;
         }
 
         _str = _buf + i;
@@ -1052,16 +1050,16 @@ void itoa::init() {
 
 itoa::itoa() : itoa(0) {}
 
-itoa::itoa(const itoa& rhs) : itoa(rhs.val) {}
+itoa::itoa(const itoa& rhs) : itoa(rhs._val) {}
 
 itoa& itoa::operator=(const itoa& rhs) {
-    val = rhs.val;
+    _val = rhs._val;
     init();
     return *this;
 }
 
 itoa& itoa::operator=(uint32_t i) {
-    val = i;
+    _val = i;
     init();
     return *this;
 }
