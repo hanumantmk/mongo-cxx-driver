@@ -37,7 +37,7 @@ aggregate& aggregate::use_cursor(bool use_cursor) {
     return *this;
 }
 
-const pipeline& aggregate::pipeline() const { return _pipeline; }
+const pipeline& aggregate::stages() const { return _pipeline; }
 
 optional<bool> aggregate::allow_disk_use() const { return _allow_disk_use; }
 optional<std::int32_t> aggregate::batch_size() const { return _batch_size; }

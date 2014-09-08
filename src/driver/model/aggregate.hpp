@@ -35,7 +35,7 @@ class LIBMONGOCXX_EXPORT aggregate {
     aggregate& max_time_ms(std::int64_t max_time_ms);
     aggregate& use_cursor(bool use_cursor);
 
-    const pipeline& pipeline() const;
+    const pipeline& stages() const;
     optional<bool> allow_disk_use() const;
     optional<std::int32_t> batch_size() const;
     optional<std::int64_t> max_time_ms() const;

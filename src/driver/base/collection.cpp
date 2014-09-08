@@ -125,7 +125,7 @@ optional<bson::document::value> collection::find_one(const model::find& model) c
 cursor collection::aggregate(const model::aggregate& model) {
     using namespace bson::builder_helpers;
 
-    scoped_bson_t pipeline(model.pipeline()._impl->view());
+    scoped_bson_t pipeline(model.stages()._impl->view());
 
     bson::builder b;
 
