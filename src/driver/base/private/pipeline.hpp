@@ -25,7 +25,7 @@ namespace driver {
 class pipeline::impl {
    public:
 
-    bson::builder::array_ctx<> sink() {
+    bson::builder::value_ctx sink() {
         return _builder;
     }
 
