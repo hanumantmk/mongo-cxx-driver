@@ -16,13 +16,21 @@
 
 #pragma once
 
-#include "bson/builder/helpers.hpp"
-#include "bson/builder/concrete.hpp"
-#include "bson/builder/array_ctx.hpp"
-#include "bson/builder/document_ctx.hpp"
-#include "bson/builder/key_ctx.hpp"
-#include "bson/builder/value_ctx.hpp"
-#include "bson/builder/array.hpp"
-#include "bson/builder/document.hpp"
-#include "bson/builder/impl.hpp"
-#include "bson/types.hpp"
+#include "driver/config/prelude.hpp"
+
+namespace bson {
+namespace builder {
+
+    template <class T>
+    class array_ctx;
+    template <class T>
+    class document_ctx;
+    template <class T>
+    class key_ctx;
+
+    class value_ctx;
+
+    struct closed_ctx;
+}
+
+}  // namespace bson

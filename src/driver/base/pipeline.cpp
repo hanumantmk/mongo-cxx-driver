@@ -18,7 +18,8 @@
 
 namespace mongo {
 namespace driver {
-using namespace bson::builder_helpers;
+using namespace bson::builder::helpers;
+using namespace bson::types;
 
 pipeline::pipeline() : _impl(new impl{}) {}
 
@@ -29,7 +30,7 @@ pipeline::~pipeline() = default;
 pipeline& pipeline::geoNear(/*something*/) { return *this; }
 
 pipeline& pipeline::group(bson::document::view group) {
-    _impl->sink() << open_doc << "$group" << bson::types::b_document{group} << close_doc;
+    _impl->sink() << open_doc << "$group" << b_document{group} << close_doc;
     return *this;
 }
 
@@ -39,7 +40,7 @@ pipeline& pipeline::limit(std::int32_t limit) {
 }
 
 pipeline& pipeline::match(bson::document::view criteria) {
-    _impl->sink() << open_doc << "$match" << bson::types::b_document{criteria} << close_doc;
+    _impl->sink() << open_doc << "$match" << b_document{criteria} << close_doc;
     return *this;
 }
 
@@ -49,12 +50,12 @@ pipeline& pipeline::out(std::string collection_name) {
 }
 
 pipeline& pipeline::project(bson::document::view projection) {
-    _impl->sink() << open_doc << "$project" << bson::types::b_document{projection} << close_doc;
+    _impl->sink() << open_doc << "$project" << b_document{projection} << close_doc;
     return *this;
 }
 
 pipeline& pipeline::redact(bson::document::view restrictions) {
-    _impl->sink() << open_doc << "$redact" << bson::types::b_document{restrictions} << close_doc;
+    _impl->sink() << open_doc << "$redact" << b_document{restrictions} << close_doc;
     return *this;
 }
 
@@ -64,7 +65,7 @@ pipeline& pipeline::skip(std::int32_t skip) {
 }
 
 pipeline& pipeline::sort(bson::document::view sort) {
-    _impl->sink() << open_doc << "$sort" << bson::types::b_document{sort} << close_doc;
+    _impl->sink() << open_doc << "$sort" << b_document{sort} << close_doc;
     return *this;
 }
 

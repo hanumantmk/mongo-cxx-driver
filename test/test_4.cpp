@@ -2,25 +2,26 @@
 #include "bson/builder.hpp"
 
 using namespace bson;
+using namespace bson::builder;
 
-void add_value(value_builder builder) { builder << 4; }
+void add_value(value_ctx builder) { builder << 4; }
 
-void add_array(array_builder builder) { builder << 1 << 2 << 3 << add_value; }
+void add_array(array_ctx<> builder) { builder << 1 << 2 << 3 << add_value; }
 
-void add_doc(document_builder builder) {
-    using namespace builder_helpers;
+void add_doc(key_ctx<> builder) {
+    using namespace builder::helpers;
     builder << "last" << add_value << "array" << open_array << add_array << close_array;
 }
 
 struct my_functor {
-    void operator()(document_builder builder) { builder << "my_functor" << 42; }
+    void operator()(key_ctx<> builder) { builder << "my_functor" << 42; }
 };
 
 int main() {
-    using namespace builder_helpers;
+    using namespace builder::helpers;
     using namespace types;
 
-    builder builder;
+    builder::document builder;
 
     add_doc(builder);
 
@@ -31,9 +32,9 @@ int main() {
     int x = 10;
 
     builder << "foo" << 35 << "bar" << open_doc << "baz" << open_array << add_array << close_array
-            << add_doc << [&](document_builder builder) { builder << "lambda" << x++; }
-            << [=](document_builder builder) { builder << "lambda" << x; }
-            << [](document_builder builder) { builder << "lambda" << 12; } << my_functor()
+            << add_doc << [&](key_ctx<> builder) { builder << "lambda" << x++; }
+            << [=](key_ctx<> builder) { builder << "lambda" << x; }
+            << [](key_ctx<> builder) { builder << "lambda" << 12; } << my_functor()
             << close_doc;
 
     builder << add_doc;
@@ -47,16 +48,16 @@ int main() {
 
     std::cout << builder.view() << std::endl;
 
-    static_assert(util::is_functor<my_functor, void(document_builder)>::value,
+    static_assert(util::is_functor<my_functor, void(key_ctx<>)>::value,
                   "types should match");
     static_assert(!util::is_functor<my_functor, void(int)>::value, "types shouldn't match");
-    static_assert(!util::is_functor<my_functor, int(document_builder)>::value,
+    static_assert(!util::is_functor<my_functor, int(key_ctx<>)>::value,
                   "types shouldn't match");
 
-    static_assert(util::is_functor<decltype(add_doc), void(document_builder)>::value,
+    static_assert(util::is_functor<decltype(add_doc), void(key_ctx<>)>::value,
                   "types should match");
     static_assert(!util::is_functor<decltype(add_doc), void(int)>::value, "types shouldn't match");
-    static_assert(!util::is_functor<decltype(add_doc), int(document_builder)>::value,
+    static_assert(!util::is_functor<decltype(add_doc), int(key_ctx<>)>::value,
                   "types shouldn't match");
 
     try {

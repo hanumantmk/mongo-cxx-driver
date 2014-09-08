@@ -25,10 +25,11 @@
 #include <vector>
 
 namespace bson {
+namespace builder {
 
-class builder::impl {
+class concrete::impl {
    public:
-    impl() : has_user_key(false) { bson_init(&_root); }
+    impl(bool is_array) : _root_is_array(is_array), _n(0), _has_user_key(false) { bson_init(&_root); }
 
     ~impl() {
         while (!_stack.empty()) {
@@ -45,10 +46,10 @@ class builder::impl {
 
         bson_reinit(&_root);
 
-        has_user_key = false;
+        _has_user_key = false;
     }
 
-    document::value steal() {
+    bson::document::value steal() {
         while (!_stack.empty()) {
             _stack.pop_back();
         }
@@ -57,7 +58,7 @@ class builder::impl {
         uint8_t* buf_ptr = bson_destroy_with_steal(&_root, true, &buf_len);
         bson_init(&_root);
 
-        return document::value{buf_ptr, buf_len};
+        return bson::document::value{buf_ptr, buf_len};
     }
 
     bson_t* back() {
@@ -80,25 +81,25 @@ class builder::impl {
 
     const string_or_literal& next_key() {
         if (is_array()) {
-            itoa_key = _stack.back().n++;
-            user_key = string_or_literal{itoa_key.c_str(), itoa_key.length()};
-        } else if (!has_user_key) {
+            _itoa_key = _stack.empty() ? _n++ : _stack.back().n++;
+            _user_key = string_or_literal{_itoa_key.c_str(), _itoa_key.length()};
+        } else if (!_has_user_key) {
             throw std::runtime_error("no user specified key and not in an array context");
         }
 
-        has_user_key = false;
+        _has_user_key = false;
 
-        return user_key;
+        return _user_key;
     }
 
     void push_key(string_or_literal sol) {
-        user_key = std::move(sol);
-        has_user_key = true;
+        _user_key = std::move(sol);
+        _has_user_key = true;
     }
 
     bson_t* root() { return &_root; }
 
-    bool is_array() { return _stack.empty() ? false : _stack.back().is_array; }
+    bool is_array() { return _stack.empty() ? _root_is_array : _stack.back().is_array; }
 
    private:
     struct frame {
@@ -127,61 +128,42 @@ class builder::impl {
 
     util::stack<frame, 4> _stack;
 
+    bool _root_is_array;
+    std::size_t _n;
     bson_t _root;
 
-    util::itoa itoa_key;
-    string_or_literal user_key;
+    util::itoa _itoa_key;
+    string_or_literal _user_key;
 
-    bool has_user_key;
+    bool _has_user_key;
 };
 
-namespace builder_helpers {
-open_doc_t open_doc;
-close_doc_t close_doc;
-open_array_t open_array;
-close_array_t close_array;
-}
+concrete::concrete(bool is_array) : _impl(new impl(is_array)) {}
+concrete::concrete(concrete&&) = default;
+concrete& concrete::operator=(concrete&&) = default;
+concrete::~concrete() = default;
 
-builder::builder() : _impl(new impl()) {}
-builder::builder(builder&&) = default;
-builder& builder::operator=(builder&&) = default;
-builder::~builder() = default;
-
-builder::operator key_ctx<closed_ctx>() { return key_ctx<closed_ctx>(this); }
-
-builder::document_ctx<builder::key_ctx<builder>> builder::operator<<(string_or_literal rhs) {
-    key_ctx<builder> ctx(this);
-
-    return ctx << std::move(rhs);
-}
-
-builder& builder::operator<<(builder_helpers::concat concat) {
-    concat_append(concat);
-
-    return *this;
-}
-
-void builder::key_append(string_or_literal key) {
+void concrete::key_append(string_or_literal key) {
     if (_impl->is_array()) {
         throw(std::runtime_error("in subarray"));
     }
     _impl->push_key(std::move(key));
 }
 
-void builder::value_append(const types::b_double& value) {
+void concrete::value_append(const types::b_double& value) {
     const string_or_literal& key = _impl->next_key();
 
     bson_append_double(_impl->back(), key.c_str(), key.length(), value.value);
 }
 
-void builder::value_append(const types::b_utf8& value) {
+void concrete::value_append(const types::b_utf8& value) {
     const string_or_literal& key = _impl->next_key();
 
     bson_append_utf8(_impl->back(), key.c_str(), key.length(), value.value.c_str(),
                      value.value.length());
 }
 
-void builder::value_append(const types::b_document& value) {
+void concrete::value_append(const types::b_document& value) {
     const string_or_literal& key = _impl->next_key();
     bson_t bson;
     bson_init_static(&bson, value.value.get_buf(), value.value.get_len());
@@ -189,7 +171,7 @@ void builder::value_append(const types::b_document& value) {
     bson_append_document(_impl->back(), key.c_str(), key.length(), &bson);
 }
 
-void builder::value_append(const types::b_array& value) {
+void concrete::value_append(const types::b_array& value) {
     const string_or_literal& key = _impl->next_key();
     bson_t bson;
     bson_init_static(&bson, value.value.get_buf(), value.value.get_len());
@@ -197,20 +179,20 @@ void builder::value_append(const types::b_array& value) {
     bson_append_array(_impl->back(), key.c_str(), key.length(), &bson);
 }
 
-void builder::value_append(const types::b_binary& value) {
+void concrete::value_append(const types::b_binary& value) {
     const string_or_literal& key = _impl->next_key();
 
     bson_append_binary(_impl->back(), key.c_str(), key.length(),
                        static_cast<bson_subtype_t>(value.sub_type), value.bytes, value.size);
 }
 
-void builder::value_append(const types::b_undefined&) {
+void concrete::value_append(const types::b_undefined&) {
     const string_or_literal& key = _impl->next_key();
 
     bson_append_undefined(_impl->back(), key.c_str(), key.length());
 }
 
-void builder::value_append(const types::b_oid& value) {
+void concrete::value_append(const types::b_oid& value) {
     const string_or_literal& key = _impl->next_key();
     bson_oid_t oid;
     std::memcpy(&oid.bytes, value.value.bytes(), sizeof(oid.bytes));
@@ -218,32 +200,32 @@ void builder::value_append(const types::b_oid& value) {
     bson_append_oid(_impl->back(), key.c_str(), key.length(), &oid);
 }
 
-void builder::value_append(const types::b_bool& value) {
+void concrete::value_append(const types::b_bool& value) {
     const string_or_literal& key = _impl->next_key();
 
     bson_append_bool(_impl->back(), key.c_str(), key.length(), value.value);
 }
 
-void builder::value_append(const types::b_date& value) {
+void concrete::value_append(const types::b_date& value) {
     const string_or_literal& key = _impl->next_key();
 
     bson_append_date_time(_impl->back(), key.c_str(), key.length(), value.value);
 }
 
-void builder::value_append(const types::b_null&) {
+void concrete::value_append(const types::b_null&) {
     const string_or_literal& key = _impl->next_key();
 
     bson_append_null(_impl->back(), key.c_str(), key.length());
 }
 
-void builder::value_append(const types::b_regex& value) {
+void concrete::value_append(const types::b_regex& value) {
     const string_or_literal& key = _impl->next_key();
 
     bson_append_regex(_impl->back(), key.c_str(), key.length(), value.regex.c_str(),
                       value.options.c_str());
 }
 
-void builder::value_append(const types::b_dbpointer& value) {
+void concrete::value_append(const types::b_dbpointer& value) {
     const string_or_literal& key = _impl->next_key();
 
     bson_oid_t oid;
@@ -252,20 +234,20 @@ void builder::value_append(const types::b_dbpointer& value) {
     bson_append_dbpointer(_impl->back(), key.c_str(), key.length(), value.collection.c_str(), &oid);
 }
 
-void builder::value_append(const types::b_code& value) {
+void concrete::value_append(const types::b_code& value) {
     const string_or_literal& key = _impl->next_key();
 
     bson_append_code(_impl->back(), key.c_str(), key.length(), value.code.c_str());
 }
 
-void builder::value_append(const types::b_symbol& value) {
+void concrete::value_append(const types::b_symbol& value) {
     const string_or_literal& key = _impl->next_key();
 
     bson_append_symbol(_impl->back(), key.c_str(), key.length(), value.symbol.c_str(),
                        value.symbol.length());
 }
 
-void builder::value_append(const types::b_codewscope& value) {
+void concrete::value_append(const types::b_codewscope& value) {
     const string_or_literal& key = _impl->next_key();
 
     bson_t bson;
@@ -275,74 +257,74 @@ void builder::value_append(const types::b_codewscope& value) {
                                 &bson);
 }
 
-void builder::value_append(const types::b_int32& value) {
+void concrete::value_append(const types::b_int32& value) {
     const string_or_literal& key = _impl->next_key();
 
     bson_append_int32(_impl->back(), key.c_str(), key.length(), value.value);
 }
 
-void builder::value_append(const types::b_timestamp& value) {
+void concrete::value_append(const types::b_timestamp& value) {
     const string_or_literal& key = _impl->next_key();
 
     bson_append_timestamp(_impl->back(), key.c_str(), key.length(), value.increment,
                           value.timestamp);
 }
 
-void builder::value_append(const types::b_int64& value) {
+void concrete::value_append(const types::b_int64& value) {
     const string_or_literal& key = _impl->next_key();
 
     bson_append_int64(_impl->back(), key.c_str(), key.length(), value.value);
 }
 
-void builder::value_append(const types::b_minkey&) {
+void concrete::value_append(const types::b_minkey&) {
     const string_or_literal& key = _impl->next_key();
 
     bson_append_minkey(_impl->back(), key.c_str(), key.length());
 }
 
-void builder::value_append(const types::b_maxkey&) {
+void concrete::value_append(const types::b_maxkey&) {
     const string_or_literal& key = _impl->next_key();
 
     bson_append_maxkey(_impl->back(), key.c_str(), key.length());
 }
 
-void builder::value_append(double value) {
+void concrete::value_append(double value) {
     value_append(types::b_double{value});
 }
 
-void builder::value_append(string_or_literal value) {
+void concrete::value_append(string_or_literal value) {
     value_append(types::b_utf8{std::move(value)});
 }
 
-void builder::value_append(std::int32_t value) {
+void concrete::value_append(std::int32_t value) {
     value_append(types::b_int32{value});
 }
 
-void builder::value_append(const oid& value) {
+void concrete::value_append(const oid& value) {
     value_append(types::b_oid{value});
 }
 
-void builder::value_append(std::int64_t value) {
+void concrete::value_append(std::int64_t value) {
     value_append(types::b_int64{value});
 }
 
-void builder::value_append(bool value) {
+void concrete::value_append(bool value) {
     value_append(types::b_bool{value});
 }
 
-void builder::open_doc_append() {
+void concrete::open_doc_append() {
     const string_or_literal& key = _impl->next_key();
 
     _impl->push_back_document(key.c_str(), key.length());
 }
 
-void builder::open_array_append() {
+void concrete::open_array_append() {
     const string_or_literal& key = _impl->next_key();
 
     _impl->push_back_array(key.c_str(), key.length());
 }
 
-void builder::concat_append(const document::view& view) {
+void concrete::concat_append(const bson::document::view& view) {
     bson_t other;
     bson_init_static(&other, view.get_buf(), view.get_len());
 
@@ -361,7 +343,7 @@ void builder::concat_append(const document::view& view) {
     }
 }
 
-void builder::value_append(const element& value) {
+void concrete::value_append(const element& value) {
     const string_or_literal& key = _impl->next_key();
 
     bson_iter_t iter;
@@ -373,7 +355,7 @@ void builder::value_append(const element& value) {
     bson_append_iter(_impl->back(), key.c_str(), key.length(), &iter);
 }
 
-void builder::close_doc_append() {
+void concrete::close_doc_append() {
     if (_impl->is_array()) {
         // TODO handle insufficient stack
         throw(std::runtime_error("in subdocument or insufficient stack"));
@@ -382,7 +364,7 @@ void builder::close_doc_append() {
     _impl->pop_back();
 }
 
-void builder::close_array_append() {
+void concrete::close_array_append() {
     if (!_impl->is_array()) {
         // TODO handle stack
         throw(std::runtime_error("in subdocument or insufficient stack"));
@@ -391,16 +373,17 @@ void builder::close_array_append() {
     _impl->pop_back();
 }
 
-document::view builder::view() const {
-    return document::view(bson_get_data(_impl->root()), _impl->root()->len);
+bson::document::view concrete::view() const {
+    return bson::document::view(bson_get_data(_impl->root()), _impl->root()->len);
 }
 
-builder::operator document::view() const { return view(); }
+concrete::operator bson::document::view() const { return view(); }
 
-document::value builder::extract() {
-    return document::view(bson_get_data(_impl->root()), _impl->root()->len);
+bson::document::value concrete::extract() {
+    return _impl->steal();
 }
 
-void builder::clear() { _impl->reinit(); }
+void concrete::clear() { _impl->reinit(); }
 
+}
 }  // namespace bson

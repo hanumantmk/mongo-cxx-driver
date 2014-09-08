@@ -17,30 +17,38 @@
 #pragma once
 
 #include "driver/config/prelude.hpp"
+
+#include "bson/builder/concrete.hpp"
 #include "bson/document.hpp"
+#include "bson/builder/key_ctx.hpp"
+#include "bson/builder/closed_ctx.hpp"
 
 namespace bson {
 namespace builder {
-namespace helpers {
 
-struct open_doc_t {};
-extern open_doc_t open_doc;
+    class document : public key_ctx<closed_ctx> {
+    public:
+        document() : key_ctx<closed_ctx>(&_concrete), _concrete(false) {}
 
-struct open_array_t {};
-extern open_array_t open_array;
+        bson::document::view view() const {
+            return _concrete.view();
+        }
 
-struct close_doc_t {};
-extern close_doc_t close_doc;
+        operator bson::document::view() const {
+            return _concrete.view();
+        }
 
-struct close_array_t {};
-extern close_array_t close_array;
+        bson::document::value extract() {
+            return _concrete.extract();
+        }
 
-struct LIBMONGOCXX_EXPORT concat {
-    document::view view;
+        void clear() {
+            _concrete.clear();
+        }
 
-    operator document::view() const { return view; }
-};
-
+    private:
+        concrete _concrete;
+    };
 }
-}
-}
+
+}  // namespace bson

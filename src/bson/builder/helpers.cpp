@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-#pragma once
+#include "bson/builder.hpp"
 
-#include "bson/builder/helpers.hpp"
-#include "bson/builder/concrete.hpp"
-#include "bson/builder/array_ctx.hpp"
-#include "bson/builder/document_ctx.hpp"
-#include "bson/builder/key_ctx.hpp"
-#include "bson/builder/value_ctx.hpp"
-#include "bson/builder/array.hpp"
-#include "bson/builder/document.hpp"
-#include "bson/builder/impl.hpp"
-#include "bson/types.hpp"
+namespace bson {
+namespace builder {
+namespace helpers {
+
+open_doc_t open_doc;
+close_doc_t close_doc;
+open_array_t open_array;
+close_array_t close_array;
+
+}
+}
+}

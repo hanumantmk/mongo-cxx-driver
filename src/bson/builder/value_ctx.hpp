@@ -22,32 +22,34 @@
 #include "bson/builder/key_ctx.hpp"
 
 namespace bson {
+namespace builder {
 
-class builder::value_builder {
+class value_ctx {
    public:
-    value_builder(builder* builder) : _builder(builder) {}
+    value_ctx(concrete* concrete) : _concrete(concrete) {}
 
-    array_ctx<value_builder> wrap_array() { return array_ctx<value_builder>(_builder); }
-    key_ctx<value_builder> wrap_document() { return key_ctx<value_builder>(_builder); }
+    array_ctx<value_ctx> wrap_array() { return array_ctx<value_ctx>(_concrete); }
+    key_ctx<value_ctx> wrap_document() { return key_ctx<value_ctx>(_concrete); }
 
-    key_ctx<value_builder> operator<<(builder_helpers::open_doc_t) {
-        _builder->open_doc_append();
+    key_ctx<value_ctx> operator<<(builder::helpers::open_doc_t) {
+        _concrete->open_doc_append();
 
         return wrap_document();
     }
 
-    array_ctx<value_builder> operator<<(builder_helpers::open_array_t) {
-        _builder->open_array_append();
+    array_ctx<value_ctx> operator<<(builder::helpers::open_array_t) {
+        _concrete->open_array_append();
 
         return wrap_array();
     }
 
     template <class T>
     void operator<<(T&& t) {
-        _builder->value_append(std::forward<T>(t));
+        _concrete->value_append(std::forward<T>(t));
     }
 
    private:
-    builder* _builder;
+    concrete* _concrete;
 };
+}
 }

@@ -17,59 +17,64 @@
 #pragma once
 
 #include "bson/builder/concrete.hpp"
+#include "bson/builder/closed_ctx.hpp"
+#include "bson/builder/helpers.hpp"
+#include "bson/builder/forward_decls.hpp"
 #include "bson/util/functor.hpp"
 
 namespace bson {
+namespace builder {
 
-template <class Base>
-class builder::array_ctx {
+template <class Base = closed_ctx>
+class array_ctx {
    public:
-    array_ctx(builder* builder) : _builder(builder) {}
+    array_ctx(concrete* concrete) : _concrete(concrete) {}
 
-    Base unwrap() { return Base(_builder); }
+    Base unwrap() { return Base(_concrete); }
 
-    array_ctx<array_ctx> wrap_array() { return array_ctx<array_ctx>(_builder); }
-    key_ctx<array_ctx> wrap_document() { return key_ctx<array_ctx>(_builder); }
+    array_ctx<array_ctx> wrap_array() { return array_ctx<array_ctx>(_concrete); }
+    key_ctx<array_ctx> wrap_document() { return key_ctx<array_ctx>(_concrete); }
 
     template <class T>
-    typename std::enable_if<!(util::is_functor<T, void(array_builder)>::value || util::is_functor<T, void(value_builder)>::value || std::is_same<T, builder_helpers::close_doc_t>::value), array_ctx>::type& operator<<(
+    typename std::enable_if<!(util::is_functor<T, void(array_ctx<>)>::value || util::is_functor<T, void(value_ctx)>::value || std::is_same<T, builder::helpers::close_doc_t>::value), array_ctx>::type& operator<<(
         T&& t) {
-        _builder->value_append(std::forward<T>(t));
+        _concrete->value_append(std::forward<T>(t));
         return *this;
     }
 
     template <typename Func>
-    typename std::enable_if<(util::is_functor<Func, void(array_builder)>::value || util::is_functor<Func, void(value_builder)>::value), array_ctx>::type& operator<<(
+    typename std::enable_if<(util::is_functor<Func, void(array_ctx<>)>::value || util::is_functor<Func, void(value_ctx)>::value), array_ctx>::type& operator<<(
         Func func) {
         func(*this);
         return *this;
     }
 
-    key_ctx<array_ctx> operator<<(builder_helpers::open_doc_t) {
-        _builder->open_doc_append();
+    key_ctx<array_ctx> operator<<(builder::helpers::open_doc_t) {
+        _concrete->open_doc_append();
         return wrap_document();
     }
 
-    array_ctx operator<<(builder_helpers::concat concat) {
-        _builder->concat_append(concat);
+    array_ctx operator<<(builder::helpers::concat concat) {
+        _concrete->concat_append(concat);
         return *this;
     }
 
-    array_ctx<array_ctx> operator<<(builder_helpers::open_array_t) {
-        _builder->open_array_append();
+    array_ctx<array_ctx> operator<<(builder::helpers::open_array_t) {
+        _concrete->open_array_append();
         return wrap_array();
     }
 
-    Base operator<<(builder_helpers::close_array_t) {
-        _builder->close_array_append();
+    Base operator<<(builder::helpers::close_array_t) {
+        _concrete->close_array_append();
         return unwrap();
     }
 
-    operator array_builder() { return array_builder(_builder); }
+    operator array_ctx<>() { return array_ctx<>(_concrete); }
 
-    operator value_builder();
+    operator value_ctx();
 
    private:
-    builder* _builder;
+    concrete* _concrete;
 };
+}
 }

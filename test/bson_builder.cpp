@@ -4,7 +4,7 @@
 #include "bson/builder.hpp"
 #include "bson.h"
 
-void bson_eq_builder(const bson_t* bson, const bson::builder& builder) {
+void bson_eq_builder(const bson_t* bson, const bson::builder::document& builder) {
     bson::document::view expected(bson_get_data(bson), bson->len);
     bson::document::view test(builder.view());
     INFO("expected = " << expected);
@@ -21,7 +21,7 @@ TEST_CASE("builder appends utf8", "[bson::builder]") {
 
     bson_append_utf8(&expected, "hello", -1, "world", -1);
 
-    builder b;
+    builder::document b;
 
     SECTION("works with string literals") {
         b << "hello"
@@ -51,7 +51,7 @@ TEST_CASE("builder appends double", "[bson::builder]") {
 
     bson_append_double(&expected, "foo", -1, 1.1);
 
-    builder b;
+    builder::document b;
 
     SECTION("works with raw float") {
         b << "foo" << 1.1;
@@ -74,7 +74,7 @@ TEST_CASE("builder appends binary", "[bson::builder]") {
 
     bson_append_binary(&expected, "foo", -1, BSON_SUBTYPE_BINARY, (uint8_t*)"deadbeef", 8);
 
-    builder b;
+    builder::document b;
 
     b << "foo" << types::b_binary{binary_sub_type::k_binary, 8, (uint8_t*)"deadbeef"};
 
@@ -89,7 +89,7 @@ TEST_CASE("builder appends undefined", "[bson::builder]") {
 
     bson_append_undefined(&expected, "foo", -1);
 
-    builder b;
+    builder::document b;
 
     b << "foo" << types::b_undefined{};
 
@@ -107,7 +107,7 @@ TEST_CASE("builder appends oid", "[bson::builder]") {
 
     bson_append_oid(&expected, "foo", -1, &oid);
 
-    builder b;
+    builder::document b;
 
     SECTION("b_oid works") {
         b << "foo" << types::b_oid{bson::oid{(char*)oid.bytes, 12}};
@@ -127,7 +127,7 @@ TEST_CASE("builder appends oid", "[bson::builder]") {
 TEST_CASE("builder appends bool", "[bson::builder]") {
     bson_t expected;
     bson_init(&expected);
-    builder b;
+    builder::document b;
 
     SECTION("b_bool true works") {
         bson_append_bool(&expected, "foo", -1, 1);
@@ -167,7 +167,7 @@ TEST_CASE("builder appends bool", "[bson::builder]") {
 TEST_CASE("builder appends date time", "[bson::builder]") {
     bson_t expected;
     bson_init(&expected);
-    builder b;
+    builder::document b;
 
     bson_append_date_time(&expected, "foo", -1, 10000);
 
@@ -181,7 +181,7 @@ TEST_CASE("builder appends date time", "[bson::builder]") {
 TEST_CASE("builder appends null", "[bson::builder]") {
     bson_t expected;
     bson_init(&expected);
-    builder b;
+    builder::document b;
 
     bson_append_null(&expected, "foo", -1);
 
@@ -195,7 +195,7 @@ TEST_CASE("builder appends null", "[bson::builder]") {
 TEST_CASE("builder appends regex", "[bson::builder]") {
     bson_t expected;
     bson_init(&expected);
-    builder b;
+    builder::document b;
 
     bson_append_regex(&expected, "foo", -1, "^foo|bar$", "i");
 
@@ -209,7 +209,7 @@ TEST_CASE("builder appends regex", "[bson::builder]") {
 TEST_CASE("builder appends code", "[bson::builder]") {
     bson_t expected;
     bson_init(&expected);
-    builder b;
+    builder::document b;
 
     bson_append_code(&expected, "foo", -1, "var a = {};");
 
@@ -223,7 +223,7 @@ TEST_CASE("builder appends code", "[bson::builder]") {
 TEST_CASE("builder appends symbol", "[bson::builder]") {
     bson_t expected;
     bson_init(&expected);
-    builder b;
+    builder::document b;
 
     bson_append_symbol(&expected, "foo", -1, "deadbeef", -1);
 
@@ -237,8 +237,8 @@ TEST_CASE("builder appends symbol", "[bson::builder]") {
 TEST_CASE("builder appends code with scope", "[bson::builder]") {
     bson_t expected, scope;
     bson_init(&expected);
-    builder b;
-    builder scope_builder;
+    builder::document b;
+    builder::document scope_builder;
 
     bson_init(&scope);
 
@@ -258,7 +258,7 @@ TEST_CASE("builder appends code with scope", "[bson::builder]") {
 TEST_CASE("builder appends int32", "[bson::builder]") {
     bson_t expected;
     bson_init(&expected);
-    builder b;
+    builder::document b;
 
     bson_append_int32(&expected, "foo", -1, 100);
 
@@ -280,7 +280,7 @@ TEST_CASE("builder appends int32", "[bson::builder]") {
 TEST_CASE("builder appends timestamp", "[bson::builder]") {
     bson_t expected;
     bson_init(&expected);
-    builder b;
+    builder::document b;
 
     bson_append_timestamp(&expected, "foo", -1, 100, 1000);
 
@@ -294,7 +294,7 @@ TEST_CASE("builder appends timestamp", "[bson::builder]") {
 TEST_CASE("builder appends int64", "[bson::builder]") {
     bson_t expected;
     bson_init(&expected);
-    builder b;
+    builder::document b;
 
     bson_append_int64(&expected, "foo", -1, 100);
 
@@ -316,7 +316,7 @@ TEST_CASE("builder appends int64", "[bson::builder]") {
 TEST_CASE("builder appends minkey", "[bson::builder]") {
     bson_t expected;
     bson_init(&expected);
-    builder b;
+    builder::document b;
 
     bson_append_minkey(&expected, "foo", -1);
 
@@ -330,7 +330,7 @@ TEST_CASE("builder appends minkey", "[bson::builder]") {
 TEST_CASE("builder appends maxkey", "[bson::builder]") {
     bson_t expected;
     bson_init(&expected);
-    builder b;
+    builder::document b;
 
     bson_append_maxkey(&expected, "foo", -1);
 
@@ -345,8 +345,8 @@ TEST_CASE("builder appends array", "[bson::builder]") {
     bson_t expected, child;
     bson_init(&expected);
     bson_init(&child);
-    builder b;
-    builder child_builder;
+    builder::document b;
+    builder::document child_builder;
 
     bson_append_utf8(&child, "0", -1, "baz", -1);
     bson_append_array(&expected, "foo", -1, &child);
@@ -366,8 +366,8 @@ TEST_CASE("builder appends document", "[bson::builder]") {
     bson_t expected, child;
     bson_init(&expected);
     bson_init(&child);
-    builder b;
-    builder child_builder;
+    builder::document b;
+    builder::document child_builder;
 
     bson_append_utf8(&child, "bar", -1, "baz", -1);
     bson_append_document(&expected, "foo", -1, &child);
@@ -387,12 +387,12 @@ TEST_CASE("builder appends inline array", "[bson::builder]") {
     bson_t expected, child;
     bson_init(&expected);
     bson_init(&child);
-    builder b;
+    builder::document b;
 
     bson_append_utf8(&child, "0", -1, "baz", -1);
     bson_append_array(&expected, "foo", -1, &child);
 
-    b << "foo" << builder_helpers::open_array << "baz" << builder_helpers::close_array;
+    b << "foo" << builder::helpers::open_array << "baz" << builder::helpers::close_array;
 
     bson_eq_builder(&expected, b);
 
@@ -404,13 +404,13 @@ TEST_CASE("builder appends inline document", "[bson::builder]") {
     bson_t expected, child;
     bson_init(&expected);
     bson_init(&child);
-    builder b;
+    builder::document b;
 
     bson_append_utf8(&child, "bar", -1, "baz", -1);
     bson_append_document(&expected, "foo", -1, &child);
 
-    b << "foo" << builder_helpers::open_doc << "bar"
-      << "baz" << builder_helpers::close_doc;
+    b << "foo" << builder::helpers::open_doc << "bar"
+      << "baz" << builder::helpers::close_doc;
 
     bson_eq_builder(&expected, b);
 
@@ -419,7 +419,7 @@ TEST_CASE("builder appends inline document", "[bson::builder]") {
 }
 
 TEST_CASE("builder appends inline nested", "[bson::builder]") {
-    using namespace builder_helpers;
+    using namespace builder::helpers;
 
     bson_t expected, foo, bar, third;
 
@@ -434,7 +434,7 @@ TEST_CASE("builder appends inline nested", "[bson::builder]") {
     bson_append_document(&bar, "2", -1, &third);
     bson_append_array(&foo, "bar", -1, &bar);
     bson_append_document(&expected, "foo", -1, &foo);
-    builder b;
+    builder::document b;
 
     b << "foo" << open_doc << "bar" << open_array << 1 << 2 << open_doc << "hello"
       << "world" << close_doc << close_array << close_doc;
@@ -448,20 +448,20 @@ TEST_CASE("builder appends inline nested", "[bson::builder]") {
 }
 
 TEST_CASE("builder appends concat", "[bson::builder]") {
-    using namespace builder_helpers;
+    using namespace builder::helpers;
 
     bson_t expected, child;
 
     bson_init(&expected);
     bson_init(&child);
 
-    builder b;
+    builder::document b;
 
     SECTION("document context works") {
         bson_append_utf8(&child, "hello", -1, "world", -1);
         bson_append_document(&expected, "foo", -1, &child);
 
-        builder child_builder;
+        builder::document child_builder;
 
         child_builder << "hello"
                       << "world";
@@ -476,7 +476,7 @@ TEST_CASE("builder appends concat", "[bson::builder]") {
         bson_append_utf8(&child, "1", -1, "baz", -1);
         bson_append_array(&expected, "foo", -1, &child);
 
-        builder child_builder;
+        builder::document child_builder;
 
         child_builder << "0"
                       << "baz";
@@ -491,13 +491,13 @@ TEST_CASE("builder appends concat", "[bson::builder]") {
 }
 
 TEST_CASE("builder appends element", "[bson::builder]") {
-    using namespace builder_helpers;
+    using namespace builder::helpers;
 
     bson_t expected;
     bson_init(&expected);
 
-    builder b;
-    builder tmp;
+    builder::document b;
+    builder::document tmp;
 
     bson_append_int32(&expected, "foo", -1, 999);
 

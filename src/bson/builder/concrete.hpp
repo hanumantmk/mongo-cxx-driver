@@ -1,5 +1,4 @@
-/**
- * Copyright 2014 MongoDB Inc.
+/** * Copyright 2014 MongoDB Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,49 +15,28 @@
 
 #pragma once
 
+#include "driver/config/prelude.hpp"
+
 #include <memory>
 
 #include "bson/document.hpp"
 #include "bson/types.hpp"
-#include "bson/builder/helpers.hpp"
 #include "bson/string_or_literal.hpp"
-#include "bson/util/functor.hpp"
 
 namespace bson {
+namespace builder {
 
-class LIBMONGOCXX_EXPORT builder {
+class LIBMONGOCXX_EXPORT concrete {
 
    public:
-    template <class T>
-    class array_ctx;
-    template <class T>
-    class document_ctx;
-    template <class T>
-    class key_ctx;
-
-    class value_builder;
     class impl;
-
-    struct closed_ctx {
-        closed_ctx(builder*) {}
-    };
 
     class invalid_state : public std::runtime_error {};
 
-    builder();
-    builder(builder&& rhs);
-    builder& operator=(builder&& rhs);
-    ~builder();
-
-    document_ctx<key_ctx<builder>> operator<<(string_or_literal rhs);
-
-    template <typename Func>
-    typename std::enable_if<util::is_functor<Func, void(builder::key_ctx<builder::closed_ctx>)>::value, key_ctx<builder>>::type operator<<(
-        Func func);
-
-    builder& operator<<(builder_helpers::concat concat);
-
-    operator key_ctx<closed_ctx>();
+    concrete(bool is_array);
+    concrete(concrete&& rhs);
+    concrete& operator=(concrete&& rhs);
+    ~concrete();
 
     void key_append(string_or_literal key);
 
@@ -114,16 +92,5 @@ class LIBMONGOCXX_EXPORT builder {
     std::unique_ptr<impl> _impl;
 };
 
-namespace builder_helpers {
-struct LIBMONGOCXX_EXPORT concat {
-    document::view view;
-
-    operator document::view() const { return view; }
-};
 }
-
-typedef builder::array_ctx<builder::closed_ctx> array_builder;
-typedef builder::key_ctx<builder::closed_ctx> document_builder;
-typedef builder::value_builder value_builder;
-
 }  // namespace bson

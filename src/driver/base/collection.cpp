@@ -96,14 +96,14 @@ result::bulk_write collection::bulk_write(const model::bulk_write& model) {
 cursor collection::find(const model::find& model) const {
     using namespace bson;
 
-    builder filter_builder;
+    builder::document filter_builder;
 
     scoped_bson_t filter;
     scoped_bson_t projection(model.projection());
 
     if (model.modifiers()) {
         filter_builder << "$query" << types::b_document{model.criteria()}
-                       << builder_helpers::concat{model.modifiers().value_or(document::view{})};
+                       << builder::helpers::concat{model.modifiers().value_or(document::view{})};
 
         filter.init_from_static(filter_builder.view());
     } else {
@@ -123,11 +123,11 @@ optional<bson::document::value> collection::find_one(const model::find& model) c
 }
 
 cursor collection::aggregate(const model::aggregate& model) {
-    using namespace bson::builder_helpers;
+    using namespace bson::builder::helpers;
 
     scoped_bson_t pipeline(model.stages()._impl->view());
 
-    bson::builder b;
+    bson::builder::document b;
 
     if (model.allow_disk_use()) {
         /* TODO */
@@ -221,9 +221,9 @@ optional<bson::document::value> collection::find_one_and_replace(
     if (result["value"].type() == bson::type::k_null) {
         return optional<bson::document::value>{};
     } else {
-        using namespace bson::builder_helpers;
+        using namespace bson::builder::helpers;
 
-        bson::builder b;
+        bson::builder::document b;
 
         b << concat{result["value"].get_document()};
 
@@ -256,9 +256,9 @@ optional<bson::document::value> collection::find_one_and_update(
     if (result["value"].type() == bson::type::k_null) {
         return optional<bson::document::value>{};
     } else {
-        using namespace bson::builder_helpers;
+        using namespace bson::builder::helpers;
 
-        bson::builder b;
+        bson::builder::document b;
 
         b << concat{result["value"].get_document()};
 
@@ -289,9 +289,9 @@ optional<bson::document::value> collection::find_one_and_remove(
     if (result["value"].type() == bson::type::k_null) {
         return optional<bson::document::value>{};
     } else {
-        using namespace bson::builder_helpers;
+        using namespace bson::builder::helpers;
 
-        bson::builder b;
+        bson::builder::document b;
 
         b << concat{result["value"].get_document()};
 

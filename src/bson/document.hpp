@@ -27,7 +27,6 @@
 #include <memory>
 
 #include "bson/string_or_literal.hpp"
-#include "bson/builder/helpers.hpp"
 
 namespace bson {
 
@@ -71,11 +70,13 @@ namespace document {
 class view;
 }
 
-class builder;
+namespace builder {
+class concrete;
+}
 
 class LIBMONGOCXX_EXPORT element {
     friend class document::view;
-    friend class builder;
+    friend class builder::concrete;
 
    public:
     element();

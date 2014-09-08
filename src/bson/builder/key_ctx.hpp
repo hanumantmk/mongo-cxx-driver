@@ -17,24 +17,27 @@
 #pragma once
 
 #include "bson/builder/concrete.hpp"
+#include "bson/builder/closed_ctx.hpp"
+#include "bson/builder/document_ctx.hpp"
 #include "bson/util/functor.hpp"
 
 namespace bson {
+namespace builder {
 
-template <class Base>
-class builder::key_ctx {
+template <class Base = closed_ctx>
+class key_ctx {
    public:
-    key_ctx(builder* builder) : _builder(builder) {}
+    key_ctx(concrete* concrete) : _concrete(concrete) {}
 
-    Base unwrap() { return Base(_builder); }
+    Base unwrap() { return Base(_concrete); }
 
     document_ctx<key_ctx> operator<<(string_or_literal key) {
-        _builder->key_append(std::move(key));
-        return document_ctx<key_ctx>(_builder);
+        _concrete->key_append(std::move(key));
+        return document_ctx<key_ctx>(_concrete);
     }
 
     template <typename Func>
-    typename std::enable_if<util::is_functor<Func, void(document_builder)>::value, key_ctx>::type& operator<<(
+    typename std::enable_if<util::is_functor<Func, void(key_ctx<>)>::value, key_ctx>::type& operator<<(
         Func func) {
         func(*this);
         return *this;
@@ -46,19 +49,21 @@ class builder::key_ctx {
         return (*this << func());
     }
 
-    key_ctx operator<<(builder_helpers::concat concat) {
-        _builder->concat_append(concat);
+    key_ctx operator<<(builder::helpers::concat concat) {
+        _concrete->concat_append(concat);
         return *this;
     }
 
-    Base operator<<(builder_helpers::close_doc_t) {
-        _builder->close_doc_append();
+    Base operator<<(builder::helpers::close_doc_t) {
+        _concrete->close_doc_append();
         return unwrap();
     }
 
-    operator document_builder() { return document_builder(_builder); }
+    operator key_ctx<>() { return key_ctx<>(_concrete); }
 
    private:
-    builder* _builder;
+    concrete* _concrete;
 };
+
+}
 }

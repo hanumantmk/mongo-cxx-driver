@@ -16,13 +16,38 @@
 
 #pragma once
 
-#include "bson/builder/helpers.hpp"
+#include "driver/config/prelude.hpp"
+
 #include "bson/builder/concrete.hpp"
 #include "bson/builder/array_ctx.hpp"
-#include "bson/builder/document_ctx.hpp"
-#include "bson/builder/key_ctx.hpp"
-#include "bson/builder/value_ctx.hpp"
-#include "bson/builder/array.hpp"
-#include "bson/builder/document.hpp"
-#include "bson/builder/impl.hpp"
-#include "bson/types.hpp"
+#include "bson/builder/closed_ctx.hpp"
+
+namespace bson {
+namespace builder {
+
+    class array : public array_ctx<closed_ctx> {
+    public:
+        array() : array_ctx<closed_ctx>(&_concrete), _concrete(true) {}
+
+        bson::document::view view() const {
+            return _concrete.view();
+        }
+
+        operator bson::document::view() const {
+            return _concrete.view();
+        }
+
+        bson::document::value extract() {
+            return _concrete.extract();
+        }
+
+        void clear() {
+            _concrete.clear();
+        }
+
+    private:
+        concrete _concrete;
+    };
+}
+
+}  // namespace bson

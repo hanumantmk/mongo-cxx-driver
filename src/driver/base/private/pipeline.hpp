@@ -24,28 +24,17 @@ namespace driver {
 
 class pipeline::impl {
    public:
-    impl() : _closed(false), _sink(&_builder) { _builder << "pipeline" << bson::builder_helpers::open_array; }
 
-    bson::array_builder sink() {
-        if (_closed) {
-            throw std::runtime_error("cannot append to a closed pipeline");
-        }
-
-        return _sink;
+    bson::builder::array_ctx<> sink() {
+        return _builder;
     }
 
     bson::document::view view() {
-        if (! _closed) {
-            _closed = true;
-            _sink << bson::builder_helpers::close_array;
-        }
-        return _builder.view()["pipeline"].get_array().value;
+        return _builder.view();
     }
 
    private:
-    bool _closed;
-    bson::builder _builder;
-    decltype(_builder << "pipeline" << bson::builder_helpers::open_array) _sink;
+    bson::builder::array _builder;
 };
 
 }  // namespace driver

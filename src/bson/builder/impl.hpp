@@ -18,24 +18,20 @@
 
 #include "bson/builder/array_ctx.hpp"
 #include "bson/builder/document_ctx.hpp"
-#include "bson/builder/value_builder.hpp"
+#include "bson/builder/value_ctx.hpp"
 
 namespace bson {
+namespace builder {
 
 template <class T>
-builder::array_ctx<T>::operator value_builder() {
-    return value_builder(_builder);
+array_ctx<T>::operator value_ctx() {
+    return value_ctx(_concrete);
 }
 
 template <class T>
-builder::document_ctx<T>::operator value_builder() {
-    return value_builder(_builder);
+document_ctx<T>::operator value_ctx() {
+    return value_ctx(_concrete);
 }
 
-template <typename Func>
-typename std::enable_if<util::is_functor<Func, void(document_builder)>::value, builder::key_ctx<builder>>::type builder::operator<<(
-    Func func) {
-    func(*this);
-    return builder::key_ctx<builder>(this);
 }
 }

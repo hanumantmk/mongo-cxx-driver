@@ -6,7 +6,7 @@
 #include "bson/builder.hpp"
 
 int main() {
-    bson::builder builder;
+    bson::builder::document builder;
 
     builder << "hello"
             << "world"

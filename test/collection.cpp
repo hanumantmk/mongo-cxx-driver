@@ -14,7 +14,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
     coll.drop();
 
     SECTION("insert and read single document", "[collection]") {
-        bson::builder b;
+        bson::builder::document b;
         b << "_id" << bson::oid{bson::oid::init_tag}
           << "x" << 1;
 
@@ -35,7 +35,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
     }
 
     SECTION("insert and read multiple documents", "[collection]") {
-        bson::builder b1, b2;
+        bson::builder::document b1, b2;
 
         b1 << "_id" << 1;
         b2 << "_id" << 2;
@@ -56,8 +56,8 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
     }
 
     SECTION("insert and update single document", "[collection]") {
-        using namespace bson::builder_helpers;
-        bson::builder b1;
+        using namespace bson::builder::helpers;
+        bson::builder::document b1;
         b1 << "_id" << 1;
 
         coll.insert_one(b1.view());
@@ -66,7 +66,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
         REQUIRE(doc);
         REQUIRE(doc->view()["_id"].get_int32() == 1);
 
-        bson::builder update_doc;
+        bson::builder::document update_doc;
         update_doc << "$set" << open_doc << "changed" << true << close_doc;
 
         coll.update_one(model::update_one(b1, update_doc));
@@ -77,11 +77,11 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
     }
 
     SECTION("non-matching upsert creates document", "[collection]") {
-        using namespace bson::builder_helpers;
-        bson::builder b1;
+        using namespace bson::builder::helpers;
+        bson::builder::document b1;
         b1 << "_id" << 1;
 
-        bson::builder update_doc;
+        bson::builder::document update_doc;
         update_doc << "$set" << open_doc << "changed" << true << close_doc;
 
         coll.update_one(model::update_one(b1, update_doc).upsert(true));
@@ -93,13 +93,13 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
     }
 
     SECTION("matching upsert updates document", "[collection]") {
-        using namespace bson::builder_helpers;
-        bson::builder b1;
+        using namespace bson::builder::helpers;
+        bson::builder::document b1;
         b1 << "_id" << 1;
 
         coll.insert_one(b1.view());
 
-        bson::builder update_doc;
+        bson::builder::document update_doc;
         update_doc << "$set" << open_doc << "changed" << true << close_doc;
 
         coll.update_one(model::update_one(b1, update_doc).upsert(true));
@@ -111,7 +111,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
     }
 
     SECTION("matching upsert updates document", "[collection]") {
-        bson::builder b1;
+        bson::builder::document b1;
         b1 << "x" << 1;
         model::insert_many docs { std::initializer_list<bson::document::view>{b1, b1, b1} };
         coll.insert_many(docs);
@@ -122,11 +122,11 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
     }
 
     SECTION("document replacement", "[collection]") {
-        bson::builder b1;
+        bson::builder::document b1;
         b1 << "x" << 1;
         coll.insert_one(b1.view());
 
-        bson::builder b2;
+        bson::builder::document b2;
         b2 << "x" << 2;
 
         coll.replace_one(model::replace_one(b1, b2));
@@ -138,12 +138,12 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
     }
 
     SECTION("filtered document remove one works", "[collection]") {
-        bson::builder b1;
+        bson::builder::document b1;
         b1 << "x" << 1;
 
         coll.insert_one(b1.view());
 
-        bson::builder b2;
+        bson::builder::document b2;
         b2 << "x" << 2;
 
         coll.insert_one(b2.view());
@@ -192,12 +192,12 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
     }
 
     SECTION("remove many works", "[collection]") {
-        bson::builder b1;
+        bson::builder::document b1;
         b1 << "x" << 1;
 
         coll.insert_one(b1.view());
 
-        bson::builder b2;
+        bson::builder::document b2;
         b2 << "x" << 2;
 
         coll.insert_one(b2.view());
@@ -233,7 +233,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
     }
 
     SECTION("find_one_and_replace works", "[collection]") {
-        bson::builder b1;
+        bson::builder::document b1;
         b1 << "x" << 1;
 
         coll.insert_one(b1.view());
@@ -241,8 +241,8 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
 
         REQUIRE(coll.count() == 2);
 
-        bson::builder criteria;
-        bson::builder replacement;
+        bson::builder::document criteria;
+        bson::builder::document replacement;
 
         criteria << "x" << 1;
         replacement << "x" << 2;
@@ -263,7 +263,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
         }
 
         SECTION("bad criteria returns negative optional") {
-            bson::builder bad_criteria;
+            bson::builder::document bad_criteria;
             bad_criteria << "x" << 3;
 
             auto doc = coll.find_one_and_replace(model::find_one_and_replace{bad_criteria, replacement});
@@ -273,9 +273,9 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
     }
 
     SECTION("find_one_and_update works", "[collection]") {
-        using namespace bson::builder_helpers;
+        using namespace bson::builder::helpers;
 
-        bson::builder b1;
+        bson::builder::document b1;
         b1 << "x" << 1;
 
         coll.insert_one(b1.view());
@@ -283,8 +283,8 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
 
         REQUIRE(coll.count() == 2);
 
-        bson::builder criteria;
-        bson::builder update;
+        bson::builder::document criteria;
+        bson::builder::document update;
 
         criteria << "x" << 1;
         update << "$set" << open_doc << "x" << 2 << close_doc;
@@ -305,7 +305,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
         }
 
         SECTION("bad criteria returns negative optional") {
-            bson::builder bad_criteria;
+            bson::builder::document bad_criteria;
             bad_criteria << "x" << 3;
 
             auto doc = coll.find_one_and_update(model::find_one_and_update{bad_criteria, update});
@@ -315,9 +315,9 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
     }
 
     SECTION("find_one_and_remove works", "[collection]") {
-        using namespace bson::builder_helpers;
+        using namespace bson::builder::helpers;
 
-        bson::builder b1;
+        bson::builder::document b1;
         b1 << "x" << 1;
 
         coll.insert_one(b1.view());
@@ -325,7 +325,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
 
         REQUIRE(coll.count() == 2);
 
-        bson::builder criteria;
+        bson::builder::document criteria;
 
         criteria << "x" << 1;
 
@@ -340,10 +340,10 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
     }
 
     SECTION("aggregate some shit", "[collection]") {
-        bson::builder b1;
+        bson::builder::document b1;
         b1 << "x" << 1;
 
-        bson::builder b2;
+        bson::builder::document b2;
         b2 << "x" << 2;
 
         coll.insert_one(b1.view());

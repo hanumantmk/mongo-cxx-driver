@@ -23,10 +23,10 @@ int main(int argc, char** argv) {
     if (tests & 1) {
         auto before = std::chrono::steady_clock::now();
 
-        bson::builder b;
+        bson::builder::document b;
 
         for (long i = 0; i < iterations; i++) {
-            using namespace bson::builder_helpers;
+            using namespace bson::builder::helpers;
 
             b.clear();
 
@@ -105,10 +105,10 @@ int main(int argc, char** argv) {
     if (tests & 8) {
         auto before = std::chrono::steady_clock::now();
 
-        bson::builder b;
+        bson::builder::document b;
 
         for (long i = 0; i < iterations; i++) {
-            using namespace bson::builder_helpers;
+            using namespace bson::builder::helpers;
 
             b.clear();
 
@@ -164,11 +164,11 @@ int main(int argc, char** argv) {
     }
 
     if (tests & 64) {
-        using namespace bson::builder_helpers;
+        using namespace bson::builder::helpers;
 
         auto before = std::chrono::steady_clock::now();
 
-        bson::builder b;
+        bson::builder::document b;
 
 #include "bson/builder/macros_on.hpp"
         b << "level1"
@@ -190,11 +190,11 @@ int main(int argc, char** argv) {
     }
 
     if (tests & 128) {
-        using namespace bson::builder_helpers;
+        using namespace bson::builder::helpers;
 
         auto before = std::chrono::steady_clock::now();
 
-        bson::builder b;
+        bson::builder::document b;
 
 #include "bson/builder/macros_on.hpp"
         b << "level1"
