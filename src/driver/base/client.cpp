@@ -33,6 +33,12 @@ client::client(const std::string& mongodb_uri)
 client::client(const options& options)
     : _impl(new impl{mongoc_client_new(options._mongodb_uri.c_str())}) {}
 
+void client::read_preference(class read_preference rp) { _impl->read_preference = std::move(rp); }
+const class read_preference& client::read_preference() const { return _impl->read_preference; }
+
+void client::write_concern(class write_concern wc) { _impl->write_concern = std::move(wc); }
+const class write_concern& client::write_concern() const { return _impl->write_concern; }
+
 class database client::database(const std::string& database_name) {
     return mongo::driver::database(*this, database_name);
 }

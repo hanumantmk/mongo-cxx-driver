@@ -325,5 +325,11 @@ void collection::drop() {
     }
 }
 
+void collection::read_preference(class read_preference rp) { _impl->read_preference = std::move(rp); }
+const class read_preference& collection::read_preference() const { return _impl->read_preference; }
+
+void collection::write_concern(class write_concern wc) { _impl->write_concern = std::move(wc); }
+const class write_concern& collection::write_concern() const { return _impl->write_concern; }
+
 }  // namespace driver
 }  // namespace mongo

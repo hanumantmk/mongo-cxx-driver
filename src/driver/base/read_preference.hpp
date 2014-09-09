@@ -16,23 +16,35 @@
 
 #include "driver/config/prelude.hpp"
 
-#include "driver/base/client.hpp"
+#include "bson/document.hpp"
 
-#include "mongoc.h"
+#include <string>
+#include <cstdint>
 
 namespace mongo {
 namespace driver {
 
-class client::impl {
+enum class read_mode : std::uint8_t {
+    k_primary = (1 << 0),
+    k_secondary = (1 << 1),
+    k_primary_preferred = (1 << 2) | k_primary,
+    k_secondary_preferred = (1 << 2) | k_secondary,
+    k_nearest = (1 << 3) | k_secondary,
+};
+
+class read_preference {
    public:
-    impl(mongoc_client_t* client) : client_t(client) {}
+       read_preference(read_mode mode = read_mode::k_primary);
 
-    ~impl() { mongoc_client_destroy(client_t); }
+       read_preference& mode(read_mode mode);
+       read_preference& tags(bson::document::view tags);
 
-    mongoc_client_t* client_t;
+       read_mode mode() const;
+       bson::document::view tags() const;
 
-    class read_preference read_preference;
-    class write_concern write_concern;
+   private:
+       read_mode _mode;
+       bson::document::view _tags;
 };
 
 }  // namespace driver

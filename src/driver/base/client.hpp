@@ -19,6 +19,8 @@
 #include <memory>
 
 #include "driver/base/database.hpp"
+#include "driver/base/read_preference.hpp"
+#include "driver/base/write_concern.hpp"
 
 namespace mongo {
 namespace driver {
@@ -39,6 +41,12 @@ class LIBMONGOCXX_EXPORT client {
     client();
     explicit client(const std::string& mongodb_uri);
     explicit client(const options& options);
+
+    void read_preference(class read_preference rp);
+    const class read_preference& read_preference() const;
+
+    void write_concern(class write_concern wc);
+    const class write_concern& write_concern() const;
 
     class database operator[](const std::string& database_name);
     class database database(const std::string& database_name);

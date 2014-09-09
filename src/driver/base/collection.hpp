@@ -27,6 +27,9 @@
 #include "driver/base/cursor.hpp"
 #include "driver/result/write.hpp"
 
+#include "driver/base/read_preference.hpp"
+#include "driver/base/write_concern.hpp"
+
 namespace mongo {
 namespace driver {
 
@@ -101,6 +104,12 @@ class LIBMONGOCXX_EXPORT collection {
     std::int64_t count(const model::count& model = model::count{}) const;
 
     void drop();
+
+    void read_preference(class read_preference rp);
+    const class read_preference& read_preference() const;
+
+    void write_concern(class write_concern wc);
+    const class write_concern& write_concern() const;
 
     collection(collection&& rhs);
     collection& operator=(collection&& rhs);

@@ -16,23 +16,34 @@
 
 #include "driver/config/prelude.hpp"
 
-#include "driver/base/client.hpp"
-
-#include "mongoc.h"
+#include <string>
+#include <cstdint>
 
 namespace mongo {
 namespace driver {
 
-class client::impl {
+class write_concern {
    public:
-    impl(mongoc_client_t* client) : client_t(client) {}
+    write_concern();
 
-    ~impl() { mongoc_client_destroy(client_t); }
+    write_concern& fsync(bool fsync);
+    write_concern& journal(bool journal);
+    write_concern& w(std::int32_t w);
+    write_concern& wtimeout(std::int32_t wtimeout);
+    write_concern& wtag(std::string wtag);
 
-    mongoc_client_t* client_t;
+    bool fsync() const;
+    bool journal() const;
+    std::int32_t w() const;
+    std::int32_t wtimeout() const;
+    const std::string& wtag() const;
 
-    class read_preference read_preference;
-    class write_concern write_concern;
+   private:
+    bool _fsync;
+    bool _journal;
+    std::int32_t _w;
+    std::int32_t _wtimeout;
+    std::string _wtag;
 };
 
 }  // namespace driver

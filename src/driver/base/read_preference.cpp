@@ -12,30 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
-
-#include "driver/config/prelude.hpp"
-
-#include "driver/base/client.hpp"
-
-#include "mongoc.h"
+#include "driver/base/read_preference.hpp"
 
 namespace mongo {
 namespace driver {
 
-class client::impl {
-   public:
-    impl(mongoc_client_t* client) : client_t(client) {}
+read_preference::read_preference(read_mode mode) : _mode(mode) {}
 
-    ~impl() { mongoc_client_destroy(client_t); }
+read_preference& read_preference::mode(read_mode mode) {
+    _mode = mode;
+    return *this;
+}
 
-    mongoc_client_t* client_t;
+read_preference& read_preference::tags(bson::document::view tags) {
+    _tags = std::move(tags);
+    return *this;
+}
 
-    class read_preference read_preference;
-    class write_concern write_concern;
-};
+read_mode read_preference::mode() const { return _mode; }
+
+bson::document::view read_preference::tags() const { return _tags; }
 
 }  // namespace driver
 }  // namespace mongo
-
-#include "driver/config/postlude.hpp"

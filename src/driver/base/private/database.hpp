@@ -17,6 +17,8 @@
 #include "driver/config/prelude.hpp"
 
 #include "driver/base/database.hpp"
+#include "driver/base/client.hpp"
+#include "driver/base/private/client.hpp"
 
 #include "mongoc.h"
 
@@ -25,10 +27,20 @@ namespace driver {
 
 class database::impl {
    public:
+    impl(mongoc_database_t* db, const class client* client, std::string name) :
+        database_t(db),
+        client(client),
+        name(std::move(name)),
+        read_preference(client->_impl->read_preference),
+        write_concern(client->_impl->write_concern)
+    {}
+
     ~impl() { mongoc_database_destroy(database_t); }
     mongoc_database_t* database_t;
     const class client* client;
     std::string name;
+    class read_preference read_preference;
+    class write_concern write_concern;
 };
 
 }  // namespace driver

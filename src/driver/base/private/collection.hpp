@@ -17,6 +17,8 @@
 #include "driver/config/prelude.hpp"
 
 #include "driver/base/collection.hpp"
+#include "driver/base/database.hpp"
+#include "driver/base/private/database.hpp"
 
 #include "mongoc.h"
 
@@ -25,12 +27,23 @@ namespace driver {
 
 class collection::impl {
    public:
+    impl(mongoc_collection_t* collection, const class database* database, const class client* client, std::string name) :
+        collection_t(collection),
+        database(database),
+        client(client),
+        name(name),
+        read_preference(database->_impl->read_preference),
+        write_concern(database->_impl->write_concern)
+    {}
+
     ~impl() { mongoc_collection_destroy(collection_t); }
+
     mongoc_collection_t* collection_t;
     const class database* database;
     const class client* client;
     std::string name;
-    optional<bson::document::value> find_and_modify();
+    class read_preference read_preference;
+    class write_concern write_concern;
 };
 
 }  // namespace driver
