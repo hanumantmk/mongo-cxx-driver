@@ -32,7 +32,6 @@
 #include "driver/model/find_one_and_update.hpp"
 #include "driver/model/insert_one.hpp"
 #include "driver/model/update_one.hpp"
-#include "driver/private/cast.hpp"
 #include "driver/result/bulk_write.hpp"
 #include "driver/result/insert_many.hpp"
 #include "driver/result/insert_one.hpp"

@@ -19,7 +19,6 @@
 
 #include "driver/base/cursor.hpp"
 #include "driver/base/private/cursor.hpp"
-#include "driver/private/cast.hpp"
 
 namespace mongo {
 namespace driver {

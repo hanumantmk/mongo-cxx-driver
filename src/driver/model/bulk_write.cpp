@@ -15,7 +15,6 @@
 #include "driver/model/bulk_write.hpp"
 
 #include "mongoc.h"
-#include "driver/private/cast.hpp"
 #include "driver/model/private/bulk_write.hpp"
 #include "driver/util/libbson.hpp"
 

@@ -17,7 +17,6 @@
 #include "driver/base/client.hpp"
 #include "driver/base/options.hpp"
 #include "driver/base/private/client.hpp"
-#include "driver/private/cast.hpp"
 
 namespace mongo {
 namespace driver {
