@@ -27,8 +27,7 @@ database& database::operator=(database&&) = default;
 database::~database() = default;
 
 database::database(const class client& client, const std::string& database_name)
-    : _impl(new impl{mongoc_client_get_database(client._impl->client_t,
-                                                database_name.c_str()),
+    : _impl(new impl{mongoc_client_get_database(client._impl->client_t, database_name.c_str()),
                      &client, database_name.c_str()}) {}
 
 const std::string& database::name() const { return _impl->name; }

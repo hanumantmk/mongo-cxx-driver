@@ -27,9 +27,7 @@ cursor::cursor(cursor&&) = default;
 cursor& cursor::operator=(cursor&&) = default;
 cursor::~cursor() = default;
 
-cursor::cursor(void* cursor_ptr)
-    : _impl(new impl{static_cast<mongoc_cursor_t*>(cursor_ptr)})
-{}
+cursor::cursor(void* cursor_ptr) : _impl(new impl{static_cast<mongoc_cursor_t*>(cursor_ptr)}) {}
 
 cursor::iterator& cursor::iterator::operator++() {
     const bson_t* out;
