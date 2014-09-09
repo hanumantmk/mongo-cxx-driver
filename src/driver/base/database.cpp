@@ -17,6 +17,7 @@
 #include "driver/base/database.hpp"
 #include "driver/base/client.hpp"
 #include "driver/base/private/database.hpp"
+#include "driver/base/private/client.hpp"
 #include "driver/private/cast.hpp"
 
 namespace mongo {
@@ -27,7 +28,7 @@ database& database::operator=(database&&) = default;
 database::~database() = default;
 
 database::database(const class client& client, const std::string& database_name)
-    : _impl(new impl{mongoc_client_get_database(util::cast<mongoc_client_t>(client._client),
+    : _impl(new impl{mongoc_client_get_database(client._impl->client_t,
                                                 database_name.c_str()),
                      &client, database_name.c_str()}) {}
 

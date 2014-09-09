@@ -16,24 +16,23 @@
 
 #include "driver/base/client.hpp"
 #include "driver/base/options.hpp"
+#include "driver/base/private/client.hpp"
 #include "driver/private/cast.hpp"
 
 namespace mongo {
 namespace driver {
 
-namespace {
-static void mongoc_client_dtor(void* client_ptr) noexcept {
-    mongoc_client_destroy(static_cast<mongoc_client_t*>(client_ptr));
-}
-}  // namespace
+client::client(client&&) = default;
+client& client::operator=(client&&) = default;
+client::~client() = default;
 
-client::client() : _client(mongoc_client_new("mongodb://localhost:27017"), mongoc_client_dtor) {}
+client::client() : _impl(new impl{mongoc_client_new("mongodb://localhost:27017")}) {}
 
 client::client(const std::string& mongodb_uri)
-    : _client(mongoc_client_new(mongodb_uri.c_str()), mongoc_client_dtor) {}
+    : _impl(new impl{mongoc_client_new(mongodb_uri.c_str())}) {}
 
 client::client(const options& options)
-    : _client(mongoc_client_new(options._mongodb_uri.c_str()), mongoc_client_dtor) {}
+    : _impl(new impl{mongoc_client_new(options._mongodb_uri.c_str())}) {}
 
 class database client::database(const std::string& database_name) {
     return mongo::driver::database(*this, database_name);

@@ -18,6 +18,7 @@
 
 #include "driver/libmongoc.hpp"
 
+#include "driver/base/private/client.hpp"
 #include "driver/base/private/collection.hpp"
 #include "driver/base/private/database.hpp"
 #include "driver/base/private/pipeline.hpp"
@@ -65,7 +66,7 @@ result::bulk_write collection::bulk_write(const model::bulk_write& model) {
     mongoc_bulk_operation_t* b = model._impl->operation_t;
     mongoc_bulk_operation_set_database(b, _impl->database->_impl->name.c_str());
     mongoc_bulk_operation_set_collection(b, _impl->name.c_str());
-    mongoc_bulk_operation_set_client(b, util::cast<mongoc_client_t>(_impl->client->_client));
+    mongoc_bulk_operation_set_client(b, _impl->client->_impl->client_t);
     mongoc_bulk_operation_set_write_concern(
         b, mongoc_collection_get_write_concern(_impl->collection_t));
 
