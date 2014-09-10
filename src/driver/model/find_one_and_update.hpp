@@ -17,7 +17,6 @@
 #include "driver/config/prelude.hpp"
 
 #include "bson/document.hpp"
-#include "driver/base/write_concern.hpp"
 #include "driver/util/optional.hpp"
 
 namespace mongo {
@@ -33,7 +32,6 @@ class LIBMONGOCXX_EXPORT find_one_and_update {
     find_one_and_update& return_replacement(bool return_replacement);
     find_one_and_update& sort(bson::document::view ordering);
     find_one_and_update& upsert(bool upsert);
-    find_one_and_update& write_concern(class write_concern wc);
 
     const bson::document::view& criteria() const;
     const bson::document::view& update() const;
@@ -42,7 +40,6 @@ class LIBMONGOCXX_EXPORT find_one_and_update {
     const optional<bool>& return_replacement() const;
     const optional<bson::document::view>& sort() const;
     const optional<bool>& upsert() const;
-    const optional<class write_concern>& write_concern() const;
 
    private:
     bson::document::view _criteria;
@@ -52,7 +49,6 @@ class LIBMONGOCXX_EXPORT find_one_and_update {
     optional<bool> _return_replacement;
     optional<bson::document::view> _ordering;
     optional<bool> _upsert;
-    optional<class write_concern> _write_concern;
 };
 
 }  // namespace model

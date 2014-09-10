@@ -40,11 +40,11 @@ write_concern& write_concern::wtag(std::string wtag) {
     return *this;
 }
 
-bool write_concern::fsync() const { return _fsync; }
-bool write_concern::journal() const { return _journal; }
-std::int32_t write_concern::w() const { return _w; }
-std::int32_t write_concern::wtimeout() const { return _wtimeout; }
-const std::string& write_concern::wtag() const { return _wtag; }
+const optional<bool>& write_concern::fsync() const { return _fsync; }
+const optional<bool>& write_concern::journal() const { return _journal; }
+const optional<std::int32_t>& write_concern::w() const { return _w; }
+const optional<std::int32_t>& write_concern::wtimeout() const { return _wtimeout; }
+const optional<std::string>& write_concern::wtag() const { return _wtag; }
 
 }  // namespace driver
 }  // namespace mongo

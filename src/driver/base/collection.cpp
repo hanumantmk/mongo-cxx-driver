@@ -45,6 +45,9 @@
 #include "driver/model/bulk_write.hpp"
 #include "driver/model/write.hpp"
 
+#include "driver/base/private/write_concern.hpp"
+#include "driver/base/private/read_preference.hpp"
+
 namespace mongo {
 namespace driver {
 
@@ -66,8 +69,15 @@ result::bulk_write collection::bulk_write(const model::bulk_write& model) {
     mongoc_bulk_operation_set_database(b, _impl->database->_impl->name.c_str());
     mongoc_bulk_operation_set_collection(b, _impl->name.c_str());
     mongoc_bulk_operation_set_client(b, _impl->client->_impl->client_t);
-    mongoc_bulk_operation_set_write_concern(
-        b, mongoc_collection_get_write_concern(_impl->collection_t));
+
+    if (model.write_concern()) {
+        priv::write_concern wc(*model.write_concern());
+
+        mongoc_bulk_operation_set_write_concern(b, wc.get_write_concern());
+    } else {
+        mongoc_bulk_operation_set_write_concern(
+            b, mongoc_collection_get_write_concern(_impl->collection_t));
+    }
 
     result::bulk_write result;
 
@@ -109,10 +119,20 @@ cursor collection::find(const model::find& model) const {
         filter.init_from_static(model.criteria());
     }
 
+    optional<priv::read_preference> read_prefs;
+    const mongoc_read_prefs_t* rp_ptr;
+
+    if (model.read_preference()) {
+        read_prefs = priv::read_preference{*model.read_preference()};
+        rp_ptr = read_prefs->get_read_preference();
+    } else {
+        rp_ptr = mongoc_collection_get_read_prefs(_impl->collection_t);
+    }
+
     return cursor(mongoc_collection_find(
         _impl->collection_t, (mongoc_query_flags_t)model.cursor_flags().value_or(0),
         model.skip().value_or(0), model.limit().value_or(0), model.batch_size().value_or(0),
-        filter.bson(), projection.bson(), nullptr));
+        filter.bson(), projection.bson(), rp_ptr));
 }
 
 optional<bson::document::value> collection::find_one(const model::find& model) const {
@@ -147,9 +167,19 @@ cursor collection::aggregate(const model::aggregate& model) {
 
     scoped_bson_t options(b.view());
 
+    optional<priv::read_preference> read_prefs;
+    const mongoc_read_prefs_t* rp_ptr;
+
+    if (model.read_preference()) {
+        read_prefs = priv::read_preference{*model.read_preference()};
+        rp_ptr = read_prefs->get_read_preference();
+    } else {
+        rp_ptr = mongoc_collection_get_read_prefs(_impl->collection_t);
+    }
+
     return cursor(mongoc_collection_aggregate(_impl->collection_t,
                                               static_cast<mongoc_query_flags_t>(0), pipeline.bson(),
-                                              options.bson(), nullptr));
+                                              options.bson(), rp_ptr));
 }
 
 result::insert_one collection::insert_one(const model::insert_one& model) {
@@ -306,9 +336,20 @@ bson::document::value collection::explain(const model::explain& /*model*/) const
 std::int64_t collection::count(const model::count& model) const {
     scoped_bson_t criteria{model.criteria()};
     bson_error_t error;
+
+    optional<priv::read_preference> read_prefs;
+    const mongoc_read_prefs_t* rp_ptr;
+
+    if (model.read_preference()) {
+        read_prefs = priv::read_preference{*model.read_preference()};
+        rp_ptr = read_prefs->get_read_preference();
+    } else {
+        rp_ptr = mongoc_collection_get_read_prefs(_impl->collection_t);
+    }
+
     auto result = mongoc_collection_count(_impl->collection_t, static_cast<mongoc_query_flags_t>(0),
                                           criteria.bson(), model.skip().value_or(0),
-                                          model.limit().value_or(0), nullptr, &error);
+                                          model.limit().value_or(0), rp_ptr, &error);
 
     /* TODO throw an exception if error
     if (result < 0)
@@ -326,12 +367,15 @@ void collection::drop() {
 }
 
 void collection::read_preference(class read_preference rp) {
-    _impl->read_preference = std::move(rp);
+    _impl->read_preference(std::move(rp));
 }
-const class read_preference& collection::read_preference() const { return _impl->read_preference; }
+const class read_preference& collection::read_preference() const {
+    return _impl->read_preference();
+}
 
-void collection::write_concern(class write_concern wc) { _impl->write_concern = std::move(wc); }
-const class write_concern& collection::write_concern() const { return _impl->write_concern; }
+void collection::write_concern(class write_concern wc) { _impl->write_concern(std::move(wc)); }
+
+const class write_concern& collection::write_concern() const { return _impl->write_concern(); }
 
 }  // namespace driver
 }  // namespace mongo

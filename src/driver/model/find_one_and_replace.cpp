@@ -42,11 +42,6 @@ find_one_and_replace& find_one_and_replace::upsert(bool upsert) {
     return *this;
 }
 
-find_one_and_replace& find_one_and_replace::write_concern(class write_concern wc) {
-    _write_concern = std::move(wc);
-    return *this;
-}
-
 const bson::document::view& find_one_and_replace::criteria() const { return _criteria; }
 
 const bson::document::view& find_one_and_replace::replacement() const { return _replacement; }
@@ -62,10 +57,6 @@ const optional<bool>& find_one_and_replace::return_replacement() const {
 const optional<bson::document::view>& find_one_and_replace::sort() const { return _ordering; }
 
 const optional<bool>& find_one_and_replace::upsert() const { return _upsert; }
-
-const optional<class write_concern>& find_one_and_replace::write_concern() const {
-    return _write_concern;
-}
 
 }  // namespace model
 }  // namespace driver

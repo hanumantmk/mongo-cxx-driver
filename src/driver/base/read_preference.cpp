@@ -31,7 +31,7 @@ read_preference& read_preference::tags(bson::document::view tags) {
 
 read_mode read_preference::mode() const { return _mode; }
 
-bson::document::view read_preference::tags() const { return _tags; }
+const optional<bson::document::view>& read_preference::tags() const { return _tags; }
 
 }  // namespace driver
 }  // namespace mongo

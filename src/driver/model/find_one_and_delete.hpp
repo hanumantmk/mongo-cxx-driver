@@ -31,20 +31,17 @@ class LIBMONGOCXX_EXPORT find_one_and_delete {
 
     find_one_and_delete& projection(bson::document::view projection);
     find_one_and_delete& sort(bson::document::view ordering);
-    find_one_and_delete& write_concern(class write_concern wc);
 
     const bson::document::view& criteria() const;
 
     const optional<bson::document::view>& projection() const;
     const optional<bson::document::view>& sort() const;
-    const optional<class write_concern>& write_concern() const;
 
    private:
     bson::document::view _criteria;
 
     optional<bson::document::view> _projection;
     optional<bson::document::view> _ordering;
-    optional<class write_concern> _write_concern;
 };
 
 }  // namespace model

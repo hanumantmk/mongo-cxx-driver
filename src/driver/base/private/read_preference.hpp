@@ -16,39 +16,40 @@
 
 #include "driver/config/prelude.hpp"
 
-#include "bson/document.hpp"
+#include <memory>
 
-#include <string>
-#include <cstdint>
+#include "mongoc.h"
 
-#include "driver/util/optional.hpp"
+#include "driver/base/read_preference.hpp"
+#include "driver/util/libbson.hpp"
 
 namespace mongo {
 namespace driver {
-
-enum class read_mode : std::uint8_t {
-    k_primary = (1 << 0),
-    k_secondary = (1 << 1),
-    k_primary_preferred = (1 << 2) | k_primary,
-    k_secondary_preferred = (1 << 2) | k_secondary,
-    k_nearest = (1 << 3) | k_secondary,
-};
+namespace priv {
 
 class read_preference {
-   public:
-       read_preference(read_mode = read_mode::k_primary);
+public:
+    read_preference(const driver::read_preference& arg) : _read_preference(mongoc_read_prefs_new(static_cast<mongoc_read_mode_t>(arg.mode()))) {
+        mongoc_read_prefs_t* wc = _read_preference;
+        if (arg.tags()) {
+            bson::libbson::scoped_bson_t btags(arg.tags());
+            mongoc_read_prefs_set_tags(wc, btags.bson());
+        }
+    }
 
-       read_preference& mode(read_mode mode);
-       read_preference& tags(bson::document::view tags);
+    ~read_preference() {
+        mongoc_read_prefs_destroy(_read_preference);
+    }
 
-       read_mode mode() const;
-       const optional<bson::document::view>& tags() const;
+    const mongoc_read_prefs_t* get_read_preference() const {
+        return _read_preference;
+    }
 
-   private:
-       read_mode _mode;
-       optional<bson::document::view> _tags;
+private:
+    mongoc_read_prefs_t* _read_preference;
 };
 
+}  // namespace priv
 }  // namespace driver
 }  // namespace mongo
 

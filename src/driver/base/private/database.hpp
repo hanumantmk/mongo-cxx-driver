@@ -19,6 +19,8 @@
 #include "driver/base/database.hpp"
 #include "driver/base/client.hpp"
 #include "driver/base/private/client.hpp"
+#include "driver/base/private/read_preference.hpp"
+#include "driver/base/private/write_concern.hpp"
 
 #include "mongoc.h"
 
@@ -30,17 +32,43 @@ class database::impl {
     impl(mongoc_database_t* db, const class client* client, std::string name) :
         database_t(db),
         client(client),
-        name(std::move(name)),
-        read_preference(client->_impl->read_preference),
-        write_concern(client->_impl->write_concern)
-    {}
+        name(std::move(name))
+    {
+        read_preference(client->_impl->read_preference());
+        write_concern(client->_impl->write_concern());
+    }
 
     ~impl() { mongoc_database_destroy(database_t); }
     mongoc_database_t* database_t;
     const class client* client;
     std::string name;
-    class read_preference read_preference;
-    class write_concern write_concern;
+
+    void read_preference(class read_preference rp) {
+        priv::read_preference read_prefs{rp};
+
+        mongoc_database_set_read_prefs(database_t, read_prefs.get_read_preference());
+
+        _read_preference = std::move(rp);
+    }
+
+    void write_concern(class write_concern wc) {
+        priv::write_concern write_conc{wc};
+
+        mongoc_database_set_write_concern(database_t, write_conc.get_write_concern());
+
+        _write_concern = std::move(wc);
+    }
+
+    const class read_preference& read_preference() const {
+        return _read_preference;
+    }
+
+    const class write_concern& write_concern() const {
+        return _write_concern;
+    }
+    private:
+    class read_preference _read_preference;
+    class write_concern _write_concern;
 };
 
 }  // namespace driver

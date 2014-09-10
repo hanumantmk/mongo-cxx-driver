@@ -20,6 +20,9 @@
 
 #include "mongoc.h"
 
+#include "driver/base/private/read_preference.hpp"
+#include "driver/base/private/write_concern.hpp"
+
 namespace mongo {
 namespace driver {
 
@@ -31,8 +34,33 @@ class client::impl {
 
     mongoc_client_t* client_t;
 
-    class read_preference read_preference;
-    class write_concern write_concern;
+    void read_preference(class read_preference rp) {
+        priv::read_preference read_prefs{rp};
+
+        mongoc_client_set_read_prefs(client_t, read_prefs.get_read_preference());
+
+        _read_preference = std::move(rp);
+    }
+
+    void write_concern(class write_concern wc) {
+        priv::write_concern write_conc{wc};
+
+        mongoc_client_set_write_concern(client_t, write_conc.get_write_concern());
+
+        _write_concern = std::move(wc);
+    }
+
+    const class read_preference& read_preference() const {
+        return _read_preference;
+    }
+
+    const class write_concern& write_concern() const {
+        return _write_concern;
+    }
+
+    private:
+    class read_preference _read_preference;
+    class write_concern _write_concern;
 };
 
 }  // namespace driver
