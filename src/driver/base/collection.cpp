@@ -183,7 +183,13 @@ cursor collection::aggregate(const model::aggregate& model) {
 }
 
 result::insert_one collection::insert_one(const model::insert_one& model) {
-    result::bulk_write res(bulk_write(model::bulk_write(false).append(model)));
+    model::bulk_write bulk_op(false);
+    bulk_op.append(model);
+
+    if (model.write_concern())
+        bulk_op.write_concern(*model.write_concern());
+
+    result::bulk_write res(bulk_write(bulk_op));
 
     result::insert_one result;
     result.is_acknowledged = true;
@@ -191,7 +197,14 @@ result::insert_one collection::insert_one(const model::insert_one& model) {
 }
 
 result::insert_many collection::insert_many(const model::insert_many& model) {
-    result::bulk_write res(bulk_write(model::bulk_write(false).append(model)));
+    model::bulk_write bulk_op(false);
+    bulk_op.append(model);
+
+    if (model.write_concern())
+        bulk_op.write_concern(*model.write_concern());
+
+    result::bulk_write res(bulk_write(bulk_op));
+
     result::insert_many result;
     result.is_acknowledged = true;
     return result;
@@ -206,21 +219,42 @@ result::update collection::update_many(const model::update_many& /* model */) {
 }
 
 result::delete_result collection::delete_many(const model::delete_many& model) {
-    result::bulk_write res(bulk_write(model::bulk_write(false).append(model)));
+    model::bulk_write bulk_op(false);
+    bulk_op.append(model);
+
+    if (model.write_concern())
+        bulk_op.write_concern(*model.write_concern());
+
+    result::bulk_write res(bulk_write(bulk_op));
+
     result::delete_result result;
     result.is_acknowledged = true;
     return result;
 }
 
 result::update collection::update_one(const model::update_one& model) {
-    result::bulk_write res(bulk_write(model::bulk_write(false).append(model)));
+    model::bulk_write bulk_op(false);
+    bulk_op.append(model);
+
+    if (model.write_concern())
+        bulk_op.write_concern(*model.write_concern());
+
+    result::bulk_write res(bulk_write(bulk_op));
+
     result::update result;
     result.is_acknowledged = true;
     return result;
 }
 
 result::delete_result collection::delete_one(const model::delete_one& model) {
-    result::bulk_write res(bulk_write(model::bulk_write(false).append(model)));
+    model::bulk_write bulk_op(false);
+    bulk_op.append(model);
+
+    if (model.write_concern())
+        bulk_op.write_concern(*model.write_concern());
+
+    result::bulk_write res(bulk_write(bulk_op));
+
     result::delete_result result;
     result.is_acknowledged = true;
     return result;
