@@ -210,12 +210,32 @@ result::insert_many collection::insert_many(const model::insert_many& model) {
     return result;
 }
 
-result::replace_one collection::replace_one(const model::replace_one& /* model */) {
-    return result::replace_one();
+result::replace_one collection::replace_one(const model::replace_one& model) {
+    model::bulk_write bulk_op(false);
+    bulk_op.append(model);
+
+    if (model.write_concern())
+        bulk_op.write_concern(*model.write_concern());
+
+    result::bulk_write res(bulk_write(bulk_op));
+
+    result::replace_one result;
+    result.is_acknowledged = true;
+    return result;
 }
 
-result::update collection::update_many(const model::update_many& /* model */) {
-    return result::update();
+result::update collection::update_many(const model::update_many& model) {
+    model::bulk_write bulk_op(false);
+    bulk_op.append(model);
+
+    if (model.write_concern())
+        bulk_op.write_concern(*model.write_concern());
+
+    result::bulk_write res(bulk_write(bulk_op));
+
+    result::update result;
+    result.is_acknowledged = true;
+    return result;
 }
 
 result::delete_result collection::delete_many(const model::delete_many& model) {

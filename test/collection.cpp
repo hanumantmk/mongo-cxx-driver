@@ -1,6 +1,7 @@
 #include "catch.hpp"
 
 #include "bson/builder.hpp"
+#include "bson/types.hpp"
 #include "mongocxx.hpp"
 
 using namespace mongo::driver;
@@ -72,6 +73,48 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
         auto updated = coll.find_one();
         REQUIRE(updated);
         REQUIRE(updated->view()["changed"].get_bool() == true);
+    }
+
+    SECTION("insert and update multiple documents", "[collection]") {
+        bson::builder::document b1;
+        b1 << "x" << 1;
+
+        coll.insert_one(b1.view());
+        coll.insert_one(b1.view());
+
+        bson::builder::document b2;
+        b2 << "x" << 2;
+
+        coll.insert_one(b2.view());
+
+        REQUIRE(coll.count(b1.view()) == 2);
+
+        bson::builder::document bchanged;
+        bchanged << "changed" << true;
+
+        bson::builder::document update_doc;
+        update_doc << "$set" << bson::types::b_document{bchanged.view()};
+
+        coll.update_many(model::update_many(b1, update_doc));
+
+        REQUIRE(coll.count(bchanged.view()) == 2);
+    }
+
+    SECTION("replace document replaces only one document", "[collection]") {
+        bson::builder::document doc;
+        doc << "x" << 1;
+
+        coll.insert_one(doc.view());
+        coll.insert_one(doc.view());
+
+        REQUIRE(coll.count(doc.view()) == 2);
+
+        bson::builder::document replacement;
+        replacement << "x" << 2;
+
+        coll.replace_one(model::replace_one(doc.view(), replacement.view()));
+
+        REQUIRE(coll.count(doc.view()) == 1);
     }
 
     SECTION("non-matching upsert creates document", "[collection]") {
