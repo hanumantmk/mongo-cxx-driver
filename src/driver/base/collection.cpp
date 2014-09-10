@@ -55,9 +55,9 @@ collection& collection::operator=(collection&&) = default;
 collection::~collection() = default;
 
 collection::collection(const database& database, const std::string& collection_name)
-    : _impl(new impl{mongoc_database_get_collection(database._impl->database_t,
-                                                    collection_name.c_str()),
-                     &database, database._impl->client, collection_name.c_str()}) {}
+    : _impl(new impl{
+          mongoc_database_get_collection(database._impl->database_t, collection_name.c_str()),
+          &database, database._impl->client, collection_name.c_str()}) {}
 
 result::bulk_write collection::bulk_write(const model::bulk_write& model) {
     using namespace model;
@@ -325,7 +325,9 @@ void collection::drop() {
     }
 }
 
-void collection::read_preference(class read_preference rp) { _impl->read_preference = std::move(rp); }
+void collection::read_preference(class read_preference rp) {
+    _impl->read_preference = std::move(rp);
+}
 const class read_preference& collection::read_preference() const { return _impl->read_preference; }
 
 void collection::write_concern(class write_concern wc) { _impl->write_concern = std::move(wc); }

@@ -39,7 +39,9 @@ const std::string& distinct::field_name() const { return _field_name; }
 
 const optional<bson::document::view>& distinct::criteria() const { return _criteria; }
 const optional<std::int64_t>& distinct::max_time_ms() const { return _max_time_ms; }
-const optional<class read_preference>& distinct::read_preference() const { return _read_preference; }
+const optional<class read_preference>& distinct::read_preference() const {
+    return _read_preference;
+}
 
 }  // namesapce model
 }  // namespace driver

@@ -5,7 +5,6 @@
 using namespace mongo::driver;
 
 int main() {
-
     bson::document::view a((std::uint8_t *)"", 0);
     bson::document::view b((std::uint8_t *)"", 0);
 

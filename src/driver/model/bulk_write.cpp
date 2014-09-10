@@ -32,7 +32,6 @@ bulk_write::bulk_write(bool ordered)
     : _impl(new impl{ordered, mongoc_bulk_operation_new(ordered)}) {}
 
 bulk_write& bulk_write::append(write operation_t) {
-
     switch (operation_t.type()) {
         case write_type::kInsertOne: {
             scoped_bson_t doc(operation_t.get_insert_one().document());
@@ -102,7 +101,9 @@ bulk_write& bulk_write::write_concern(class write_concern wc) {
 }
 
 bool bulk_write::ordered() const { return _impl->ordered; }
-const optional<class write_concern>& bulk_write::write_concern() const { return _impl->_write_concern; }
+const optional<class write_concern>& bulk_write::write_concern() const {
+    return _impl->_write_concern;
+}
 
 }  // namespace model
 }  // namespace driver

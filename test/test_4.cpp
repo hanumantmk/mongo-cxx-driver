@@ -61,8 +61,7 @@ int main() {
         builder << "foo" << open_array;
 
         builder << "bar" << 12;
-    }
-    catch (const std::runtime_error& re) {
+    } catch (const std::runtime_error& re) {
         std::cout << "caught \"" << re.what() << "\"" << std::endl;
     }
 

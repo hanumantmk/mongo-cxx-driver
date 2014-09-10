@@ -77,9 +77,7 @@ types::b_binary element::get_binary() const {
     return types::b_binary{static_cast<binary_sub_type>(type), len, binary};
 }
 
-types::b_eod element::get_eod() const {
-    return types::b_eod{};
-}
+types::b_eod element::get_eod() const { return types::b_eod{}; }
 
 types::b_utf8 element::get_utf8() const {
     CITER;
@@ -102,9 +100,7 @@ types::b_int64 element::get_int64() const {
     CITER;
     return types::b_int64{bson_iter_int64(&iter)};
 }
-types::b_undefined element::get_undefined() const {
-    return types::b_undefined{};
-}
+types::b_undefined element::get_undefined() const { return types::b_undefined{}; }
 types::b_oid element::get_oid() const {
     CITER;
 
@@ -122,9 +118,7 @@ types::b_date element::get_date() const {
     CITER;
     return types::b_date{bson_iter_date_time(&iter)};
 }
-types::b_null element::get_null() const {
-    return types::b_null{};
-}
+types::b_null element::get_null() const { return types::b_null{}; }
 
 types::b_regex element::get_regex() const {
     CITER;
@@ -189,12 +183,8 @@ types::b_timestamp element::get_timestamp() const {
     return types::b_timestamp{timestamp, increment};
 }
 
-types::b_minkey element::get_minkey() const {
-    return types::b_minkey{};
-}
-types::b_maxkey element::get_maxkey() const {
-    return types::b_maxkey{};
-}
+types::b_minkey element::get_minkey() const { return types::b_minkey{}; }
+types::b_maxkey element::get_maxkey() const { return types::b_maxkey{}; }
 
 types::b_document element::get_document() const {
     CITER;

@@ -6,7 +6,6 @@
 using namespace mongo::driver;
 
 TEST_CASE("CRUD functionality", "[driver::collection]") {
-
     mongoc_init();
     client mongodb_client;
     database db = mongodb_client["test"];
@@ -257,7 +256,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
 
         SECTION("with return replacement returns new") {
             auto doc = coll.find_one_and_replace(
-                model::find_one_and_replace { criteria, replacement }.return_replacement(true));
+                model::find_one_and_replace{criteria, replacement}.return_replacement(true));
 
             REQUIRE(doc);
             REQUIRE(doc->view()["x"].get_int32() == 2);
@@ -301,7 +300,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
 
         SECTION("with return update returns new") {
             auto doc = coll.find_one_and_update(
-                model::find_one_and_update { criteria, update }.return_replacement(true));
+                model::find_one_and_update{criteria, update}.return_replacement(true));
 
             REQUIRE(doc);
             REQUIRE(doc->view()["x"].get_int32() == 2);

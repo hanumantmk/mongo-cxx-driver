@@ -286,29 +286,19 @@ void concrete::value_append(const types::b_maxkey&) {
     bson_append_maxkey(_impl->back(), key.c_str(), key.length());
 }
 
-void concrete::value_append(double value) {
-    value_append(types::b_double{value});
-}
+void concrete::value_append(double value) { value_append(types::b_double{value}); }
 
 void concrete::value_append(string_or_literal value) {
     value_append(types::b_utf8{std::move(value)});
 }
 
-void concrete::value_append(std::int32_t value) {
-    value_append(types::b_int32{value});
-}
+void concrete::value_append(std::int32_t value) { value_append(types::b_int32{value}); }
 
-void concrete::value_append(const oid& value) {
-    value_append(types::b_oid{value});
-}
+void concrete::value_append(const oid& value) { value_append(types::b_oid{value}); }
 
-void concrete::value_append(std::int64_t value) {
-    value_append(types::b_int64{value});
-}
+void concrete::value_append(std::int64_t value) { value_append(types::b_int64{value}); }
 
-void concrete::value_append(bool value) {
-    value_append(types::b_bool{value});
-}
+void concrete::value_append(bool value) { value_append(types::b_bool{value}); }
 
 void concrete::open_doc_append() {
     const string_or_literal& key = _impl->next_key();

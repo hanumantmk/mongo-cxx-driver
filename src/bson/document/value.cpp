@@ -28,9 +28,7 @@ value::value(const document::view& view)
     std::memcpy(_buf.get(), view.get_buf(), view.get_len());
 }
 
-document::view value::view() const {
-    return document::view{(uint8_t*)_buf.get(), _len};
-}
+document::view value::view() const { return document::view{(uint8_t*)_buf.get(), _len}; }
 
 value::operator document::view() const { return view(); }
 

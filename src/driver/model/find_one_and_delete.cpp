@@ -38,11 +38,15 @@ find_one_and_delete& find_one_and_delete::write_concern(class write_concern wc) 
 
 const bson::document::view& find_one_and_delete::criteria() const { return _criteria; }
 
-const optional<bson::document::view>& find_one_and_delete::projection() const { return _projection; }
+const optional<bson::document::view>& find_one_and_delete::projection() const {
+    return _projection;
+}
 
 const optional<bson::document::view>& find_one_and_delete::sort() const { return _ordering; }
 
-const optional<class write_concern>& find_one_and_delete::write_concern() const { return _write_concern; }
+const optional<class write_concern>& find_one_and_delete::write_concern() const {
+    return _write_concern;
+}
 
 }  // namespace model
 }  // namespace driver

@@ -51,15 +51,21 @@ const bson::document::view& find_one_and_replace::criteria() const { return _cri
 
 const bson::document::view& find_one_and_replace::replacement() const { return _replacement; }
 
-const optional<bson::document::view>& find_one_and_replace::projection() const { return _projection; }
+const optional<bson::document::view>& find_one_and_replace::projection() const {
+    return _projection;
+}
 
-const optional<bool>& find_one_and_replace::return_replacement() const { return _return_replacement; }
+const optional<bool>& find_one_and_replace::return_replacement() const {
+    return _return_replacement;
+}
 
 const optional<bson::document::view>& find_one_and_replace::sort() const { return _ordering; }
 
 const optional<bool>& find_one_and_replace::upsert() const { return _upsert; }
 
-const optional<class write_concern>& find_one_and_replace::write_concern() const { return _write_concern; }
+const optional<class write_concern>& find_one_and_replace::write_concern() const {
+    return _write_concern;
+}
 
 }  // namespace model
 }  // namespace driver
