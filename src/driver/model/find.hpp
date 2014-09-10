@@ -21,7 +21,7 @@
 #include <set>
 
 #include "bson/document.hpp"
-#include "driver/model/read.hpp"
+#include "driver/base/read_preference.hpp"
 #include "driver/util/optional.hpp"
 
 namespace mongo {
@@ -37,7 +37,7 @@ enum class cursor_flag : uint32_t {
     k_partial
 };
 
-class LIBMONGOCXX_EXPORT find : public read<find> {
+class LIBMONGOCXX_EXPORT find {
 
    public:
     find(bson::document::view criteria = bson::document::view{});
@@ -50,16 +50,20 @@ class LIBMONGOCXX_EXPORT find : public read<find> {
     find& projection(bson::document::view projection);
     find& skip(std::int32_t skip);
     find& sort(bson::document::view ordering);
+    find& max_time_ms(std::int64_t max_time_ms);
+    find& read_preference(class read_preference rp);
 
     bson::document::view criteria() const;
 
-    optional<std::int32_t> batch_size() const;
-    optional<std::int32_t> cursor_flags() const;
-    optional<std::int32_t> limit() const;
-    optional<bson::document::view> modifiers() const;
-    optional<bson::document::view> projection() const;
-    optional<std::int32_t> skip() const;
-    optional<bson::document::view> sort() const;
+    const optional<std::int32_t>& batch_size() const;
+    const optional<std::int32_t>& cursor_flags() const;
+    const optional<std::int32_t>& limit() const;
+    const optional<bson::document::view>& modifiers() const;
+    const optional<bson::document::view>& projection() const;
+    const optional<std::int32_t>& skip() const;
+    const optional<bson::document::view>& sort() const;
+    const optional<std::int64_t>& max_time_ms() const;
+    const optional<class read_preference>& read_preference() const;
 
    private:
     bson::document::view _criteria;
@@ -71,6 +75,8 @@ class LIBMONGOCXX_EXPORT find : public read<find> {
     optional<bson::document::view> _projection;
     optional<std::int32_t> _skip;
     optional<bson::document::view> _ordering;
+    optional<std::int64_t> _max_time_ms;
+    optional<class read_preference> _read_preference;
 };
 
 }  // namespace model

@@ -17,8 +17,9 @@
 #include <vector>
 
 #include "driver/config/prelude.hpp"
-
+#include "driver/base/write_concern.hpp"
 #include "bson/document.hpp"
+#include "driver/util/optional.hpp"
 
 namespace mongo {
 namespace driver {
@@ -38,11 +39,14 @@ class LIBMONGOCXX_EXPORT insert_many {
     insert_many();
 
     insert_many& insert_one(bson::document::view view);
+    insert_many& write_concern(class write_concern wc);
 
     const std::vector<bson::document::view>& documents() const;
+    const optional<class write_concern>& write_concern() const;
 
    private:
     std::vector<bson::document::view> _documents;
+    optional<class write_concern> _write_concern;
 };
 
 }  // namespace model

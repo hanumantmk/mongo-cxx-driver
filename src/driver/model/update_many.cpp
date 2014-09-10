@@ -26,11 +26,18 @@ update_many& update_many::upsert(bool upsert) {
     return *this;
 }
 
-optional<bool> update_many::upsert() const { return _upsert; }
+update_many& update_many::write_concern(class write_concern wc) {
+    _write_concern = std::move(wc);
+    return *this;
+}
 
-bson::document::view update_many::criteria() const { return _criteria; }
+const optional<bool>& update_many::upsert() const { return _upsert; }
 
-bson::document::view update_many::update() const { return _update; }
+const bson::document::view& update_many::criteria() const { return _criteria; }
+
+const bson::document::view& update_many::update() const { return _update; }
+
+const optional<class write_concern>& update_many::write_concern() const { return _write_concern; }
 
 }  // namespace model
 }  // namespace driver

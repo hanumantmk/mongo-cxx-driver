@@ -31,11 +31,18 @@ find_one_and_delete& find_one_and_delete::sort(bson::document::view ordering) {
     return *this;
 }
 
-bson::document::view find_one_and_delete::criteria() const { return _criteria; }
+find_one_and_delete& find_one_and_delete::write_concern(class write_concern wc) {
+    _write_concern = std::move(wc);
+    return *this;
+}
 
-optional<bson::document::view> find_one_and_delete::projection() const { return _projection; }
+const bson::document::view& find_one_and_delete::criteria() const { return _criteria; }
 
-optional<bson::document::view> find_one_and_delete::sort() const { return _ordering; }
+const optional<bson::document::view>& find_one_and_delete::projection() const { return _projection; }
+
+const optional<bson::document::view>& find_one_and_delete::sort() const { return _ordering; }
+
+const optional<class write_concern>& find_one_and_delete::write_concern() const { return _write_concern; }
 
 }  // namespace model
 }  // namespace driver

@@ -17,8 +17,8 @@
 #include "driver/config/prelude.hpp"
 
 #include "bson/document.hpp"
-
 #include "driver/util/optional.hpp"
+#include "driver/base/write_concern.hpp"
 
 namespace mongo {
 namespace driver {
@@ -30,17 +30,20 @@ class LIBMONGOCXX_EXPORT replace_one {
     replace_one(bson::document::view criteria, bson::document::view replacement);
 
     replace_one& upsert(bool upsert);
+    replace_one& write_concern(class write_concern wc);
 
     const bson::document::view& criteria() const;
     const bson::document::view& replacement() const;
 
-    optional<bool> upsert() const;
+    const optional<bool>& upsert() const;
+    const optional<class write_concern>& write_concern() const;
 
    private:
     bson::document::view _criteria;
     bson::document::view _replacement;
 
     optional<bool> _upsert;
+    optional<class write_concern> _write_concern;
 };
 
 }  // namespace model

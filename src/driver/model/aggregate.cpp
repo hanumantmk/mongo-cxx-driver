@@ -37,12 +37,18 @@ aggregate& aggregate::use_cursor(bool use_cursor) {
     return *this;
 }
 
+aggregate& aggregate::read_preference(class read_preference rp) {
+    _read_preference = std::move(rp);
+    return *this;
+}
+
 const pipeline& aggregate::stages() const { return _pipeline; }
 
-optional<bool> aggregate::allow_disk_use() const { return _allow_disk_use; }
-optional<std::int32_t> aggregate::batch_size() const { return _batch_size; }
-optional<std::int64_t> aggregate::max_time_ms() const { return _max_time_ms; }
-optional<bool> aggregate::use_cursor() const { return _use_cursor; }
+const optional<bool>& aggregate::allow_disk_use() const { return _allow_disk_use; }
+const optional<std::int32_t>& aggregate::batch_size() const { return _batch_size; }
+const optional<std::int64_t>& aggregate::max_time_ms() const { return _max_time_ms; }
+const optional<bool>& aggregate::use_cursor() const { return _use_cursor; }
+const optional<class read_preference>& aggregate::read_preference() const { return _read_preference; }
 
 }  // namespace model
 }  // namespace driver

@@ -20,7 +20,14 @@ namespace model {
 
 delete_one::delete_one(bson::document::view criteria) : _criteria(std::move(criteria)) {}
 
+delete_one& delete_one::write_concern(class write_concern wc) {
+    _write_concern = std::move(wc);
+    return *this;
+}
+
 const bson::document::view& delete_one::criteria() const { return _criteria; }
+
+const optional<class write_concern>& delete_one::write_concern() const { return _write_concern; }
 
 }  // namespace model
 }  // namespace driver

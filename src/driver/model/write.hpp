@@ -30,8 +30,6 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-class write_concern;
-
 enum class write_type {
     kInsertOne,
     kInsertMany,

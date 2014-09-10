@@ -96,7 +96,13 @@ bulk_write& bulk_write::append(write operation_t) {
     return *this;
 }
 
+bulk_write& bulk_write::write_concern(class write_concern wc) {
+    _impl->_write_concern = std::move(wc);
+    return *this;
+}
+
 bool bulk_write::ordered() const { return _impl->ordered; }
+const optional<class write_concern>& bulk_write::write_concern() const { return _impl->_write_concern; }
 
 }  // namespace model
 }  // namespace driver

@@ -17,6 +17,7 @@
 #include "driver/config/prelude.hpp"
 
 #include "bson/document.hpp"
+#include "driver/base/write_concern.hpp"
 #include "driver/util/optional.hpp"
 
 namespace mongo {
@@ -28,10 +29,14 @@ class LIBMONGOCXX_EXPORT delete_one {
    public:
      delete_one(bson::document::view criteria);
 
+     delete_one& write_concern(class write_concern wc);
+
     const bson::document::view& criteria() const;
+    const optional<class write_concern>& write_concern() const;
 
    private:
     bson::document::view _criteria;
+    optional<class write_concern> _write_concern;
 };
 
 }  // namespace model

@@ -42,14 +42,19 @@ find_one_and_update& find_one_and_update::upsert(bool upsert) {
 
     return *this;
 }
+find_one_and_update& find_one_and_update::write_concern(class write_concern wc) {
+    _write_concern = std::move(wc);
+    return *this;
+}
 
-bson::document::view find_one_and_update::criteria() const { return _criteria; }
-bson::document::view find_one_and_update::update() const { return _update; }
+const bson::document::view& find_one_and_update::criteria() const { return _criteria; }
+const bson::document::view& find_one_and_update::update() const { return _update; }
 
-optional<bson::document::view> find_one_and_update::projection() const { return _projection; }
-optional<bool> find_one_and_update::return_replacement() const { return _return_replacement; }
-optional<bson::document::view> find_one_and_update::sort() const { return _ordering; }
-optional<bool> find_one_and_update::upsert() const { return _upsert; }
+const optional<bson::document::view>& find_one_and_update::projection() const { return _projection; }
+const optional<bool>& find_one_and_update::return_replacement() const { return _return_replacement; }
+const optional<bson::document::view>& find_one_and_update::sort() const { return _ordering; }
+const optional<bool>& find_one_and_update::upsert() const { return _upsert; }
+const optional<class write_concern>& find_one_and_update::write_concern() const { return _write_concern; }
 
 }  // namespace model
 }  // namespace driver

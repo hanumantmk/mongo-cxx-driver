@@ -27,11 +27,18 @@ replace_one& replace_one::upsert(bool upsert) {
     return *this;
 }
 
+replace_one& replace_one::write_concern(class write_concern wc) {
+    _write_concern = std::move(wc);
+    return *this;
+}
+
 const bson::document::view& replace_one::criteria() const { return _criteria; }
 
 const bson::document::view& replace_one::replacement() const { return _replacement; }
 
-optional<bool> replace_one::upsert() const { return _upsert; }
+const optional<bool>& replace_one::upsert() const { return _upsert; }
+
+const optional<class write_concern>& replace_one::write_concern() const { return _write_concern; }
 
 }  // namespace model
 }  // namespace driver

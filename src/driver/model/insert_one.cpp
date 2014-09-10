@@ -20,7 +20,14 @@ namespace model {
 
 insert_one::insert_one(bson::document::view document) : _document(std::move(document)) {}
 
-bson::document::view insert_one::document() const { return _document; }
+insert_one& insert_one::write_concern(class write_concern wc) {
+    _write_concern = std::move(wc);
+    return *this;
+}
+
+const bson::document::view& insert_one::document() const { return _document; }
+
+const optional<class write_concern>& insert_one::write_concern() const { return _write_concern; }
 
 }  // namespace model
 }  // namespace driver

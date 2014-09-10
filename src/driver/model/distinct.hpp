@@ -19,32 +19,38 @@
 #include <cstdint>
 #include <string>
 
+#include "driver/base/read_preference.hpp"
 #include "bson/document.hpp"
-#include "driver/model/read.hpp"
 #include "driver/util/optional.hpp"
 
 namespace mongo {
 namespace driver {
+
+class read_preference;
+
 namespace model {
 
-class LIBMONGOCXX_EXPORT distinct : public read<distinct> {
+class LIBMONGOCXX_EXPORT distinct {
 
    public:
     distinct(std::string field_name);
 
     distinct& criteria(bson::document::view criteria);
     distinct& max_time_ms(std::int64_t max_time_ms);
+    distinct& read_preference(class read_preference rp);
 
-    bson::document::view field_name() const;
+    const std::string& field_name() const;
 
-    optional<bson::document::view> criteria() const;
-    optional<std::int64_t> max_time_ms() const;
+    const optional<bson::document::view>& criteria() const;
+    const optional<std::int64_t>& max_time_ms() const;
+    const optional<class read_preference>& read_preference() const;
 
    private:
-    bson::document::view _field_name;
+    std::string _field_name;
 
     optional<bson::document::view> _criteria;
     optional<std::int64_t> _max_time_ms;
+    optional<class read_preference> _read_preference;
 };
 
 }  // namespace model

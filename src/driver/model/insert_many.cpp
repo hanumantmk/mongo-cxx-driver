@@ -26,7 +26,14 @@ insert_many& insert_many::insert_one(bson::document::view view) {
     return *this;
 }
 
+insert_many& insert_many::write_concern(class write_concern wc) {
+    _write_concern = std::move(wc);
+    return *this;
+}
+
 const std::vector<bson::document::view>& insert_many::documents() const { return _documents; }
+
+const optional<class write_concern>& insert_many::write_concern() const { return _write_concern; }
 
 }  // namespace model
 }  // namespace driver

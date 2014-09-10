@@ -19,6 +19,7 @@
 #include <vector>
 #include <type_traits>
 
+#include "driver/base/write_concern.hpp"
 #include "driver/model/write.hpp"
 #include "driver/util/is_iterable.hpp"
 #include "driver/util/optional.hpp"
@@ -49,8 +50,10 @@ class LIBMONGOCXX_EXPORT bulk_write {
     }
 
     bulk_write& append(write operation);
+    bulk_write& write_concern(class write_concern wc);
 
     bool ordered() const;
+    const optional<class write_concern>& write_concern() const;
 
     bulk_write(bulk_write&&);
     bulk_write& operator=(bulk_write&&);

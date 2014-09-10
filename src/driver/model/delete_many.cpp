@@ -20,7 +20,14 @@ namespace model {
 
 delete_many::delete_many(bson::document::view criteria) : _criteria(std::move(criteria)) {}
 
+delete_many& delete_many::write_concern(class write_concern wc) {
+    _write_concern = std::move(wc);
+    return *this;
+}
+
 const bson::document::view& delete_many::criteria() const { return _criteria; }
+
+const optional<class write_concern>& delete_many::write_concern() const { return _write_concern; }
 
 }  // namespace model
 }  // namespace driver

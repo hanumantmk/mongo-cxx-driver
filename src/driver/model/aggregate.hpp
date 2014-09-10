@@ -20,10 +20,14 @@
 
 #include "bson/document.hpp"
 #include "driver/base/pipeline.hpp"
+#include "driver/base/read_preference.hpp"
 #include "driver/util/optional.hpp"
 
 namespace mongo {
 namespace driver {
+
+class read_preference;
+
 namespace model {
 
 class LIBMONGOCXX_EXPORT aggregate {
@@ -34,12 +38,14 @@ class LIBMONGOCXX_EXPORT aggregate {
     aggregate& batch_size(std::int32_t batch_size);
     aggregate& max_time_ms(std::int64_t max_time_ms);
     aggregate& use_cursor(bool use_cursor);
+    aggregate& read_preference(class read_preference rp);
 
     const pipeline& stages() const;
-    optional<bool> allow_disk_use() const;
-    optional<std::int32_t> batch_size() const;
-    optional<std::int64_t> max_time_ms() const;
-    optional<bool> use_cursor() const;
+    const optional<bool>& allow_disk_use() const;
+    const optional<std::int32_t>& batch_size() const;
+    const optional<std::int64_t>& max_time_ms() const;
+    const optional<bool>& use_cursor() const;
+    const optional<class read_preference>& read_preference() const;
 
    private:
     class pipeline _pipeline;
@@ -47,6 +53,7 @@ class LIBMONGOCXX_EXPORT aggregate {
     optional<std::int32_t> _batch_size;
     optional<std::int64_t> _max_time_ms;
     optional<bool> _use_cursor;
+    optional<class read_preference> _read_preference;
 };
 
 }  // namespace model

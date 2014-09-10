@@ -21,9 +21,13 @@
 
 #include "bson/document.hpp"
 #include "driver/util/optional.hpp"
+#include "driver/base/read_preference.hpp"
 
 namespace mongo {
 namespace driver {
+
+class read_preference;
+
 namespace model {
 
 class LIBMONGOCXX_EXPORT count {
@@ -36,12 +40,14 @@ class LIBMONGOCXX_EXPORT count {
     count& limit(std::int32_t limit);
     count& max_time_ms(std::int64_t max_time_ms);
     count& skip(std::int32_t skip);
+    count& read_preference(class read_preference rp);
 
     bson::document::view criteria() const;
-    optional<bson::document::view> hint() const;
-    optional<std::int32_t> limit() const;
-    optional<std::int64_t> max_time_ms() const;
-    optional<std::int32_t> skip() const;
+    const optional<bson::document::view>& hint() const;
+    const optional<std::int32_t>& limit() const;
+    const optional<std::int64_t>& max_time_ms() const;
+    const optional<std::int32_t>& skip() const;
+    const optional<class read_preference>& read_preference() const;
 
    private:
     bson::document::view _criteria;
@@ -49,6 +55,7 @@ class LIBMONGOCXX_EXPORT count {
     optional<std::int32_t> _limit;
     optional<std::int64_t> _max_time_ms;
     optional<std::int32_t> _skip;
+    optional<class read_preference> _read_preference;
 };
 
 }  // namesapce model

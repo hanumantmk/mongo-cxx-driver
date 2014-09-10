@@ -60,21 +60,34 @@ find& find::sort(bson::document::view ordering) {
     return *this;
 }
 
+find& find::max_time_ms(std::int64_t max_time_ms) {
+    _max_time_ms = max_time_ms;
+    return *this;
+}
+
+find& find::read_preference(class read_preference rp) {
+    _read_preference = std::move(rp);
+    return *this;
+}
 bson::document::view find::criteria() const { return _criteria; }
 
-optional<std::int32_t> find::batch_size() const { return _batch_size; }
+const optional<std::int32_t>& find::batch_size() const { return _batch_size; }
 
-optional<std::int32_t> find::cursor_flags() const { return _cursor_flags; }
+const optional<std::int32_t>& find::cursor_flags() const { return _cursor_flags; }
 
-optional<std::int32_t> find::limit() const { return _limit; }
+const optional<std::int32_t>& find::limit() const { return _limit; }
 
-optional<bson::document::view> find::modifiers() const { return _modifiers; }
+const optional<bson::document::view>& find::modifiers() const { return _modifiers; }
 
-optional<bson::document::view> find::projection() const { return _projection; }
+const optional<bson::document::view>& find::projection() const { return _projection; }
 
-optional<std::int32_t> find::skip() const { return _skip; }
+const optional<std::int32_t>& find::skip() const { return _skip; }
 
-optional<bson::document::view> find::sort() const { return _ordering; }
+const optional<bson::document::view>& find::sort() const { return _ordering; }
+
+const optional<std::int64_t>& find::max_time_ms() const { return _max_time_ms; }
+
+const optional<class read_preference>& find::read_preference() const { return _read_preference; }
 
 }  // namespace model
 }  // namespace driver

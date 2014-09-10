@@ -50,15 +50,22 @@ count& count::skip(std::int32_t skip) {
     return *this;
 }
 
+count& count::read_preference(class read_preference rp) {
+    _read_preference = std::move(rp);
+    return *this;
+}
+
 bson::document::view count::criteria() const { return _criteria; }
 
-optional<bson::document::view> count::hint() const { return _hint; }
+const optional<bson::document::view>& count::hint() const { return _hint; }
 
-optional<std::int32_t> count::limit() const { return _limit; }
+const optional<std::int32_t>& count::limit() const { return _limit; }
 
-optional<std::int64_t> count::max_time_ms() const { return _max_time_ms; }
+const optional<std::int64_t>& count::max_time_ms() const { return _max_time_ms; }
 
-optional<std::int32_t> count::skip() const { return _skip; }
+const optional<std::int32_t>& count::skip() const { return _skip; }
+
+const optional<class read_preference>& count::read_preference() const { return _read_preference; }
 
 }  // namesapce model
 }  // namespace driver

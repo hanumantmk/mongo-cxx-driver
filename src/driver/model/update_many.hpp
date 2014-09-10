@@ -16,6 +16,7 @@
 
 #include "driver/config/prelude.hpp"
 
+#include "driver/base/write_concern.hpp"
 #include "bson/document.hpp"
 #include "driver/util/optional.hpp"
 
@@ -28,18 +29,21 @@ class LIBMONGOCXX_EXPORT update_many {
    public:
     update_many(bson::document::view criteria, bson::document::view update);
 
-    bson::document::view criteria() const;
-    bson::document::view update() const;
+    const bson::document::view& criteria() const;
+    const bson::document::view& update() const;
 
     update_many& upsert(bool upsert);
+    update_many& write_concern(class write_concern wc);
 
-    optional<bool> upsert() const;
+    const optional<bool>& upsert() const;
+    const optional<class write_concern>& write_concern() const;
 
    private:
     bson::document::view _criteria;
     bson::document::view _update;
 
     optional<bool> _upsert;
+    optional<class write_concern> _write_concern;
 };
 
 }  // namespace model
