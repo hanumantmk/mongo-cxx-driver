@@ -30,6 +30,7 @@ client::client() : _impl(new impl{mongoc_client_new("mongodb://localhost:27017")
 client::client(const std::string& mongodb_uri)
     : _impl(new impl{mongoc_client_new(mongodb_uri.c_str())}) {}
 
+// TODO: use constructor delegation
 client::client(const options& options)
     : _impl(new impl{mongoc_client_new(options._mongodb_uri.c_str())}) {}
 

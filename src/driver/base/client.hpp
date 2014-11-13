@@ -51,6 +51,8 @@ class LIBMONGOCXX_EXPORT client {
     class database operator[](const std::string& database_name);
     class database database(const std::string& database_name);
 
+    // TODO: add comments as to why these are here
+    // TODO: move these up with the other lifecycle members
     client(client&& rhs);
     client& operator=(client&& rhs);
     ~client();
