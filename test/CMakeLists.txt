@@ -20,6 +20,9 @@ add_test(test_suite_4 test_4)
 test(5)
 add_test(test_suite_5 test_5 10)
 
+add_executable(test_write_concern driver/base/write_concern.cpp ../src/driver/base/write_concern.cpp)
+add_test(test_write_concern test_write_concern)
+
 add_executable(new_tests
     new_tests.cpp
     bson_builder.cpp
