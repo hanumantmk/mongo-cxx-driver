@@ -19,8 +19,6 @@
 #include <string>
 #include <cstdint>
 
-#include "driver/util/optional.hpp"
-
 namespace mongo {
 namespace driver {
 
@@ -35,20 +33,19 @@ class LIBMONGOCXX_EXPORT write_concern {
     void wtimeout(std::int32_t wtimeout);
     void wtag(std::string wtag);
 
-    const optional<bool>& fsync() const;
-    const optional<bool>& journal() const;
-    const optional<std::int32_t>& w() const;
-    const optional<std::int32_t>& wtimeout() const;
-    const optional<std::string>& wtag() const;
+    const bool& fsync() const;
+    const bool& journal() const;
+    const std::int32_t& w() const;
+    const std::int32_t& wtimeout() const;
+    const std::string& wtag() const;
 
    private:
-    optional<bool> _fsync;
-    optional<bool> _journal;
-    optional<std::int32_t> _w;
-    optional<std::int32_t> _wtimeout;
-    optional<std::string> _wtag;
-
-}; // class write_concern
+    bool _fsync;
+    bool _journal;
+    std::int32_t _w;
+    std::int32_t _wtimeout;
+    std::string _wtag;
+};
 
 }  // namespace driver
 }  // namespace mongo

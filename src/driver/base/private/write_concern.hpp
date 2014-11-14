@@ -30,21 +30,11 @@ class write_concern {
 public:
     write_concern(const driver::write_concern& arg) : _write_concern(mongoc_write_concern_new()) {
         mongoc_write_concern_t* wc = _write_concern;
-        if (arg.fsync()) {
-            mongoc_write_concern_set_fsync(wc, *arg.fsync());
-        }
-        if (arg.journal()) {
-            mongoc_write_concern_set_journal(wc, *arg.journal());
-        }
-        if (arg.w()) {
-            mongoc_write_concern_set_w(wc, *arg.w());
-        }
-        if (arg.wtimeout()) {
-            mongoc_write_concern_set_wtimeout(wc, *arg.wtimeout());
-        }
-        if (arg.wtag()) {
-            mongoc_write_concern_set_wtag(wc, arg.wtag()->c_str());
-        }
+        mongoc_write_concern_set_fsync(wc, arg.fsync());
+        mongoc_write_concern_set_journal(wc, arg.journal());
+        mongoc_write_concern_set_w(wc, arg.w());
+        mongoc_write_concern_set_wtimeout(wc, arg.wtimeout());
+        mongoc_write_concern_set_wtag(wc, arg.wtag().c_str());
     }
 
     ~write_concern() {

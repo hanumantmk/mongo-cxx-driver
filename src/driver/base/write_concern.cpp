@@ -29,11 +29,11 @@ void write_concern::wtimeout(std::int32_t wtimeout) { _wtimeout = wtimeout; }
 
 void write_concern::wtag(std::string wtag) { _wtag = std::move(wtag); }
 
-const optional<bool>& write_concern::fsync() const { return _fsync; }
-const optional<bool>& write_concern::journal() const { return _journal; }
-const optional<std::int32_t>& write_concern::w() const { return _w; }
-const optional<std::int32_t>& write_concern::wtimeout() const { return _wtimeout; }
-const optional<std::string>& write_concern::wtag() const { return _wtag; }
+const bool& write_concern::fsync() const { return _fsync; }
+const bool& write_concern::journal() const { return _journal; }
+const std::int32_t& write_concern::w() const { return _w; }
+const std::int32_t& write_concern::wtimeout() const { return _wtimeout; }
+const std::string& write_concern::wtag() const { return _wtag; }
 
 }  // namespace driver
 }  // namespace mongo
