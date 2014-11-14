@@ -1,5 +1,7 @@
 enable_testing()
 
+include_directories("include")
+
 macro(test t)
     add_executable(test_${t} test_${t}.cpp)
     target_link_libraries(test_${t} mongocxx-shared)
