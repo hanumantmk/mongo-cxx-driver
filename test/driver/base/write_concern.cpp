@@ -19,60 +19,112 @@
 
 using namespace mongo::driver;
 
-TEST_CASE("Create a default write_concern", "[write_concern][base]") {
+TEST_CASE("a default write_concern", "[write_concern][base]") {
     write_concern wc{};
 
-    SECTION("has fsync enabled") {
+    SECTION("doesn't require the server to fsync") {
         REQUIRE(wc.fsync() == false);
     }
 
-    SECTION("has journal enabled") {
+    SECTION("doesn't require the server to journal") {
         REQUIRE(wc.journal() == false);
     }
 
-    SECTION("has w:1") {
-        REQUIRE(wc.w() == 1);
+    SECTION("will not timeout") {
+        REQUIRE(wc.timeout() == 0);
     }
 
-    SECTION("has wtimeout: 0") {
-        REQUIRE(wc.wtimeout() == 0);
+    SECTION("will require confirmation from just the primary or standalone mongod") {
+        REQUIRE(wc.confirm_from() == 1);
     }
 
-    SECTION("has empty wtag") {
-        REQUIRE(wc.wtag().empty() == true);
+    SECTION("has empty tag set") {
+        REQUIRE(wc.tag().empty() == true);
     }
 }
 
-TEST_CASE("write_concern's fields may be set through a fluent api", "[write_concern][base]") {
+TEST_CASE("write_concern fields may be set and retrieved", "[write_concern][base]") {
     write_concern wc{};
 
-    SECTION("fsync may be set fluently") {
-        write_concern wc2 = wc;
-        REQUIRE(&wc2 == &wc2.fsync(true));
-        REQUIRE(wc2.fsync() == true);
+    SECTION("fsync may be configured") {
+        wc.fsync(true);
+        REQUIRE(wc.fsync() == true);
     }
 
-    SECTION("journal may be set fluently") {
-        write_concern wc2 = wc;
-        REQUIRE(&wc2 == &wc2.journal(true));
-        REQUIRE(wc2.journal() == true);
+    SECTION("journal may be configured") {
+        wc.journal(true);
+        REQUIRE(wc.journal() == true);
     }
 
-    SECTION("w may be set fluently") {
-        write_concern wc2 = wc;
-        REQUIRE(&wc2 == &wc2.w(10));
-        REQUIRE(wc2.w() == 10);
+    SECTION("timeout may be configured") {
+        wc.timeout(100);
+        REQUIRE(wc.timeout() == 100);
     }
 
-    SECTION("wtimeout may be set fluently") {
-        write_concern wc2 = wc;
-        REQUIRE(&wc2 == &wc2.wtimeout(100));
-        REQUIRE(wc2.wtimeout() == 100);
+    SECTION("a tag may be set") {
+        const std::string tag{"MultipleDC"};
+        wc.tag(tag);
+        REQUIRE(wc.tag() == tag);
     }
 
-    SECTION("wtag may be set fluently") {
-        write_concern wc2 = wc;
-        REQUIRE(&wc2 == &wc2.wtag("disk:SSD"));
-        REQUIRE(wc2.wtag() == "disk:SSD");
+    SECTION("the number of nodes requiring confirmation may be set to a number") {
+        wc.confirm_from(10);
+        REQUIRE(wc.confirm_from() == 10);
     }
+
+    SECTION("the number of nodes requiring confirmation may be set to the majority") {
+        wc.confirm_from(write_concern::MAJORITY);
+        REQUIRE(wc.confirm_from() == write_concern::MAJORITY);
+    }
+}
+
+TEST_CASE("confirmation from tags, a repl-member count, and majority are mutually exclusive",
+          "[write_concern][base]") {
+
+    SECTION("setting the confirmation number unsets the confirmation tag") {
+        write_concern wc{};
+        wc.tag("MultipleDC");
+        wc.confirm_from(10);
+        REQUIRE(wc.tag().empty() == true);
+    }
+    SECTION("setting the confirmation number unsets majority") {
+        write_concern wc{};
+        wc.confirm_from(write_concern::MAJORITY);
+        wc.confirm_from(10);
+        REQUIRE(wc.confirm_from() != write_concern::MAJORITY);
+    }
+
+    SECTION("setting the tag unsets the confirmation number") {
+        write_concern wc{};
+        wc.confirm_from(10);
+        wc.tag("MultipleDC");
+        REQUIRE(wc.confirm_from() == write_concern::TAG);
+    }
+
+    SECTION("it is impossible to set confirm_from to the special value indicating a tag") {
+        write_concern wc{};
+        REQUIRE_THROWS_AS(wc.confirm_from(write_concern::TAG), std::invalid_argument);
+    }
+
+    SECTION("setting the tag unsets majority") {
+        write_concern wc{};
+        wc.confirm_from(write_concern::MAJORITY);
+        wc.tag("MultipleDC");
+        REQUIRE(wc.confirm_from() != write_concern::MAJORITY);
+    }
+
+    SECTION("setting the majority unsets the confirmation number") {
+        write_concern wc{};
+        wc.confirm_from(10);
+        wc.confirm_from(write_concern::MAJORITY);
+        REQUIRE(wc.confirm_from() == write_concern::MAJORITY);
+    }
+
+    SECTION("setting majority unsets the tag") {
+        write_concern wc{};
+        wc.tag("MultipleDC");
+        wc.confirm_from(write_concern::MAJORITY);
+        REQUIRE(wc.tag().empty());
+    }
+
 }

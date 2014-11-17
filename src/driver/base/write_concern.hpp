@@ -25,26 +25,29 @@ namespace driver {
 class LIBMONGOCXX_EXPORT write_concern {
 
    public:
+    static const std::int32_t MAJORITY;
+    static const std::int32_t TAG;
+
     write_concern();
 
     void fsync(bool fsync);
     void journal(bool journal);
-    void w(std::int32_t w);
-    void wtimeout(std::int32_t wtimeout);
-    void wtag(std::string wtag);
+    void confirm_from(std::int32_t confirm_from);
+    void timeout(std::int32_t timeout);
+    void tag(std::string tag);
 
     const bool& fsync() const;
     const bool& journal() const;
-    const std::int32_t& w() const;
-    const std::int32_t& wtimeout() const;
-    const std::string& wtag() const;
+    const std::int32_t& confirm_from() const;
+    const std::int32_t& timeout() const;
+    const std::string& tag() const;
 
    private:
     bool _fsync;
     bool _journal;
-    std::int32_t _w;
-    std::int32_t _wtimeout;
-    std::string _wtag;
+    std::int32_t _confirm_from;
+    std::int32_t _timeout;
+    std::string _tag;
 };
 
 }  // namespace driver

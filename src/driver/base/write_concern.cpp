@@ -14,26 +14,43 @@
 
 #include "driver/base/write_concern.hpp"
 
+#include <stdexcept>
+
 namespace mongo {
 namespace driver {
 
-write_concern::write_concern() : _fsync(false), _journal(false), _w(1), _wtimeout(0) {}
+const std::int32_t write_concern::MAJORITY = -1;
+const std::int32_t write_concern::TAG = -3;
 
-void write_concern::fsync(bool fsync) { _fsync = fsync; }
+write_concern::write_concern() : _fsync(false), _journal(false), _confirm_from(1), _timeout(0) {}
 
-void write_concern::journal(bool journal) { _journal = journal; }
-
-void write_concern::w(std::int32_t w) { _w = w; }
-
-void write_concern::wtimeout(std::int32_t wtimeout) { _wtimeout = wtimeout; }
-
-void write_concern::wtag(std::string wtag) { _wtag = std::move(wtag); }
+void write_concern::fsync(bool fsync) {
+    _fsync = fsync;
+}
+void write_concern::journal(bool journal) {
+    _journal = journal;
+}
+void write_concern::confirm_from(std::int32_t confirm_from) {
+    if (confirm_from == write_concern::TAG) {
+        throw std::invalid_argument("Cannot pass write_concern::TAG to confirm_from."
+                                    "Use the `tag` method.");
+    }
+    _tag = std::string{};
+    _confirm_from = confirm_from;
+}
+void write_concern::timeout(std::int32_t timeout) {
+    _timeout = timeout;
+}
+void write_concern::tag(std::string tag) {
+    _confirm_from = write_concern::TAG;
+    _tag = std::move(tag);
+}
 
 const bool& write_concern::fsync() const { return _fsync; }
 const bool& write_concern::journal() const { return _journal; }
-const std::int32_t& write_concern::w() const { return _w; }
-const std::int32_t& write_concern::wtimeout() const { return _wtimeout; }
-const std::string& write_concern::wtag() const { return _wtag; }
+const std::int32_t& write_concern::confirm_from() const { return _confirm_from; }
+const std::int32_t& write_concern::timeout() const { return _timeout; }
+const std::string& write_concern::tag() const { return _tag; }
 
 }  // namespace driver
 }  // namespace mongo

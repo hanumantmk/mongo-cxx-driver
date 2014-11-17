@@ -32,9 +32,9 @@ public:
         mongoc_write_concern_t* wc = _write_concern;
         mongoc_write_concern_set_fsync(wc, arg.fsync());
         mongoc_write_concern_set_journal(wc, arg.journal());
-        mongoc_write_concern_set_w(wc, arg.w());
-        mongoc_write_concern_set_wtimeout(wc, arg.wtimeout());
-        mongoc_write_concern_set_wtag(wc, arg.wtag().c_str());
+        mongoc_write_concern_set_w(wc, arg.confirm_from());
+        mongoc_write_concern_set_wtimeout(wc, arg.timeout());
+        mongoc_write_concern_set_wtag(wc, arg.tag().c_str());
     }
 
     ~write_concern() {
