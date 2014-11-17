@@ -16,37 +16,33 @@
 
 #include "driver/config/prelude.hpp"
 
-#include "driver/base/write_concern.hpp"
+#include <cstdint>
+#include <string>
+
+#include "driver/base/read_preference.hpp"
 #include "bson/document.hpp"
 #include "driver/util/optional.hpp"
 
 namespace mongo {
 namespace driver {
-namespace model {
+namespace options {
 
-class LIBMONGOCXX_EXPORT update_one {
+class LIBMONGOCXX_EXPORT distinct {
 
    public:
-    update_one(bson::document::view criteria, bson::document::view update);
+    void max_time_ms(std::int64_t max_time_ms);
+    void read_preference(class read_preference rp);
 
-    const bson::document::view& criteria() const;
-    const bson::document::view& update() const;
-
-    update_one& upsert(bool upsert);
-    update_one& write_concern(class write_concern wc);
-
-    const optional<bool>& upsert() const;
-    const optional<class write_concern>& write_concern() const;
+    const optional<std::int64_t>& max_time_ms() const;
+    const optional<class read_preference>& read_preference() const;
 
    private:
-    bson::document::view _criteria;
-    bson::document::view _update;
+    optional<std::int64_t> _max_time_ms;
+    optional<class read_preference> _read_preference;
 
-    optional<bool> _upsert;
-    optional<class write_concern> _write_concern;
 };
 
-}  // namespace model
+}  // namespace options
 }  // namespace driver
 }  // namespace mongo
 

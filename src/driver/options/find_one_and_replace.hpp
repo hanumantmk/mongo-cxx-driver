@@ -16,30 +16,40 @@
 
 #include "driver/config/prelude.hpp"
 
+#include <cstdint>
+
 #include "bson/document.hpp"
-#include "driver/base/write_concern.hpp"
 #include "driver/util/optional.hpp"
 
 namespace mongo {
 namespace driver {
-namespace model {
+namespace options {
 
-class LIBMONGOCXX_EXPORT delete_many {
+class LIBMONGOCXX_EXPORT find_one_and_replace {
 
    public:
-     delete_many(bson::document::view criteria);
+    void max_time_ms(std::int64_t max_time_ms);
+    void projection(bson::document::view projection);
+    void return_replacement(bool return_replacement);
+    void sort(bson::document::view ordering);
+    void upsert(bool upsert);
 
-     delete_many& write_concern(class write_concern wc);
-
-    const bson::document::view& criteria() const;
-    const optional<class write_concern>& write_concern() const;
+    const optional<std::int64_t>& max_time_ms() const;
+    const optional<bson::document::view>& projection() const;
+    const optional<bool>& return_replacement() const;
+    const optional<bson::document::view>& sort() const;
+    const optional<bool>& upsert() const;
 
    private:
-    bson::document::view _criteria;
-    optional<class write_concern> _write_concern;
+    optional<std::int64_t> _max_time_ms;
+    optional<bson::document::view> _projection;
+    optional<bool> _return_replacement;
+    optional<bson::document::view> _ordering;
+    optional<bool> _upsert;
+
 };
 
-}  // namespace model
+}  // namespace options
 }  // namespace driver
 }  // namespace mongo
 

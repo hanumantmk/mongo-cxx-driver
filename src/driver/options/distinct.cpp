@@ -12,23 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "driver/model/insert_one.hpp"
+#include "driver/options/distinct.hpp"
 
 namespace mongo {
 namespace driver {
-namespace model {
+namespace options {
 
-insert_one::insert_one(bson::document::view document) : _document(std::move(document)) {}
-
-insert_one& insert_one::write_concern(class write_concern wc) {
-    _write_concern = std::move(wc);
-    return *this;
+void distinct::max_time_ms(std::int64_t max_time_ms) {
+    _max_time_ms = std::move(max_time_ms);
 }
 
-const bson::document::view& insert_one::document() const { return _document; }
+void distinct::read_preference(class read_preference rp) {
+    _read_preference = std::move(rp);
+}
 
-const optional<class write_concern>& insert_one::write_concern() const { return _write_concern; }
+const optional<std::int64_t>& distinct::max_time_ms() const { return _max_time_ms; }
+const optional<class read_preference>& distinct::read_preference() const {
+    return _read_preference;
+}
 
-}  // namespace model
+}  // namesapce options
 }  // namespace driver
 }  // namespace mongo
+
+#include "driver/config/postlude.hpp"

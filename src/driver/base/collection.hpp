@@ -22,8 +22,6 @@
 
 #include "bson/document.hpp"
 
-#include "driver/model/find.hpp"
-#include "driver/model/count.hpp"
 #include "driver/base/cursor.hpp"
 #include "driver/result/write.hpp"
 
@@ -37,11 +35,13 @@ class client;
 class database;
 class write_concern;
 class read_preference;
+class pipeline;
 
-namespace model {
+namespace options {
 class aggregate;
 class bulk_write;
 class find;
+class find_one_and_modify;
 class find_one_and_replace;
 class find_one_and_delete;
 class find_one_and_update;
@@ -50,12 +50,11 @@ class delete_many;
 class insert_one;
 class insert_many;
 class replace_one;
-class update_one;
-class update_many;
+class update;
 class distinct;
 class count;
 class explain;
-}  // namespace model
+}  // namespace options
 
 namespace result {
 struct bulk_write;
@@ -79,29 +78,70 @@ class LIBMONGOCXX_EXPORT collection {
     friend class database;
 
    public:
-    cursor find(const model::find& model = model::find{}) const;
-    optional<bson::document::value> find_one(const model::find& model = model::find{}) const;
+    cursor aggregate(
+        const pipeline& pipeline,
+        const options::aggregate& options
+    );
 
-    cursor aggregate(const model::aggregate& model);
+    std::int64_t count(
+        const bson::document::view& filter,
+        const options::count& options
+    ) const;
 
-    result::insert_one insert_one(const model::insert_one& model);
-    result::insert_many insert_many(const model::insert_many& model);
-    result::replace_one replace_one(const model::replace_one& model);
-    result::update update_one(const model::update_one& model);
-    result::update update_many(const model::update_many& model);
-    result::delete_result delete_one(const model::delete_one& model);
-    result::delete_result delete_many(const model::delete_many& model);
+    bson::document::value distinct(
+        const std::string& field_name,
+        const bson::document::view& filter,
+        const options::distinct& options
+    ) const;
+
+    cursor find(
+        const bson::document::view& filter,
+        const options::find& options
+    ) const;
+
+    optional<bson::document::value> find_one(
+        const bson::document::view& filter,
+        const options::find& options
+    ) const;
+
+    bson::document::value explain(
+        const options::explain& model
+    ) const;
+
+    result::insert_one insert_one(const bson::document::view& document);
+    result::insert_many insert_many(const std::vector<bson::document::view>& model);
+
+    result::replace_one replace_one(
+        const bson::document::view& filter,
+        const bson::document::view& replacement,
+        const options::update& options
+    );
+
+    result::update update_one(
+        const bson::document::view& filter,
+        const bson::document::view& update,
+        const options::update& options
+    );
+
+    result::update update_many(
+        const bson::document::view& filter,
+        const bson::document::view& update,
+        const options::update& options
+    );
+
+    result::delete_result delete_one(
+        const bson::document::view& filter
+    );
+
+    result::delete_result delete_many(
+        const bson::document::view& filter
+    );
 
     result::bulk_write bulk_write(const model::bulk_write& model);
 
     optional<bson::document::value> find_one_and_replace(const model::find_one_and_replace& model);
     optional<bson::document::value> find_one_and_update(const model::find_one_and_update& model);
     optional<bson::document::value> find_one_and_delete(const model::find_one_and_delete& model);
-
-    bson::document::value explain(const model::explain& model) const;
-    bson::document::value distinct(const model::distinct& model) const;
-
-    std::int64_t count(const model::count& model = model::count{}) const;
 
     void drop();
 

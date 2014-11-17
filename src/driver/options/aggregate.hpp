@@ -17,43 +17,40 @@
 #include "driver/config/prelude.hpp"
 
 #include <cstdint>
-#include <string>
 
-#include "driver/base/read_preference.hpp"
 #include "bson/document.hpp"
+#include "driver/base/read_preference.hpp"
 #include "driver/util/optional.hpp"
 
 namespace mongo {
 namespace driver {
+namespace options {
 
-class read_preference;
-
-namespace model {
-
-class LIBMONGOCXX_EXPORT distinct {
+class LIBMONGOCXX_EXPORT aggregate {
 
    public:
-    distinct(std::string field_name);
+    void allow_disk_use(bool allow_disk_use);
+    void batch_size(std::int32_t batch_size);
+    void max_time_ms(std::int64_t max_time_ms);
+    void use_cursor(bool use_cursor);
+    void read_preference(class read_preference rp);
 
-    distinct& criteria(bson::document::view criteria);
-    distinct& max_time_ms(std::int64_t max_time_ms);
-    distinct& read_preference(class read_preference rp);
-
-    const std::string& field_name() const;
-
-    const optional<bson::document::view>& criteria() const;
+    const optional<bool>& allow_disk_use() const;
+    const optional<std::int32_t>& batch_size() const;
     const optional<std::int64_t>& max_time_ms() const;
+    const optional<bool>& use_cursor() const;
     const optional<class read_preference>& read_preference() const;
 
    private:
-    std::string _field_name;
-
-    optional<bson::document::view> _criteria;
+    optional<bool> _allow_disk_use;
+    optional<std::int32_t> _batch_size;
     optional<std::int64_t> _max_time_ms;
+    optional<bool> _use_cursor;
     optional<class read_preference> _read_preference;
+
 };
 
-}  // namespace model
+}  // namespace options
 }  // namespace driver
 }  // namespace mongo
 

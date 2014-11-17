@@ -17,8 +17,6 @@
 #include "driver/config/prelude.hpp"
 
 #include <cstdint>
-#include <string>
-#include <set>
 
 #include "bson/document.hpp"
 #include "driver/base/read_preference.hpp"
@@ -26,60 +24,60 @@
 
 namespace mongo {
 namespace driver {
-namespace model {
-
-enum class cursor_flag : uint32_t {
-    k_tailable,
-    k_oplog_replay,
-    k_no_cursor_timeout,
-    k_await_data,
-    k_exhaust,
-    k_partial
-};
+namespace options {
 
 class LIBMONGOCXX_EXPORT find {
 
    public:
-    find(bson::document::view criteria = bson::document::view{});
+    void allow_partial_results(bool allow_partial);
+    void await_data(bool await_data);
+    void batch_size(std::int32_t batch_size);
+    void comment(std::string comment);
+    void limit(std::int32_t limit);
+    void max_time_ms(std::int64_t max_time_ms);
+    void modifiers(bson::document::view modifiers);
+    void no_cursor_timeout(bool no_cursor_timeout);
+    void oplog_replay(bool oplog_replay);
+    void projection(bson::document::view projection);
+    void read_preference(class read_preference rp);
+    void skip(std::int32_t skip);
+    void sort(bson::document::view ordering);
+    void tailable(bool tailable);
 
-    find& batch_size(std::int32_t batch_size);
-    find& criteria(bson::document::view criteria);
-    find& cursor_flags(std::int32_t cursor_flags);
-    find& limit(std::int32_t limit);
-    find& modifiers(bson::document::view modifiers);
-    find& projection(bson::document::view projection);
-    find& skip(std::int32_t skip);
-    find& sort(bson::document::view ordering);
-    find& max_time_ms(std::int64_t max_time_ms);
-    find& read_preference(class read_preference rp);
-
-    bson::document::view criteria() const;
-
+    const optional<bool>& allow_partial_results() const;
+    const optional<bool>& await_data() const;
     const optional<std::int32_t>& batch_size() const;
-    const optional<std::int32_t>& cursor_flags() const;
+    const optional<std::string>& comment() const;
     const optional<std::int32_t>& limit() const;
+    const optional<std::int64_t>& max_time_ms() const;
     const optional<bson::document::view>& modifiers() const;
+    const optional<bool>& no_cursor_timeout() const;
+    const optional<bool>& oplog_replay() const;
     const optional<bson::document::view>& projection() const;
+    const optional<class read_preference>& read_preference() const;
     const optional<std::int32_t>& skip() const;
     const optional<bson::document::view>& sort() const;
-    const optional<std::int64_t>& max_time_ms() const;
-    const optional<class read_preference>& read_preference() const;
+    const optional<bool>& tailable() const;
 
    private:
-    bson::document::view _criteria;
-
+    optional<bool> _allow_partial_results;
+    optional<bool> _await_data;
     optional<std::int32_t> _batch_size;
-    optional<std::int32_t> _cursor_flags;
+    optional<std::string> _comment;
     optional<std::int32_t> _limit;
+    optional<std::int64_t> _max_time_ms;
     optional<bson::document::view> _modifiers;
+    optional<bool> _no_cursor_timeout;
+    optional<bool> _oplog_replay;
     optional<bson::document::view> _projection;
+    optional<class read_preference> _read_preference;
     optional<std::int32_t> _skip;
     optional<bson::document::view> _ordering;
-    optional<std::int64_t> _max_time_ms;
-    optional<class read_preference> _read_preference;
+    optional<bool> _tailable;
+
 };
 
-}  // namespace model
+}  // namespace options
 }  // namespace driver
 }  // namespace mongo
 

@@ -12,37 +12,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "driver/model/aggregate.hpp"
+#include "driver/options/aggregate.hpp"
 
 namespace mongo {
 namespace driver {
-namespace model {
+namespace options {
 
-aggregate::aggregate(class pipeline pipeline) : _pipeline(std::move(pipeline)) {}
-
-aggregate& aggregate::allow_disk_use(bool allow_disk_use) {
+void aggregate::allow_disk_use(bool allow_disk_use) {
     _allow_disk_use = allow_disk_use;
-    return *this;
 }
-aggregate& aggregate::batch_size(std::int32_t batch_size) {
+
+void aggregate::batch_size(std::int32_t batch_size) {
     _batch_size = batch_size;
-    return *this;
 }
-aggregate& aggregate::max_time_ms(std::int64_t max_time_ms) {
+
+void aggregate::max_time_ms(std::int64_t max_time_ms) {
     _max_time_ms = max_time_ms;
-    return *this;
 }
-aggregate& aggregate::use_cursor(bool use_cursor) {
+void aggregate::use_cursor(bool use_cursor) {
+
     _use_cursor = use_cursor;
-    return *this;
 }
 
-aggregate& aggregate::read_preference(class read_preference rp) {
+void aggregate::read_preference(class read_preference rp) {
     _read_preference = std::move(rp);
-    return *this;
 }
-
-const pipeline& aggregate::stages() const { return _pipeline; }
 
 const optional<bool>& aggregate::allow_disk_use() const { return _allow_disk_use; }
 const optional<std::int32_t>& aggregate::batch_size() const { return _batch_size; }
@@ -52,7 +46,7 @@ const optional<class read_preference>& aggregate::read_preference() const {
     return _read_preference;
 }
 
-}  // namespace model
+}  // namespace options
 }  // namespace driver
 }  // namespace mongo
 

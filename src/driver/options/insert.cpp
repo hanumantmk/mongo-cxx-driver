@@ -12,33 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "driver/model/update_many.hpp"
+#include "driver/options/insert.hpp"
 
 namespace mongo {
 namespace driver {
-namespace model {
+namespace options {
 
-update_many::update_many(bson::document::view criteria, bson::document::view update)
-    : _criteria(std::move(criteria)), _update(std::move(update)) {}
-
-update_many& update_many::upsert(bool upsert) {
-    _upsert = upsert;
-    return *this;
-}
-
-update_many& update_many::write_concern(class write_concern wc) {
+void insert::write_concern(class write_concern wc) {
     _write_concern = std::move(wc);
     return *this;
 }
 
-const optional<bool>& update_many::upsert() const { return _upsert; }
+const optional<class write_concern>& insert::write_concern() const { return _write_concern; }
 
-const bson::document::view& update_many::criteria() const { return _criteria; }
-
-const bson::document::view& update_many::update() const { return _update; }
-
-const optional<class write_concern>& update_many::write_concern() const { return _write_concern; }
-
-}  // namespace model
+}  // namespace options
 }  // namespace driver
 }  // namespace mongo

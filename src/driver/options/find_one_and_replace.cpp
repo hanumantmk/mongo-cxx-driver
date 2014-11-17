@@ -12,34 +12,45 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "driver/model/find_one_and_delete.hpp"
+#include "driver/options/find_one_and_replace.hpp"
 
 namespace mongo {
 namespace driver {
-namespace model {
+namespace options {
 
-find_one_and_delete::find_one_and_delete(bson::document::view criteria)
-    : _criteria(std::move(criteria)) {}
-
-find_one_and_delete& find_one_and_delete::projection(bson::document::view projection) {
+void find_one_and_replace::projection(bson::document::view projection) {
     _projection = projection;
-    return *this;
 }
 
-find_one_and_delete& find_one_and_delete::sort(bson::document::view ordering) {
+void find_one_and_replace::return_replacement(bool return_replacement) {
+    _return_replacement = return_replacement;
+}
+
+void find_one_and_replace::sort(bson::document::view ordering) {
     _ordering = ordering;
-    return *this;
 }
 
-const bson::document::view& find_one_and_delete::criteria() const { return _criteria; }
+void find_one_and_replace::upsert(bool upsert) {
+    _upsert = upsert;
+}
 
-const optional<bson::document::view>& find_one_and_delete::projection() const {
+const optional<bson::document::view>& find_one_and_replace::projection() const {
     return _projection;
 }
 
-const optional<bson::document::view>& find_one_and_delete::sort() const { return _ordering; }
+const optional<bool>& find_one_and_replace::return_replacement() const {
+    return _return_replacement;
+}
 
-}  // namespace model
+const optional<bson::document::view>& find_one_and_replace::sort() const {
+    return _ordering;
+}
+
+const optional<bool>& find_one_and_replace::upsert() const {
+    return _upsert;
+}
+
+}  // namespace options
 }  // namespace driver
 }  // namespace mongo
 

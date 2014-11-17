@@ -17,46 +17,46 @@
 #include "driver/config/prelude.hpp"
 
 #include <cstdint>
+#include <string>
 
 #include "bson/document.hpp"
-#include "driver/base/pipeline.hpp"
-#include "driver/base/read_preference.hpp"
 #include "driver/util/optional.hpp"
+#include "driver/base/read_preference.hpp"
 
 namespace mongo {
 namespace driver {
 
 class read_preference;
 
-namespace model {
+namespace options {
 
-class LIBMONGOCXX_EXPORT aggregate {
+// TODO: take hint as a std::string parameter in addition to bson::document::view
+
+class LIBMONGOCXX_EXPORT count {
+
    public:
-    explicit aggregate(pipeline pipeline);
+    void hint(bson::document::view hint);
+    void limit(std::int32_t limit);
+    void max_time_ms(std::int64_t max_time_ms);
+    void skip(std::int32_t skip);
+    void read_preference(class read_preference rp);
 
-    aggregate& allow_disk_use(bool allow_disk_use);
-    aggregate& batch_size(std::int32_t batch_size);
-    aggregate& max_time_ms(std::int64_t max_time_ms);
-    aggregate& use_cursor(bool use_cursor);
-    aggregate& read_preference(class read_preference rp);
-
-    const pipeline& stages() const;
-    const optional<bool>& allow_disk_use() const;
-    const optional<std::int32_t>& batch_size() const;
+    const optional<bson::document::view>& hint() const;
+    const optional<std::int32_t>& limit() const;
     const optional<std::int64_t>& max_time_ms() const;
-    const optional<bool>& use_cursor() const;
+    const optional<std::int32_t>& skip() const;
     const optional<class read_preference>& read_preference() const;
 
    private:
-    class pipeline _pipeline;
-    optional<bool> _allow_disk_use;
-    optional<std::int32_t> _batch_size;
+    optional<bson::document::view> _hint;
+    optional<std::int32_t> _limit;
     optional<std::int64_t> _max_time_ms;
-    optional<bool> _use_cursor;
+    optional<std::int32_t> _skip;
     optional<class read_preference> _read_preference;
+
 };
 
-}  // namespace model
+}  // namesapce options
 }  // namespace driver
 }  // namespace mongo
 

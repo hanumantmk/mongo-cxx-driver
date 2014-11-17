@@ -12,23 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "driver/model/delete_one.hpp"
+#include "driver/options/update.hpp"
 
 namespace mongo {
 namespace driver {
-namespace model {
+namespace options {
 
-delete_one::delete_one(bson::document::view criteria) : _criteria(std::move(criteria)) {}
-
-delete_one& delete_one::write_concern(class write_concern wc) {
-    _write_concern = std::move(wc);
-    return *this;
+void update::upsert(bool upsert) {
+    _upsert = upsert;
 }
 
-const bson::document::view& delete_one::criteria() const { return _criteria; }
+void update::write_concern(class write_concern wc) {
+    _write_concern = std::move(wc);
+}
 
-const optional<class write_concern>& delete_one::write_concern() const { return _write_concern; }
+const optional<bool>& update::upsert() const { return _upsert; }
 
-}  // namespace model
+const optional<class write_concern>& update::write_concern() const { return _write_concern; }
+
+}  // namespace options
 }  // namespace driver
 }  // namespace mongo

@@ -1,3 +1,4 @@
+
 // Copyright 2014 MongoDB Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,29 +13,35 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "driver/model/insert_many.hpp"
+#pragma once
+
+#include "driver/config/prelude.hpp"
+
+#include "bson/document.hpp"
+#include "driver/base/write_concern.hpp"
+#include "driver/util/optional.hpp"
 
 namespace mongo {
 namespace driver {
-namespace model {
+namespace options {
 
-insert_many::insert_many() {}
+class LIBMONGOCXX_EXPORT update {
 
-insert_many& insert_many::insert_one(bson::document::view view) {
-    _documents.emplace_back(std::move(view));
+   public:
+    void upsert(bool upsert);
+    void write_concern(class write_concern wc);
 
-    return *this;
-}
+    const optional<bool>& upsert() const;
+    const optional<class write_concern>& write_concern() const;
 
-insert_many& insert_many::write_concern(class write_concern wc) {
-    _write_concern = std::move(wc);
-    return *this;
-}
+   private:
+    optional<bool> _upsert;
+    optional<class write_concern> _write_concern;
 
-const std::vector<bson::document::view>& insert_many::documents() const { return _documents; }
+};
 
-const optional<class write_concern>& insert_many::write_concern() const { return _write_concern; }
-
-}  // namespace model
+}  // namespace options
 }  // namespace driver
 }  // namespace mongo
+
+#include "driver/config/postlude.hpp"
