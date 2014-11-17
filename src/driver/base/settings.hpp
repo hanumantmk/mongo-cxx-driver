@@ -21,13 +21,13 @@
 namespace mongo {
 namespace driver {
 
-/// The options class represents a set of options for the MongoDB driver client.
-class LIBMONGOCXX_EXPORT options {
+/// The settings class represents a set of settings for the MongoDB driver client.
+class LIBMONGOCXX_EXPORT settings {
     friend class client;
 
    public:
-    options();
-    explicit options(std::string mongodb_uri);
+    settings();
+    explicit settings(std::string mongodb_uri);
 
    private:
     std::string _mongodb_uri;

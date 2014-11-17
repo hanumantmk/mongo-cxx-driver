@@ -15,7 +15,7 @@
 #include "private/preamble.hpp"
 
 #include "driver/base/client.hpp"
-#include "driver/base/options.hpp"
+#include "driver/base/settings.hpp"
 #include "driver/base/private/client.hpp"
 
 namespace mongo {
@@ -31,8 +31,8 @@ client::client(const std::string& mongodb_uri)
     : _impl(new impl{mongoc_client_new(mongodb_uri.c_str())}) {}
 
 // TODO: use constructor delegation
-client::client(const options& options)
-    : _impl(new impl{mongoc_client_new(options._mongodb_uri.c_str())}) {}
+client::client(const settings& settings)
+    : _impl(new impl{mongoc_client_new(settings._mongodb_uri.c_str())}) {}
 
 void client::read_preference(class read_preference rp) { _impl->read_preference(std::move(rp)); }
 const class read_preference& client::read_preference() const { return _impl->read_preference(); }

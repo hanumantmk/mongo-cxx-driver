@@ -137,11 +137,24 @@ class LIBMONGOCXX_EXPORT collection {
         const bson::document::view& filter
     );
 
-    result::bulk_write bulk_write(const model::bulk_write& model);
+    //result::bulk_write bulk_write(const model::bulk_write& model);
 
-    optional<bson::document::value> find_one_and_replace(const model::find_one_and_replace& model);
-    optional<bson::document::value> find_one_and_update(const model::find_one_and_update& model);
-    optional<bson::document::value> find_one_and_delete(const model::find_one_and_delete& model);
+    optional<bson::document::value> find_one_and_delete(
+        const bson::document::view& filter,
+        const options::find_one_and_delete& options
+    );
+
+    optional<bson::document::value> find_one_and_replace(
+        const bson::document::view& filter,
+        const bson::document::view& replacement,
+        const options::find_one_and_replace& options
+    );
+
+    optional<bson::document::value> find_one_and_update(
+        const bson::document::view& filter,
+        const bson::document::view& update,
+        const options::find_one_and_update& options
+    );
 
     void drop();
 

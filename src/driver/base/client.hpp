@@ -25,7 +25,7 @@
 namespace mongo {
 namespace driver {
 
-class options;
+class settings;
 
 /// The client class is the entrypoint into the MongoDB driver. It acts as a logical gateway for
 /// accessing the databases of MongoDB clusters. Databases that are accessed via a client inherit
@@ -40,7 +40,7 @@ class LIBMONGOCXX_EXPORT client {
    public:
     client();
     explicit client(const std::string& mongodb_uri);
-    explicit client(const options& options);
+    explicit client(const settings& settings);
 
     void read_preference(class read_preference rp);
     const class read_preference& read_preference() const;

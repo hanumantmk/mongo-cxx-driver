@@ -12,30 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
-
-#include "bson/document.hpp"
-
-#include "driver/model/insert_one.hpp"
-#include "driver/request/write.hpp"
+#include "driver/base/settings.hpp"
+#include <utility>
 
 namespace mongo {
 namespace driver {
-namespace model {
 
-/*
- *    class InsertRequest : public WriteRequest {
- *    public:
- *        InsertRequest(const bson::document::view& doc);
- *        InsertRequest(const insert& model);
- *
- *    private:
- *        virtual void add(mongoc_bulk_operation_t* bulk) const;
- *
- *        bson::document::view _doc;
- *    };
- */
+namespace {
+const char kDefaultURI[] = "mongodb://localhost:27017";
+}  // namespace
 
-}  // namespace model
+settings::settings() : _mongodb_uri(kDefaultURI) {}
+
+settings::settings(std::string mongodb_uri) : _mongodb_uri(std::move(mongodb_uri)) {}
+
 }  // namespace driver
 }  // namespace mongo
+
+#include "driver/config/postlude.hpp"
