@@ -34,6 +34,9 @@ void write_concern::confirm_from(std::int32_t confirm_from) {
     if (confirm_from == write_concern::TAG) {
         throw std::invalid_argument("Cannot pass write_concern::TAG to confirm_from."
                                     "Use the `tag` method.");
+    } else if (confirm_from != write_concern::MAJORITY && confirm_from < 0) {
+        throw std::invalid_argument("Cannot require confirmation from a "
+                                    "negative number of replica set members");
     }
     _tag = std::string{};
     _confirm_from = confirm_from;

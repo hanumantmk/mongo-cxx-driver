@@ -76,6 +76,12 @@ TEST_CASE("write_concern fields may be set and retrieved", "[write_concern][base
         wc.confirm_from(write_concern::MAJORITY);
         REQUIRE(wc.confirm_from() == write_concern::MAJORITY);
     }
+
+    SECTION("the number of nodes requring confirmation may not be negative") {
+        write_concern wc{};
+        REQUIRE_THROWS_AS(wc.confirm_from(-20), std::invalid_argument);
+    }
+
 }
 
 TEST_CASE("confirmation from tags, a repl-member count, and majority are mutually exclusive",
