@@ -1,5 +1,7 @@
 enable_testing()
 
+set(CMAKE_CXX_FLAGS "-DMONGOCXX_TESTING ${CMAKE_CXX_FLAGS}")
+
 include_directories("include")
 
 macro(test t)

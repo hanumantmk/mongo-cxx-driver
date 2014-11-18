@@ -21,8 +21,7 @@ namespace mongo {
 namespace driver {
 namespace libmongoc {
 
-//#ifdef MONGOCXX_DEBUG
-#if 0
+#ifdef MONGOCXX_TESTING
 #define MONGOCXX_LIBMONGOC_SYMBOL(name) extern mongo::util::mock<decltype(&mongoc_##name)> name;
 #include "libmongoc_symbols.hpp"
 #undef MONGOCXX_LIBMONGOC_SYMBOL
@@ -30,7 +29,7 @@ namespace libmongoc {
 #define MONGOCXX_LIBMONGOC_SYMBOL(name) constexpr auto name = mongoc_##name;
 #include "libmongoc_symbols.hpp"
 #undef MONGOCXX_LIBMONGOC_SYMBOL
-#endif  // MONGOCXX_DEBUG
+#endif  // MONGOCXX_TESTING
 
 }  // namespace libmongoc
 }  // namespace driver

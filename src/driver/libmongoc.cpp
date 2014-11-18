@@ -18,12 +18,11 @@ namespace mongo {
 namespace driver {
 namespace libmongoc {
 
-//#ifdef MONGOCXX_DEBUG
-#if 0
+#ifdef MONGOCXX_TESTING
 #define MONGOCXX_LIBMONGOC_SYMBOL(name) util::mock<decltype(&mongoc_##name)> name(mongoc_##name);
 #include "libmongoc_symbols.hpp"
 #undef MONGOCXX_LIBMONGOC_SYMBOL
-#endif  // MONGOCXX_DEBUG
+#endif  // MONGOCXX_TESTING
 
 }  // namespace libmongoc
 }  // namespace driver

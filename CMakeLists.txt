@@ -13,6 +13,8 @@ set(WRAPPED_ABI_VERSION 1.0)
 find_package(PkgConfig)
 pkg_check_modules(LIBMONGOC libmongoc-${WRAPPED_ABI_VERSION})
 
+option(BUILD_UNIT_TESTS "Build unit tests" ON)
+
 link_directories(
     ${LIBMONGOC_LIBRARY_DIRS}
 )
@@ -41,12 +43,14 @@ add_custom_target(format
     VERBATIM
 )
 
-set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Werror -ggdb3 -O0 -DMONGOCXX_DEBUG ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Werror -ggdb3 -O0 ${CMAKE_CXX_FLAGS}")
 #set(CMAKE_EXE_LINKER_FLAGS "-lprofiler ${CMAKE_EXE_LINKER_FLAGS}")
 #set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Werror -ggdb3 -O2 -fsanitize=undefined,address ${CMAKE_CXX_FLAGS}")
 #set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Werror -ggdb3 -O2 ${CMAKE_CXX_FLAGS} -flto")
 
 add_subdirectory(src)
 
-enable_testing()
-add_subdirectory(test)
+if(BUILD_UNIT_TESTS)
+  enable_testing()
+  add_subdirectory(test)
+endif(BUILD_UNIT_TESTS)
