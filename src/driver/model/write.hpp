@@ -17,14 +17,14 @@
 #include "driver/config/prelude.hpp"
 
 #include <cstdint>
+
 #include "driver/util/optional.hpp"
-//#include "driver/model/insert_one.hpp"
-//#include "driver/model/insert_many.hpp"
-//#include "driver/model/delete_one.hpp"
-//#include "driver/model/delete_many.hpp"
-//#include "driver/model/update_one.hpp"
-//#include "driver/model/update_many.hpp"
-//#include "driver/model/replace_one.hpp"
+#include "driver/model/insert_one.hpp"
+#include "driver/model/delete_one.hpp"
+#include "driver/model/delete_many.hpp"
+#include "driver/model/update_one.hpp"
+#include "driver/model/update_many.hpp"
+#include "driver/model/replace_one.hpp"
 
 namespace mongo {
 namespace driver {
@@ -44,7 +44,6 @@ enum class write_type {
 class LIBMONGOCXX_EXPORT write {
    public:
     write(insert_one value);
-    write(insert_many value);
     write(update_one value);
     write(update_many value);
     write(delete_one value);
@@ -61,7 +60,6 @@ class LIBMONGOCXX_EXPORT write {
     write_type type() const;
 
     const insert_one& get_insert_one() const;
-    const insert_many& get_insert_many() const;
     const update_one& get_update_one() const;
     const update_many& get_update_many() const;
     const delete_one& get_delete_one() const;
@@ -75,7 +73,6 @@ class LIBMONGOCXX_EXPORT write {
 
     union {
         insert_one _insert_one;
-        insert_many _insert_many;
         update_one _update_one;
         update_many _update_many;
         delete_one _delete_one;

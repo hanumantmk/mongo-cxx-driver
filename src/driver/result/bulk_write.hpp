@@ -26,7 +26,7 @@ namespace driver {
 namespace result {
 
 struct LIBMONGOCXX_EXPORT bulk_write {
-    bool is_acknowledged;
+    bool acknowledged;
 
     std::int64_t inserted_count;
     std::int64_t matched_count;

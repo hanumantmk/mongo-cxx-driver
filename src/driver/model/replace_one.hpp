@@ -16,22 +16,34 @@
 
 #include "driver/config/prelude.hpp"
 
-#include <cstdint>
-
-#include "bson/types.hpp"
+#include "bson/document.hpp"
+#include "driver/util/optional.hpp"
+#include "driver/base/write_concern.hpp"
 
 namespace mongo {
 namespace driver {
-namespace result {
+namespace model {
 
-struct LIBMONGOCXX_EXPORT replace_one {
-    bool acknowledged;
-    std::int64_t matched_count;
-    std::int64_t modified_count;
-    bson::document::element upserted_id;
+class LIBMONGOCXX_EXPORT replace_one {
+
+   public:
+    replace_one(bson::document::view criteria, bson::document::view replacement);
+
+    replace_one& upsert(bool upsert);
+
+    const bson::document::view& criteria() const;
+    const bson::document::view& replacement() const;
+    const optional<bool>& upsert() const;
+
+   private:
+    bson::document::view _criteria;
+    bson::document::view _replacement;
+
+    optional<bool> _upsert;
+
 };
 
-}  // namespace result
+}  // namespace model
 }  // namespace driver
 }  // namespace mongo
 

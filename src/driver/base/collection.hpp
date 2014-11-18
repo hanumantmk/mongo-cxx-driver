@@ -19,6 +19,7 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "bson/document.hpp"
 
@@ -137,7 +138,10 @@ class LIBMONGOCXX_EXPORT collection {
         const bson::document::view& filter
     );
 
-    //result::bulk_write bulk_write(const model::bulk_write& model);
+    result::bulk_write bulk_write(
+        const std::vector<write>& requests,
+        const options::bulk_write& options
+    );
 
     optional<bson::document::value> find_one_and_delete(
         const bson::document::view& filter,

@@ -12,27 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
-
-#include "driver/config/prelude.hpp"
-
-#include <cstdint>
-
-#include "bson/types.hpp"
+#include "driver/model/update_many.hpp"
 
 namespace mongo {
 namespace driver {
-namespace result {
+namespace model {
 
-struct LIBMONGOCXX_EXPORT replace_one {
-    bool acknowledged;
-    std::int64_t matched_count;
-    std::int64_t modified_count;
-    bson::document::element upserted_id;
-};
+update_many::update_many(bson::document::view filter, bson::document::view update)
+    : _filter(std::move(filter)), _update(std::move(update)) {}
 
-}  // namespace result
+update_many& update_many::upsert(bool upsert) {
+    _upsert = upsert;
+    return *this;
+}
+
+const optional<bool>& update_many::upsert() const { return _upsert; }
+
+const bson::document::view& update_many::filter() const { return _filter; }
+
+const bson::document::view& update_many::update() const { return _update; }
+
+}  // namespace model
 }  // namespace driver
 }  // namespace mongo
-
-#include "driver/config/postlude.hpp"

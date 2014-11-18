@@ -16,22 +16,27 @@
 
 #include "driver/config/prelude.hpp"
 
-#include <cstdint>
-
-#include "bson/types.hpp"
+#include "bson/document.hpp"
+#include "driver/base/write_concern.hpp"
+#include "driver/util/optional.hpp"
 
 namespace mongo {
 namespace driver {
-namespace result {
+namespace model {
 
-struct LIBMONGOCXX_EXPORT replace_one {
-    bool acknowledged;
-    std::int64_t matched_count;
-    std::int64_t modified_count;
-    bson::document::element upserted_id;
+class LIBMONGOCXX_EXPORT delete_many {
+
+   public:
+     delete_many(bson::document::view filter);
+
+     const bson::document::view& filter() const;
+
+   private:
+    bson::document::view _filter;
+
 };
 
-}  // namespace result
+}  // namespace model
 }  // namespace driver
 }  // namespace mongo
 

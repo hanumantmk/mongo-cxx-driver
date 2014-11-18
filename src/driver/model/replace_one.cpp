@@ -12,27 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
-
-#include "driver/config/prelude.hpp"
-
-#include <cstdint>
-
-#include "bson/types.hpp"
+#include "driver/model/replace_one.hpp"
 
 namespace mongo {
 namespace driver {
-namespace result {
+namespace model {
 
-struct LIBMONGOCXX_EXPORT replace_one {
-    bool acknowledged;
-    std::int64_t matched_count;
-    std::int64_t modified_count;
-    bson::document::element upserted_id;
-};
+replace_one::replace_one(bson::document::view criteria, bson::document::view replacement)
+    : _criteria(std::move(criteria)), _replacement(std::move(replacement)) {}
 
-}  // namespace result
+replace_one& replace_one::upsert(bool upsert) {
+    _upsert = upsert;
+
+    return *this;
+}
+
+const bson::document::view& replace_one::criteria() const { return _criteria; }
+
+const bson::document::view& replace_one::replacement() const { return _replacement; }
+
+const optional<bool>& replace_one::upsert() const { return _upsert; }
+
+}  // namespace model
 }  // namespace driver
 }  // namespace mongo
-
-#include "driver/config/postlude.hpp"
