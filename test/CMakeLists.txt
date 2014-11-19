@@ -20,8 +20,17 @@ add_test(test_suite_4 test_4)
 test(5)
 add_test(test_suite_5 test_5 10)
 
-add_executable(test_write_concern driver/base/write_concern.cpp ../src/driver/base/write_concern.cpp)
+add_executable(test_write_concern
+    driver/base/write_concern.cpp
+    ${CMAKE_SOURCE_DIR}/src/driver/base/write_concern.cpp)
 add_test(test_write_concern test_write_concern)
+
+add_executable(test_private_write_concern
+    driver/base/private/write_concern.cpp
+    ${CMAKE_SOURCE_DIR}/src/driver/base/write_concern.cpp)
+target_link_libraries(test_private_write_concern mongocxx-mock_symbols)
+add_test(test_private_write_concern test_private_write_concern)
+
 
 add_executable(new_tests
     new_tests.cpp

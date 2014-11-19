@@ -18,7 +18,7 @@
 
 #include <memory>
 
-#include "mongoc.h"
+#include "driver/libmongoc.hpp"
 
 #include "driver/base/write_concern.hpp"
 
@@ -30,15 +30,20 @@ class write_concern {
 public:
     write_concern(const driver::write_concern& arg) : _write_concern(mongoc_write_concern_new()) {
         mongoc_write_concern_t* wc = _write_concern;
-        mongoc_write_concern_set_fsync(wc, arg.fsync());
-        mongoc_write_concern_set_journal(wc, arg.journal());
-        mongoc_write_concern_set_w(wc, arg.confirm_from());
-        mongoc_write_concern_set_wtimeout(wc, arg.timeout());
-        mongoc_write_concern_set_wtag(wc, arg.tag().c_str());
+        libmongoc::write_concern_set_fsync(wc, arg.fsync());
+        libmongoc::write_concern_set_journal(wc, arg.journal());
+        libmongoc::write_concern_set_wtimeout(wc, arg.timeout());
+        if (arg.confirm_from() == driver::write_concern::MAJORITY) {
+            libmongoc::write_concern_set_wmajority(wc, arg.timeout());
+        } else if (!arg.tag().empty()) {
+            libmongoc::write_concern_set_wtag(wc, arg.tag().c_str());
+        } else {
+            libmongoc::write_concern_set_w(wc, arg.confirm_from());
+        }
     }
 
     ~write_concern() {
-        mongoc_write_concern_destroy(_write_concern);
+        libmongoc::write_concern_destroy(_write_concern);
     }
 
     const mongoc_write_concern_t* get_write_concern() const {
