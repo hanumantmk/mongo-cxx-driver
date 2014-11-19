@@ -17,6 +17,7 @@
 #include <iostream>
 #include <deque>
 #include <vector>
+#include <memory>
 #include <functional>
 #include <type_traits>
 
@@ -40,7 +41,7 @@ class mock<R (*)(Args...)> {
         rule(callback callback) : _callback(std::move(callback)) { times(1); }
 
         void times(int n) {
-            return drop_when([n](Args...) mutable->bool {
+            drop_when([n](Args...) mutable->bool {
                 if (n < 0) {
                     return true;
                 } else if (n == 0) {
@@ -60,83 +61,114 @@ class mock<R (*)(Args...)> {
         conditional _conditional;
     };
 
-    mock(ptr func) : _func(func) {}
+    class MockInstance {
+    friend class mock;
+    public:
+     MockInstance(const MockInstance&) = delete;
+     MockInstance* operator=(const MockInstance&) = delete;
+     ~MockInstance() {
+         _parent->_active = nullptr;
+     }
+
+     rule& interpose(std::function<R(ptr, Args...)> func) {
+         _callbacks.emplace_back(func);
+
+         return _callbacks.back();
+     }
+
+     rule& interpose(std::function<R(Args...)> func) {
+         _callbacks.emplace_back([=](ptr, Args... args) { return func(args...); });
+
+         return _callbacks.back();
+     }
+
+     template <typename T, typename... U>
+     typename std::enable_if<std::is_same<T, R>::value, rule&>::type interpose(T r, U... rs) {
+         std::vector<R> vec = {r, rs...};
+         std::size_t i = 0;
+
+         _callbacks.emplace_back([ vec, i ](ptr, Args... args) mutable->R {
+             if (i == vec.size()) {
+                 i = 0;
+             }
+             return vec[i++];
+         });
+         _callbacks.back().times(vec.size());
+
+         return _callbacks.back();
+     }
+
+     rule& visit(std::function<void(Args...)> func) {
+         _callbacks.emplace_back([=](ptr, Args... args) {
+             func(args...);
+
+             return _parent->_func(args...);
+         });
+
+         return _callbacks.back();
+     }
+
+     rule& interpose(std::function<R(void)> func) {
+         _callbacks.emplace_back([=](ptr, Args... args) { return func(); });
+
+         return _callbacks.back();
+     }
+
+     rule& visit(std::function<void(void)> func) {
+         _callbacks.emplace_back([=](ptr, Args... args) {
+             func();
+
+             return _parent->_func(args...);
+         });
+
+         return _callbacks.back();
+     }
+
+
+     std::size_t depth() const { return _callbacks.size(); }
+
+     bool empty() const { return _callbacks.empty(); }
+
+    private:
+     MockInstance(mock* parent) : _parent(parent) {}
+     mock* _parent;
+     std::deque<rule> _callbacks;
+    };
+
+    friend class MockInstance;
+
+    mock(ptr func) :_active(nullptr), _func(func){}
 
     R operator()(Args... args) {
-        while (!_callbacks.empty()) {
-            if (_callbacks.front()._conditional(args...)) {
-                return _callbacks.front()._callback(_func, args...);
-            } else {
-                _callbacks.pop_front();
+        if (_active != nullptr) {
+            while (!_active->_callbacks.empty()) {
+                if (_active->_callbacks.front()._conditional(args...)) {
+                    return _active->_callbacks.front()._callback(_func, args...);
+                } else {
+                    _active->_callbacks.pop_front();
+                }
             }
         }
 
         return _func(args...);
     }
 
-    rule& interpose(std::function<R(ptr, Args...)> func) {
-        _callbacks.emplace_back(func);
-
-        return _callbacks.back();
+    std::unique_ptr<MockInstance> create_instance() {
+        if (_active != nullptr) {
+            throw std::runtime_error("Cannot create second mock instance in thread");
+        }
+        std::unique_ptr<MockInstance> mock_instance(new MockInstance(this));
+        _active = &*mock_instance;
+        return mock_instance;
     }
-
-    rule& interpose(std::function<R(Args...)> func) {
-        _callbacks.emplace_back([=](ptr, Args... args) { return func(args...); });
-
-        return _callbacks.back();
-    }
-
-    rule& interpose(std::function<R(void)> func) {
-        _callbacks.emplace_back([=](ptr, Args... args) { return func(); });
-
-        return _callbacks.back();
-    }
-
-    template <typename T, typename... U>
-    typename std::enable_if<std::is_same<T, R>::value, rule&>::type interpose(T r, U... rs) {
-        std::vector<R> vec = {r, rs...};
-        std::size_t i = 0;
-
-        _callbacks.emplace_back([ vec, i ](ptr, Args... args) mutable->R {
-            if (i == vec.size()) {
-                i = 0;
-            }
-
-            return vec[i++];
-        });
-        _callbacks.back().times(vec.size());
-
-        return _callbacks.back();
-    }
-
-    rule& visit(std::function<void(Args...)> func) {
-        _callbacks.emplace_back([=](ptr, Args... args) {
-            func(args...);
-
-            return _func(args...);
-        });
-
-        return _callbacks.back();
-    }
-
-    rule& visit(std::function<void(void)> func) {
-        _callbacks.emplace_back([=](ptr, Args... args) {
-            func();
-
-            return _func(args...);
-        });
-
-        return _callbacks.back();
-    }
-
-    std::size_t depth() const { return _callbacks.size(); }
-
-    bool empty() const { return _callbacks.empty(); }
 
    private:
+    MockInstance* _active;
     ptr _func;
-    std::deque<rule> _callbacks;
 };
+
+//template <typename R, typename... Args>
+//thread_local typename mock<R (*)(Args...)>::MockInstance* mock<R (*)(Args...)>::_active = nullptr;
 
 }  // namespace util
 }  // namespace mongo
