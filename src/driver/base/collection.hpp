@@ -110,7 +110,7 @@ class LIBMONGOCXX_EXPORT collection {
         const Container& container,
         const options::insert& options
     ) {
-        insert_many(container.begin(), container.end(), options);
+        return insert_many(container.begin(), container.end(), options);
     }
 
     template<class DocumentIteratorType>
@@ -163,7 +163,7 @@ class LIBMONGOCXX_EXPORT collection {
         const Container& container,
         const options::bulk_write& options
     ) {
-        bulk_write(container.begin(), container.end(), options);
+        return bulk_write(container.begin(), container.end(), options);
     }
 
     template<class WriteIteratorType>

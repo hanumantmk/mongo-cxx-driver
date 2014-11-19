@@ -18,65 +18,65 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-write::write(insert_one value) : _type(write::type::kInsertOne), _insert_one(std::move(value)) {}
-write::write(delete_one value) : _type(write::type::kDeleteOne), _delete_one(std::move(value)) {}
-write::write(delete_many value) : _type(write::type::kDeleteMany), _delete_many(std::move(value)) {}
-write::write(update_one value) : _type(write::type::kUpdateOne), _update_one(std::move(value)) {}
-write::write(update_many value) : _type(write::type::kUpdateMany), _update_many(std::move(value)) {}
-write::write(replace_one value) : _type(write::type::kReplaceOne), _replace_one(std::move(value)) {}
+write::write(insert_one value) : _type(write_type::kInsertOne), _insert_one(std::move(value)) {}
+write::write(delete_one value) : _type(write_type::kDeleteOne), _delete_one(std::move(value)) {}
+write::write(delete_many value) : _type(write_type::kDeleteMany), _delete_many(std::move(value)) {}
+write::write(update_one value) : _type(write_type::kUpdateOne), _update_one(std::move(value)) {}
+write::write(update_many value) : _type(write_type::kUpdateMany), _update_many(std::move(value)) {}
+write::write(replace_one value) : _type(write_type::kReplaceOne), _replace_one(std::move(value)) {}
 
-write::write(write&& rhs) : _type(write::type::kUninitialized) { *this = std::move(rhs); }
+write::write(write&& rhs) : _type(write_type::kUninitialized) { *this = std::move(rhs); }
 
 void write::destroy_member() {
     switch (_type) {
-        case write::type::kInsertOne:
+        case write_type::kInsertOne:
             _insert_one.~insert_one();
             break;
-        case write::type::kUpdateOne:
+        case write_type::kUpdateOne:
             _update_one.~update_one();
             break;
-        case write::type::kUpdateMany:
+        case write_type::kUpdateMany:
             _update_many.~update_many();
             break;
-        case write::type::kDeleteOne:
+        case write_type::kDeleteOne:
             _delete_one.~delete_one();
             break;
-        case write::type::kDeleteMany:
+        case write_type::kDeleteMany:
             _delete_many.~delete_many();
             break;
-        case write::type::kReplaceOne:
+        case write_type::kReplaceOne:
             _replace_one.~replace_one();
             break;
-        case write::type::kUninitialized:
+        case write_type::kUninitialized:
             break;
     }
 
-    _type = write::type::kUninitialized;
+    _type = write_type::kUninitialized;
 }
 
 write& write::operator=(write&& rhs) {
     destroy_member();
 
     switch (rhs._type) {
-        case write::type::kInsertOne:
+        case write_type::kInsertOne:
             _insert_one = std::move(rhs._insert_one);
             break;
-        case write::type::kUpdateOne:
+        case write_type::kUpdateOne:
             _update_one = std::move(rhs._update_one);
             break;
-        case write::type::kUpdateMany:
+        case write_type::kUpdateMany:
             _update_many = std::move(rhs._update_many);
             break;
-        case write::type::kDeleteOne:
+        case write_type::kDeleteOne:
             _delete_one = std::move(rhs._delete_one);
             break;
-        case write::type::kDeleteMany:
+        case write_type::kDeleteMany:
             _delete_many = std::move(rhs._delete_many);
             break;
-        case write::type::kReplaceOne:
+        case write_type::kReplaceOne:
             _replace_one = std::move(rhs._replace_one);
             break;
-        case write::type::kUninitialized:
+        case write_type::kUninitialized:
             break;
     }
 
@@ -85,7 +85,7 @@ write& write::operator=(write&& rhs) {
     return *this;
 }
 
-enum write::type write::type() const { return _type; }
+write_type write::type() const { return _type; }
 
 const insert_one& write::get_insert_one() const { return _insert_one; }
 const update_one& write::get_update_one() const { return _update_one; }
