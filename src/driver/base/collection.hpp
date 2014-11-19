@@ -52,17 +52,15 @@ class insert_one;
 namespace options {
 class aggregate;
 class bulk_write;
-class find;
-class find_one_and_modify;
-class find_one_and_replace;
-class find_one_and_delete;
-class find_one_and_update;
-class delete_options;
-class insert;
-class replace_one;
-class update;
-class distinct;
 class count;
+class delete_options;
+class distinct;
+class find;
+class find_one_and_delete;
+class find_one_and_replace;
+class find_one_and_update;
+class insert;
+class update;
 }  // namespace options
 
 namespace result {
