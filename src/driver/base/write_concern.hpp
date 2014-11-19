@@ -16,8 +16,9 @@
 
 #include "driver/config/prelude.hpp"
 
-#include <string>
+#include <chrono>
 #include <cstdint>
+#include <string>
 
 namespace mongo {
 namespace driver {
@@ -33,20 +34,20 @@ class LIBMONGOCXX_EXPORT write_concern {
     void fsync(bool fsync);
     void journal(bool journal);
     void confirm_from(std::int32_t confirm_from);
-    void timeout(std::int32_t timeout);
+    void timeout(std::chrono::milliseconds timeout);
     void tag(std::string tag);
 
     const bool& fsync() const;
     const bool& journal() const;
     const std::int32_t& confirm_from() const;
-    const std::int32_t& timeout() const;
+    const std::chrono::milliseconds& timeout() const;
     const std::string& tag() const;
 
    private:
     bool _fsync;
     bool _journal;
     std::int32_t _confirm_from;
-    std::int32_t _timeout;
+    std::chrono::milliseconds _timeout;
     std::string _tag;
 };
 

@@ -32,9 +32,9 @@ public:
         mongoc_write_concern_t* wc = _write_concern;
         libmongoc::write_concern_set_fsync(wc, arg.fsync());
         libmongoc::write_concern_set_journal(wc, arg.journal());
-        libmongoc::write_concern_set_wtimeout(wc, arg.timeout());
+        libmongoc::write_concern_set_wtimeout(wc, arg.timeout().count());
         if (arg.confirm_from() == driver::write_concern::MAJORITY) {
-            libmongoc::write_concern_set_wmajority(wc, arg.timeout());
+            libmongoc::write_concern_set_wmajority(wc, arg.timeout().count());
         } else if (!arg.tag().empty()) {
             libmongoc::write_concern_set_wtag(wc, arg.tag().c_str());
         } else {

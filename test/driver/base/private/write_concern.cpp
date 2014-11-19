@@ -15,9 +15,9 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
-#include "mongocxx.hpp"
 #include "driver/libmongoc.hpp"
 
+#include "driver/base/write_concern.hpp"
 #include "driver/base/private/write_concern.hpp"
 
 using namespace mongo::driver;
@@ -62,10 +62,10 @@ TEST_CASE("creation of priv::write_concern passes universal parameters to c-driv
             wtimeout_value = wtimeout;
         });
         write_concern wc{};
-        wc.timeout(5);
+        wc.timeout(std::chrono::seconds(1));
         priv::write_concern{wc};
         REQUIRE(wtimeout_called == true);
-        REQUIRE(wtimeout_value == 5);
+        REQUIRE(wtimeout_value == 1000);
     }
 }
 

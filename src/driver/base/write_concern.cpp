@@ -41,7 +41,7 @@ void write_concern::confirm_from(std::int32_t confirm_from) {
     _tag = std::string{};
     _confirm_from = confirm_from;
 }
-void write_concern::timeout(std::int32_t timeout) {
+void write_concern::timeout(std::chrono::milliseconds timeout) {
     _timeout = timeout;
 }
 void write_concern::tag(std::string tag) {
@@ -52,7 +52,7 @@ void write_concern::tag(std::string tag) {
 const bool& write_concern::fsync() const { return _fsync; }
 const bool& write_concern::journal() const { return _journal; }
 const std::int32_t& write_concern::confirm_from() const { return _confirm_from; }
-const std::int32_t& write_concern::timeout() const { return _timeout; }
+const std::chrono::milliseconds& write_concern::timeout() const { return _timeout; }
 const std::string& write_concern::tag() const { return _tag; }
 
 }  // namespace driver

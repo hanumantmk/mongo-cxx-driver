@@ -15,7 +15,7 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
-#include "mongocxx.hpp"
+#include "driver/base/write_concern.hpp"
 
 using namespace mongo::driver;
 
@@ -31,7 +31,8 @@ TEST_CASE("a default write_concern", "[write_concern][base]") {
     }
 
     SECTION("will not timeout") {
-        REQUIRE(wc.timeout() == 0);
+        auto timeout = wc.timeout();
+        REQUIRE(timeout == decltype(timeout)::zero());
     }
 
     SECTION("will require confirmation from just the primary or standalone mongod") {
@@ -57,8 +58,10 @@ TEST_CASE("write_concern fields may be set and retrieved", "[write_concern][base
     }
 
     SECTION("timeout may be configured") {
-        wc.timeout(100);
-        REQUIRE(wc.timeout() == 100);
+        wc.timeout(std::chrono::seconds(10));
+        REQUIRE(wc.timeout() == std::chrono::seconds(10));
+        wc.timeout(std::chrono::milliseconds(250));
+        REQUIRE(wc.timeout() == std::chrono::milliseconds(250));
     }
 
     SECTION("a tag may be set") {
