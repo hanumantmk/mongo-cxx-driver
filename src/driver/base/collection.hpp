@@ -25,6 +25,16 @@
 #include "driver/base/cursor.hpp"
 #include "driver/base/bulk_write.hpp"
 #include "driver/options/bulk_write.hpp"
+#include "driver/options/aggregate.hpp"
+#include "driver/options/count.hpp"
+#include "driver/options/distinct.hpp"
+#include "driver/options/insert.hpp"
+#include "driver/options/update.hpp"
+#include "driver/options/delete.hpp"
+#include "driver/options/find.hpp"
+#include "driver/options/find_one_and_delete.hpp"
+#include "driver/options/find_one_and_update.hpp"
+#include "driver/options/find_one_and_replace.hpp"
 #include "driver/result/delete.hpp"
 #include "driver/result/insert_many.hpp"
 #include "driver/result/insert_one.hpp"
@@ -49,20 +59,6 @@ class bulk_write;
 class insert_one;
 }
 
-namespace options {
-class aggregate;
-class bulk_write;
-class count;
-class delete_options;
-class distinct;
-class find;
-class find_one_and_delete;
-class find_one_and_replace;
-class find_one_and_update;
-class insert;
-class update;
-}  // namespace options
-
 namespace result {
 struct insert_one;
 struct insert_many;
@@ -81,34 +77,39 @@ class LIBMONGOCXX_EXPORT collection {
    public:
     cursor aggregate(
         const pipeline& pipeline,
-        const options::aggregate& options
+        const options::aggregate& options = options::aggregate()
     );
 
     std::int64_t count(
         const bson::document::view& filter,
-        const options::count& options
+        const options::count& options = options::count()
     ) const;
 
     bson::document::value distinct(
         const std::string& field_name,
         const bson::document::view& filter,
-        const options::distinct& options
+        const options::distinct& options = options::distinct()
     ) const;
 
     cursor find(
         const bson::document::view& filter,
-        const options::find& options
+        const options::find& options = options::find()
+    ) const;
+
+    optional<bson::document::value> find_one(
+        const bson::document::view& filter,
+        const options::find& options = options::find()
     ) const;
 
     optional<result::insert_one> insert_one(
         const bson::document::view& document,
-        const options::insert& options
+        const options::insert& options = options::insert()
     );
 
     template<class Container>
     optional<result::insert_many> insert_many(
         const Container& container,
-        const options::insert& options
+        const options::insert& options = options::insert()
     ) {
         return insert_many(container.begin(), container.end(), options);
     }
@@ -117,14 +118,15 @@ class LIBMONGOCXX_EXPORT collection {
     optional<result::insert_many> insert_many(
         const DocumentIteratorType& begin,
         const DocumentIteratorType& end,
-        const options::insert&
+        const options::insert& = options::insert()
     ) {
         class bulk_write writes(false);
+        DocumentIteratorType current(begin);
 
-        while (begin != end) {
+        while (current != end) {
             model::insert_one insert(*begin);
             writes.append(insert);
-            ++begin;
+            ++current;
         }
 
         return convert_to_insert_result(bulk_write(writes).value());
@@ -133,35 +135,35 @@ class LIBMONGOCXX_EXPORT collection {
     optional<result::replace_one> replace_one(
         const bson::document::view& filter,
         const bson::document::view& replacement,
-        const options::update& options
+        const options::update& options = options::update()
     );
 
     optional<result::update> update_one(
         const bson::document::view& filter,
         const bson::document::view& update,
-        const options::update& options
+        const options::update& options = options::update()
     );
 
     optional<result::update> update_many(
         const bson::document::view& filter,
         const bson::document::view& update,
-        const options::update& options
+        const options::update& options = options::update()
     );
 
     optional<result::delete_result> delete_one(
         const bson::document::view& filter,
-        const options::delete_options& options
+        const options::delete_options& options = options::delete_options()
     );
 
     optional<result::delete_result> delete_many(
         const bson::document::view& filter,
-        const options::delete_options& options
+        const options::delete_options& options = options::delete_options()
     );
 
     template<class Container>
     optional<result::bulk_write> bulk_write(
         const Container& container,
-        const options::bulk_write& options
+        const options::bulk_write& options = options::bulk_write()
     ) {
         return bulk_write(container.begin(), container.end(), options);
     }
@@ -186,21 +188,21 @@ class LIBMONGOCXX_EXPORT collection {
         const class bulk_write& bulk_write
     );
 
-    bson::document::value find_one_and_delete(
+    optional<bson::document::value> find_one_and_delete(
         const bson::document::view& filter,
-        const options::find_one_and_delete& options
+        const options::find_one_and_delete& options = options::find_one_and_delete()
     );
 
-    bson::document::value find_one_and_replace(
+    optional<bson::document::value> find_one_and_replace(
         const bson::document::view& filter,
         const bson::document::view& replacement,
-        const options::find_one_and_replace& options
+        const options::find_one_and_replace& options = options::find_one_and_replace()
     );
 
-    bson::document::value find_one_and_update(
+    optional<bson::document::value> find_one_and_update(
         const bson::document::view& filter,
         const bson::document::view& update,
-        const options::find_one_and_update& options
+        const options::find_one_and_update& options = options::find_one_and_update()
     );
 
     void drop();
@@ -218,7 +220,7 @@ class LIBMONGOCXX_EXPORT collection {
    private:
     collection(const database& database, const std::string& collection_name);
 
-    optional<result::insert_many> convert_to_insert_result(result::bulk_write);
+    optional<result::insert_many> convert_to_insert_result(result::bulk_write) { return optional<result::insert_many>(); }
 
     std::unique_ptr<impl> _impl;
 };

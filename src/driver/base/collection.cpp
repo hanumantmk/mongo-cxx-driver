@@ -22,15 +22,6 @@
 #include "driver/base/collection.hpp"
 #include "driver/base/client.hpp"
 #include "driver/model/write.hpp"
-#include "driver/options/aggregate.hpp"
-#include "driver/options/count.hpp"
-#include "driver/options/find.hpp"
-#include "driver/options/find_one_and_replace.hpp"
-#include "driver/options/find_one_and_delete.hpp"
-#include "driver/options/find_one_and_update.hpp"
-#include "driver/options/insert.hpp"
-#include "driver/options/update.hpp"
-#include "driver/options/delete.hpp"
 #include "driver/result/bulk_write.hpp"
 #include "driver/result/delete.hpp"
 #include "driver/result/insert_many.hpp"
@@ -143,6 +134,12 @@ cursor collection::find(const bson::document::view& filter, const options::find&
             rp_ptr
         )
     );
+}
+
+optional<bson::document::value> collection::find_one(const bson::document::view& filter, const options::find& options) const {
+    options::find copy(options);
+    copy.limit(1);
+    return optional<bson::document::value>(*find(filter, copy).begin());
 }
 
 cursor collection::aggregate(const pipeline& pipeline, const options::aggregate& options) {
@@ -291,7 +288,7 @@ optional<result::delete_result> collection::delete_one(
     return result;
 }
 
-bson::document::value collection::find_one_and_replace(
+optional<bson::document::value> collection::find_one_and_replace(
     const bson::document::view& filter,
     const bson::document::view& replacement,
     const options::find_one_and_replace& options
@@ -329,7 +326,7 @@ bson::document::value collection::find_one_and_replace(
     return b.extract();
 }
 
-bson::document::value collection::find_one_and_update(
+optional<bson::document::value> collection::find_one_and_update(
     const bson::document::view& filter,
     const bson::document::view& update,
     const options::find_one_and_update& options
@@ -367,7 +364,7 @@ bson::document::value collection::find_one_and_update(
     return b.extract();
 }
 
-bson::document::value collection::find_one_and_delete(
+optional<bson::document::value> collection::find_one_and_delete(
     const bson::document::view& filter,
     const options::find_one_and_delete& options
 ) {
