@@ -36,11 +36,11 @@ TEST_CASE("a default write_concern", "[write_concern][base]") {
     }
 
     SECTION("will require confirmation from just the primary or standalone mongod") {
-        REQUIRE(wc.confirm_from() == 1);
+        REQUIRE(1 == wc.confirm_from().number().value());
     }
 
     SECTION("has empty tag set") {
-        REQUIRE(wc.tag().empty() == true);
+        REQUIRE(!wc.confirm_from().tag());
     }
 }
 
@@ -66,18 +66,18 @@ TEST_CASE("write_concern fields may be set and retrieved", "[write_concern][base
 
     SECTION("a tag may be set") {
         const std::string tag{"MultipleDC"};
-        wc.tag(tag);
-        REQUIRE(wc.tag() == tag);
+        wc.confirm_from(tag);
+        REQUIRE(tag == wc.confirm_from().tag().value());
     }
 
     SECTION("the number of nodes requiring confirmation may be set to a number") {
         wc.confirm_from(10);
-        REQUIRE(wc.confirm_from() == 10);
+        REQUIRE(wc.confirm_from().number().value() == 10);
     }
 
     SECTION("the number of nodes requiring confirmation may be set to the majority") {
-        wc.confirm_from(write_concern::MAJORITY);
-        REQUIRE(wc.confirm_from() == write_concern::MAJORITY);
+        wc.confirm_from(majority);
+        REQUIRE(wc.confirm_from().majority());
     }
 
     SECTION("the number of nodes requring confirmation may not be negative") {
@@ -92,48 +92,43 @@ TEST_CASE("confirmation from tags, a repl-member count, and majority are mutuall
 
     SECTION("setting the confirmation number unsets the confirmation tag") {
         write_concern wc{};
-        wc.tag("MultipleDC");
+        wc.confirm_from("MultipleDC");
         wc.confirm_from(10);
-        REQUIRE(wc.tag().empty() == true);
+        REQUIRE(!wc.confirm_from().tag());
     }
     SECTION("setting the confirmation number unsets majority") {
         write_concern wc{};
-        wc.confirm_from(write_concern::MAJORITY);
+        wc.confirm_from(majority);
         wc.confirm_from(10);
-        REQUIRE(wc.confirm_from() != write_concern::MAJORITY);
+        REQUIRE(!wc.confirm_from().majority());
     }
 
     SECTION("setting the tag unsets the confirmation number") {
         write_concern wc{};
         wc.confirm_from(10);
-        wc.tag("MultipleDC");
-        REQUIRE(wc.confirm_from() == write_concern::TAG);
-    }
-
-    SECTION("it is impossible to set confirm_from to the special value indicating a tag") {
-        write_concern wc{};
-        REQUIRE_THROWS_AS(wc.confirm_from(write_concern::TAG), std::invalid_argument);
+        wc.confirm_from("MultipleDC");
+        REQUIRE(!wc.confirm_from().number());
     }
 
     SECTION("setting the tag unsets majority") {
         write_concern wc{};
-        wc.confirm_from(write_concern::MAJORITY);
-        wc.tag("MultipleDC");
-        REQUIRE(wc.confirm_from() != write_concern::MAJORITY);
+        wc.confirm_from(majority);
+        wc.confirm_from("MultipleDC");
+        REQUIRE(!wc.confirm_from().majority());
     }
 
     SECTION("setting the majority unsets the confirmation number") {
         write_concern wc{};
         wc.confirm_from(10);
-        wc.confirm_from(write_concern::MAJORITY);
-        REQUIRE(wc.confirm_from() == write_concern::MAJORITY);
+        wc.confirm_from(majority);
+        REQUIRE(!wc.confirm_from().number());
     }
 
     SECTION("setting majority unsets the tag") {
         write_concern wc{};
-        wc.tag("MultipleDC");
-        wc.confirm_from(write_concern::MAJORITY);
-        REQUIRE(wc.tag().empty());
+        wc.confirm_from("MultipleDC");
+        wc.confirm_from(majority);
+        REQUIRE(!wc.confirm_from().tag());
     }
 
 }

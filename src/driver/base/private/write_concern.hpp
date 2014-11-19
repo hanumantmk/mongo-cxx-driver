@@ -33,12 +33,12 @@ public:
         libmongoc::write_concern_set_fsync(wc, arg.fsync());
         libmongoc::write_concern_set_journal(wc, arg.journal());
         libmongoc::write_concern_set_wtimeout(wc, arg.timeout().count());
-        if (arg.confirm_from() == driver::write_concern::MAJORITY) {
+        if (arg.confirm_from().majority()) {
             libmongoc::write_concern_set_wmajority(wc, arg.timeout().count());
-        } else if (!arg.tag().empty()) {
-            libmongoc::write_concern_set_wtag(wc, arg.tag().c_str());
-        } else {
-            libmongoc::write_concern_set_w(wc, arg.confirm_from());
+        } else if (arg.confirm_from().tag()) {
+            libmongoc::write_concern_set_wtag(wc, arg.confirm_from().tag().value().c_str());
+        } else if (arg.confirm_from().number()) {
+            libmongoc::write_concern_set_w(wc, arg.confirm_from().number().value());
         }
     }
 

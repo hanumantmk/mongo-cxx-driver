@@ -85,7 +85,7 @@ TEST_CASE("priv::write_concern is called with w MAJORITY", "[write_concern][base
     });
 
     write_concern wc{};
-    wc.confirm_from(write_concern::MAJORITY);
+    wc.confirm_from(majority);
     priv::write_concern{wc};
 
 
@@ -157,7 +157,7 @@ TEST_CASE("priv::write_concern is called with a tag", "[write_concern][base][pri
     });
 
     write_concern wc{};
-    wc.tag(expected_wtag);
+    wc.confirm_from(expected_wtag);
     priv::write_concern{wc};
 
 

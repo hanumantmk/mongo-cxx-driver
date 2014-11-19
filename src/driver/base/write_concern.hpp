@@ -18,37 +18,57 @@
 
 #include <chrono>
 #include <cstdint>
+#include <stdexcept>
 #include <string>
+#include "driver/util/optional.hpp"
 
 namespace mongo {
 namespace driver {
 
+class majority_t{};
+extern majority_t majority;
 class LIBMONGOCXX_EXPORT write_concern {
-
    public:
-    static const std::int32_t MAJORITY;
-    static const std::int32_t TAG;
+    class type {
+        optional<std::int32_t> _count = 1;
+        optional<std::string> _tag;
+        bool _majority = false;
+       public:
+        type& operator=(std::int32_t value);
+        type& operator=(std::string value);
+        type& operator=(class majority_t value);
+
+        bool majority() const {
+            return _majority;
+        }
+        const optional<std::string>& tag () const {
+            return _tag;
+        }
+        const optional<std::int32_t> number() const {
+            return _count;
+        }
+
+    };
 
     write_concern();
 
     void fsync(bool fsync);
     void journal(bool journal);
     void confirm_from(std::int32_t confirm_from);
+    void confirm_from(class majority_t majority);
+    void confirm_from(std::string tag);
     void timeout(std::chrono::milliseconds timeout);
-    void tag(std::string tag);
 
     const bool& fsync() const;
     const bool& journal() const;
-    const std::int32_t& confirm_from() const;
+    const type& confirm_from() const;
     const std::chrono::milliseconds& timeout() const;
-    const std::string& tag() const;
 
    private:
     bool _fsync;
     bool _journal;
-    std::int32_t _confirm_from;
+    type _confirm_from;
     std::chrono::milliseconds _timeout;
-    std::string _tag;
 };
 
 }  // namespace driver
