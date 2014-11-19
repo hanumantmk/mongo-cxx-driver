@@ -14,10 +14,29 @@
 
 #pragma once
 
+#include "driver/config/prelude.hpp"
+
+#include "mongoc.h"
+#include "driver/base/bulk_write.hpp"
+
 namespace mongo {
 namespace driver {
 
-class InsertOperation {};
+class bulk_write::impl {
+   public:
+    impl(mongoc_bulk_operation_t* op)
+        : operation_t(op)
+    {}
+
+    ~impl() {
+        mongoc_bulk_operation_destroy(operation_t);
+    }
+
+    mongoc_bulk_operation_t* operation_t;
+    optional<class write_concern> _write_concern;
+};
 
 }  // namespace driver
 }  // namespace mongo
+
+#include "driver/config/postlude.hpp"

@@ -1,3 +1,4 @@
+
 // Copyright 2014 MongoDB Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,26 +17,27 @@
 
 #include "driver/config/prelude.hpp"
 
-#include "mongoc.h"
-#include "driver/model/bulk_write.hpp"
+#include "bson/document.hpp"
+#include "driver/base/write_concern.hpp"
+#include "driver/util/optional.hpp"
 
 namespace mongo {
 namespace driver {
-namespace model {
+namespace options {
 
-class bulk_write::impl {
+class LIBMONGOCXX_EXPORT delete_options {
+
    public:
-    impl(mongoc_bulk_operation_t* op) :
-        operation_t(op)
-    {}
+    void write_concern(class write_concern wc);
 
-    ~impl() { mongoc_bulk_operation_destroy(operation_t); }
+    const optional<class write_concern>& write_concern() const;
 
-    mongoc_bulk_operation_t* operation_t;
+   private:
     optional<class write_concern> _write_concern;
+
 };
 
-}  // namespace model
+}  // namespace options
 }  // namespace driver
 }  // namespace mongo
 

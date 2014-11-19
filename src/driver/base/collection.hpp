@@ -19,12 +19,17 @@
 #include <cstdint>
 #include <memory>
 #include <string>
-#include <vector>
 
 #include "bson/document.hpp"
 
 #include "driver/base/cursor.hpp"
-#include "driver/result/write.hpp"
+#include "driver/base/bulk_write.hpp"
+#include "driver/options/bulk_write.hpp"
+#include "driver/result/delete.hpp"
+#include "driver/result/insert_many.hpp"
+#include "driver/result/insert_one.hpp"
+#include "driver/result/replace_one.hpp"
+#include "driver/result/update.hpp"
 #include "driver/result/bulk_write.hpp"
 
 #include "driver/base/read_preference.hpp"
@@ -40,8 +45,8 @@ class read_preference;
 class pipeline;
 
 namespace model {
-class write;
 class bulk_write;
+class insert_one;
 }
 
 namespace options {
@@ -52,14 +57,12 @@ class find_one_and_modify;
 class find_one_and_replace;
 class find_one_and_delete;
 class find_one_and_update;
-class delete_one;
-class delete_many;
+class delete_options;
 class insert;
 class replace_one;
 class update;
 class distinct;
 class count;
-class explain;
 }  // namespace options
 
 namespace result {
@@ -99,18 +102,35 @@ class LIBMONGOCXX_EXPORT collection {
         const options::find& options
     ) const;
 
-    bson::document::value explain(
-        const options::explain& model
-    ) const;
-
     optional<result::insert_one> insert_one(
-        const bson::document::view& document
-    );
-
-    optional<result::insert_many> insert_many(
-        const std::vector<bson::document::view&> documents,
+        const bson::document::view& document,
         const options::insert& options
     );
+
+    template<class Container>
+    optional<result::insert_many> insert_many(
+        const Container& container,
+        const options::insert& options
+    ) {
+        insert_many(container.begin(), container.end(), options);
+    }
+
+    template<class DocumentIteratorType>
+    optional<result::insert_many> insert_many(
+        const DocumentIteratorType& begin,
+        const DocumentIteratorType& end,
+        const options::insert&
+    ) {
+        class bulk_write writes(false);
+
+        while (begin != end) {
+            model::insert_one insert(*begin);
+            writes.append(insert);
+            ++begin;
+        }
+
+        return convert_to_insert_result(bulk_write(writes).value());
+    }
 
     optional<result::replace_one> replace_one(
         const bson::document::view& filter,
@@ -131,15 +151,41 @@ class LIBMONGOCXX_EXPORT collection {
     );
 
     optional<result::delete_result> delete_one(
-        const bson::document::view& filter
+        const bson::document::view& filter,
+        const options::delete_options& options
     );
 
     optional<result::delete_result> delete_many(
-        const bson::document::view& filter
+        const bson::document::view& filter,
+        const options::delete_options& options
     );
 
+    template<class Container>
     optional<result::bulk_write> bulk_write(
-        const model::bulk_write& model
+        const Container& container,
+        const options::bulk_write& options
+    ) {
+        bulk_write(container.begin(), container.end(), options);
+    }
+
+    template<class WriteIteratorType>
+    optional<result::bulk_write> bulk_write(
+        const WriteIteratorType& begin,
+        const WriteIteratorType& end,
+        const options::bulk_write& options
+    ) {
+        class bulk_write writes(options.ordered().value_or(true));
+
+        while (begin != end) {
+            writes.append(*begin);
+            ++begin;
+        }
+
+        return bulk_write(writes);
+    }
+
+    optional<result::bulk_write> bulk_write(
+        const class bulk_write& bulk_write
     );
 
     bson::document::value find_one_and_delete(
@@ -173,6 +219,8 @@ class LIBMONGOCXX_EXPORT collection {
 
    private:
     collection(const database& database, const std::string& collection_name);
+
+    optional<result::insert_many> convert_to_insert_result(result::bulk_write);
 
     std::unique_ptr<impl> _impl;
 };

@@ -12,14 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
-
-#include "operations/query.hpp"
+#include "driver/options/delete.hpp"
 
 namespace mongo {
 namespace driver {
+namespace options {
 
-class CommandOperation {};
+void delete_options::write_concern(class write_concern wc) {
+    _write_concern = std::move(wc);
+}
 
+const optional<class write_concern>& delete_options::write_concern() const { return _write_concern; }
+
+}  // namespace options
 }  // namespace driver
 }  // namespace mongo

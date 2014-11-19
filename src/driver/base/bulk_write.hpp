@@ -16,18 +16,14 @@
 
 #include "driver/config/prelude.hpp"
 
-#include <vector>
-
-#include "driver/options/bulk_write.hpp"
 #include "driver/base/write_concern.hpp"
 #include "driver/model/write.hpp"
 #include "driver/util/optional.hpp"
 
 namespace mongo {
 namespace driver {
-class collection;
 
-namespace model {
+class collection;
 
 class LIBMONGOCXX_EXPORT bulk_write {
 
@@ -36,19 +32,21 @@ class LIBMONGOCXX_EXPORT bulk_write {
     class impl;
 
    public:
-    bulk_write(const options::bulk_write& options);
-
-    bulk_write& append(write operation);
+    bulk_write(bool ordered);
 
     bulk_write(bulk_write&&);
     bulk_write& operator=(bulk_write&&);
     ~bulk_write();
 
+    void append(model::write operation);
+    void write_concern(class write_concern wc);
+    optional<class write_concern> write_concern() const;
+
    private:
     std::unique_ptr<impl> _impl;
+
 };
 
-}  // namespace model
 }  // namespace driver
 }  // namespace mongo
 
