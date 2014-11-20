@@ -17,32 +17,17 @@
 namespace mongo {
 namespace driver {
 
-write_concern::write_concern()
-    : _fsync(false)
-    , _journal(false)
-    , _w(1)
-    , _wtimeout(0)
-{}
+write_concern::write_concern() : _fsync(false), _journal(false), _w(1), _wtimeout(0) {}
 
-void write_concern::fsync(bool fsync) {
-    _fsync = fsync;
-}
+void write_concern::fsync(bool fsync) { _fsync = fsync; }
 
-void write_concern::journal(bool journal) {
-    _journal = journal;
-}
+void write_concern::journal(bool journal) { _journal = journal; }
 
-void write_concern::w(std::int32_t w) {
-    _w = w;
-}
+void write_concern::w(std::int32_t w) { _w = w; }
 
-void write_concern::wtimeout(std::int32_t wtimeout) {
-    _wtimeout = wtimeout;
-}
+void write_concern::wtimeout(std::int32_t wtimeout) { _wtimeout = wtimeout; }
 
-void write_concern::wtag(std::string wtag) {
-    _wtag = std::move(wtag);
-}
+void write_concern::wtag(std::string wtag) { _wtag = std::move(wtag); }
 
 const optional<bool>& write_concern::fsync() const { return _fsync; }
 const optional<bool>& write_concern::journal() const { return _journal; }

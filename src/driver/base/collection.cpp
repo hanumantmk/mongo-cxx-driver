@@ -52,13 +52,9 @@ collection::~collection() = default;
 collection::collection(const database& database, const std::string& collection_name)
     : _impl(new impl{
           mongoc_database_get_collection(database._impl->database_t, collection_name.c_str()),
-          &database, database._impl->client, collection_name.c_str()
-    })
-{}
+          &database, database._impl->client, collection_name.c_str()}) {}
 
-optional<result::bulk_write> collection::bulk_write(
-    const class bulk_write& bulk_write
-) {
+optional<result::bulk_write> collection::bulk_write(const class bulk_write& bulk_write) {
     mongoc_bulk_operation_t* b = bulk_write._impl->operation_t;
     mongoc_bulk_operation_set_database(b, _impl->database->_impl->name.c_str());
     mongoc_bulk_operation_set_collection(b, _impl->name.c_str());
@@ -69,8 +65,7 @@ optional<result::bulk_write> collection::bulk_write(
         mongoc_bulk_operation_set_write_concern(b, wc.get_write_concern());
     } else {
         mongoc_bulk_operation_set_write_concern(
-            b, mongoc_collection_get_write_concern(_impl->collection_t)
-        );
+            b, mongoc_collection_get_write_concern(_impl->collection_t));
     }
 
     result::bulk_write result;
@@ -122,21 +117,14 @@ cursor collection::find(const bson::document::view& filter, const options::find&
         rp_ptr = mongoc_collection_get_read_prefs(_impl->collection_t);
     }
 
-    return cursor(
-        mongoc_collection_find(
-            _impl->collection_t,
-            mongoc_query_flags_t(0),
-            options.skip().value_or(0),
-            options.limit().value_or(0),
-            options.batch_size().value_or(0),
-            filter_bson.bson(),
-            projection.bson(),
-            rp_ptr
-        )
-    );
+    return cursor(mongoc_collection_find(_impl->collection_t, mongoc_query_flags_t(0),
+                                         options.skip().value_or(0), options.limit().value_or(0),
+                                         options.batch_size().value_or(0), filter_bson.bson(),
+                                         projection.bson(), rp_ptr));
 }
 
-optional<bson::document::value> collection::find_one(const bson::document::view& filter, const options::find& options) const {
+optional<bson::document::value> collection::find_one(const bson::document::view& filter,
+                                                     const options::find& options) const {
     options::find copy(options);
     copy.limit(1);
     return optional<bson::document::value>(*find(filter, copy).begin());
@@ -183,33 +171,27 @@ cursor collection::aggregate(const pipeline& pipeline, const options::aggregate&
                                               options_bson.bson(), rp_ptr));
 }
 
-optional<result::insert_one> collection::insert_one(
-    const bson::document::view& document,
-    const options::insert& options
-) {
+optional<result::insert_one> collection::insert_one(const bson::document::view& document,
+                                                    const options::insert& options) {
     class bulk_write bulk_op(false);
     model::insert_one insert(document);
     bulk_op.append(insert);
 
-    if (options.write_concern())
-        bulk_op.write_concern(*options.write_concern());
+    if (options.write_concern()) bulk_op.write_concern(*options.write_concern());
 
     optional<result::bulk_write> result(bulk_write(bulk_op));
 
     return optional<result::insert_one>(result::insert_one());
 }
 
-optional<result::replace_one> collection::replace_one(
-    const bson::document::view& filter,
-    const bson::document::view& replacement,
-    const options::update& options
-) {
+optional<result::replace_one> collection::replace_one(const bson::document::view& filter,
+                                                      const bson::document::view& replacement,
+                                                      const options::update& options) {
     class bulk_write bulk_op(false);
     model::replace_one replace_op(filter, replacement);
     bulk_op.append(replace_op);
 
-    if (options.write_concern())
-        bulk_op.write_concern(*options.write_concern());
+    if (options.write_concern()) bulk_op.write_concern(*options.write_concern());
 
     optional<result::bulk_write> res(bulk_write(bulk_op));
 
@@ -217,17 +199,14 @@ optional<result::replace_one> collection::replace_one(
     return result;
 }
 
-optional<result::update> collection::update_many(
-    const bson::document::view& filter,
-    const bson::document::view& update,
-    const options::update& options
-) {
+optional<result::update> collection::update_many(const bson::document::view& filter,
+                                                 const bson::document::view& update,
+                                                 const options::update& options) {
     class bulk_write bulk_op(false);
     model::update_many update_op(filter, update);
     bulk_op.append(update_op);
 
-    if (options.write_concern())
-        bulk_op.write_concern(*options.write_concern());
+    if (options.write_concern()) bulk_op.write_concern(*options.write_concern());
 
     optional<result::bulk_write> res(bulk_write(bulk_op));
 
@@ -235,16 +214,13 @@ optional<result::update> collection::update_many(
     return result;
 }
 
-optional<result::delete_result> collection::delete_many(
-    const bson::document::view& filter,
-    const options::delete_options& options
-) {
+optional<result::delete_result> collection::delete_many(const bson::document::view& filter,
+                                                        const options::delete_options& options) {
     class bulk_write bulk_op(false);
     model::delete_many delete_op(filter);
     bulk_op.append(delete_op);
 
-    if (options.write_concern())
-        bulk_op.write_concern(*options.write_concern());
+    if (options.write_concern()) bulk_op.write_concern(*options.write_concern());
 
     optional<result::bulk_write> res(bulk_write(bulk_op));
 
@@ -252,17 +228,14 @@ optional<result::delete_result> collection::delete_many(
     return result;
 }
 
-optional<result::update> collection::update_one(
-    const bson::document::view& filter,
-    const bson::document::view& update,
-    const options::update& options
-) {
+optional<result::update> collection::update_one(const bson::document::view& filter,
+                                                const bson::document::view& update,
+                                                const options::update& options) {
     class bulk_write bulk_op(false);
     model::update_many update_op(filter, update);
     bulk_op.append(update_op);
 
-    if (options.write_concern())
-        bulk_op.write_concern(*options.write_concern());
+    if (options.write_concern()) bulk_op.write_concern(*options.write_concern());
 
     optional<result::bulk_write> res(bulk_write(bulk_op));
 
@@ -270,16 +243,13 @@ optional<result::update> collection::update_one(
     return result;
 }
 
-optional<result::delete_result> collection::delete_one(
-    const bson::document::view& filter,
-    const options::delete_options& options
-) {
+optional<result::delete_result> collection::delete_one(const bson::document::view& filter,
+                                                       const options::delete_options& options) {
     class bulk_write bulk_op(false);
     model::delete_many delete_op(filter);
     bulk_op.append(delete_op);
 
-    if (options.write_concern())
-        bulk_op.write_concern(*options.write_concern());
+    if (options.write_concern()) bulk_op.write_concern(*options.write_concern());
 
     optional<result::bulk_write> res(bulk_write(bulk_op));
 
@@ -288,10 +258,8 @@ optional<result::delete_result> collection::delete_one(
 }
 
 optional<bson::document::value> collection::find_one_and_replace(
-    const bson::document::view& filter,
-    const bson::document::view& replacement,
-    const options::find_one_and_replace& options
-) {
+    const bson::document::view& filter, const bson::document::view& replacement,
+    const options::find_one_and_replace& options) {
     scoped_bson_t bson_filter{filter};
     scoped_bson_t bson_replacement{replacement};
     scoped_bson_t bson_sort{options.sort()};
@@ -303,19 +271,13 @@ optional<bson::document::value> collection::find_one_and_replace(
     bson_error_t error;
 
     bool r = mongoc_collection_find_and_modify(
-        _impl->collection_t,
-        bson_filter.bson(),
-        bson_sort.bson(),
-        bson_replacement.bson(),
-        bson_projection.bson(),
-        false,
-        options.upsert().value_or(false),
-        options.return_replacement().value_or(false),
-        reply.bson(),
-        &error
-    );
+        _impl->collection_t, bson_filter.bson(), bson_sort.bson(), bson_replacement.bson(),
+        bson_projection.bson(), false, options.upsert().value_or(false),
+        options.return_replacement().value_or(false), reply.bson(), &error);
 
-    if (!r) { throw std::runtime_error("baddd"); }
+    if (!r) {
+        throw std::runtime_error("baddd");
+    }
 
     bson::document::view result = reply.view();
 
@@ -326,10 +288,8 @@ optional<bson::document::value> collection::find_one_and_replace(
 }
 
 optional<bson::document::value> collection::find_one_and_update(
-    const bson::document::view& filter,
-    const bson::document::view& update,
-    const options::find_one_and_update& options
-) {
+    const bson::document::view& filter, const bson::document::view& update,
+    const options::find_one_and_update& options) {
     scoped_bson_t bson_filter{filter};
     scoped_bson_t bson_update{update};
     scoped_bson_t bson_sort{options.sort()};
@@ -341,19 +301,13 @@ optional<bson::document::value> collection::find_one_and_update(
     bson_error_t error;
 
     bool r = mongoc_collection_find_and_modify(
-        _impl->collection_t,
-        bson_filter.bson(),
-        bson_sort.bson(),
-        bson_update.bson(),
-        bson_projection.bson(),
-        false,
-        options.upsert().value_or(false),
-        options.return_replacement().value_or(false),
-        reply.bson(),
-        &error
-    );
+        _impl->collection_t, bson_filter.bson(), bson_sort.bson(), bson_update.bson(),
+        bson_projection.bson(), false, options.upsert().value_or(false),
+        options.return_replacement().value_or(false), reply.bson(), &error);
 
-    if (!r) { throw std::runtime_error("baddd"); }
+    if (!r) {
+        throw std::runtime_error("baddd");
+    }
 
     bson::document::view result = reply.view();
 
@@ -364,9 +318,7 @@ optional<bson::document::value> collection::find_one_and_update(
 }
 
 optional<bson::document::value> collection::find_one_and_delete(
-    const bson::document::view& filter,
-    const options::find_one_and_delete& options
-) {
+    const bson::document::view& filter, const options::find_one_and_delete& options) {
     scoped_bson_t bson_filter{filter};
     scoped_bson_t bson_sort{options.sort()};
     scoped_bson_t bson_projection{options.projection()};
@@ -376,21 +328,13 @@ optional<bson::document::value> collection::find_one_and_delete(
 
     bson_error_t error;
 
-    bool r = mongoc_collection_find_and_modify(
-        _impl->collection_t,
-        bson_filter.bson(),
-        bson_sort.bson(),
-        nullptr,
-        bson_projection.bson(),
-        true,
-        false,
-        false,
-        reply.bson(),
-        &error
-    );
+    bool r = mongoc_collection_find_and_modify(_impl->collection_t, bson_filter.bson(),
+                                               bson_sort.bson(), nullptr, bson_projection.bson(),
+                                               true, false, false, reply.bson(), &error);
 
-
-    if (!r) { throw std::runtime_error("baddd"); }
+    if (!r) {
+        throw std::runtime_error("baddd");
+    }
 
     bson::document::view result = reply.view();
 
@@ -400,10 +344,8 @@ optional<bson::document::value> collection::find_one_and_delete(
     return b.extract();
 }
 
-std::int64_t collection::count(
-    const bson::document::view& filter,
-    const options::count& options
-) const {
+std::int64_t collection::count(const bson::document::view& filter,
+                               const options::count& options) const {
     scoped_bson_t bson_filter{filter};
     bson_error_t error;
 
@@ -417,15 +359,9 @@ std::int64_t collection::count(
         rp_ptr = mongoc_collection_get_read_prefs(_impl->collection_t);
     }
 
-    auto result = mongoc_collection_count(
-        _impl->collection_t,
-        static_cast<mongoc_query_flags_t>(0),
-        bson_filter.bson(),
-        options.skip().value_or(0),
-        options.limit().value_or(0),
-        rp_ptr,
-        &error
-    );
+    auto result = mongoc_collection_count(_impl->collection_t, static_cast<mongoc_query_flags_t>(0),
+                                          bson_filter.bson(), options.skip().value_or(0),
+                                          options.limit().value_or(0), rp_ptr, &error);
 
     /* TODO throw an exception if error
     if (result < 0)

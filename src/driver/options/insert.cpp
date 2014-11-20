@@ -18,13 +18,9 @@ namespace mongo {
 namespace driver {
 namespace options {
 
-void insert::write_concern(class write_concern wc) {
-    _write_concern = std::move(wc);
-}
+void insert::write_concern(class write_concern wc) { _write_concern = std::move(wc); }
 
-const optional<class write_concern>& insert::write_concern() const {
-    return _write_concern;
-}
+const optional<class write_concern>& insert::write_concern() const { return _write_concern; }
 
 }  // namespace options
 }  // namespace driver

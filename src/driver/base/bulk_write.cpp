@@ -27,8 +27,7 @@ bulk_write::bulk_write(bulk_write&&) = default;
 bulk_write& bulk_write::operator=(bulk_write&&) = default;
 bulk_write::~bulk_write() = default;
 
-bulk_write::bulk_write(bool ordered)
-    : _impl(new impl{mongoc_bulk_operation_new(ordered)}) {}
+bulk_write::bulk_write(bool ordered) : _impl(new impl{mongoc_bulk_operation_new(ordered)}) {}
 
 void bulk_write::append(model::write operation) {
     switch (operation.type()) {
@@ -43,12 +42,8 @@ void bulk_write::append(model::write operation) {
             scoped_bson_t update(operation.get_update_one().update());
             bool upsert = operation.get_update_one().upsert().value_or(false);
 
-            mongoc_bulk_operation_update_one(
-                _impl->operation_t,
-                filter.bson(),
-                update.bson(),
-                upsert
-            );
+            mongoc_bulk_operation_update_one(_impl->operation_t, filter.bson(), update.bson(),
+                                             upsert);
             break;
         }
         case model::write_type::kUpdateMany: {
@@ -56,12 +51,7 @@ void bulk_write::append(model::write operation) {
             scoped_bson_t update(operation.get_update_many().update());
             bool upsert = operation.get_update_many().upsert().value_or(false);
 
-            mongoc_bulk_operation_update(
-                _impl->operation_t,
-                filter.bson(),
-                update.bson(),
-                upsert
-            );
+            mongoc_bulk_operation_update(_impl->operation_t, filter.bson(), update.bson(), upsert);
             break;
         }
         case model::write_type::kDeleteOne: {
@@ -79,12 +69,8 @@ void bulk_write::append(model::write operation) {
             scoped_bson_t replace(operation.get_replace_one().replacement());
             bool upsert = operation.get_replace_one().upsert().value_or(false);
 
-            mongoc_bulk_operation_replace_one(
-                _impl->operation_t,
-                criteria.bson(),
-                replace.bson(),
-                upsert
-            );
+            mongoc_bulk_operation_replace_one(_impl->operation_t, criteria.bson(), replace.bson(),
+                                              upsert);
             break;
         }
         case model::write_type::kUninitialized:
@@ -92,13 +78,9 @@ void bulk_write::append(model::write operation) {
     }
 }
 
-void bulk_write::write_concern(class write_concern wc) {
-    _impl->_write_concern = std::move(wc);
-}
+void bulk_write::write_concern(class write_concern wc) { _impl->_write_concern = std::move(wc); }
 
-optional<class write_concern> bulk_write::write_concern() const {
-    return _impl->_write_concern;
-}
+optional<class write_concern> bulk_write::write_concern() const { return _impl->_write_concern; }
 
 }  // namespace driver
 }  // namespace mongo

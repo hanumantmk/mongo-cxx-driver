@@ -18,21 +18,15 @@ namespace mongo {
 namespace driver {
 namespace options {
 
-void find_one_and_replace::projection(bson::document::view projection) {
-    _projection = projection;
-}
+void find_one_and_replace::projection(bson::document::view projection) { _projection = projection; }
 
 void find_one_and_replace::return_replacement(bool return_replacement) {
     _return_replacement = return_replacement;
 }
 
-void find_one_and_replace::sort(bson::document::view ordering) {
-    _ordering = ordering;
-}
+void find_one_and_replace::sort(bson::document::view ordering) { _ordering = ordering; }
 
-void find_one_and_replace::upsert(bool upsert) {
-    _upsert = upsert;
-}
+void find_one_and_replace::upsert(bool upsert) { _upsert = upsert; }
 
 const optional<bson::document::view>& find_one_and_replace::projection() const {
     return _projection;
@@ -42,13 +36,9 @@ const optional<bool>& find_one_and_replace::return_replacement() const {
     return _return_replacement;
 }
 
-const optional<bson::document::view>& find_one_and_replace::sort() const {
-    return _ordering;
-}
+const optional<bson::document::view>& find_one_and_replace::sort() const { return _ordering; }
 
-const optional<bool>& find_one_and_replace::upsert() const {
-    return _upsert;
-}
+const optional<bool>& find_one_and_replace::upsert() const { return _upsert; }
 
 }  // namespace options
 }  // namespace driver

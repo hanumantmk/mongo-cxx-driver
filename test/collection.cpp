@@ -7,7 +7,6 @@
 using namespace mongo::driver;
 
 TEST_CASE("CRUD functionality", "[driver::collection]") {
-
     mongoc_init();
     client mongodb_client;
     database db = mongodb_client["test"];
@@ -155,15 +154,15 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
         REQUIRE(coll.count(bson::document::view()) == 1);
     }
 
-    //SECTION("matching upsert updates document", "[collection]") {
-        //bson::builder::document b1;
-        //b1 << "x" << 1;
-        //model::insert_many docs{std::initializer_list<bson::document::view>{b1, b1, b1}};
-        //coll.insert_many(docs);
+    // SECTION("matching upsert updates document", "[collection]") {
+    // bson::builder::document b1;
+    // b1 << "x" << 1;
+    // model::insert_many docs{std::initializer_list<bson::document::view>{b1, b1, b1}};
+    // coll.insert_many(docs);
 
-        //coll.insert_one(bson::document::view{});
-        //REQUIRE(coll.count(b1.view()) == 3);
-        //REQUIRE(coll.count() == 4);
+    // coll.insert_one(bson::document::view{});
+    // REQUIRE(coll.count(b1.view()) == 3);
+    // REQUIRE(coll.count() == 4);
     //}
 
     SECTION("document replacement", "[collection]") {
@@ -309,8 +308,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
             bson::builder::document bad_criteria;
             bad_criteria << "x" << 3;
 
-            auto doc =
-                coll.find_one_and_replace(bad_criteria, replacement);
+            auto doc = coll.find_one_and_replace(bad_criteria, replacement);
 
             REQUIRE(!doc);
         }

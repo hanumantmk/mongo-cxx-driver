@@ -18,13 +18,9 @@ namespace mongo {
 namespace driver {
 namespace options {
 
-void update::upsert(bool upsert) {
-    _upsert = upsert;
-}
+void update::upsert(bool upsert) { _upsert = upsert; }
 
-void update::write_concern(class write_concern wc) {
-    _write_concern = std::move(wc);
-}
+void update::write_concern(class write_concern wc) { _write_concern = std::move(wc); }
 
 const optional<bool>& update::upsert() const { return _upsert; }
 

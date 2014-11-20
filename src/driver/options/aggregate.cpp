@@ -18,25 +18,14 @@ namespace mongo {
 namespace driver {
 namespace options {
 
-void aggregate::allow_disk_use(bool allow_disk_use) {
-    _allow_disk_use = allow_disk_use;
-}
+void aggregate::allow_disk_use(bool allow_disk_use) { _allow_disk_use = allow_disk_use; }
 
-void aggregate::batch_size(std::int32_t batch_size) {
-    _batch_size = batch_size;
-}
+void aggregate::batch_size(std::int32_t batch_size) { _batch_size = batch_size; }
 
-void aggregate::max_time_ms(std::int64_t max_time_ms) {
-    _max_time_ms = max_time_ms;
-}
-void aggregate::use_cursor(bool use_cursor) {
+void aggregate::max_time_ms(std::int64_t max_time_ms) { _max_time_ms = max_time_ms; }
+void aggregate::use_cursor(bool use_cursor) { _use_cursor = use_cursor; }
 
-    _use_cursor = use_cursor;
-}
-
-void aggregate::read_preference(class read_preference rp) {
-    _read_preference = std::move(rp);
-}
+void aggregate::read_preference(class read_preference rp) { _read_preference = std::move(rp); }
 
 const optional<bool>& aggregate::allow_disk_use() const { return _allow_disk_use; }
 const optional<std::int32_t>& aggregate::batch_size() const { return _batch_size; }
