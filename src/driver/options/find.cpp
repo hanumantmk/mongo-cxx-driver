@@ -52,7 +52,6 @@ void find::skip(std::int32_t skip) { _skip = skip; }
 
 void find::sort(bson::document::view ordering) { _ordering = ordering; }
 
-
 const optional<bool>& find::allow_partial_results() const { return _allow_partial_results; }
 
 const optional<std::int32_t>& find::batch_size() const { return _batch_size; }
