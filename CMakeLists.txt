@@ -47,4 +47,6 @@ set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Werror -ggdb3 -O0 -DMONGOCXX_DEBUG ${CMAK
 #set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Werror -ggdb3 -O2 ${CMAKE_CXX_FLAGS} -flto")
 
 add_subdirectory(src)
+
+enable_testing()
 add_subdirectory(test)
