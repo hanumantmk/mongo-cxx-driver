@@ -383,7 +383,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
         }
     }
 
-    SECTION("aggregate some shit", "[collection]") {
+    SECTION("aggregate some things", "[collection]") {
         bson::builder::document b1;
         b1 << "x" << 1;
 

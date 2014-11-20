@@ -6,7 +6,9 @@
 // This file is dual licensed under the MIT and the University of Illinois Open
 // Source Licenses. See LICENSE.TXT for details.
 //
-// And some shitty code removal!
+// NOTE: THIS IS HAXOR MAGIC THAT JUST REMOVES THINGS FROM THE STANDARD
+// NOTE: DO NOT USE THIS UNLESS YOU ARE MONGO
+//
 // TODO: work on actual license info
 //
 //===----------------------------------------------------------------------===//
