@@ -274,10 +274,12 @@ optional<bson::document::value> collection::find_one_and_replace(
 
     bson_error_t error;
 
+    options::ReturnDocument rd = options.return_document().value_or(options::ReturnDocument::BEFORE);
+
     bool r = mongoc_collection_find_and_modify(
         _impl->collection_t, bson_filter.bson(), bson_sort.bson(), bson_replacement.bson(),
         bson_projection.bson(), false, options.upsert().value_or(false),
-        options.return_replacement().value_or(false), reply.bson(), &error);
+        rd == options::ReturnDocument::AFTER, reply.bson(), &error);
 
     if (!r) {
         throw std::runtime_error("baddd");
@@ -308,10 +310,12 @@ optional<bson::document::value> collection::find_one_and_update(
 
     bson_error_t error;
 
+    options::ReturnDocument rd = options.return_document().value_or(options::ReturnDocument::BEFORE);
+
     bool r = mongoc_collection_find_and_modify(
         _impl->collection_t, bson_filter.bson(), bson_sort.bson(), bson_update.bson(),
         bson_projection.bson(), false, options.upsert().value_or(false),
-        options.return_replacement().value_or(false), reply.bson(), &error);
+        rd == options::ReturnDocument::AFTER, reply.bson(), &error);
 
     if (!r) {
         throw std::runtime_error("baddd");

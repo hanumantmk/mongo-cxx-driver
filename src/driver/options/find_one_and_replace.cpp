@@ -20,8 +20,8 @@ namespace options {
 
 void find_one_and_replace::projection(bson::document::view projection) { _projection = projection; }
 
-void find_one_and_replace::return_replacement(bool return_replacement) {
-    _return_replacement = return_replacement;
+void find_one_and_replace::return_document(ReturnDocument return_document) {
+    _return_document = return_document;
 }
 
 void find_one_and_replace::sort(bson::document::view ordering) { _ordering = ordering; }
@@ -32,8 +32,8 @@ const optional<bson::document::view>& find_one_and_replace::projection() const {
     return _projection;
 }
 
-const optional<bool>& find_one_and_replace::return_replacement() const {
-    return _return_replacement;
+const optional<ReturnDocument>& find_one_and_replace::return_document() const {
+    return _return_document;
 }
 
 const optional<bson::document::view>& find_one_and_replace::sort() const { return _ordering; }

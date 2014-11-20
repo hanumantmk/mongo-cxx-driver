@@ -36,6 +36,7 @@ class LIBMONGOCXX_EXPORT bulk_write {
 
     bulk_write(bulk_write&&);
     bulk_write& operator=(bulk_write&&);
+
     ~bulk_write();
 
     void append(model::write operation);
