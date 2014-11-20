@@ -41,6 +41,7 @@ struct LIBMONGOCXX_EXPORT bulk_write {
     std::map<std::size_t, bson::document::element> inserted_ids;
     std::map<std::size_t, bson::document::element> upserted_ids;
 
+    // TODO: better to have constructors on insert_one, etc.. take bulk write?
     explicit operator insert_one();
     explicit operator insert_many();
     explicit operator replace_one();
