@@ -166,7 +166,7 @@ class LIBMONGOCXX_EXPORT collection {
     optional<result::insert_many> insert_many(
         const DocumentViewIterator& begin,
         const DocumentViewIterator& end,
-        const options::insert& = options::insert()
+        const options::insert& options = options::insert()
     ) {
         class bulk_write writes(false);
 
@@ -174,6 +174,9 @@ class LIBMONGOCXX_EXPORT collection {
 
         while (current != end)
             writes.append(model::insert_one(*current++));
+
+        if (options.write_concern())
+            writes.write_concern(*options.write_concern());
 
         bulk_write(writes);
         // TODO: map result::bulk_write to result::insert_many
