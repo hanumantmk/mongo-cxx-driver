@@ -33,7 +33,7 @@ class LIBMONGOCXX_EXPORT insert {
    private:
     optional<class write_concern> _write_concern;
 
-};
+}; // class insert
 
 }  // namespace options
 }  // namespace driver

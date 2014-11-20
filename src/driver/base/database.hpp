@@ -60,7 +60,8 @@ class LIBMONGOCXX_EXPORT database {
     database(const class client& client, const std::string& database_name);
 
     std::unique_ptr<impl> _impl;
-};
+
+}; // class database
 
 }  // namespace driver
 }  // namespace mongo

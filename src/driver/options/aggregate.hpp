@@ -48,7 +48,7 @@ class LIBMONGOCXX_EXPORT aggregate {
     optional<bool> _use_cursor;
     optional<class read_preference> _read_preference;
 
-};
+}; // class aggregate
 
 }  // namespace options
 }  // namespace driver

@@ -45,7 +45,7 @@ class LIBMONGOCXX_EXPORT bulk_write {
    private:
     std::unique_ptr<impl> _impl;
 
-};
+}; // class bulk_write
 
 }  // namespace driver
 }  // namespace mongo

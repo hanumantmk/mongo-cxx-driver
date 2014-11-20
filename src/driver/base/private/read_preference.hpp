@@ -28,8 +28,10 @@ namespace driver {
 namespace priv {
 
 class read_preference {
-public:
-    read_preference(const driver::read_preference& arg) : _read_preference(mongoc_read_prefs_new(static_cast<mongoc_read_mode_t>(arg.mode()))) {
+ public:
+    read_preference(const driver::read_preference& arg)
+        : _read_preference(mongoc_read_prefs_new(static_cast<mongoc_read_mode_t>(arg.mode())))
+    {
         mongoc_read_prefs_t* wc = _read_preference;
         if (arg.tags()) {
             bson::libbson::scoped_bson_t btags(arg.tags());
@@ -45,9 +47,10 @@ public:
         return _read_preference;
     }
 
-private:
+ private:
     mongoc_read_prefs_t* _read_preference;
-};
+
+}; // class read_preference
 
 }  // namespace priv
 }  // namespace driver

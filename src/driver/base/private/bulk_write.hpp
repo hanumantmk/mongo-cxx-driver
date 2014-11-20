@@ -23,6 +23,7 @@ namespace mongo {
 namespace driver {
 
 class bulk_write::impl {
+
    public:
     impl(mongoc_bulk_operation_t* op)
         : operation_t(op)
@@ -34,7 +35,8 @@ class bulk_write::impl {
 
     mongoc_bulk_operation_t* operation_t;
     optional<class write_concern> _write_concern;
-};
+
+}; // class impl
 
 }  // namespace driver
 }  // namespace mongo

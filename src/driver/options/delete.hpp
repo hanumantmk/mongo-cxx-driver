@@ -35,7 +35,7 @@ class LIBMONGOCXX_EXPORT delete_options {
    private:
     optional<class write_concern> _write_concern;
 
-};
+}; // class delete_options
 
 }  // namespace options
 }  // namespace driver

@@ -59,7 +59,8 @@ class LIBMONGOCXX_EXPORT client {
 
    private:
     std::unique_ptr<impl> _impl;
-};
+
+}; // class client
 
 }  // namespace driver
 }  // namespace mongo

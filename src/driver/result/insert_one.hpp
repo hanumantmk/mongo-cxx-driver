@@ -24,7 +24,7 @@ namespace result {
 
 struct LIBMONGOCXX_EXPORT insert_one {
     bson::document::element inserted_id;
-};
+}; // struct insert_one
 
 }  // namespace result
 }  // namespace driver

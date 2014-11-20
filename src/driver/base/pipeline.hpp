@@ -55,7 +55,8 @@ class LIBMONGOCXX_EXPORT pipeline {
 
    private:
     std::unique_ptr<impl> _impl;
-};
+
+}; // class pipeline
 
 }  // namespace driver
 }  // namespace mongo

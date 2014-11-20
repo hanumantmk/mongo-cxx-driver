@@ -45,7 +45,8 @@ class LIBMONGOCXX_EXPORT cursor {
     cursor(void* cursor_ptr);
 
     std::unique_ptr<impl> _impl;
-};
+
+}; // class cursor
 
 class cursor::iterator
     : public std::iterator<std::forward_iterator_tag, const bson::document::view&, std::ptrdiff_t,
@@ -67,7 +68,8 @@ class cursor::iterator
     cursor* _cursor;
     bson::document::view _doc;
     bool _at_end;
-};  // class iterator
+
+}; // class iterator
 
 }  // namespace driver
 }  // namespace mongo

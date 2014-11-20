@@ -27,6 +27,7 @@ namespace mongo {
 namespace driver {
 
 class client::impl {
+
    public:
     impl(mongoc_client_t* client) : client_t(client) {}
 
@@ -61,7 +62,8 @@ class client::impl {
     private:
     class read_preference _read_preference;
     class write_concern _write_concern;
-};
+
+}; // class impl
 
 }  // namespace driver
 }  // namespace mongo

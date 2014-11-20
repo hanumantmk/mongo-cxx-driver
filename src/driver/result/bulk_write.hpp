@@ -20,12 +20,18 @@
 #include <map>
 
 #include "bson/types.hpp"
+#include "driver/result/delete.hpp"
+#include "driver/result/insert_one.hpp"
+#include "driver/result/insert_many.hpp"
+#include "driver/result/replace_one.hpp"
+#include "driver/result/update.hpp"
 
 namespace mongo {
 namespace driver {
 namespace result {
 
 struct LIBMONGOCXX_EXPORT bulk_write {
+
     std::int64_t inserted_count;
     std::int64_t matched_count;
     std::int64_t modified_count;
@@ -34,7 +40,14 @@ struct LIBMONGOCXX_EXPORT bulk_write {
 
     std::map<std::size_t, bson::document::element> inserted_ids;
     std::map<std::size_t, bson::document::element> upserted_ids;
-};
+
+    explicit operator insert_one();
+    explicit operator insert_many();
+    explicit operator replace_one();
+    explicit operator update();
+    explicit operator delete_result();
+
+}; // struct bulk_write
 
 }  // namespace result
 }  // namespace driver

@@ -38,7 +38,7 @@ class LIBMONGOCXX_EXPORT update {
     optional<bool> _upsert;
     optional<class write_concern> _write_concern;
 
-};
+}; // class update
 
 }  // namespace options
 }  // namespace driver

@@ -127,6 +127,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
         coll.update_one(b1, update_doc, options);
 
         auto updated = coll.find_one(bson::document::view());
+
         REQUIRE(updated);
         REQUIRE(updated->view()["changed"].get_bool() == true);
         REQUIRE(coll.count(bson::document::view()) == 1);
@@ -148,6 +149,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
         coll.update_one(b1, update_doc, options);
 
         auto updated = coll.find_one(bson::document::view());
+
         REQUIRE(updated);
         REQUIRE(updated->view()["changed"].get_bool() == true);
         REQUIRE(coll.count(bson::document::view()) == 1);

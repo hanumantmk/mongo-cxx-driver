@@ -57,7 +57,7 @@ public:
 
 private:
     mongoc_write_concern_t* _write_concern;
-};
+}; // class write_concern
 
 }  // namespace priv
 }  // namespace driver

@@ -22,6 +22,7 @@ namespace mongo {
 namespace driver {
 
 class instance {
+
     class impl;
 
    public:
@@ -32,7 +33,8 @@ class instance {
 
    private:
     std::unique_ptr<impl> _impl;
-};
+
+}; // class instance
 
 }  // namespace driver
 }  // namespace mongo

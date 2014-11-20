@@ -28,7 +28,7 @@ struct LIBMONGOCXX_EXPORT replace_one {
     std::int64_t matched_count;
     std::int64_t modified_count;
     bson::document::element upserted_id;
-};
+}; // struct replace_one
 
 }  // namespace result
 }  // namespace driver

@@ -22,28 +22,27 @@
 
 #include "bson/document.hpp"
 
-#include "driver/base/cursor.hpp"
 #include "driver/base/bulk_write.hpp"
-#include "driver/options/bulk_write.hpp"
+#include "driver/base/cursor.hpp"
+#include "driver/base/read_preference.hpp"
+#include "driver/base/write_concern.hpp"
 #include "driver/options/aggregate.hpp"
+#include "driver/options/bulk_write.hpp"
 #include "driver/options/count.hpp"
-#include "driver/options/distinct.hpp"
-#include "driver/options/insert.hpp"
-#include "driver/options/update.hpp"
 #include "driver/options/delete.hpp"
+#include "driver/options/distinct.hpp"
 #include "driver/options/find.hpp"
 #include "driver/options/find_one_and_delete.hpp"
-#include "driver/options/find_one_and_update.hpp"
 #include "driver/options/find_one_and_replace.hpp"
+#include "driver/options/find_one_and_update.hpp"
+#include "driver/options/insert.hpp"
+#include "driver/options/update.hpp"
+#include "driver/result/bulk_write.hpp"
 #include "driver/result/delete.hpp"
 #include "driver/result/insert_many.hpp"
 #include "driver/result/insert_one.hpp"
 #include "driver/result/replace_one.hpp"
 #include "driver/result/update.hpp"
-#include "driver/result/bulk_write.hpp"
-
-#include "driver/base/read_preference.hpp"
-#include "driver/base/write_concern.hpp"
 
 namespace mongo {
 namespace driver {
@@ -114,14 +113,14 @@ class LIBMONGOCXX_EXPORT collection {
         return insert_many(container.begin(), container.end(), options);
     }
 
-    template<class DocumentIteratorType>
+    template<class DocumentViewIterator>
     optional<result::insert_many> insert_many(
-        const DocumentIteratorType& begin,
-        const DocumentIteratorType& end,
+        const DocumentViewIterator& begin,
+        const DocumentViewIterator& end,
         const options::insert& = options::insert()
     ) {
         class bulk_write writes(false);
-        DocumentIteratorType current(begin);
+        DocumentViewIterator current(begin);
 
         while (current != end) {
             model::insert_one insert(*current);
@@ -129,7 +128,9 @@ class LIBMONGOCXX_EXPORT collection {
             ++current;
         }
 
-        return convert_to_insert_result(bulk_write(writes).value());
+        bulk_write(writes);
+        // TODO: map result::bulk_write to result::insert_many
+        return result::insert_many();
     }
 
     optional<result::replace_one> replace_one(
@@ -168,15 +169,15 @@ class LIBMONGOCXX_EXPORT collection {
         return bulk_write(container.begin(), container.end(), options);
     }
 
-    template<class WriteIteratorType>
+    template<class WriteModelIterator>
     optional<result::bulk_write> bulk_write(
-        const WriteIteratorType& begin,
-        const WriteIteratorType& end,
+        const WriteModelIterator& begin,
+        const WriteModelIterator& end,
         const options::bulk_write& options
     ) {
         class bulk_write writes(options.ordered().value_or(true));
 
-        WriteIteratorType current(begin);
+        WriteModelIterator current(begin);
 
         while (current != end) {
             writes.append(*begin);
@@ -222,10 +223,9 @@ class LIBMONGOCXX_EXPORT collection {
    private:
     collection(const database& database, const std::string& collection_name);
 
-    optional<result::insert_many> convert_to_insert_result(result::bulk_write) { return optional<result::insert_many>(); }
-
     std::unique_ptr<impl> _impl;
-};
+
+}; // class collection
 
 }  // namespace driver
 }  // namespace mongo

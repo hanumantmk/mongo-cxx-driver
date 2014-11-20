@@ -25,14 +25,15 @@ namespace mongo {
 namespace driver {
 
 class write_concern {
+
    public:
     write_concern();
 
-    write_concern& fsync(bool fsync);
-    write_concern& journal(bool journal);
-    write_concern& w(std::int32_t w);
-    write_concern& wtimeout(std::int32_t wtimeout);
-    write_concern& wtag(std::string wtag);
+    void fsync(bool fsync);
+    void journal(bool journal);
+    void w(std::int32_t w);
+    void wtimeout(std::int32_t wtimeout);
+    void wtag(std::string wtag);
 
     const optional<bool>& fsync() const;
     const optional<bool>& journal() const;
@@ -46,7 +47,8 @@ class write_concern {
     optional<std::int32_t> _w;
     optional<std::int32_t> _wtimeout;
     optional<std::string> _wtag;
-};
+
+}; // class write_concern
 
 }  // namespace driver
 }  // namespace mongo

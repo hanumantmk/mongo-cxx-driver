@@ -40,7 +40,7 @@ class LIBMONGOCXX_EXPORT distinct {
     optional<std::int64_t> _max_time_ms;
     optional<class read_preference> _read_preference;
 
-};
+}; // class distinct
 
 }  // namespace options
 }  // namespace driver

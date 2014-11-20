@@ -54,7 +54,7 @@ class LIBMONGOCXX_EXPORT count {
     optional<std::int32_t> _skip;
     optional<class read_preference> _read_preference;
 
-};
+}; // class count
 
 }  // namesapce options
 }  // namespace driver

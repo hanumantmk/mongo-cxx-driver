@@ -47,7 +47,7 @@ class LIBMONGOCXX_EXPORT find_one_and_update {
     optional<bson::document::view> _ordering;
     optional<bool> _upsert;
 
-};
+}; // class find_one_and_update
 
 }  // namespace options
 }  // namespace driver

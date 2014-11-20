@@ -72,7 +72,8 @@ class collection::impl {
 private:
     class read_preference _read_preference;
     class write_concern _write_concern;
-};
+
+}; // class impl
 
 }  // namespace driver
 }  // namespace mongo

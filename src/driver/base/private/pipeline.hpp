@@ -23,8 +23,8 @@ namespace mongo {
 namespace driver {
 
 class pipeline::impl {
-   public:
 
+   public:
     bson::builder::single_ctx sink() {
         return _builder;
     }
@@ -35,7 +35,8 @@ class pipeline::impl {
 
    private:
     bson::builder::array _builder;
-};
+
+}; // class impl
 
 }  // namespace driver
 }  // namespace mongo

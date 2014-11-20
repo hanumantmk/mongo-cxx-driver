@@ -23,6 +23,7 @@ namespace driver {
 
 /// The settings class represents a set of settings for the MongoDB driver client.
 class LIBMONGOCXX_EXPORT settings {
+
     friend class client;
 
    public:
@@ -31,7 +32,8 @@ class LIBMONGOCXX_EXPORT settings {
 
    private:
     std::string _mongodb_uri;
-};
+
+}; // class settings
 
 }  // namespace driver
 }  // namespace mongo

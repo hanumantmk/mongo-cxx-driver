@@ -42,7 +42,7 @@ class LIBMONGOCXX_EXPORT find_one_and_delete {
     optional<bson::document::view> _projection;
     optional<bson::document::view> _ordering;
 
-};
+}; // class find_one_and_delete
 
 }  // namespace options
 }  // namespace driver

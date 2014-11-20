@@ -75,7 +75,7 @@ class LIBMONGOCXX_EXPORT find {
     optional<bson::document::view> _ordering;
     optional<bool> _tailable;
 
-};
+}; // class find
 
 }  // namespace options
 }  // namespace driver

@@ -24,7 +24,7 @@ namespace result {
 
 struct LIBMONGOCXX_EXPORT delete_result {
     std::int64_t removed_count;
-};
+}; // struct delete
 
 }  // namespace result
 }  // namespace driver

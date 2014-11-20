@@ -28,7 +28,7 @@ struct LIBMONGOCXX_EXPORT update {
     std::int64_t matched_count;
     std::int64_t modified_count;
     bson::document::element upserted_id;
-};
+}; // struct update
 
 }  // namespace result
 }  // namespace driver

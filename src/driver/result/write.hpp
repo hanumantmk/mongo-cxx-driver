@@ -39,7 +39,7 @@ class LIBMONGOCXX_EXPORT write {
 
    private:
     bson::document::view_or_value _value;
-};
+}; // class write
 
 }  // namespace result
 }  // namespace driver

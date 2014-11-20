@@ -35,11 +35,12 @@ enum class read_mode : std::uint8_t {
 };
 
 class read_preference {
+
    public:
        read_preference(read_mode = read_mode::k_primary);
 
-       read_preference& mode(read_mode mode);
-       read_preference& tags(bson::document::view tags);
+       void mode(read_mode mode);
+       void tags(bson::document::view tags);
 
        read_mode mode() const;
        const optional<bson::document::view>& tags() const;
@@ -47,7 +48,8 @@ class read_preference {
    private:
        read_mode _mode;
        optional<bson::document::view> _tags;
-};
+
+}; // class read_preference
 
 }  // namespace driver
 }  // namespace mongo

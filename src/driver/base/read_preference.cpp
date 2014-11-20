@@ -17,16 +17,16 @@
 namespace mongo {
 namespace driver {
 
-read_preference::read_preference(read_mode mode) : _mode(mode) {}
+read_preference::read_preference(read_mode mode)
+    : _mode(mode)
+{}
 
-read_preference& read_preference::mode(read_mode mode) {
+void read_preference::mode(read_mode mode) {
     _mode = mode;
-    return *this;
 }
 
-read_preference& read_preference::tags(bson::document::view tags) {
+void read_preference::tags(bson::document::view tags) {
     _tags = std::move(tags);
-    return *this;
 }
 
 read_mode read_preference::mode() const { return _mode; }

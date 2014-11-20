@@ -35,7 +35,7 @@ class LIBMONGOCXX_EXPORT bulk_write {
     optional<bool> _ordered;
     optional<class write_concern> _write_concern;
 
-};
+}; // class bulk_write
 
 }  // namesapce options
 }  // namespace driver
