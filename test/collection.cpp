@@ -7,6 +7,7 @@
 using namespace mongo::driver;
 
 TEST_CASE("CRUD functionality", "[driver::collection]") {
+
     mongoc_init();
     client mongodb_client;
     database db = mongodb_client["test"];
@@ -19,7 +20,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
 
         REQUIRE(coll.insert_one(b));
 
-        auto cursor = coll.find(b.view());
+        auto cursor = coll.find(b);
 
         std::size_t i = 0;
         for (auto&& x : cursor) {

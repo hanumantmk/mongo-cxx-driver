@@ -124,7 +124,7 @@ class LIBMONGOCXX_EXPORT collection {
         DocumentIteratorType current(begin);
 
         while (current != end) {
-            model::insert_one insert(*begin);
+            model::insert_one insert(*current);
             writes.append(insert);
             ++current;
         }
@@ -176,9 +176,11 @@ class LIBMONGOCXX_EXPORT collection {
     ) {
         class bulk_write writes(options.ordered().value_or(true));
 
-        while (begin != end) {
+        WriteIteratorType current(begin);
+
+        while (current != end) {
             writes.append(*begin);
-            ++begin;
+            ++current;
         }
 
         return bulk_write(writes);

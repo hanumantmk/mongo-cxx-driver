@@ -194,10 +194,9 @@ optional<result::insert_one> collection::insert_one(
     if (options.write_concern())
         bulk_op.write_concern(*options.write_concern());
 
-    optional<result::bulk_write> res(bulk_write(bulk_op));
+    optional<result::bulk_write> result(bulk_write(bulk_op));
 
-    optional<result::insert_one> result;
-    return result;
+    return optional<result::insert_one>(result::insert_one());
 }
 
 optional<result::replace_one> collection::replace_one(
