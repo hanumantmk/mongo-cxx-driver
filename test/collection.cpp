@@ -10,7 +10,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
     mongoc_init();
     client mongodb_client;
     database db = mongodb_client["test"];
-    collection coll = db["mongo-cxx-driver"];
+    collection coll = db["mongo_cxx_driver"];
     coll.drop();
 
     SECTION("insert and read single document", "[collection]") {
@@ -299,7 +299,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
         SECTION("with return replacement returns new") {
             options::find_one_and_replace options;
             options.return_replacement(true);
-            auto doc = coll.find_one_and_replace(criteria, replacement);
+            auto doc = coll.find_one_and_replace(criteria, replacement, options);
 
             REQUIRE(doc->view()["x"].get_int32() == 2);
         }
@@ -342,7 +342,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
         SECTION("with return update returns new") {
             options::find_one_and_update options;
             options.return_replacement(true);
-            auto doc = coll.find_one_and_update(criteria, update);
+            auto doc = coll.find_one_and_update(criteria, update, options);
 
             REQUIRE(doc);
             REQUIRE(doc->view()["x"].get_int32() == 2);

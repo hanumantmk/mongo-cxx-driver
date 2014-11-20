@@ -204,12 +204,14 @@ optional<result::update> collection::update_many(const bson::document::view& fil
                                                  const options::update& options) {
     class bulk_write bulk_op(false);
     model::update_many update_op(filter, update);
+
+    if (options.upsert()) update_op.upsert(options.upsert().value());
+
     bulk_op.append(update_op);
 
     if (options.write_concern()) bulk_op.write_concern(*options.write_concern());
 
     optional<result::bulk_write> res(bulk_write(bulk_op));
-
     optional<result::update> result;
     return result;
 }
@@ -233,12 +235,14 @@ optional<result::update> collection::update_one(const bson::document::view& filt
                                                 const options::update& options) {
     class bulk_write bulk_op(false);
     model::update_many update_op(filter, update);
+
+    if (options.upsert()) update_op.upsert(options.upsert().value());
+
     bulk_op.append(update_op);
 
     if (options.write_concern()) bulk_op.write_concern(*options.write_concern());
 
     optional<result::bulk_write> res(bulk_write(bulk_op));
-
     optional<result::update> result;
     return result;
 }
@@ -246,7 +250,7 @@ optional<result::update> collection::update_one(const bson::document::view& filt
 optional<result::delete_result> collection::delete_one(const bson::document::view& filter,
                                                        const options::delete_options& options) {
     class bulk_write bulk_op(false);
-    model::delete_many delete_op(filter);
+    model::delete_one delete_op(filter);
     bulk_op.append(delete_op);
 
     if (options.write_concern()) bulk_op.write_concern(*options.write_concern());
@@ -281,6 +285,9 @@ optional<bson::document::value> collection::find_one_and_replace(
 
     bson::document::view result = reply.view();
 
+    if (result["value"].type() == bson::type::k_null)
+        return optional<bson::document::value>{};
+
     using namespace bson::builder::helpers;
     bson::builder::document b;
     b << concat{result["value"].get_document()};
@@ -290,6 +297,7 @@ optional<bson::document::value> collection::find_one_and_replace(
 optional<bson::document::value> collection::find_one_and_update(
     const bson::document::view& filter, const bson::document::view& update,
     const options::find_one_and_update& options) {
+
     scoped_bson_t bson_filter{filter};
     scoped_bson_t bson_update{update};
     scoped_bson_t bson_sort{options.sort()};
@@ -310,6 +318,9 @@ optional<bson::document::value> collection::find_one_and_update(
     }
 
     bson::document::view result = reply.view();
+
+    if (result["value"].type() == bson::type::k_null)
+        return optional<bson::document::value>{};
 
     using namespace bson::builder::helpers;
     bson::builder::document b;
@@ -337,6 +348,9 @@ optional<bson::document::value> collection::find_one_and_delete(
     }
 
     bson::document::view result = reply.view();
+
+    if (result["value"].type() == bson::type::k_null)
+        return optional<bson::document::value>{};
 
     using namespace bson::builder::helpers;
     bson::builder::document b;
