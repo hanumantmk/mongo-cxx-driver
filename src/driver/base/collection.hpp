@@ -60,6 +60,7 @@ class LIBMONGOCXX_EXPORT collection {
     friend class database;
 
    public:
+
     collection(collection&& rhs);
 
     collection& operator=(collection&& rhs);
@@ -89,10 +90,8 @@ class LIBMONGOCXX_EXPORT collection {
 
         WriteModelIterator current(begin);
 
-        while (current != end) {
-            writes.append(*begin);
-            ++current;
-        }
+        while (current != end)
+            writes.append(*current++);
 
         return bulk_write(writes);
     }
@@ -171,13 +170,11 @@ class LIBMONGOCXX_EXPORT collection {
         const options::insert& = options::insert()
     ) {
         class bulk_write writes(false);
+
         DocumentViewIterator current(begin);
 
-        while (current != end) {
-            model::insert_one insert(*current);
-            writes.append(insert);
-            ++current;
-        }
+        while (current != end)
+            writes.append(model::insert_one(*current++));
 
         bulk_write(writes);
         // TODO: map result::bulk_write to result::insert_many
