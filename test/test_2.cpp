@@ -1,21 +1,28 @@
-#include <iostream>
+#define CATCH_CONFIG_MAIN
+#include "catch.hpp"
 
 #include "mongocxx.hpp"
 
 using namespace mongo::driver;
 
-int main() {
-    bson::document::view a((std::uint8_t *)"", 0);
-    bson::document::view b((std::uint8_t *)"", 0);
+TEST_CASE("update_many", "[update_many][model]") {
+    const bson::document::view a((std::uint8_t *)"", 0);
+    const bson::document::view b((std::uint8_t *)"", 0);
 
-    model::update_many u(a, b);
+    model::update_many um(a, b);
 
-    auto upsert = u.upsert();
+    SECTION("stores required arguments") {
+        REQUIRE(um.filter().get_buf() == a.get_buf());
+        REQUIRE(um.update().get_buf() == b.get_buf());
+    }
 
-    std::cout << "upsert is: " << upsert.operator bool() << "  value is: " << upsert.value_or(true)
-              << std::endl;
+    SECTION("has upsert disengaged") {
+        REQUIRE(um.upsert().operator bool() == false);
+    }
 
-    upsert.value();
-
-    return 0;
+    SECTION("has a fluent method to set the upsert") {
+        REQUIRE(&um == &um.upsert(true));
+        REQUIRE(static_cast<bool>(um.upsert()) == true);
+        REQUIRE(um.upsert().value() == true);
+    }
 }
