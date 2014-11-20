@@ -27,8 +27,11 @@ class instance {
 
    public:
     instance();
+
     instance(instance&&);
+
     instance& operator=(instance&&);
+
     ~instance();
 
    private:

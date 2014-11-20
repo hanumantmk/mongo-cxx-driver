@@ -34,12 +34,15 @@ class LIBMONGOCXX_EXPORT cursor {
    public:
     class iterator;
 
+    cursor(cursor&& rhs);
+
+    cursor& operator=(cursor&& rhs);
+
+    ~cursor();
+
     iterator begin();
     iterator end();
 
-    cursor(cursor&& rhs);
-    cursor& operator=(cursor&& rhs);
-    ~cursor();
 
    private:
     cursor(void* cursor_ptr);

@@ -60,9 +60,10 @@ class LIBMONGOCXX_EXPORT collection {
     friend class database;
 
    public:
-
     collection(collection&& rhs);
+
     collection& operator=(collection&& rhs);
+
     ~collection();
 
     cursor aggregate(

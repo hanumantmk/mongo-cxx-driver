@@ -41,6 +41,12 @@ class LIBMONGOCXX_EXPORT database {
     class impl;
 
    public:
+    database(database&& rhs);
+
+    database& operator=(database&& rhs);
+
+    ~database();
+
     class collection operator[](const std::string& collection_name);
     class collection collection(const std::string& collection_name);
 
@@ -51,10 +57,6 @@ class LIBMONGOCXX_EXPORT database {
 
     void write_concern(class write_concern wc);
     const class write_concern& write_concern() const;
-
-    database(database&& rhs);
-    database& operator=(database&& rhs);
-    ~database();
 
    private:
     database(const class client& client, const std::string& database_name);

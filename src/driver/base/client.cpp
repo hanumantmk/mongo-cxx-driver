@@ -21,18 +21,21 @@
 namespace mongo {
 namespace driver {
 
-client::client(client&&) = default;
-client& client::operator=(client&&) = default;
-client::~client() = default;
 
-client::client() : _impl(new impl{mongoc_client_new("mongodb://localhost:27017")}) {}
+client::client()
+    : client("mongodb://localhost:27017") {}
+
+client::client(client&&) = default;
 
 client::client(const std::string& mongodb_uri)
     : _impl(new impl{mongoc_client_new(mongodb_uri.c_str())}) {}
 
-// TODO: use constructor delegation
 client::client(const settings& settings)
-    : _impl(new impl{mongoc_client_new(settings._mongodb_uri.c_str())}) {}
+    : client(settings._mongodb_uri.c_str()) {}
+
+client& client::operator=(client&&) = default;
+
+client::~client() = default;
 
 void client::read_preference(class read_preference rp) { _impl->read_preference(std::move(rp)); }
 const class read_preference& client::read_preference() const { return _impl->read_preference(); }
