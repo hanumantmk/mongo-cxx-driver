@@ -21,17 +21,14 @@
 namespace mongo {
 namespace driver {
 
-
-client::client()
-    : client("mongodb://localhost:27017") {}
+client::client() : client("mongodb://localhost:27017") {}
 
 client::client(client&&) = default;
 
 client::client(const std::string& mongodb_uri)
     : _impl(new impl{mongoc_client_new(mongodb_uri.c_str())}) {}
 
-client::client(const settings& settings)
-    : client(settings._mongodb_uri.c_str()) {}
+client::client(const settings& settings) : client(settings._mongodb_uri.c_str()) {}
 
 client& client::operator=(client&&) = default;
 
