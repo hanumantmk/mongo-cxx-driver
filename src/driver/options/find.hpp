@@ -26,13 +26,19 @@ namespace mongo {
 namespace driver {
 namespace options {
 
+enum class CursorType {
+    NON_TAILABLE,
+    TAILABLE,
+    TAILABLE_AWAIT
+};
+
 class LIBMONGOCXX_EXPORT find {
 
    public:
     void allow_partial_results(bool allow_partial);
-    void await_data(bool await_data);
     void batch_size(std::int32_t batch_size);
     void comment(std::string comment);
+    void cursor_type(CursorType cursor_type);
     void limit(std::int32_t limit);
     void max_time_ms(std::int64_t max_time_ms);
     void modifiers(bson::document::view modifiers);
@@ -42,12 +48,11 @@ class LIBMONGOCXX_EXPORT find {
     void read_preference(class read_preference rp);
     void skip(std::int32_t skip);
     void sort(bson::document::view ordering);
-    void tailable(bool tailable);
 
     const optional<bool>& allow_partial_results() const;
-    const optional<bool>& await_data() const;
     const optional<std::int32_t>& batch_size() const;
     const optional<std::string>& comment() const;
+    const optional<CursorType>& cursor_type() const;
     const optional<std::int32_t>& limit() const;
     const optional<std::int64_t>& max_time_ms() const;
     const optional<bson::document::view>& modifiers() const;
@@ -57,13 +62,12 @@ class LIBMONGOCXX_EXPORT find {
     const optional<class read_preference>& read_preference() const;
     const optional<std::int32_t>& skip() const;
     const optional<bson::document::view>& sort() const;
-    const optional<bool>& tailable() const;
 
    private:
     optional<bool> _allow_partial_results;
-    optional<bool> _await_data;
     optional<std::int32_t> _batch_size;
     optional<std::string> _comment;
+    optional<CursorType> _cursor_type;
     optional<std::int32_t> _limit;
     optional<std::int64_t> _max_time_ms;
     optional<bson::document::view> _modifiers;
@@ -73,7 +77,6 @@ class LIBMONGOCXX_EXPORT find {
     optional<class read_preference> _read_preference;
     optional<std::int32_t> _skip;
     optional<bson::document::view> _ordering;
-    optional<bool> _tailable;
 
 }; // class find
 

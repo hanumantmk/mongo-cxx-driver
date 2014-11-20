@@ -14,16 +14,20 @@
 
 #include "driver/config/prelude.hpp"
 
+#include <cstdint>
 #include <exception>
+
+#include "bson/document.hpp"
 
 /// MongoDB C++ Driver exception hierarchy
 ///
 /// std::exception
-///     L mongo::driver::Exception
-///         L mongo::driver::OperationException
-///             L mongo::driver::QueryException
-///             L mongo::driver::WriteException
-///         L mongo::driver::SocketException
+///     L mongo::driver::exception
+///         L mongo::driver::operation_exception
+///             L mongo::driver::query_exception
+///             L mongo::driver::write_xception
+///                 L mongo::driver::duplicate_key_exception
+///         L mongo::driver::socket_exception
 ///
 
 namespace mongo {
@@ -36,6 +40,20 @@ class operation_exception : public exception {};
 class query_exception : public operation_exception {};
 
 class write_exception : public operation_exception {};
+
+class duplicate_key_exception : public write_exception {};
+
+class write_concern_error {
+  private:
+    std::int32_t code;
+    bson::document::view details;
+    std::string message;
+};
+
+class write_error {
+    std::int32_t code;
+    std::string message;
+}
 
 class authentication_exception : public operation_exception {};
 

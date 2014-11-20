@@ -27,16 +27,17 @@ namespace model {
 class LIBMONGOCXX_EXPORT replace_one {
 
    public:
-    replace_one(bson::document::view criteria, bson::document::view replacement);
+    replace_one(bson::document::view filter, bson::document::view replacement);
 
     replace_one& upsert(bool upsert);
 
-    const bson::document::view& criteria() const;
+    const bson::document::view& filter() const;
     const bson::document::view& replacement() const;
+
     const optional<bool>& upsert() const;
 
    private:
-    bson::document::view _criteria;
+    bson::document::view _filter;
     bson::document::view _replacement;
 
     optional<bool> _upsert;

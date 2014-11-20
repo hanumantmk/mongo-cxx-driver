@@ -33,7 +33,7 @@ class LIBMONGOCXX_EXPORT aggregate {
     void batch_size(std::int32_t batch_size);
     void max_time_ms(std::int64_t max_time_ms);
     void use_cursor(bool use_cursor);
-    void read_preference(class read_preference rp);
+    void read_preference(class read_preference read_preference);
 
     const optional<bool>& allow_disk_use() const;
     const optional<std::int32_t>& batch_size() const;

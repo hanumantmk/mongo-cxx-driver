@@ -36,22 +36,22 @@ class LIBMONGOCXX_EXPORT count {
 
    public:
     void hint(bson::document::view hint);
-    void limit(std::int32_t limit);
+    void limit(std::int64_t limit);
     void max_time_ms(std::int64_t max_time_ms);
-    void skip(std::int32_t skip);
+    void skip(std::int64_t skip);
     void read_preference(class read_preference rp);
 
     const optional<bson::document::view>& hint() const;
-    const optional<std::int32_t>& limit() const;
+    const optional<std::int64_t>& limit() const;
     const optional<std::int64_t>& max_time_ms() const;
-    const optional<std::int32_t>& skip() const;
+    const optional<std::int64_t>& skip() const;
     const optional<class read_preference>& read_preference() const;
 
    private:
     optional<bson::document::view> _hint;
-    optional<std::int32_t> _limit;
+    optional<std::int64_t> _limit;
     optional<std::int64_t> _max_time_ms;
-    optional<std::int32_t> _skip;
+    optional<std::int64_t> _skip;
     optional<class read_preference> _read_preference;
 
 }; // class count

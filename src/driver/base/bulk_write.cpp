@@ -55,8 +55,8 @@ void bulk_write::append(model::write operation) {
             break;
         }
         case model::write_type::kDeleteOne: {
-            scoped_bson_t criteria(operation.get_delete_one().filter());
-            mongoc_bulk_operation_remove_one(_impl->operation_t, criteria.bson());
+            scoped_bson_t filter(operation.get_delete_one().filter());
+            mongoc_bulk_operation_remove_one(_impl->operation_t, filter.bson());
             break;
         }
         case model::write_type::kDeleteMany: {
@@ -65,11 +65,11 @@ void bulk_write::append(model::write operation) {
             break;
         }
         case model::write_type::kReplaceOne: {
-            scoped_bson_t criteria(operation.get_replace_one().criteria());
+            scoped_bson_t filter(operation.get_replace_one().filter());
             scoped_bson_t replace(operation.get_replace_one().replacement());
             bool upsert = operation.get_replace_one().upsert().value_or(false);
 
-            mongoc_bulk_operation_replace_one(_impl->operation_t, criteria.bson(), replace.bson(),
+            mongoc_bulk_operation_replace_one(_impl->operation_t, filter.bson(), replace.bson(),
                                               upsert);
             break;
         }

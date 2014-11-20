@@ -53,20 +53,6 @@ class write_concern;
 class read_preference;
 class pipeline;
 
-namespace model {
-class bulk_write;
-class insert_one;
-}
-
-namespace result {
-struct insert_one;
-struct insert_many;
-struct replace_one;
-struct update;
-struct delete_result;
-struct bulk_write;
-}  // namespace result
-
 class LIBMONGOCXX_EXPORT collection {
 
     class impl;
@@ -74,9 +60,44 @@ class LIBMONGOCXX_EXPORT collection {
     friend class database;
 
    public:
+
+    collection(collection&& rhs);
+    collection& operator=(collection&& rhs);
+    ~collection();
+
     cursor aggregate(
         const pipeline& pipeline,
         const options::aggregate& options = options::aggregate()
+    );
+
+    template<class Container>
+    optional<result::bulk_write> bulk_write(
+        const Container& requests,
+        const options::bulk_write& options = options::bulk_write()
+    ) {
+        return bulk_write(requests.begin(), requests.end(), options);
+    }
+
+    template<class WriteModelIterator>
+    optional<result::bulk_write> bulk_write(
+        const WriteModelIterator& begin,
+        const WriteModelIterator& end,
+        const options::bulk_write& options = options::bulk_write()
+    ) {
+        class bulk_write writes(options.ordered().value_or(true));
+
+        WriteModelIterator current(begin);
+
+        while (current != end) {
+            writes.append(*begin);
+            ++current;
+        }
+
+        return bulk_write(writes);
+    }
+
+    optional<result::bulk_write> bulk_write(
+        const class bulk_write& bulk_write
     );
 
     std::int64_t count(
@@ -84,11 +105,23 @@ class LIBMONGOCXX_EXPORT collection {
         const options::count& options = options::count()
     ) const;
 
-    bson::document::value distinct(
+    optional<result::delete_result> delete_one(
+        const bson::document::view& filter,
+        const options::delete_options& options = options::delete_options()
+    );
+
+    optional<result::delete_result> delete_many(
+        const bson::document::view& filter,
+        const options::delete_options& options = options::delete_options()
+    );
+
+    cursor distinct(
         const std::string& field_name,
         const bson::document::view& filter,
         const options::distinct& options = options::distinct()
     ) const;
+
+    void drop();
 
     cursor find(
         const bson::document::view& filter,
@@ -99,6 +132,23 @@ class LIBMONGOCXX_EXPORT collection {
         const bson::document::view& filter,
         const options::find& options = options::find()
     ) const;
+
+    optional<bson::document::value> find_one_and_delete(
+        const bson::document::view& filter,
+        const options::find_one_and_delete& options = options::find_one_and_delete()
+    );
+
+    optional<bson::document::value> find_one_and_update(
+        const bson::document::view& filter,
+        const bson::document::view& update,
+        const options::find_one_and_update& options = options::find_one_and_update()
+    );
+
+    optional<bson::document::value> find_one_and_replace(
+        const bson::document::view& filter,
+        const bson::document::view& replacement,
+        const options::find_one_and_replace& options = options::find_one_and_replace()
+    );
 
     optional<result::insert_one> insert_one(
         const bson::document::view& document,
@@ -133,6 +183,10 @@ class LIBMONGOCXX_EXPORT collection {
         return result::insert_many();
     }
 
+    void read_preference(class read_preference rp);
+    const class read_preference& read_preference() const;
+
+
     optional<result::replace_one> replace_one(
         const bson::document::view& filter,
         const bson::document::view& replacement,
@@ -151,74 +205,8 @@ class LIBMONGOCXX_EXPORT collection {
         const options::update& options = options::update()
     );
 
-    optional<result::delete_result> delete_one(
-        const bson::document::view& filter,
-        const options::delete_options& options = options::delete_options()
-    );
-
-    optional<result::delete_result> delete_many(
-        const bson::document::view& filter,
-        const options::delete_options& options = options::delete_options()
-    );
-
-    template<class Container>
-    optional<result::bulk_write> bulk_write(
-        const Container& container,
-        const options::bulk_write& options = options::bulk_write()
-    ) {
-        return bulk_write(container.begin(), container.end(), options);
-    }
-
-    template<class WriteModelIterator>
-    optional<result::bulk_write> bulk_write(
-        const WriteModelIterator& begin,
-        const WriteModelIterator& end,
-        const options::bulk_write& options
-    ) {
-        class bulk_write writes(options.ordered().value_or(true));
-
-        WriteModelIterator current(begin);
-
-        while (current != end) {
-            writes.append(*begin);
-            ++current;
-        }
-
-        return bulk_write(writes);
-    }
-
-    optional<result::bulk_write> bulk_write(
-        const class bulk_write& bulk_write
-    );
-
-    optional<bson::document::value> find_one_and_delete(
-        const bson::document::view& filter,
-        const options::find_one_and_delete& options = options::find_one_and_delete()
-    );
-
-    optional<bson::document::value> find_one_and_replace(
-        const bson::document::view& filter,
-        const bson::document::view& replacement,
-        const options::find_one_and_replace& options = options::find_one_and_replace()
-    );
-
-    optional<bson::document::value> find_one_and_update(
-        const bson::document::view& filter,
-        const bson::document::view& update,
-        const options::find_one_and_update& options = options::find_one_and_update()
-    );
-
-    void drop();
-
-    void read_preference(class read_preference rp);
-    const class read_preference& read_preference() const;
-
     void write_concern(class write_concern wc);
     const class write_concern& write_concern() const;
-
-    collection(collection&& rhs);
-    collection& operator=(collection&& rhs);
-    ~collection();
 
    private:
     collection(const database& database, const std::string& collection_name);

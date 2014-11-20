@@ -30,8 +30,6 @@ namespace options {
 
 void find::allow_partial_results(bool allow_partial) { _allow_partial_results = allow_partial; }
 
-void find::await_data(bool await_data) { _await_data = await_data; }
-
 void find::batch_size(std::int32_t batch_size) { _batch_size = batch_size; }
 
 void find::comment(std::string comment) { _comment = comment; }
@@ -54,11 +52,8 @@ void find::skip(std::int32_t skip) { _skip = skip; }
 
 void find::sort(bson::document::view ordering) { _ordering = ordering; }
 
-void find::tailable(bool tailable) { _tailable = tailable; }
 
 const optional<bool>& find::allow_partial_results() const { return _allow_partial_results; }
-
-const optional<bool>& find::await_data() const { return _await_data; }
 
 const optional<std::int32_t>& find::batch_size() const { return _batch_size; }
 
@@ -79,8 +74,6 @@ const optional<std::int32_t>& find::skip() const { return _skip; }
 const optional<bson::document::view>& find::sort() const { return _ordering; }
 
 const optional<class read_preference>& find::read_preference() const { return _read_preference; }
-
-const optional<bool>& find::tailable() const { return _tailable; }
 
 }  // namespace options
 }  // namespace driver
