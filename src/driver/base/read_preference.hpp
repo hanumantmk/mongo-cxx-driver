@@ -16,10 +16,10 @@
 
 #include "driver/config/prelude.hpp"
 
-#include "bson/document.hpp"
-
 #include <string>
 #include <cstdint>
+
+#include "bson/document.hpp"
 
 #include "driver/util/optional.hpp"
 
@@ -34,7 +34,7 @@ enum class read_mode : std::uint8_t {
     k_nearest = (1 << 3) | k_secondary,
 };
 
-class read_preference {
+class LIBMONGOCXX_EXPORT read_preference {
 
    public:
        read_preference(read_mode = read_mode::k_primary);

@@ -41,7 +41,7 @@ class LIBMONGOCXX_EXPORT database {
     class impl;
 
    public:
-    database(database&& rhs);
+    database(database&& other);
 
     database& operator=(database&& rhs);
 

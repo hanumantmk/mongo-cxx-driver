@@ -28,9 +28,9 @@ class instance {
    public:
     instance();
 
-    instance(instance&&);
+    instance(instance&& other);
 
-    instance& operator=(instance&&);
+    instance& operator=(instance&& rhs);
 
     ~instance();
 

@@ -34,7 +34,7 @@ class LIBMONGOCXX_EXPORT cursor {
    public:
     class iterator;
 
-    cursor(cursor&& rhs);
+    cursor(cursor&& other);
 
     cursor& operator=(cursor&& rhs);
 

@@ -27,8 +27,6 @@ pipeline::pipeline(pipeline&&) = default;
 pipeline& pipeline::operator=(pipeline&&) = default;
 pipeline::~pipeline() = default;
 
-pipeline& pipeline::geoNear(/*something*/) { return *this; }
-
 pipeline& pipeline::group(bson::document::view group) {
     _impl->sink() << open_doc << "$group" << b_document{group} << close_doc;
     return *this;

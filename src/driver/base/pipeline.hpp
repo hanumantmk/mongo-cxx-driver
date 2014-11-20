@@ -18,17 +18,15 @@
 
 #include <cstdint>
 #include <string>
-#include <vector>
 #include <memory>
 
 #include "bson/document.hpp"
 
 namespace mongo {
+
 class collection;
 
 namespace driver {
-
-class explain_result;
 
 class LIBMONGOCXX_EXPORT pipeline {
 
@@ -38,11 +36,12 @@ class LIBMONGOCXX_EXPORT pipeline {
 
    public:
     pipeline();
-    pipeline(pipeline&&);
-    pipeline& operator=(pipeline&&);
+
+    pipeline(pipeline&& other);
+    pipeline& operator=(pipeline&& rhs);
+
     ~pipeline();
 
-    pipeline& geoNear(/*something*/);
     pipeline& group(bson::document::view group);
     pipeline& limit(std::int32_t limit);
     pipeline& match(bson::document::view criteria);

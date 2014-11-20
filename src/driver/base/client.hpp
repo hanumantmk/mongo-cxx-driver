@@ -38,7 +38,6 @@ class LIBMONGOCXX_EXPORT client {
     friend class collection;
 
    public:
-
     client();
 
     explicit client(client&& rhs);

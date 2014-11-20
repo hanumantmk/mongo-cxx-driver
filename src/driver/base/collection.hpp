@@ -60,8 +60,7 @@ class LIBMONGOCXX_EXPORT collection {
     friend class database;
 
    public:
-
-    collection(collection&& rhs);
+    collection(collection&& other);
 
     collection& operator=(collection&& rhs);
 

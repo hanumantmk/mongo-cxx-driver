@@ -24,7 +24,7 @@
 namespace mongo {
 namespace driver {
 
-class write_concern {
+class LIBMONGOCXX_EXPORT write_concern {
 
    public:
     write_concern();

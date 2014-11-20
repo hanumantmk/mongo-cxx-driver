@@ -27,16 +27,15 @@ class collection;
 
 class LIBMONGOCXX_EXPORT bulk_write {
 
-    friend class mongo::driver::collection;
+    friend class collection;
 
     class impl;
 
    public:
     bulk_write(bool ordered);
 
-    bulk_write(bulk_write&&);
-    bulk_write& operator=(bulk_write&&);
-
+    bulk_write(bulk_write&& other);
+    bulk_write& operator=(bulk_write&& rhs);
     ~bulk_write();
 
     void append(model::write operation);
