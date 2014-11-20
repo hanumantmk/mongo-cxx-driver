@@ -274,7 +274,8 @@ optional<bson::document::value> collection::find_one_and_replace(
 
     bson_error_t error;
 
-    options::ReturnDocument rd = options.return_document().value_or(options::ReturnDocument::BEFORE);
+    options::ReturnDocument rd =
+        options.return_document().value_or(options::ReturnDocument::BEFORE);
 
     bool r = mongoc_collection_find_and_modify(
         _impl->collection_t, bson_filter.bson(), bson_sort.bson(), bson_replacement.bson(),
@@ -287,8 +288,7 @@ optional<bson::document::value> collection::find_one_and_replace(
 
     bson::document::view result = reply.view();
 
-    if (result["value"].type() == bson::type::k_null)
-        return optional<bson::document::value>{};
+    if (result["value"].type() == bson::type::k_null) return optional<bson::document::value>{};
 
     using namespace bson::builder::helpers;
     bson::builder::document b;
@@ -299,7 +299,6 @@ optional<bson::document::value> collection::find_one_and_replace(
 optional<bson::document::value> collection::find_one_and_update(
     const bson::document::view& filter, const bson::document::view& update,
     const options::find_one_and_update& options) {
-
     scoped_bson_t bson_filter{filter};
     scoped_bson_t bson_update{update};
     scoped_bson_t bson_sort{options.sort()};
@@ -310,7 +309,8 @@ optional<bson::document::value> collection::find_one_and_update(
 
     bson_error_t error;
 
-    options::ReturnDocument rd = options.return_document().value_or(options::ReturnDocument::BEFORE);
+    options::ReturnDocument rd =
+        options.return_document().value_or(options::ReturnDocument::BEFORE);
 
     bool r = mongoc_collection_find_and_modify(
         _impl->collection_t, bson_filter.bson(), bson_sort.bson(), bson_update.bson(),
@@ -323,8 +323,7 @@ optional<bson::document::value> collection::find_one_and_update(
 
     bson::document::view result = reply.view();
 
-    if (result["value"].type() == bson::type::k_null)
-        return optional<bson::document::value>{};
+    if (result["value"].type() == bson::type::k_null) return optional<bson::document::value>{};
 
     using namespace bson::builder::helpers;
     bson::builder::document b;
@@ -353,8 +352,7 @@ optional<bson::document::value> collection::find_one_and_delete(
 
     bson::document::view result = reply.view();
 
-    if (result["value"].type() == bson::type::k_null)
-        return optional<bson::document::value>{};
+    if (result["value"].type() == bson::type::k_null) return optional<bson::document::value>{};
 
     using namespace bson::builder::helpers;
     bson::builder::document b;
