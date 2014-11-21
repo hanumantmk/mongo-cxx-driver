@@ -56,7 +56,7 @@ class LIBMONGOCXX_EXPORT count {
 
 }; // class count
 
-}  // namesapce options
+}  // namespace options
 }  // namespace driver
 }  // namespace mongo
 

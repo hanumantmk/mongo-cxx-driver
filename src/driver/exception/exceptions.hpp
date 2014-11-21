@@ -25,7 +25,7 @@
 ///     L mongo::driver::exception
 ///         L mongo::driver::operation_exception
 ///             L mongo::driver::query_exception
-///             L mongo::driver::write_xception
+///             L mongo::driver::write_exception
 ///                 L mongo::driver::duplicate_key_exception
 ///         L mongo::driver::socket_exception
 ///

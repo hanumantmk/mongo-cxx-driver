@@ -38,7 +38,7 @@ const optional<std::int64_t>& count::skip() const { return _skip; }
 
 const optional<class read_preference>& count::read_preference() const { return _read_preference; }
 
-}  // namesapce options
+}  // namespace options
 }  // namespace driver
 }  // namespace mongo
 

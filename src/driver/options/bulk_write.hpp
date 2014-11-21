@@ -37,7 +37,7 @@ class LIBMONGOCXX_EXPORT bulk_write {
 
 }; // class bulk_write
 
-}  // namesapce options
+}  // namespace options
 }  // namespace driver
 }  // namespace mongo
 
