@@ -11,8 +11,14 @@ endmacro()
 
 test(1)
 add_test(test_suite_1 test_1)
-test(2)
-add_test(test_suite_2 test_2)
+
+add_executable(test_model_update_many
+    driver/model/update_many.cpp
+    ${CMAKE_SOURCE_DIR}/src/driver/model/update_many.cpp
+)
+target_link_libraries(test_model_update_many mongocxx-bson mongocxx-mock_symbols)
+add_test(model_update_many test_model_update_many)
+
 test(3)
 add_test(test_suite_3 test_3)
 test(4)

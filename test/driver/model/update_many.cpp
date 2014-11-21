@@ -17,12 +17,12 @@ TEST_CASE("update_many", "[update_many][model]") {
     }
 
     SECTION("has upsert disengaged") {
-        REQUIRE(um.upsert().operator bool() == false);
+        REQUIRE(!um.upsert());
     }
 
     SECTION("has a fluent method to set the upsert") {
         REQUIRE(&um == &um.upsert(true));
-        REQUIRE(static_cast<bool>(um.upsert()) == true);
+        REQUIRE(um.upsert());
         REQUIRE(um.upsert().value() == true);
     }
 }
