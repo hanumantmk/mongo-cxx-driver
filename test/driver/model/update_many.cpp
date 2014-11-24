@@ -1,5 +1,6 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
+#include "helpers.hpp"
 
 #include "mongocxx.hpp"
 
@@ -16,13 +17,5 @@ TEST_CASE("update_many", "[update_many][model]") {
         REQUIRE(um.update().get_buf() == b.get_buf());
     }
 
-    SECTION("has upsert disengaged") {
-        REQUIRE(!um.upsert());
-    }
-
-    SECTION("has a fluent method to set the upsert") {
-        REQUIRE(&um == &um.upsert(true));
-        REQUIRE(um.upsert());
-        REQUIRE(um.upsert().value() == true);
-    }
+    CHECK_OPTIONAL_ARGUMENT(um, upsert, true)
 }
