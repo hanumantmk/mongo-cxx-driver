@@ -16,8 +16,8 @@
 
 #include "driver/config/prelude.hpp"
 
-#include "mongoc.h"
 #include "driver/base/bulk_write.hpp"
+#include "driver/libmongoc.hpp"
 
 namespace mongo {
 namespace driver {
@@ -30,7 +30,7 @@ class bulk_write::impl {
     {}
 
     ~impl() {
-        mongoc_bulk_operation_destroy(operation_t);
+        libmongoc::bulk_operation_destroy(operation_t);
     }
 
     mongoc_bulk_operation_t* operation_t;

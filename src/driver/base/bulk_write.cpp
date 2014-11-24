@@ -14,8 +14,8 @@
 
 #include "driver/base/bulk_write.hpp"
 
-#include "mongoc.h"
 #include "driver/base/private/bulk_write.hpp"
+#include "driver/libmongoc.hpp"
 #include "driver/util/libbson.hpp"
 
 namespace mongo {
@@ -27,7 +27,7 @@ bulk_write::bulk_write(bulk_write&&) = default;
 bulk_write& bulk_write::operator=(bulk_write&&) = default;
 bulk_write::~bulk_write() = default;
 
-bulk_write::bulk_write(bool ordered) : _impl(new impl{mongoc_bulk_operation_new(ordered)}) {}
+bulk_write::bulk_write(bool ordered) : _impl(new impl{libmongoc::bulk_operation_new(ordered)}) {}
 
 void bulk_write::append(const model::write& operation) {
     switch (operation.type()) {

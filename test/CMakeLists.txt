@@ -33,6 +33,16 @@ add_executable(test_options_aggregate
 )
 add_test(options_aggregate test_options_aggregate)
 
+add_executable(test_bulk_write
+    driver/base/bulk_write.cpp
+    $<TARGET_OBJECTS:mongocxx-driver-model>
+    ${CMAKE_SOURCE_DIR}/src/driver/base/bulk_write.cpp
+    ${CMAKE_SOURCE_DIR}/src/driver/util/libbson.cpp
+)
+target_link_libraries(test_bulk_write mongocxx-bson mongocxx-mock_symbols)
+add_test(bulk_write test_bulk_write)
+
+
 
 add_executable(test_write_concern
     driver/base/write_concern.cpp

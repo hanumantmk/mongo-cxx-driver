@@ -1,0 +1,54 @@
+// Copyright 2014 MongoDB Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#define CATCH_CONFIG_MAIN
+#include "catch.hpp"
+
+#include "driver/libmongoc.hpp"
+#include "driver/base/bulk_write.hpp"
+
+using namespace mongo::driver;
+
+TEST_CASE("a bulk_write will setup a mongoc bulk operation", "[bulk_write][base]") {
+    auto construct = libmongoc::bulk_operation_new.create_instance();
+    bool construct_called = false;
+    bool ordered_value = false;
+    construct->visit([&](bool ordered) {
+        construct_called = true;
+        ordered_value = ordered;
+    });
+
+    SECTION("with an ordered bulk write") {
+        bulk_write(true);
+        REQUIRE(construct_called);
+        REQUIRE(ordered_value);
+    }
+
+    SECTION("with an unordered bulk write") {
+        bulk_write(false);
+        REQUIRE(construct_called);
+        REQUIRE(!ordered_value);
+    }
+
+}
+TEST_CASE("the destruction of a bulk_write will destroy the mongoc operation", "[bulk_write][base]") {
+    auto destruct = libmongoc::bulk_operation_destroy.create_instance();
+    bool destruct_called = false;
+    destruct->visit([&destruct_called]() {
+        destruct_called = true;
+    });
+    bulk_write(true);
+    REQUIRE(destruct_called);
+}
+

@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+MONGOCXX_LIBMONGOC_SYMBOL(bulk_operation_new)
+MONGOCXX_LIBMONGOC_SYMBOL(bulk_operation_destroy)
 MONGOCXX_LIBMONGOC_SYMBOL(client_new)
 MONGOCXX_LIBMONGOC_SYMBOL(client_get_collection)
 MONGOCXX_LIBMONGOC_SYMBOL(collection_destroy)
