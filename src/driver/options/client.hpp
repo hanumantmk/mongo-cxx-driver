@@ -12,20 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "driver/base/settings.hpp"
-#include <utility>
+#pragma once
+
+#include "driver/config/prelude.hpp"
+
+#include <string>
 
 namespace mongo {
 namespace driver {
+namespace options {
 
-namespace {
-const char kDefaultURI[] = "mongodb://localhost:27017";
-}  // namespace
+class LIBMONGOCXX_EXPORT client {
 
-settings::settings() : _mongodb_uri(kDefaultURI) {}
+}; // class client
 
-settings::settings(std::string mongodb_uri) : _mongodb_uri(std::move(mongodb_uri)) {}
-
+}  // namespace options
 }  // namespace driver
 }  // namespace mongo
 

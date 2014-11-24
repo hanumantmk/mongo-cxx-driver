@@ -15,21 +15,16 @@
 #include "private/preamble.hpp"
 
 #include "driver/base/client.hpp"
-#include "driver/base/settings.hpp"
 #include "driver/base/private/client.hpp"
 
 namespace mongo {
 namespace driver {
 
-client::client() : client("mongodb://localhost:27017") {}
+client::client(const uri& uri, const options::client&)
+    : _impl(new impl{mongoc_client_new(uri.hosts().front().host.c_str())})
+{}
 
 client::client(client&&) = default;
-
-client::client(const std::string& mongodb_uri)
-    : _impl(new impl{mongoc_client_new(mongodb_uri.c_str())}) {}
-
-client::client(const settings& settings) : client(settings._mongodb_uri.c_str()) {}
-
 client& client::operator=(client&&) = default;
 
 client::~client() = default;

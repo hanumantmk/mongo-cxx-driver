@@ -14,29 +14,20 @@
 
 #pragma once
 
-#include "driver/config/prelude.hpp"
+#include "driver/base/uri.hpp"
 
-#include <memory>
+#include "mongoc.h"
 
 namespace mongo {
 namespace driver {
 
-class instance {
-
-    class impl;
-
+class uri::impl {
    public:
-    instance();
+    impl(mongoc_uri_t* uri) : uri_t(uri) {}
+    ~impl() { mongoc_uri_destroy(uri_t); }
+    mongoc_uri_t* uri_t;
 
-    instance(instance&& other);
-    instance& operator=(instance&& rhs);
-
-    ~instance();
-
-   private:
-    std::unique_ptr<impl> _impl;
-
-}; // class instance
+}; // class impl
 
 }  // namespace driver
 }  // namespace mongo

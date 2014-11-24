@@ -61,7 +61,6 @@ class LIBMONGOCXX_EXPORT collection {
 
    public:
     collection(collection&& other);
-
     collection& operator=(collection&& rhs);
 
     ~collection();

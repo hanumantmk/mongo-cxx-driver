@@ -17,26 +17,46 @@
 #include "driver/config/prelude.hpp"
 
 #include <memory>
+#include <string>
+#include <vector>
+
+#include "bson/document.hpp"
+
+#include "driver/base/host.hpp"
+#include "driver/base/read_preference.hpp"
+#include "driver/base/write_concern.hpp"
 
 namespace mongo {
 namespace driver {
 
-class instance {
+class uri {
 
     class impl;
 
    public:
-    instance();
+    uri(const std::string& uri_string="mongodb://localhost:27017/");
 
-    instance(instance&& other);
-    instance& operator=(instance&& rhs);
+    uri(uri&& other);
+    uri& operator=(uri&& rhs);
 
-    ~instance();
+    ~uri();
+
+    const std::string auth_mechanism() const;
+    const std::string auth_source() const;
+    const std::vector<host> hosts() const;
+    const std::string database() const;
+    bson::document::view options() const;
+    const std::string username() const;
+    const std::string password() const;
+    bool ssl() const;
+    const class read_preference read_preference() const;
+    const std::string replica_set() const;
+    const class write_concern write_concern() const;
 
    private:
     std::unique_ptr<impl> _impl;
 
-}; // class instance
+}; // class uri
 
 }  // namespace driver
 }  // namespace mongo

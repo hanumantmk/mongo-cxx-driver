@@ -12,29 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
-
-#include "driver/config/prelude.hpp"
-
-#include <string>
+#include "driver/options/client.hpp"
+#include <utility>
 
 namespace mongo {
 namespace driver {
+namespace options {
 
-/// The settings class represents a set of settings for the MongoDB driver client.
-class LIBMONGOCXX_EXPORT settings {
-
-    friend class client;
-
-   public:
-    settings();
-    explicit settings(std::string mongodb_uri);
-
-   private:
-    std::string _mongodb_uri;
-
-}; // class settings
-
+}  // namespace options
 }  // namespace driver
 }  // namespace mongo
 

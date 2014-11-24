@@ -16,27 +16,19 @@
 
 #include "driver/config/prelude.hpp"
 
-#include <memory>
+#include <cstdint>
+#include <string>
 
 namespace mongo {
 namespace driver {
 
-class instance {
+struct host {
 
-    class impl;
+    std::string host;
+    std::uint16_t port;
+    std::int32_t family;
 
-   public:
-    instance();
-
-    instance(instance&& other);
-    instance& operator=(instance&& rhs);
-
-    ~instance();
-
-   private:
-    std::unique_ptr<impl> _impl;
-
-}; // class instance
+}; // class host
 
 }  // namespace driver
 }  // namespace mongo

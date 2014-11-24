@@ -20,7 +20,9 @@
 
 #include "driver/base/database.hpp"
 #include "driver/base/read_preference.hpp"
+#include "driver/base/uri.hpp"
 #include "driver/base/write_concern.hpp"
+#include "driver/options/client.hpp"
 
 namespace mongo {
 namespace driver {
@@ -38,12 +40,12 @@ class LIBMONGOCXX_EXPORT client {
     friend class collection;
 
    public:
-    client();
+    client(
+        const uri& uri = uri(),
+        const options::client& options = options::client()
+    );
 
-    explicit client(client&& rhs);
-    explicit client(const std::string& mongodb_uri);
-    explicit client(const settings& settings);
-
+    client(client&& rhs);
     client& operator=(client&& rhs);
 
     ~client();
@@ -54,8 +56,8 @@ class LIBMONGOCXX_EXPORT client {
     void write_concern(class write_concern wc);
     const class write_concern& write_concern() const;
 
-    class database operator[](const std::string& database_name);
     class database database(const std::string& database_name);
+    class database operator[](const std::string& database_name);
 
    private:
     std::unique_ptr<impl> _impl;
