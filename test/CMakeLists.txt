@@ -35,6 +35,7 @@ add_test(options_aggregate test_options_aggregate)
 
 add_executable(test_bulk_write
     driver/base/bulk_write.cpp
+    ${CMAKE_SOURCE_DIR}/src/driver/base/write_concern.cpp
     $<TARGET_OBJECTS:mongocxx-driver-model>
     ${CMAKE_SOURCE_DIR}/src/driver/base/bulk_write.cpp
     ${CMAKE_SOURCE_DIR}/src/driver/util/libbson.cpp
