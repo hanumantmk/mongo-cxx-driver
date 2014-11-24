@@ -26,6 +26,14 @@ add_test(test_suite_4 test_4)
 test(5)
 add_test(test_suite_5 test_5 10)
 
+add_executable(test_options_aggregate
+    driver/options/aggregate.cpp
+    ${CMAKE_SOURCE_DIR}/src/driver/options/aggregate.cpp
+    ${CMAKE_SOURCE_DIR}/src/driver/base/read_preference.cpp
+)
+add_test(options_aggregate test_options_aggregate)
+
+
 add_executable(test_write_concern
     driver/base/write_concern.cpp
     ${CMAKE_SOURCE_DIR}/src/driver/base/write_concern.cpp)
