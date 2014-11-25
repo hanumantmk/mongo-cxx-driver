@@ -39,6 +39,7 @@ class scoped_bson_t {
     bson_t* bson();
 
     bson::document::view view();
+    bson::document::value steal();
 
    private:
     scoped_bson_t(const scoped_bson_t& rhs) = delete;

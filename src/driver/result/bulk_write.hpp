@@ -14,41 +14,44 @@
 
 #pragma once
 
+#include "bson/document.hpp"
+#include "bson/types.hpp"
+
 #include "driver/config/prelude.hpp"
 
 #include <cstdint>
-#include <map>
-
-#include "bson/types.hpp"
-#include "driver/result/delete.hpp"
-#include "driver/result/insert_one.hpp"
-#include "driver/result/insert_many.hpp"
-#include "driver/result/replace_one.hpp"
-#include "driver/result/update.hpp"
 
 namespace mongo {
 namespace driver {
+
+    class collection;
+
 namespace result {
 
-struct LIBMONGOCXX_EXPORT bulk_write {
+class LIBMONGOCXX_EXPORT bulk_write {
 
-    std::int64_t inserted_count;
-    std::int64_t matched_count;
-    std::int64_t modified_count;
-    std::int64_t deleted_count;
-    std::int64_t upserted_count;
+    friend class driver::collection;
 
-    std::map<std::size_t, bson::document::element> inserted_ids;
-    std::map<std::size_t, bson::document::element> upserted_ids;
+   public:
+    std::int64_t inserted_count() const;
+    std::int64_t matched_count() const;
+    std::int64_t modified_count() const;
+    std::int64_t deleted_count() const;
+    std::int64_t upserted_count() const;
 
-    // TODO: better to have constructors on insert_one, etc.. take bulk write?
-    explicit operator insert_one();
-    explicit operator insert_many();
-    explicit operator replace_one();
-    explicit operator update();
-    explicit operator delete_result();
+    bson::document::view inserted_ids() const;
+    bson::document::view upserted_ids() const;
 
-}; // struct bulk_write
+   private:
+    bulk_write(bson::document::value raw_response)
+        : _response(std::move(raw_response))
+    {}
+
+    bson::document::view _view() const;
+
+    bson::document::value _response;
+
+}; // class bulk_write
 
 }  // namespace result
 }  // namespace driver

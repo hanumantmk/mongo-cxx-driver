@@ -69,5 +69,16 @@ bson::document::view scoped_bson_t::view() {
                            : bson::document::view();
 }
 
+bson::document::value scoped_bson_t::steal() {
+    if (!_is_initialized) {
+        return bson::document::view();
+    }
+
+    std::uint32_t length;
+    std::uint8_t* buff = bson_destroy_with_steal(bson(), true, &length);
+
+    return bson::document::value(buff, length, bson_free);
+}
+
 }  // namespace libbson
 }  // namespace bson

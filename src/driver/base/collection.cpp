@@ -68,8 +68,6 @@ optional<result::bulk_write> collection::bulk_write(const class bulk_write& bulk
             b, mongoc_collection_get_write_concern(_impl->collection_t));
     }
 
-    result::bulk_write result;
-
     scoped_bson_t reply;
     reply.flag_init();
 
@@ -79,13 +77,7 @@ optional<result::bulk_write> collection::bulk_write(const class bulk_write& bulk
         throw std::runtime_error(error.message);
     }
 
-    bson::document::view reply_view = reply.view();
-
-    result.inserted_count = reply_view["nInserted"].get_int32();
-    result.matched_count = reply_view["nMatched"].get_int32();
-    result.modified_count = reply_view["nModified"].get_int32();
-    result.deleted_count = reply_view["nRemoved"].get_int32();
-    result.upserted_count = reply_view["nUpserted"].get_int32();
+    result::bulk_write result(reply.steal());
 
     return optional<result::bulk_write>(std::move(result));
 }
