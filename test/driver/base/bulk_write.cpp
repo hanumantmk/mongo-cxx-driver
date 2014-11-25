@@ -71,29 +71,28 @@ TEST_CASE("passing valid write operations to append calls the corresponding C fu
     doc_builder << "_id" << 2;
     bson::document::view filter = filter_builder.view();
     bson::document::view doc = doc_builder.view();
+    const uint8_t* filter_buffer = nullptr;
+    const uint8_t* doc_buffer = nullptr;
+    bool upsert_value = false;
 
     SECTION("insert_one invokes mongoc_bulk_operation_insert") {
         auto bulk_insert = libmongoc::bulk_operation_insert.create_instance();
         bool bulk_insert_called = false;
-        const uint8_t* bson_buffer = nullptr;
-        bulk_insert->visit([&bulk_insert_called, &bson_buffer](
+        bulk_insert->visit([&](
                     mongoc_bulk_operation_t* bulk,
                     const bson_t* document) {
             bulk_insert_called = true;
-            bson_buffer = bson_get_data(document);
+            doc_buffer = bson_get_data(document);
         });
 
         bw.append(model::insert_one(doc));
         REQUIRE(bulk_insert_called);
-        REQUIRE(bson_buffer == doc.get_buf());
+        REQUIRE(doc_buffer == doc.get_buf());
     }
 
     SECTION("update_one invokes mongoc_bulk_operation_update_one") {
         auto bulk_insert = libmongoc::bulk_operation_update_one.create_instance();
         bool bulk_update_one_called = false;
-        const uint8_t* filter_buffer = nullptr;
-        const uint8_t* update_buffer = nullptr;
-        bool upsert_value = false;
         bulk_insert->visit([&](
                     mongoc_bulk_operation_t* bulk,
                     const bson_t* filter,
@@ -101,23 +100,20 @@ TEST_CASE("passing valid write operations to append calls the corresponding C fu
                     bool upsert) {
             bulk_update_one_called = true;
             filter_buffer = bson_get_data(filter);
-            update_buffer = bson_get_data(update);
+            doc_buffer = bson_get_data(update);
             upsert_value = upsert;
         });
 
         bw.append(model::update_one(filter, doc));
         REQUIRE(bulk_update_one_called);
         REQUIRE(filter_buffer == filter.get_buf());
-        REQUIRE(update_buffer == doc.get_buf());
+        REQUIRE(doc_buffer == doc.get_buf());
         REQUIRE(!upsert_value);
     }
 
     SECTION("update_many invokes mongoc_bulk_operation_update") {
         auto bulk_insert = libmongoc::bulk_operation_update.create_instance();
         bool bulk_update_called = false;
-        const uint8_t* filter_buffer = nullptr;
-        const uint8_t* update_buffer = nullptr;
-        bool upsert_value = false;
         bulk_insert->visit([&](
                     mongoc_bulk_operation_t* bulk,
                     const bson_t* filter,
@@ -125,21 +121,20 @@ TEST_CASE("passing valid write operations to append calls the corresponding C fu
                     bool upsert) {
             bulk_update_called = true;
             filter_buffer = bson_get_data(filter);
-            update_buffer = bson_get_data(update);
+            doc_buffer = bson_get_data(update);
             upsert_value = upsert;
         });
 
         bw.append(model::update_many(filter, doc));
         REQUIRE(bulk_update_called);
         REQUIRE(filter_buffer == filter.get_buf());
-        REQUIRE(update_buffer == doc.get_buf());
+        REQUIRE(doc_buffer == doc.get_buf());
         REQUIRE(!upsert_value);
     }
 
     SECTION("delete_one invokes mongoc_bulk_operation_remove_one") {
         auto bulk_insert = libmongoc::bulk_operation_remove_one.create_instance();
         bool bulk_remove_one_called = false;
-        const uint8_t* filter_buffer = nullptr;
         bulk_insert->visit([&](
                     mongoc_bulk_operation_t* bulk,
                     const bson_t* filter) {
@@ -155,7 +150,6 @@ TEST_CASE("passing valid write operations to append calls the corresponding C fu
     SECTION("delete_many invokes mongoc_bulk_operation_remove") {
         auto bulk_insert = libmongoc::bulk_operation_remove.create_instance();
         bool bulk_remove_called = false;
-        const uint8_t* filter_buffer = nullptr;
         bulk_insert->visit([&](
                     mongoc_bulk_operation_t* bulk,
                     const bson_t* filter) {
@@ -171,9 +165,6 @@ TEST_CASE("passing valid write operations to append calls the corresponding C fu
     SECTION("replace_one invokes mongoc_bulk_operation_replace_one") {
         auto bulk_insert = libmongoc::bulk_operation_replace_one.create_instance();
         bool bulk_replace_one_called = false;
-        const uint8_t* filter_buffer = nullptr;
-        const uint8_t* replace_buffer = nullptr;
-        bool upsert_value = false;
         bulk_insert->visit([&](
                     mongoc_bulk_operation_t* bulk,
                     const bson_t* filter,
@@ -181,14 +172,14 @@ TEST_CASE("passing valid write operations to append calls the corresponding C fu
                     bool upsert) {
             bulk_replace_one_called = true;
             filter_buffer = bson_get_data(filter);
-            replace_buffer = bson_get_data(replace);
+            doc_buffer = bson_get_data(replace);
             upsert_value = upsert;
         });
 
         bw.append(model::replace_one(filter, doc));
         REQUIRE(bulk_replace_one_called);
         REQUIRE(filter_buffer == filter.get_buf());
-        REQUIRE(replace_buffer == doc.get_buf());
+        REQUIRE(doc_buffer == doc.get_buf());
         REQUIRE(!upsert_value);
     }
 }
