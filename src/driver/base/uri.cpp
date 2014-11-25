@@ -25,7 +25,9 @@ uri& uri::operator=(uri&&) = default;
 uri::~uri() = default;
 
 uri::uri(const std::string& uri_string)
-    : _impl(new impl{mongoc_uri_new(uri_string.c_str())})
+    : _impl(
+        new impl{mongoc_uri_new(uri_string.c_str())}
+    )
 {}
 
 const std::string uri::auth_mechanism() const {

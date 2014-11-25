@@ -50,9 +50,9 @@ class uri {
     bson::document::view options() const;
     const std::string username() const;
     const std::string password() const;
-    bool ssl() const;
     const class read_preference read_preference() const;
     const std::string replica_set() const;
+    bool ssl() const;
     const class write_concern write_concern() const;
 
    private:

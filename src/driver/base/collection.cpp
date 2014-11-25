@@ -171,9 +171,9 @@ optional<result::insert_one> collection::insert_one(const bson::document::view& 
 
     if (options.write_concern()) bulk_op.write_concern(*options.write_concern());
 
-    optional<result::bulk_write> result(bulk_write(bulk_op));
+    optional<result::insert_one> result(std::move(bulk_write(bulk_op).value()));
 
-    return optional<result::insert_one>(result::insert_one());
+    return result;
 }
 
 optional<result::replace_one> collection::replace_one(const bson::document::view& filter,

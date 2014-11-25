@@ -28,9 +28,12 @@ namespace driver {
 
 namespace result {
 
+    class insert_one;
+
 class LIBMONGOCXX_EXPORT bulk_write {
 
     friend class driver::collection;
+    friend class result::insert_one;
 
    public:
     std::int64_t inserted_count() const;
