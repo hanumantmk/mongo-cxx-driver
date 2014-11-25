@@ -62,20 +62,75 @@ TEST_CASE("bulk_write has a write_concern", "[bulk_write][base]") {
     CHECK_OPTIONAL_ARGUMENT_WITHOUT_EQUALITY(bw, write_concern, write_concern());
 }
 
-TEST_CASE("passing write operations to append calls the corresponding C function", "[bulk_write][base]") {
+TEST_CASE("passing valid write operations to append calls the corresponding C function", "[bulk_write][base]") {
     bulk_write bw(true);
+    bson::builder::document filter, doc;
+    filter << "_id" << 1;
+    doc << "_id" << 2;
 
     SECTION("insert_one invokes mongoc_bulk_operation_insert") {
-        bson::builder::document b1;
-
-        b1 << "_id" << 1;
         auto bulk_insert = libmongoc::bulk_operation_insert.create_instance();
         bool bulk_insert_called = false;
         bulk_insert->visit([&bulk_insert_called]() {
             bulk_insert_called = true;
         });
 
-        bw.append(model::insert_one(b1.view()));
+        bw.append(model::insert_one(doc.view()));
         REQUIRE(bulk_insert_called);
+    }
+
+    SECTION("update_one invokes mongoc_bulk_operation_update_one") {
+        auto bulk_insert = libmongoc::bulk_operation_update_one.create_instance();
+        bool bulk_update_one_called = false;
+        bulk_insert->visit([&bulk_update_one_called]() {
+            bulk_update_one_called = true;
+        });
+
+        bw.append(model::update_one(filter.view(), doc.view()));
+        REQUIRE(bulk_update_one_called);
+    }
+
+    SECTION("update_many invokes mongoc_bulk_operation_update") {
+        auto bulk_insert = libmongoc::bulk_operation_update.create_instance();
+        bool bulk_update_called = false;
+        bulk_insert->visit([&bulk_update_called]() {
+            bulk_update_called = true;
+        });
+
+        bw.append(model::update_many(filter.view(), doc.view()));
+        REQUIRE(bulk_update_called);
+    }
+
+    SECTION("delete_one invokes mongoc_bulk_operation_remove_one") {
+        auto bulk_insert = libmongoc::bulk_operation_remove_one.create_instance();
+        bool bulk_remove_one_called = false;
+        bulk_insert->visit([&bulk_remove_one_called]() {
+            bulk_remove_one_called = true;
+        });
+
+        bw.append(model::delete_one(filter.view()));
+        REQUIRE(bulk_remove_one_called);
+    }
+
+    SECTION("delete_many invokes mongoc_bulk_operation_remove") {
+        auto bulk_insert = libmongoc::bulk_operation_remove.create_instance();
+        bool bulk_remove_called = false;
+        bulk_insert->visit([&bulk_remove_called]() {
+            bulk_remove_called = true;
+        });
+
+        bw.append(model::delete_many(filter.view()));
+        REQUIRE(bulk_remove_called);
+    }
+
+    SECTION("replace_one invokes mongoc_bulk_operation_replace_one") {
+        auto bulk_insert = libmongoc::bulk_operation_replace_one.create_instance();
+        bool bulk_replace_one_called = false;
+        bulk_insert->visit([&bulk_replace_one_called]() {
+            bulk_replace_one_called = true;
+        });
+
+        bw.append(model::replace_one(filter.view(), doc.view()));
+        REQUIRE(bulk_replace_one_called);
     }
 }
