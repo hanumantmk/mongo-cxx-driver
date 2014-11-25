@@ -33,6 +33,8 @@ class uri {
 
     class impl;
 
+    friend class client;
+
    public:
     uri(const std::string& uri_string="mongodb://localhost:27017/");
 

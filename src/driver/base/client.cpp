@@ -16,12 +16,13 @@
 
 #include "driver/base/client.hpp"
 #include "driver/base/private/client.hpp"
+#include "driver/base/private/uri.hpp"
 
 namespace mongo {
 namespace driver {
 
 client::client(const uri& uri, const options::client&)
-    : _impl(new impl{mongoc_client_new(uri.hosts().front().host.c_str())})
+    : _impl(new impl{mongoc_client_new_from_uri(uri._impl->uri_t)})
 {}
 
 client::client(client&&) = default;

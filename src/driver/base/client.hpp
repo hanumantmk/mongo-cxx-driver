@@ -41,7 +41,7 @@ class LIBMONGOCXX_EXPORT client {
 
    public:
     client(
-        const uri& uri = uri(),
+        const uri& mongodb_uri = uri(),
         const options::client& options = options::client()
     );
 
