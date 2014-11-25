@@ -16,6 +16,9 @@
 #include "catch.hpp"
 #include "helpers.hpp"
 
+#include "bson/builder.hpp"
+#include "bson/types.hpp"
+
 #include "driver/libmongoc.hpp"
 #include "driver/base/bulk_write.hpp"
 #include "driver/base/write_concern.hpp"
@@ -57,4 +60,22 @@ TEST_CASE("the destruction of a bulk_write will destroy the mongoc operation", "
 TEST_CASE("bulk_write has a write_concern", "[bulk_write][base]") {
     bulk_write bw(true);
     CHECK_OPTIONAL_ARGUMENT_WITHOUT_EQUALITY(bw, write_concern, write_concern());
+}
+
+TEST_CASE("passing write operations to append calls the corresponding C function", "[bulk_write][base]") {
+    bulk_write bw(true);
+
+    SECTION("insert_one invokes mongoc_bulk_operation_insert") {
+        bson::builder::document b1;
+
+        b1 << "_id" << 1;
+        auto bulk_insert = libmongoc::bulk_operation_insert.create_instance();
+        bool bulk_insert_called = false;
+        bulk_insert->visit([&bulk_insert_called]() {
+            bulk_insert_called = true;
+        });
+
+        bw.append(model::insert_one(b1.view()));
+        REQUIRE(bulk_insert_called);
+    }
 }

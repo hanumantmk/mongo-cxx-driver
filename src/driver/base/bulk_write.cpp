@@ -34,7 +34,7 @@ void bulk_write::append(const model::write& operation) {
         case model::write_type::kInsertOne: {
             scoped_bson_t doc(operation.get_insert_one().document());
 
-            mongoc_bulk_operation_insert(_impl->operation_t, doc.bson());
+            libmongoc::bulk_operation_insert(_impl->operation_t, doc.bson());
             break;
         }
         case model::write_type::kUpdateOne: {
@@ -42,7 +42,7 @@ void bulk_write::append(const model::write& operation) {
             scoped_bson_t update(operation.get_update_one().update());
             bool upsert = operation.get_update_one().upsert().value_or(false);
 
-            mongoc_bulk_operation_update_one(_impl->operation_t, filter.bson(), update.bson(),
+            libmongoc::bulk_operation_update_one(_impl->operation_t, filter.bson(), update.bson(),
                                              upsert);
             break;
         }
@@ -51,17 +51,17 @@ void bulk_write::append(const model::write& operation) {
             scoped_bson_t update(operation.get_update_many().update());
             bool upsert = operation.get_update_many().upsert().value_or(false);
 
-            mongoc_bulk_operation_update(_impl->operation_t, filter.bson(), update.bson(), upsert);
+            libmongoc::bulk_operation_update(_impl->operation_t, filter.bson(), update.bson(), upsert);
             break;
         }
         case model::write_type::kDeleteOne: {
             scoped_bson_t filter(operation.get_delete_one().filter());
-            mongoc_bulk_operation_remove_one(_impl->operation_t, filter.bson());
+            libmongoc::bulk_operation_remove_one(_impl->operation_t, filter.bson());
             break;
         }
         case model::write_type::kDeleteMany: {
             scoped_bson_t filter(operation.get_delete_many().filter());
-            mongoc_bulk_operation_remove(_impl->operation_t, filter.bson());
+            libmongoc::bulk_operation_remove(_impl->operation_t, filter.bson());
             break;
         }
         case model::write_type::kReplaceOne: {
@@ -69,7 +69,7 @@ void bulk_write::append(const model::write& operation) {
             scoped_bson_t replace(operation.get_replace_one().replacement());
             bool upsert = operation.get_replace_one().upsert().value_or(false);
 
-            mongoc_bulk_operation_replace_one(_impl->operation_t, filter.bson(), replace.bson(),
+            libmongoc::bulk_operation_replace_one(_impl->operation_t, filter.bson(), replace.bson(),
                                               upsert);
             break;
         }
