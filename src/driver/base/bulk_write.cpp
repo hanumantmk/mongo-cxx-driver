@@ -29,7 +29,7 @@ bulk_write::~bulk_write() = default;
 
 bulk_write::bulk_write(bool ordered) : _impl(new impl{mongoc_bulk_operation_new(ordered)}) {}
 
-void bulk_write::append(model::write operation) {
+void bulk_write::append(const model::write& operation) {
     switch (operation.type()) {
         case model::write_type::kInsertOne: {
             scoped_bson_t doc(operation.get_insert_one().document());

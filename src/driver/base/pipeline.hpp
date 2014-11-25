@@ -23,10 +23,9 @@
 #include "bson/document.hpp"
 
 namespace mongo {
+namespace driver {
 
 class collection;
-
-namespace driver {
 
 class LIBMONGOCXX_EXPORT pipeline {
 

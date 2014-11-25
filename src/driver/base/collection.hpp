@@ -16,6 +16,7 @@
 
 #include "driver/config/prelude.hpp"
 
+#include <algorithm>
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -80,16 +81,13 @@ class LIBMONGOCXX_EXPORT collection {
 
     template<class WriteModelIterator>
     optional<result::bulk_write> bulk_write(
-        const WriteModelIterator& begin,
-        const WriteModelIterator& end,
+        WriteModelIterator& begin,
+        WriteModelIterator& end,
         const options::bulk_write& options = options::bulk_write()
     ) {
         class bulk_write writes(options.ordered().value_or(true));
 
-        WriteModelIterator current(begin);
-
-        while (current != end)
-            writes.append(*current++);
+        std::for_each(begin, end, [&](const model::write& current){writes.append(current);});
 
         return bulk_write(writes);
     }
@@ -163,16 +161,15 @@ class LIBMONGOCXX_EXPORT collection {
 
     template<class DocumentViewIterator>
     optional<result::insert_many> insert_many(
-        const DocumentViewIterator& begin,
-        const DocumentViewIterator& end,
+        DocumentViewIterator begin,
+        DocumentViewIterator end,
         const options::insert& options = options::insert()
     ) {
         class bulk_write writes(false);
 
-        DocumentViewIterator current(begin);
-
-        while (current != end)
-            writes.append(model::insert_one(*current++));
+        std::for_each(begin, end, [&](const bson::document::view& current){
+            writes.append(model::insert_one(current));
+        });
 
         if (options.write_concern())
             writes.write_concern(*options.write_concern());
