@@ -23,8 +23,8 @@
 namespace mongo {
 namespace driver {
 
-cursor::cursor(cursor&&) = default;
-cursor& cursor::operator=(cursor&&) = default;
+cursor::cursor(cursor&&) noexcept = default;
+cursor& cursor::operator=(cursor&&) noexcept = default;
 cursor::~cursor() = default;
 
 cursor::cursor(void* cursor_ptr) : _impl(new impl{static_cast<mongoc_cursor_t*>(cursor_ptr)}) {}

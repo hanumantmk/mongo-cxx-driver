@@ -45,24 +45,32 @@ class LIBMONGOCXX_EXPORT client {
         const options::client& options = options::client()
     );
 
-    client(client&& rhs);
-    client& operator=(client&& rhs);
+    client(client&& rhs) noexcept;
+    client& operator=(client&& rhs) noexcept;
 
     ~client();
 
+    // TODO: document that modifications at this level do not affect existing clients + databases
     void read_preference(class read_preference rp);
     const class read_preference& read_preference() const;
 
+    // TODO: document that modifications at this level do not affect existing clients + databases
     void write_concern(class write_concern wc);
     const class write_concern& write_concern() const;
 
-    class database database(const std::string& database_name);
-    class database operator[](const std::string& database_name);
+    class database database(const std::string& name) &;
+    class database database(const std::string& name) && = delete;
+
+    inline class database operator[](const std::string& name);
 
    private:
     std::unique_ptr<impl> _impl;
 
 }; // class client
+
+inline class database client::operator[](const std::string& name) {
+    return database(name);
+}
 
 }  // namespace driver
 }  // namespace mongo

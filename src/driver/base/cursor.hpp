@@ -34,9 +34,8 @@ class LIBMONGOCXX_EXPORT cursor {
    public:
     class iterator;
 
-    cursor(cursor&& other);
-
-    cursor& operator=(cursor&& rhs);
+    cursor(cursor&& other) noexcept;
+    cursor& operator=(cursor&& rhs) noexcept;
 
     ~cursor();
 

@@ -22,11 +22,11 @@ namespace mongo {
 namespace driver {
 
 client::client(const uri& uri, const options::client&)
-    : _impl(new impl{mongoc_client_new_from_uri(uri._impl->uri_t)})
+    : _impl(std::make_unique<impl>(mongoc_client_new_from_uri(uri._impl->uri_t)))
 {}
 
-client::client(client&&) = default;
-client& client::operator=(client&&) = default;
+client::client(client&&) noexcept = default;
+client& client::operator=(client&&) noexcept = default;
 
 client::~client() = default;
 
@@ -36,12 +36,8 @@ const class read_preference& client::read_preference() const { return _impl->rea
 void client::write_concern(class write_concern wc) { _impl->write_concern(std::move(wc)); }
 const class write_concern& client::write_concern() const { return _impl->write_concern(); }
 
-class database client::database(const std::string& database_name) {
-    return mongo::driver::database(*this, database_name);
-}
-
-class database client::operator[](const std::string& database_name) {
-    return database(database_name);
+class database client::database(const std::string& name) & {
+    return mongo::driver::database(*this, name);
 }
 
 }  // namespace driver

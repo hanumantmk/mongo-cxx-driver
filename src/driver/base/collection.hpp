@@ -50,8 +50,6 @@ namespace driver {
 
 class client;
 class database;
-class write_concern;
-class read_preference;
 class pipeline;
 
 class LIBMONGOCXX_EXPORT collection {
@@ -61,8 +59,8 @@ class LIBMONGOCXX_EXPORT collection {
     friend class database;
 
    public:
-    collection(collection&& other);
-    collection& operator=(collection&& rhs);
+    collection(collection&& other) noexcept;
+    collection& operator=(collection&& rhs) noexcept;
 
     ~collection();
 

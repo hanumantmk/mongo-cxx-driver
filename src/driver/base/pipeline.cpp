@@ -21,10 +21,10 @@ namespace driver {
 using namespace bson::builder::helpers;
 using namespace bson::types;
 
-pipeline::pipeline() : _impl(new impl{}) {}
+pipeline::pipeline() : _impl(std::make_unique<impl>()) {}
 
-pipeline::pipeline(pipeline&&) = default;
-pipeline& pipeline::operator=(pipeline&&) = default;
+pipeline::pipeline(pipeline&&) noexcept = default;
+pipeline& pipeline::operator=(pipeline&&) noexcept = default;
 pipeline::~pipeline() = default;
 
 pipeline& pipeline::group(bson::document::view group) {

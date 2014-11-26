@@ -43,7 +43,7 @@ flags = [
     '-Wno-variadic-macros',
     '-fexceptions',
     '-DNDEBUG',
-    '-std=c++11',
+    '-std=c++1y',
     '-x', 'c++',
     '-isystem',
     '../BoostParts',
@@ -61,6 +61,8 @@ flags = [
     '-isystem', './tests/gmock/include',
     '-isystem', '/usr/include',
     '-isystem', '/usr/local/include',
+    '-isystem', '/usr/local/include/libbson-1.0',
+    '-isystem', '/usr/local/include/libmongoc-1.0',
     '-isystem', '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1',
     '-isystem', '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include',
 ]

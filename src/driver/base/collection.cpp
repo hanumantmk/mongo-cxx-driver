@@ -45,14 +45,14 @@ namespace driver {
 
 using namespace bson::libbson;
 
-collection::collection(collection&&) = default;
-collection& collection::operator=(collection&&) = default;
+collection::collection(collection&&) noexcept = default;
+collection& collection::operator=(collection&&) noexcept = default;
 collection::~collection() = default;
 
 collection::collection(const database& database, const std::string& collection_name)
-    : _impl(new impl{
+    : _impl(std::make_unique<impl>(
           mongoc_database_get_collection(database._impl->database_t, collection_name.c_str()),
-          &database, database._impl->client, collection_name.c_str()}) {}
+          &database, database._impl->client, collection_name.c_str())) {}
 
 optional<result::bulk_write> collection::bulk_write(const class bulk_write& bulk_write) {
     mongoc_bulk_operation_t* b = bulk_write._impl->operation_t;

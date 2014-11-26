@@ -20,13 +20,13 @@
 namespace mongo {
 namespace driver {
 
-uri::uri(uri&&) = default;
-uri& uri::operator=(uri&&) = default;
+uri::uri(uri&&) noexcept = default;
+uri& uri::operator=(uri&&) noexcept = default;
 uri::~uri() = default;
 
 uri::uri(const std::string& uri_string)
     : _impl(
-        new impl{mongoc_uri_new(uri_string.c_str())}
+        std::make_unique<impl>(mongoc_uri_new(uri_string.c_str()))
     )
 {}
 

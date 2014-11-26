@@ -22,13 +22,13 @@
 namespace mongo {
 namespace driver {
 
-database::database(database&&) = default;
-database& database::operator=(database&&) = default;
+database::database(database&&) noexcept = default;
+database& database::operator=(database&&) noexcept = default;
 database::~database() = default;
 
-database::database(const class client& client, const std::string& database_name)
-    : _impl(new impl{mongoc_client_get_database(client._impl->client_t, database_name.c_str()),
-                     &client, database_name.c_str()}) {}
+database::database(const class client& client, const std::string& name)
+    : _impl(std::make_unique<impl>(mongoc_client_get_database(client._impl->client_t, name.c_str()),
+                     &client, name.c_str())) {}
 
 const std::string& database::name() const { return _impl->name; }
 
@@ -38,12 +38,8 @@ const class read_preference& database::read_preference() const { return _impl->r
 void database::write_concern(class write_concern wc) { _impl->write_concern(std::move(wc)); }
 const class write_concern& database::write_concern() const { return _impl->write_concern(); }
 
-collection database::collection(const std::string& collection_name) {
-    return mongo::driver::collection(*this, collection_name);
-}
-
-collection database::operator[](const std::string& collection_name) {
-    return collection(collection_name);
+collection database::collection(const std::string& name) & {
+    return mongo::driver::collection(*this, name);
 }
 
 }  // namespace driver

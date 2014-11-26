@@ -27,7 +27,6 @@ namespace mongo {
 namespace driver {
 
 class client;
-class collection;
 
 /// The database class serves as a representation of a MongoDB database. It acts as a gateway
 /// for accessing collections that are contained within the particular database that an instance
@@ -41,8 +40,8 @@ class LIBMONGOCXX_EXPORT database {
     class impl;
 
    public:
-    database(database&& other);
-    database& operator=(database&& rhs);
+    database(database&& other) noexcept;
+    database& operator=(database&& rhs) noexcept;
 
     ~database();
 
@@ -54,15 +53,20 @@ class LIBMONGOCXX_EXPORT database {
     void write_concern(class write_concern wc);
     const class write_concern& write_concern() const;
 
-    class collection collection(const std::string& collection_name);
-    class collection operator[](const std::string& collection_name);
+    class collection collection(const std::string& name) &;
+    class collection collection(const std::string& name) && = delete;
+    inline class collection operator[](const std::string& name);
 
    private:
-    database(const class client& client, const std::string& database_name);
+    database(const class client& client, const std::string& name);
 
     std::unique_ptr<impl> _impl;
 
 }; // class database
+
+inline collection database::operator[](const std::string& name) {
+    return collection(name);
+}
 
 }  // namespace driver
 }  // namespace mongo

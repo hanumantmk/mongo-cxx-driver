@@ -34,8 +34,8 @@ class LIBMONGOCXX_EXPORT bulk_write {
    public:
     bulk_write(bool ordered);
 
-    bulk_write(bulk_write&& other);
-    bulk_write& operator=(bulk_write&& rhs);
+    bulk_write(bulk_write&& other) noexcept;
+    bulk_write& operator=(bulk_write&& rhs) noexcept;
 
     ~bulk_write();
 

@@ -36,10 +36,11 @@ class uri {
     friend class client;
 
    public:
+    // TODO: document the default is localhost:27017...
     uri(const std::string& uri_string="mongodb://localhost:27017/");
 
-    uri(uri&& other);
-    uri& operator=(uri&& rhs);
+    uri(uri&& other) noexcept;
+    uri& operator=(uri&& rhs) noexcept;
 
     ~uri();
 

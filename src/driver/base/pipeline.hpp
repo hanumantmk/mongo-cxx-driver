@@ -36,8 +36,8 @@ class LIBMONGOCXX_EXPORT pipeline {
    public:
     pipeline();
 
-    pipeline(pipeline&& other);
-    pipeline& operator=(pipeline&& rhs);
+    pipeline(pipeline&& other) noexcept;
+    pipeline& operator=(pipeline&& rhs) noexcept;
 
     ~pipeline();
 

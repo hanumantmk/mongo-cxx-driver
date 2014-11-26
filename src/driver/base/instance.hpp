@@ -28,8 +28,8 @@ class instance {
    public:
     instance();
 
-    instance(instance&& other);
-    instance& operator=(instance&& rhs);
+    instance(instance&& other) noexcept;
+    instance& operator=(instance&& rhs) noexcept;
 
     ~instance();
 

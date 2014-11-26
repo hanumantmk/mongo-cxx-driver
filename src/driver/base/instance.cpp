@@ -16,26 +16,29 @@
 
 #include "mongoc.h"
 
+namespace {
+    void log_handler(mongoc_log_level_t, const char *, const char *, void *) {}
+}
+
 namespace mongo {
 namespace driver {
 
-static void log_handler(mongoc_log_level_t, const char *, const char *, void *) {}
-
-class LIBMONGOCXX_EXPORT instance::impl {
+class instance::impl {
    public:
     impl() {
         mongoc_init();
-
         mongoc_log_set_handler(log_handler, nullptr);
     }
 
-    ~impl() { mongoc_cleanup(); }
+    ~impl() {
+        mongoc_cleanup();
+    }
 };
 
-instance::instance() : _impl(new impl{}) {}
+instance::instance() : _impl(std::make_unique<impl>()) {}
 
-instance::instance(instance &&) = default;
-instance &instance::operator=(instance &&) = default;
+instance::instance(instance &&) noexcept = default;
+instance &instance::operator=(instance &&) noexcept = default;
 instance::~instance() = default;
 
 }  // namespace driver

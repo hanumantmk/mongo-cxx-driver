@@ -74,12 +74,6 @@ class mock<R (*)(Args...)> {
          _parent->destroy_active_instance();
      }
 
-     rule& interpose(std::function<R(ptr, Args...)> func) {
-         _callbacks.emplace_back(func);
-
-         return _callbacks.back();
-     }
-
      rule& interpose(std::function<R(Args...)> func) {
          _callbacks.emplace_back([=](ptr, Args... args) { return func(args...); });
 
@@ -111,23 +105,6 @@ class mock<R (*)(Args...)> {
 
          return _callbacks.back();
      }
-
-     rule& interpose(std::function<R(void)> func) {
-         _callbacks.emplace_back([=](ptr, Args... args) { return func(); });
-
-         return _callbacks.back();
-     }
-
-     rule& visit(std::function<void(void)> func) {
-         _callbacks.emplace_back([=](ptr, Args... args) {
-             func();
-
-             return _parent->_func(args...);
-         });
-
-         return _callbacks.back();
-     }
-
 
      std::size_t depth() const { return _callbacks.size(); }
 
