@@ -17,9 +17,13 @@
 #include <iostream>
 #include <deque>
 #include <vector>
+#include <map>
 #include <memory>
+#include <mutex>
 #include <functional>
 #include <type_traits>
+#include <thread>
+#include "driver/util/optional.hpp"
 
 namespace mongo {
 namespace util {
@@ -67,7 +71,7 @@ class mock<R (*)(Args...)> {
      MockInstance(const MockInstance&) = delete;
      MockInstance* operator=(const MockInstance&) = delete;
      ~MockInstance() {
-         _parent->_active = nullptr;
+         _parent->destroy_active_instance();
      }
 
      rule& interpose(std::function<R(ptr, Args...)> func) {
@@ -137,15 +141,17 @@ class mock<R (*)(Args...)> {
 
     friend class MockInstance;
 
-    mock(ptr func) :_active(nullptr), _func(func){}
+    mock(ptr func) : _func(func) {}
 
     R operator()(Args... args) {
-        if (_active != nullptr) {
-            while (!_active->_callbacks.empty()) {
-                if (_active->_callbacks.front()._conditional(args...)) {
-                    return _active->_callbacks.front()._callback(_func, args...);
+        driver::optional<MockInstance*> instance = active_instance();
+        if (instance) {
+            MockInstance* instance_value = instance.value();
+            while (!instance_value->_callbacks.empty()) {
+                if (instance_value->_callbacks.front()._conditional(args...)) {
+                    return instance_value->_callbacks.front()._callback(_func, args...);
                 } else {
-                    _active->_callbacks.pop_front();
+                    instance_value->_callbacks.pop_front();
                 }
             }
         }
@@ -154,21 +160,40 @@ class mock<R (*)(Args...)> {
     }
 
     std::unique_ptr<MockInstance> create_instance() {
-        if (_active != nullptr) {
+        if (active_instance()) {
             throw std::runtime_error("Cannot create second mock instance in thread");
         }
         std::unique_ptr<MockInstance> mock_instance(new MockInstance(this));
-        _active = &*mock_instance;
+        active_instance(&*mock_instance);
         return mock_instance;
     }
 
    private:
-    MockInstance* _active;
+    driver::optional<MockInstance*> active_instance() {
+        std::thread::id id = std::this_thread::get_id();
+        std::lock_guard<std::mutex> lock(_active_instances_lock);
+        auto iterator = _active_instances.find(id);
+        if (iterator == _active_instances.end()) {
+            return driver::optional<MockInstance*>();
+        }
+        return driver::optional<MockInstance*>(iterator->second);
+    }
+    void active_instance(MockInstance* instance) {
+        std::thread::id id = std::this_thread::get_id();
+        std::lock_guard<std::mutex> lock(_active_instances_lock);
+        _active_instances[id] = instance;
+    }
+
+    void destroy_active_instance() {
+        std::thread::id id = std::this_thread::get_id();
+        std::lock_guard<std::mutex> lock(_active_instances_lock);
+        _active_instances.erase(id);
+    }
+
+    std::map<std::thread::id, MockInstance*> _active_instances;
+    std::mutex _active_instances_lock;
     ptr _func;
 };
-
-//template <typename R, typename... Args>
-//thread_local typename mock<R (*)(Args...)>::MockInstance* mock<R (*)(Args...)>::_active = nullptr;
 
 }  // namespace util
 }  // namespace mongo
