@@ -29,6 +29,7 @@ namespace driver {
 
 class collection::impl {
    public:
+    // TODO: Make these database* and client* -> database::impl* and client::impl*
     impl(mongoc_collection_t* collection, const class database* database, const class client* client, std::string name) :
         collection_t(collection),
         database(database),

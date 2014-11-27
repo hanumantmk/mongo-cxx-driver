@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "private/preamble.hpp"
-
 #include "driver/base/client.hpp"
 #include "driver/base/private/client.hpp"
 #include "driver/base/private/uri.hpp"

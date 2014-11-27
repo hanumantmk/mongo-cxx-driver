@@ -27,6 +27,7 @@ cursor::cursor(cursor&&) noexcept = default;
 cursor& cursor::operator=(cursor&&) noexcept = default;
 cursor::~cursor() = default;
 
+// TODO: figure out how to use make_unique here
 cursor::cursor(void* cursor_ptr) : _impl(new impl{static_cast<mongoc_cursor_t*>(cursor_ptr)}) {}
 
 cursor::iterator& cursor::iterator::operator++() {
