@@ -8,10 +8,17 @@ add_library(mongocxx-driver
 )
 
 if (BUILD_UNIT_TESTS)
-    add_library(mongocxx-mock_symbols STATIC libmongoc.cpp)
-    set_target_properties(mongocxx-mock_symbols PROPERTIES
-       COMPILE_FLAGS -DMONGOCXX_TESTING)
-    target_link_libraries(mongocxx-mock_symbols ${LIBMONGOC_LIBRARIES})
+    add_library(mocked-mongocxx-driver
+        $<TARGET_OBJECTS:mongocxx-driver-base-mocked>
+        $<TARGET_OBJECTS:mongocxx-driver-model>
+        $<TARGET_OBJECTS:mongocxx-driver-options>
+        $<TARGET_OBJECTS:mongocxx-driver-result>
+        $<TARGET_OBJECTS:mongocxx-driver-util>
+        libmongoc.cpp
+    )
+    set_target_properties(mocked-mongocxx-driver PROPERTIES
+       COMPILE_FLAGS -DMONGOCXX_TESTING
+    )
 endif(BUILD_UNIT_TESTS)
 
 

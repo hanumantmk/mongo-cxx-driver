@@ -6,7 +6,7 @@ include_directories("include")
 
 macro(test t)
     add_executable(test_${t} test_${t}.cpp)
-    target_link_libraries(test_${t} mongocxx-shared)
+    target_link_libraries(test_${t} mongocxx-mocked)
 endmacro()
 
 test(1)
@@ -14,9 +14,8 @@ add_test(test_suite_1 test_1)
 
 add_executable(test_model_update_many
     driver/model/update_many.cpp
-    ${CMAKE_SOURCE_DIR}/src/driver/model/update_many.cpp
 )
-target_link_libraries(test_model_update_many mongocxx-bson mongocxx-mock_symbols)
+target_link_libraries(test_model_update_many mongocxx-mocked)
 add_test(model_update_many test_model_update_many)
 
 test(3)
@@ -28,34 +27,27 @@ add_test(test_suite_5 test_5 10)
 
 add_executable(test_options_aggregate
     driver/options/aggregate.cpp
-    ${CMAKE_SOURCE_DIR}/src/driver/options/aggregate.cpp
-    ${CMAKE_SOURCE_DIR}/src/driver/base/read_preference.cpp
 )
+target_link_libraries(test_options_aggregate mongocxx-mocked)
 add_test(options_aggregate test_options_aggregate)
 
 add_executable(test_bulk_write
     driver/base/bulk_write.cpp
-    ${CMAKE_SOURCE_DIR}/src/driver/base/write_concern.cpp
-    $<TARGET_OBJECTS:mongocxx-driver-model>
-    ${CMAKE_SOURCE_DIR}/src/driver/base/bulk_write.cpp
-    ${CMAKE_SOURCE_DIR}/src/driver/util/libbson.cpp
 )
-target_link_libraries(test_bulk_write mongocxx-bson mongocxx-mock_symbols)
+target_link_libraries(test_bulk_write mongocxx-mocked)
 add_test(bulk_write test_bulk_write)
-
-
 
 add_executable(test_write_concern
     driver/base/write_concern.cpp
-    ${CMAKE_SOURCE_DIR}/src/driver/base/write_concern.cpp)
+)
+target_link_libraries(test_write_concern mongocxx-mocked)
 add_test(test_write_concern test_write_concern)
 
 add_executable(test_private_write_concern
     driver/base/private/write_concern.cpp
-    ${CMAKE_SOURCE_DIR}/src/driver/base/write_concern.cpp)
-target_link_libraries(test_private_write_concern mongocxx-mock_symbols)
+)
+target_link_libraries(test_private_write_concern mongocxx-mocked)
 add_test(test_private_write_concern test_private_write_concern)
-
 
 add_executable(new_tests
     new_tests.cpp
@@ -64,4 +56,4 @@ add_executable(new_tests
     bson_string_or_literal.cpp
     collection.cpp
 )
-target_link_libraries(new_tests mongocxx-static)
+target_link_libraries(new_tests mongocxx-mocked)
