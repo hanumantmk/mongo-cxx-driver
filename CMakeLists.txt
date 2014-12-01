@@ -8,10 +8,12 @@ include(GenerateExportHeader)
 # Ensure that RPATH is used on OSX
 set(CMAKE_MACOSX_RPATH 1)
 
-set(WRAPPED_ABI_VERSION 1.0)
+set(LIBMONGOC_ABI_VERSION 1.0)
+set(LIBBSON_ABI_VERSION 1.0)
 
 find_package(PkgConfig)
-pkg_check_modules(LIBMONGOC libmongoc-${WRAPPED_ABI_VERSION})
+pkg_check_modules(LIBMONGOC libmongoc-${LIBMONGOC_ABI_VERSION})
+pkg_check_modules(LIBBSON libbson-${LIBBSON_ABI_VERSION})
 
 option(BUILD_UNIT_TESTS "Build unit tests" ON)
 
