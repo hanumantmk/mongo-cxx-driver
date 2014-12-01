@@ -9,53 +9,52 @@ macro(test t)
     target_link_libraries(test_${t} mongocxx-shared)
 endmacro()
 
-# TODO: re-enable when you figure out why clang hates these tests
-#test(1)
-#add_test(test_suite_1 test_1)
+test(1)
+add_test(test_suite_1 test_1)
 
-#add_executable(test_model_update_many
-    #driver/model/update_many.cpp
-    #${CMAKE_SOURCE_DIR}/src/driver/model/update_many.cpp
-#)
-#target_link_libraries(test_model_update_many mongocxx-bson mongocxx-mock_symbols)
-#add_test(model_update_many test_model_update_many)
+add_executable(test_model_update_many
+    driver/model/update_many.cpp
+    ${CMAKE_SOURCE_DIR}/src/driver/model/update_many.cpp
+)
+target_link_libraries(test_model_update_many mongocxx-bson mongocxx-mock_symbols)
+add_test(model_update_many test_model_update_many)
 
-#test(3)
-#add_test(test_suite_3 test_3)
-#test(4)
-#add_test(test_suite_4 test_4)
-#test(5)
-#add_test(test_suite_5 test_5 10)
+test(3)
+add_test(test_suite_3 test_3)
+test(4)
+add_test(test_suite_4 test_4)
+test(5)
+add_test(test_suite_5 test_5 10)
 
-#add_executable(test_options_aggregate
-    #driver/options/aggregate.cpp
-    #${CMAKE_SOURCE_DIR}/src/driver/options/aggregate.cpp
-    #${CMAKE_SOURCE_DIR}/src/driver/base/read_preference.cpp
-#)
-#add_test(options_aggregate test_options_aggregate)
+add_executable(test_options_aggregate
+    driver/options/aggregate.cpp
+    ${CMAKE_SOURCE_DIR}/src/driver/options/aggregate.cpp
+    ${CMAKE_SOURCE_DIR}/src/driver/base/read_preference.cpp
+)
+add_test(options_aggregate test_options_aggregate)
 
-#add_executable(test_bulk_write
-    #driver/base/bulk_write.cpp
-    #${CMAKE_SOURCE_DIR}/src/driver/base/write_concern.cpp
-    #$<TARGET_OBJECTS:mongocxx-driver-model>
-    #${CMAKE_SOURCE_DIR}/src/driver/base/bulk_write.cpp
-    #${CMAKE_SOURCE_DIR}/src/driver/util/libbson.cpp
-#)
-#target_link_libraries(test_bulk_write mongocxx-bson mongocxx-mock_symbols)
-#add_test(bulk_write test_bulk_write)
-
+add_executable(test_bulk_write
+    driver/base/bulk_write.cpp
+    ${CMAKE_SOURCE_DIR}/src/driver/base/write_concern.cpp
+    $<TARGET_OBJECTS:mongocxx-driver-model>
+    ${CMAKE_SOURCE_DIR}/src/driver/base/bulk_write.cpp
+    ${CMAKE_SOURCE_DIR}/src/driver/util/libbson.cpp
+)
+target_link_libraries(test_bulk_write mongocxx-bson mongocxx-mock_symbols)
+add_test(bulk_write test_bulk_write)
 
 
-#add_executable(test_write_concern
-    #driver/base/write_concern.cpp
-    #${CMAKE_SOURCE_DIR}/src/driver/base/write_concern.cpp)
-#add_test(test_write_concern test_write_concern)
 
-#add_executable(test_private_write_concern
-    #driver/base/private/write_concern.cpp
-    #${CMAKE_SOURCE_DIR}/src/driver/base/write_concern.cpp)
-#target_link_libraries(test_private_write_concern mongocxx-mock_symbols)
-#add_test(test_private_write_concern test_private_write_concern)
+add_executable(test_write_concern
+    driver/base/write_concern.cpp
+    ${CMAKE_SOURCE_DIR}/src/driver/base/write_concern.cpp)
+add_test(test_write_concern test_write_concern)
+
+add_executable(test_private_write_concern
+    driver/base/private/write_concern.cpp
+    ${CMAKE_SOURCE_DIR}/src/driver/base/write_concern.cpp)
+target_link_libraries(test_private_write_concern mongocxx-mock_symbols)
+add_test(test_private_write_concern test_private_write_concern)
 
 
 add_executable(new_tests
