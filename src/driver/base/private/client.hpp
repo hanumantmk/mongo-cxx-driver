@@ -31,14 +31,14 @@ class client::impl {
    public:
     impl(mongoc_client_t* client) : client_t(client) {}
 
-    ~impl() { mongoc_client_destroy(client_t); }
+    ~impl() { libmongoc::client_destroy(client_t); }
 
     mongoc_client_t* client_t;
 
     void read_preference(class read_preference rp) {
         priv::read_preference read_prefs{rp};
 
-        mongoc_client_set_read_prefs(client_t, read_prefs.get_read_preference());
+        libmongoc::client_set_read_prefs(client_t, read_prefs.get_read_preference());
 
         _read_preference = std::move(rp);
     }
@@ -46,7 +46,7 @@ class client::impl {
     void write_concern(class write_concern wc) {
         priv::write_concern write_conc{wc};
 
-        mongoc_client_set_write_concern(client_t, write_conc.get_write_concern());
+        libmongoc::client_set_write_concern(client_t, write_conc.get_write_concern());
 
         _write_concern = std::move(wc);
     }

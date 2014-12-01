@@ -49,6 +49,12 @@ add_executable(test_private_write_concern
 target_link_libraries(test_private_write_concern mongocxx-mocked)
 add_test(test_private_write_concern test_private_write_concern)
 
+add_executable(test_client
+    driver/base/client.cpp
+)
+target_link_libraries(test_client mongocxx-mocked)
+add_test(test_client test_client)
+
 add_executable(new_tests
     new_tests.cpp
     bson_builder.cpp
