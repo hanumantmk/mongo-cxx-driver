@@ -52,13 +52,13 @@ collection::~collection() = default;
 collection::collection(const database& database, const std::string& collection_name)
     : _impl(stdx::make_unique<impl>(
           mongoc_database_get_collection(database._impl->database_t, collection_name.c_str()),
-          &database, database._impl->client, collection_name.c_str())) {}
+          database._impl.get(), database._impl->client_impl, collection_name.c_str())) {}
 
 optional<result::bulk_write> collection::bulk_write(const class bulk_write& bulk_write) {
     mongoc_bulk_operation_t* b = bulk_write._impl->operation_t;
-    mongoc_bulk_operation_set_database(b, _impl->database->_impl->name.c_str());
+    mongoc_bulk_operation_set_database(b, _impl->database_impl->name.c_str());
     mongoc_bulk_operation_set_collection(b, _impl->name.c_str());
-    mongoc_bulk_operation_set_client(b, _impl->client->_impl->client_t);
+    mongoc_bulk_operation_set_client(b, _impl->client_impl->client_t);
 
     if (bulk_write.write_concern()) {
         priv::write_concern wc(*bulk_write.write_concern());

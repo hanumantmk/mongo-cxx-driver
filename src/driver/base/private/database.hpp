@@ -29,18 +29,18 @@ namespace driver {
 
 class database::impl {
    public:
-    impl(mongoc_database_t* db, const class client* client, std::string name) :
+    impl(mongoc_database_t* db, const class client::impl* client, std::string name) :
         database_t(db),
-        client(client),
+        client_impl(client),
         name(std::move(name))
     {
-        read_preference(client->_impl->read_preference());
-        write_concern(client->_impl->write_concern());
+        read_preference(client->read_preference());
+        write_concern(client->write_concern());
     }
 
     ~impl() { mongoc_database_destroy(database_t); }
     mongoc_database_t* database_t;
-    const class client* client;
+    const class client::impl* client_impl;
     std::string name;
 
     void read_preference(class read_preference rp) {

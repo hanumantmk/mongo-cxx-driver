@@ -30,21 +30,21 @@ namespace driver {
 class collection::impl {
    public:
     // TODO: Make these database* and client* -> database::impl* and client::impl*
-    impl(mongoc_collection_t* collection, const class database* database, const class client* client, std::string name) :
+    impl(mongoc_collection_t* collection, const class database::impl* database, const class client::impl* client, std::string name) :
         collection_t(collection),
-        database(database),
-        client(client),
+        database_impl(database),
+        client_impl(client),
         name(name)
     {
-        read_preference(database->_impl->read_preference());
-        write_concern(database->_impl->write_concern());
+        read_preference(database->read_preference());
+        write_concern(database->write_concern());
     }
 
     ~impl() { mongoc_collection_destroy(collection_t); }
 
     mongoc_collection_t* collection_t;
-    const class database* database;
-    const class client* client;
+    const class database::impl* database_impl;
+    const class client::impl* client_impl;
     std::string name;
 
     void read_preference(class read_preference rp) {
