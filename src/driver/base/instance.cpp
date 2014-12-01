@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "driver/base/instance.hpp"
+#include "stdx/make_unique.hpp"
 
 #include "mongoc.h"
 
@@ -35,7 +36,7 @@ class instance::impl {
     }
 };
 
-instance::instance() : _impl(std::make_unique<impl>()) {}
+instance::instance() : _impl(stdx::make_unique<impl>()) {}
 
 instance::instance(instance &&) noexcept = default;
 instance &instance::operator=(instance &&) noexcept = default;

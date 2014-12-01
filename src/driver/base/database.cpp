@@ -18,6 +18,7 @@
 #include "driver/base/client.hpp"
 #include "driver/base/private/database.hpp"
 #include "driver/base/private/client.hpp"
+#include "stdx/make_unique.hpp"
 
 namespace mongo {
 namespace driver {
@@ -27,7 +28,7 @@ database& database::operator=(database&&) noexcept = default;
 database::~database() = default;
 
 database::database(const class client& client, const std::string& name)
-    : _impl(std::make_unique<impl>(mongoc_client_get_database(client._impl->client_t, name.c_str()),
+    : _impl(stdx::make_unique<impl>(mongoc_client_get_database(client._impl->client_t, name.c_str()),
                      &client, name.c_str())) {}
 
 const std::string& database::name() const { return _impl->name; }

@@ -50,7 +50,7 @@ collection& collection::operator=(collection&&) noexcept = default;
 collection::~collection() = default;
 
 collection::collection(const database& database, const std::string& collection_name)
-    : _impl(std::make_unique<impl>(
+    : _impl(stdx::make_unique<impl>(
           mongoc_database_get_collection(database._impl->database_t, collection_name.c_str()),
           &database, database._impl->client, collection_name.c_str())) {}
 

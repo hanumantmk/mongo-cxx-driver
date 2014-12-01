@@ -17,6 +17,7 @@
 #include "driver/base/private/bulk_write.hpp"
 #include "driver/libmongoc.hpp"
 #include "driver/util/libbson.hpp"
+#include "stdx/make_unique.hpp"
 
 namespace mongo {
 namespace driver {
@@ -27,7 +28,7 @@ bulk_write::bulk_write(bulk_write&&) noexcept = default;
 bulk_write& bulk_write::operator=(bulk_write&&) noexcept = default;
 bulk_write::~bulk_write() = default;
 
-bulk_write::bulk_write(bool ordered) : _impl(std::make_unique<impl>(libmongoc::bulk_operation_new(ordered))) {}
+bulk_write::bulk_write(bool ordered) : _impl(stdx::make_unique<impl>(libmongoc::bulk_operation_new(ordered))) {}
 
 void bulk_write::append(const model::write& operation) {
     switch (operation.type()) {

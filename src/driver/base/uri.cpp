@@ -16,6 +16,7 @@
 
 #include "driver/base/uri.hpp"
 #include "driver/base/private/uri.hpp"
+#include "stdx/make_unique.hpp"
 
 namespace mongo {
 namespace driver {
@@ -26,7 +27,7 @@ uri::~uri() = default;
 
 uri::uri(const std::string& uri_string)
     : _impl(
-        std::make_unique<impl>(mongoc_uri_new(uri_string.c_str()))
+        stdx::make_unique<impl>(mongoc_uri_new(uri_string.c_str()))
     )
 {}
 

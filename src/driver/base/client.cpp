@@ -15,12 +15,13 @@
 #include "driver/base/client.hpp"
 #include "driver/base/private/client.hpp"
 #include "driver/base/private/uri.hpp"
+#include "stdx/make_unique.hpp"
 
 namespace mongo {
 namespace driver {
 
 client::client(const uri& uri, const options::client&)
-    : _impl(std::make_unique<impl>(mongoc_client_new_from_uri(uri._impl->uri_t)))
+    : _impl(stdx::make_unique<impl>(mongoc_client_new_from_uri(uri._impl->uri_t)))
 {}
 
 client::client(client&&) noexcept = default;
