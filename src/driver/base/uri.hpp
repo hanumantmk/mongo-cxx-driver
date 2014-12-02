@@ -36,10 +36,12 @@ class uri {
     friend class client;
 
    public:
+
+    static const std::string kDefaultURI;
+
     // TODO: document the default is localhost:27017...
-    // TODO: make this string a constant
     // TODO: this should really take a stringview (polyfilled)?
-    uri(const std::string& uri_string="mongodb://localhost:27017/");
+    uri(const std::string& uri_string = kDefaultURI);
 
     uri(uri&& other) noexcept;
     uri& operator=(uri&& rhs) noexcept;
@@ -58,6 +60,7 @@ class uri {
     class read_preference read_preference() const;
     std::string replica_set() const;
     bool ssl() const;
+    std::string string() const;
     std::string username() const;
     class write_concern write_concern() const;
 

@@ -21,6 +21,8 @@
 namespace mongo {
 namespace driver {
 
+const std::string uri::kDefaultURI = "mongodb://localhost:27017";
+
 uri::uri(const std::string& uri_string)
     : _impl(
         stdx::make_unique<impl>(mongoc_uri_new(uri_string.c_str()))
@@ -71,6 +73,10 @@ std::string uri::password() const {
 
 std::string uri::replica_set() const {
     return mongoc_uri_get_replica_set(_impl->uri_t);
+}
+
+std::string uri::string() const {
+    return mongoc_uri_get_string(_impl->uri_t);
 }
 
 bool uri::ssl() const {

@@ -70,28 +70,18 @@ class LIBMONGOCXX_EXPORT collection {
         const options::aggregate& options = options::aggregate()
     );
 
-    // TODO: de-inline body
     template<class Container>
-    optional<result::bulk_write> bulk_write(
+    inline optional<result::bulk_write> bulk_write(
         const Container& requests,
         const options::bulk_write& options = options::bulk_write()
-    ) {
-        return bulk_write(requests.begin(), requests.end(), options);
-    }
+    );
 
-    // TODO: de-inline body
     template<class WriteModelIterator>
-    optional<result::bulk_write> bulk_write(
+    inline optional<result::bulk_write> bulk_write(
         WriteModelIterator begin,
         WriteModelIterator end,
         const options::bulk_write& options = options::bulk_write()
-    ) {
-        class bulk_write writes(options.ordered().value_or(true));
-
-        std::for_each(begin, end, [&](const model::write& current){writes.append(current);});
-
-        return bulk_write(writes);
-    }
+    );
 
     optional<result::bulk_write> bulk_write(
         const class bulk_write& bulk_write
@@ -154,35 +144,18 @@ class LIBMONGOCXX_EXPORT collection {
         const options::insert& options = options::insert()
     );
 
-    // TODO: move body
     template<class Container>
-    optional<result::insert_many> insert_many(
+    inline optional<result::insert_many> insert_many(
         const Container& container,
         const options::insert& options = options::insert()
-    ) {
-        return insert_many(container.begin(), container.end(), options);
-    }
+    );
 
-    // TODO: move body
     template<class DocumentViewIterator>
-    optional<result::insert_many> insert_many(
+    inline optional<result::insert_many> insert_many(
         DocumentViewIterator begin,
         DocumentViewIterator end,
         const options::insert& options = options::insert()
-    ) {
-        class bulk_write writes(false);
-
-        std::for_each(begin, end, [&](const bson::document::view& current){
-            writes.append(model::insert_one(current));
-        });
-
-        if (options.write_concern())
-            writes.write_concern(*options.write_concern());
-
-        bulk_write(writes);
-        // TODO: map result::bulk_write to result::insert_many
-        return result::insert_many();
-    }
+    );
 
     void read_preference(class read_preference rp);
     const class read_preference& read_preference() const;
@@ -215,6 +188,55 @@ class LIBMONGOCXX_EXPORT collection {
     std::unique_ptr<impl> _impl;
 
 }; // class collection
+
+template<class Container>
+inline optional<result::bulk_write> collection::bulk_write(
+    const Container& requests,
+    const options::bulk_write& options
+) {
+    return bulk_write(requests.begin(), requests.end(), options);
+}
+
+template<class WriteModelIterator>
+inline optional<result::bulk_write> collection::bulk_write(
+    WriteModelIterator begin,
+    WriteModelIterator end,
+    const options::bulk_write& options
+) {
+    class bulk_write writes(options.ordered().value_or(true));
+
+    std::for_each(begin, end, [&](const model::write& current){writes.append(current);});
+
+    return bulk_write(writes);
+}
+
+template<class Container>
+inline optional<result::insert_many> collection::insert_many(
+    const Container& container,
+    const options::insert& options
+) {
+    return insert_many(container.begin(), container.end(), options);
+}
+
+template<class DocumentViewIterator>
+inline optional<result::insert_many> collection::insert_many(
+    DocumentViewIterator begin,
+    DocumentViewIterator end,
+    const options::insert& options
+) {
+    class bulk_write writes(false);
+
+    std::for_each(begin, end, [&](const bson::document::view& current){
+        writes.append(model::insert_one(current));
+    });
+
+    if (options.write_concern())
+        writes.write_concern(*options.write_concern());
+
+    bulk_write(writes);
+    // TODO: map result::bulk_write to result::insert_many
+    return result::insert_many();
+}
 
 }  // namespace driver
 }  // namespace mongo
