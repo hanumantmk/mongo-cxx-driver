@@ -37,6 +37,8 @@ class uri {
 
    public:
     // TODO: document the default is localhost:27017...
+    // TODO: make this string a constant
+    // TODO: this should really take a stringview (polyfilled)?
     uri(const std::string& uri_string="mongodb://localhost:27017/");
 
     uri(uri&& other) noexcept;
@@ -44,17 +46,20 @@ class uri {
 
     ~uri();
 
-    const std::string auth_mechanism() const;
-    const std::string auth_source() const;
-    const std::vector<host> hosts() const;
-    const std::string database() const;
+    // TODO: return const char* instead or stringview
+    // TODO: harmonize with C library (options, credentials, etc...)
+    // TODO: add method to get the original string back out
+    std::string auth_mechanism() const;
+    std::string auth_source() const;
+    std::vector<host> hosts() const;
+    std::string database() const;
     bson::document::view options() const;
-    const std::string password() const;
-    const class read_preference read_preference() const;
-    const std::string replica_set() const;
+    std::string password() const;
+    class read_preference read_preference() const;
+    std::string replica_set() const;
     bool ssl() const;
-    const std::string username() const;
-    const class write_concern write_concern() const;
+    std::string username() const;
+    class write_concern write_concern() const;
 
    private:
     std::unique_ptr<impl> _impl;

@@ -53,9 +53,14 @@ class LIBMONGOCXX_EXPORT database {
     void write_concern(class write_concern wc);
     const class write_concern& write_concern() const;
 
-    class collection collection(const std::string& name) &;
-    class collection collection(const std::string& name) && = delete;
-    inline class collection operator[](const std::string& name);
+    // TODO: test that the second fails to compile
+    // TODO: add a non-doc comment "if you are getting a compile error here, don't use rvalue..."
+    // TODO: can these be const?
+    // TODO: try to break this
+    class collection collection(const std::string& name) const &;
+    class collection collection(const std::string& name) const && = delete;
+
+    inline class collection operator[](const std::string& name) const;
 
    private:
     database(const class client& client, const std::string& name);
@@ -64,7 +69,7 @@ class LIBMONGOCXX_EXPORT database {
 
 }; // class database
 
-inline collection database::operator[](const std::string& name) {
+inline collection database::operator[](const std::string& name) const {
     return collection(name);
 }
 

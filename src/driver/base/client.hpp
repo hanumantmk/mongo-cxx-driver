@@ -58,17 +58,17 @@ class LIBMONGOCXX_EXPORT client {
     void write_concern(class write_concern wc);
     const class write_concern& write_concern() const;
 
-    class database database(const std::string& name) &;
-    class database database(const std::string& name) && = delete;
+    class database database(const std::string& name) const &;
+    class database database(const std::string& name) const && = delete;
 
-    inline class database operator[](const std::string& name);
+    inline class database operator[](const std::string& name) const;
 
    private:
     std::unique_ptr<impl> _impl;
 
 }; // class client
 
-inline class database client::operator[](const std::string& name) {
+inline class database client::operator[](const std::string& name) const {
     return database(name);
 }
 

@@ -35,7 +35,7 @@ const class read_preference& client::read_preference() const { return _impl->rea
 void client::write_concern(class write_concern wc) { _impl->write_concern(std::move(wc)); }
 const class write_concern& client::write_concern() const { return _impl->write_concern(); }
 
-class database client::database(const std::string& name) & {
+class database client::database(const std::string& name) const & {
     return mongo::driver::database(*this, name);
 }
 

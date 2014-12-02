@@ -22,6 +22,7 @@
 namespace mongo {
 namespace driver {
 
+// TODO: put this inside uri
 struct host {
 
     std::string host;

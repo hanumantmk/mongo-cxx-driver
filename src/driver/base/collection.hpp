@@ -70,6 +70,7 @@ class LIBMONGOCXX_EXPORT collection {
         const options::aggregate& options = options::aggregate()
     );
 
+    // TODO: de-inline body
     template<class Container>
     optional<result::bulk_write> bulk_write(
         const Container& requests,
@@ -78,10 +79,11 @@ class LIBMONGOCXX_EXPORT collection {
         return bulk_write(requests.begin(), requests.end(), options);
     }
 
+    // TODO: de-inline body
     template<class WriteModelIterator>
     optional<result::bulk_write> bulk_write(
-        WriteModelIterator& begin,
-        WriteModelIterator& end,
+        WriteModelIterator begin,
+        WriteModelIterator end,
         const options::bulk_write& options = options::bulk_write()
     ) {
         class bulk_write writes(options.ordered().value_or(true));
@@ -95,6 +97,8 @@ class LIBMONGOCXX_EXPORT collection {
         const class bulk_write& bulk_write
     );
 
+    // TODO: decide value vs. ref for bson::document::view types
+    // TODO: almost certainly remove const, consider for client + db as well
     std::int64_t count(
         const bson::document::view& filter,
         const options::count& options = options::count()
@@ -150,6 +154,7 @@ class LIBMONGOCXX_EXPORT collection {
         const options::insert& options = options::insert()
     );
 
+    // TODO: move body
     template<class Container>
     optional<result::insert_many> insert_many(
         const Container& container,
@@ -158,6 +163,7 @@ class LIBMONGOCXX_EXPORT collection {
         return insert_many(container.begin(), container.end(), options);
     }
 
+    // TODO: move body
     template<class DocumentViewIterator>
     optional<result::insert_many> insert_many(
         DocumentViewIterator begin,

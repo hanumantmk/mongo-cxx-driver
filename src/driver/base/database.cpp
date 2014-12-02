@@ -39,7 +39,7 @@ const class read_preference& database::read_preference() const { return _impl->r
 void database::write_concern(class write_concern wc) { _impl->write_concern(std::move(wc)); }
 const class write_concern& database::write_concern() const { return _impl->write_concern(); }
 
-collection database::collection(const std::string& name) & {
+collection database::collection(const std::string& name) const & {
     return mongo::driver::collection(*this, name);
 }
 

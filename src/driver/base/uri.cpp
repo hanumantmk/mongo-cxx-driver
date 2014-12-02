@@ -13,9 +13,9 @@
 // limitations under the License.
 
 #include "driver/libmongoc.hpp"
-
 #include "driver/base/uri.hpp"
 #include "driver/base/private/uri.hpp"
+
 #include "stdx/make_unique.hpp"
 
 namespace mongo {
@@ -32,23 +32,24 @@ uri& uri::operator=(uri&&) noexcept = default;
 
 uri::~uri() = default;
 
-const std::string uri::auth_mechanism() const {
+std::string uri::auth_mechanism() const {
     return mongoc_uri_get_auth_mechanism(_impl->uri_t);
 }
 
-const std::string uri::auth_source() const {
+std::string uri::auth_source() const {
     return mongoc_uri_get_auth_source(_impl->uri_t);
 }
 
-const std::string uri::database() const {
+std::string uri::database() const {
     return mongoc_uri_get_database(_impl->uri_t);
 }
 
-const std::vector<host> uri::hosts() const {
+std::vector<host> uri::hosts() const {
     std::vector<host> result;
 
     const mongoc_host_list_t* host_list = mongoc_uri_get_hosts(_impl->uri_t);
 
+    // TODO: do a for loop
     while (host_list) {
         result.push_back(
             host {
@@ -57,17 +58,18 @@ const std::vector<host> uri::hosts() const {
                 host_list->family
             }
         );
+
         host_list = host_list->next;
     }
 
     return result;
 }
 
-const std::string uri::password() const {
+std::string uri::password() const {
     return mongoc_uri_get_password(_impl->uri_t);
 }
 
-const std::string uri::replica_set() const {
+std::string uri::replica_set() const {
     return mongoc_uri_get_replica_set(_impl->uri_t);
 }
 
@@ -75,7 +77,7 @@ bool uri::ssl() const {
     return mongoc_uri_get_ssl(_impl->uri_t);
 }
 
-const std::string uri::username() const {
+std::string uri::username() const {
     return mongoc_uri_get_username(_impl->uri_t);
 }
 
