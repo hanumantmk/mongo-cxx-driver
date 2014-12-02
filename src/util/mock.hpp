@@ -75,7 +75,7 @@ class mock<R (*)(Args...)> {
      }
 
      rule& interpose(std::function<R(Args...)> func) {
-         _callbacks.emplace_back([=](ptr, Args... args) { return func(args...); });
+         _callbacks.emplace_front([=](ptr, Args... args) { return func(args...); });
 
          return _callbacks.back();
      }
@@ -97,9 +97,8 @@ class mock<R (*)(Args...)> {
      }
 
      rule& visit(std::function<void(Args...)> func) {
-         _callbacks.emplace_back([=](ptr, Args... args) {
+         _callbacks.emplace_front([=](ptr, Args... args) {
              func(args...);
-
              return _parent->_func(args...);
          });
 
