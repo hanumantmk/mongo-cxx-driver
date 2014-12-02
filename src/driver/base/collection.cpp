@@ -53,7 +53,7 @@ const std::string& collection::name() const { return _impl->name; }
 
 collection::collection(const database& database, const std::string& collection_name)
     : _impl(stdx::make_unique<impl>(
-          mongoc_database_get_collection(database._impl->database_t, collection_name.c_str()),
+          libmongoc::database_get_collection(database._impl->database_t, collection_name.c_str()),
           database._impl.get(), database._impl->client_impl, collection_name.c_str())) {}
 
 optional<result::bulk_write> collection::bulk_write(const class bulk_write& bulk_write) {

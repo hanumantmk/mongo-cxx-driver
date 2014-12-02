@@ -38,7 +38,7 @@ class database::impl {
         write_concern(client->write_concern());
     }
 
-    ~impl() { mongoc_database_destroy(database_t); }
+    ~impl() { libmongoc::database_destroy(database_t); }
     mongoc_database_t* database_t;
     const class client::impl* client_impl;
     std::string name;
@@ -46,7 +46,7 @@ class database::impl {
     void read_preference(class read_preference rp) {
         priv::read_preference read_prefs{rp};
 
-        mongoc_database_set_read_prefs(database_t, read_prefs.get_read_preference());
+        libmongoc::database_set_read_prefs(database_t, read_prefs.get_read_preference());
 
         _read_preference = std::move(rp);
     }
@@ -54,7 +54,7 @@ class database::impl {
     void write_concern(class write_concern wc) {
         priv::write_concern write_conc{wc};
 
-        mongoc_database_set_write_concern(database_t, write_conc.get_write_concern());
+        libmongoc::database_set_write_concern(database_t, write_conc.get_write_concern());
 
         _write_concern = std::move(wc);
     }

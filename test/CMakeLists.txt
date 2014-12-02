@@ -55,6 +55,13 @@ add_executable(test_client
 target_link_libraries(test_client mongocxx-mocked)
 add_test(test_client test_client)
 
+add_executable(test_database
+    driver/base/database.cpp
+)
+target_link_libraries(test_database mongocxx-mocked)
+add_test(test_database test_database)
+
+
 add_executable(new_tests
     new_tests.cpp
     bson_builder.cpp

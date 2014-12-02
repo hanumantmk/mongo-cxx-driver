@@ -39,7 +39,7 @@ class collection::impl {
         write_concern(database->write_concern());
     }
 
-    ~impl() { mongoc_collection_destroy(collection_t); }
+    ~impl() { libmongoc::collection_destroy(collection_t); }
 
     mongoc_collection_t* collection_t;
     const class database::impl* database_impl;
@@ -49,7 +49,7 @@ class collection::impl {
     void read_preference(class read_preference rp) {
         priv::read_preference read_prefs{rp};
 
-        mongoc_collection_set_read_prefs(collection_t, read_prefs.get_read_preference());
+        libmongoc::collection_set_read_prefs(collection_t, read_prefs.get_read_preference());
 
         _read_preference = std::move(rp);
     }
@@ -57,7 +57,7 @@ class collection::impl {
     void write_concern(class write_concern wc) {
         priv::write_concern write_conc{wc};
 
-        mongoc_collection_set_write_concern(collection_t, write_conc.get_write_concern());
+        libmongoc::collection_set_write_concern(collection_t, write_conc.get_write_concern());
 
         _write_concern = std::move(wc);
     }
