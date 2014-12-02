@@ -23,8 +23,8 @@
 #include "driver/base/private/database.hpp"
 #include "driver/base/private/pipeline.hpp"
 #include "driver/base/private/bulk_write.hpp"
-#include "driver/base/private/write_concern.hpp"
 #include "driver/base/private/read_preference.hpp"
+#include "driver/base/private/write_concern.hpp"
 
 #include "driver/base/write_concern.hpp"
 #include "driver/base/collection.hpp"
@@ -39,6 +39,8 @@
 #include "driver/result/write.hpp"
 #include "driver/util/libbson.hpp"
 #include "driver/util/optional.hpp"
+
+#include "stdx/make_unique.hpp"
 
 namespace mongo {
 namespace driver {
@@ -101,14 +103,10 @@ cursor collection::find(const bson::document::view& filter, const options::find&
         filter_bson.init_from_static(filter);
     }
 
-    optional<priv::read_preference> read_prefs;
-    const mongoc_read_prefs_t* rp_ptr;
+    const mongoc_read_prefs_t* rp_ptr = NULL;
 
     if (options.read_preference()) {
-        read_prefs = priv::read_preference{*options.read_preference()};
-        rp_ptr = read_prefs->get_read_preference();
-    } else {
-        rp_ptr = mongoc_collection_get_read_prefs(_impl->collection_t);
+        rp_ptr = options.read_preference()->_impl->read_preference_t;
     }
 
     return cursor(mongoc_collection_find(_impl->collection_t, mongoc_query_flags_t(0),
@@ -150,14 +148,10 @@ cursor collection::aggregate(const pipeline& pipeline, const options::aggregate&
 
     scoped_bson_t options_bson(b.view());
 
-    optional<priv::read_preference> read_prefs;
-    const mongoc_read_prefs_t* rp_ptr;
+    const mongoc_read_prefs_t* rp_ptr = NULL;
 
     if (options.read_preference()) {
-        read_prefs = priv::read_preference{*options.read_preference()};
-        rp_ptr = read_prefs->get_read_preference();
-    } else {
-        rp_ptr = mongoc_collection_get_read_prefs(_impl->collection_t);
+        rp_ptr = read_preference()._impl->read_preference_t;
     }
 
     return cursor(mongoc_collection_aggregate(_impl->collection_t,
@@ -354,19 +348,14 @@ optional<bson::document::value> collection::find_one_and_delete(
     return b.extract();
 }
 
-std::int64_t collection::count(const bson::document::view& filter,
-                               const options::count& options) {
+std::int64_t collection::count(const bson::document::view& filter, const options::count& options) {
     scoped_bson_t bson_filter{filter};
     bson_error_t error;
 
-    optional<priv::read_preference> read_prefs;
-    const mongoc_read_prefs_t* rp_ptr;
+    const mongoc_read_prefs_t* rp_ptr = NULL;
 
     if (options.read_preference()) {
-        read_prefs = priv::read_preference{*options.read_preference()};
-        rp_ptr = read_prefs->get_read_preference();
-    } else {
-        rp_ptr = mongoc_collection_get_read_prefs(_impl->collection_t);
+        rp_ptr = options.read_preference()->_impl->read_preference_t;
     }
 
     auto result = mongoc_collection_count(_impl->collection_t, static_cast<mongoc_query_flags_t>(0),
@@ -389,10 +378,13 @@ void collection::drop() {
 }
 
 void collection::read_preference(class read_preference rp) {
-    _impl->read_preference(std::move(rp));
+    mongoc_collection_set_read_prefs(_impl->collection_t, rp._impl->read_preference_t);
 }
-const class read_preference& collection::read_preference() const {
-    return _impl->read_preference();
+
+class read_preference collection::read_preference() const {
+    class read_preference rp(stdx::make_unique<read_preference::impl>(
+        mongoc_read_prefs_copy(mongoc_collection_get_read_prefs(_impl->collection_t))));
+    return rp;
 }
 
 void collection::write_concern(class write_concern wc) { _impl->write_concern(std::move(wc)); }

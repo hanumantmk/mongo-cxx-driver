@@ -44,7 +44,6 @@
 #include "driver/result/insert_one.hpp"
 #include "driver/result/replace_one.hpp"
 #include "driver/result/update.hpp"
-#include "stdx/make_unique.hpp"
 
 namespace mongo {
 namespace driver {
@@ -160,8 +159,7 @@ class LIBMONGOCXX_EXPORT collection {
     );
 
     void read_preference(class read_preference rp);
-    const class read_preference& read_preference() const;
-
+    class read_preference read_preference() const;
 
     optional<result::replace_one> replace_one(
         const bson::document::view& filter,

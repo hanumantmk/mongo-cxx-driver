@@ -16,8 +16,9 @@
 
 #include "driver/config/prelude.hpp"
 
-#include <string>
 #include <cstdint>
+#include <string>
+#include <memory>
 
 #include "bson/document.hpp"
 
@@ -25,6 +26,10 @@
 
 namespace mongo {
 namespace driver {
+
+    class client;
+    class collection;
+    class database;
 
 enum class read_mode : std::uint8_t {
     k_primary = (1 << 0),
@@ -36,18 +41,32 @@ enum class read_mode : std::uint8_t {
 
 class LIBMONGOCXX_EXPORT read_preference {
 
+    friend client;
+    friend collection;
+    friend database;
+
+    class impl;
+
    public:
        read_preference(read_mode = read_mode::k_primary);
+       read_preference(read_mode, bson::document::view tags);
+       read_preference(const read_preference& other);
+
+       read_preference(read_preference&& other) noexcept;
+       read_preference& operator=(read_preference&& rhs) noexcept;
+
+       ~read_preference();
 
        void mode(read_mode mode);
        void tags(bson::document::view tags);
 
        read_mode mode() const;
-       const optional<bson::document::view>& tags() const;
+       optional<bson::document::view> tags() const;
 
    private:
-       read_mode _mode;
-       optional<bson::document::view> _tags;
+       read_preference(std::unique_ptr<impl>&& implementation);
+
+       std::unique_ptr<impl> _impl;
 
 }; // class read_preference
 

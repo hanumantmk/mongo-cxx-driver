@@ -16,43 +16,28 @@
 
 #include "driver/config/prelude.hpp"
 
-#include <memory>
+#include "driver/base/read_preference.hpp"
 
 #include "mongoc.h"
 
-#include "driver/base/read_preference.hpp"
-#include "driver/util/libbson.hpp"
-
 namespace mongo {
 namespace driver {
-namespace priv {
 
-class read_preference {
- public:
-    read_preference(const driver::read_preference& arg)
-        : _read_preference(mongoc_read_prefs_new(static_cast<mongoc_read_mode_t>(arg.mode())))
-    {
-        mongoc_read_prefs_t* wc = _read_preference;
-        if (arg.tags()) {
-            bson::libbson::scoped_bson_t btags(arg.tags());
-            mongoc_read_prefs_set_tags(wc, btags.bson());
-        }
+class read_preference::impl {
+
+   public:
+    impl(mongoc_read_prefs_t* read_pref)
+        : read_preference_t(read_pref)
+    {}
+
+    ~impl() {
+        mongoc_read_prefs_destroy(read_preference_t);
     }
 
-    ~read_preference() {
-        mongoc_read_prefs_destroy(_read_preference);
-    }
+    mongoc_read_prefs_t* read_preference_t;
 
-    const mongoc_read_prefs_t* get_read_preference() const {
-        return _read_preference;
-    }
+}; // class impl
 
- private:
-    mongoc_read_prefs_t* _read_preference;
-
-}; // class read_preference
-
-}  // namespace priv
 }  // namespace driver
 }  // namespace mongo
 
