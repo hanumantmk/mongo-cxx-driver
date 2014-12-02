@@ -92,7 +92,7 @@ class LIBMONGOCXX_EXPORT collection {
     std::int64_t count(
         const bson::document::view& filter,
         const options::count& options = options::count()
-    ) const;
+    );
 
     optional<result::delete_result> delete_one(
         const bson::document::view& filter,
@@ -108,19 +108,19 @@ class LIBMONGOCXX_EXPORT collection {
         const std::string& field_name,
         const bson::document::view& filter,
         const options::distinct& options = options::distinct()
-    ) const;
+    );
 
     void drop();
 
     cursor find(
         const bson::document::view& filter,
         const options::find& options = options::find()
-    ) const;
+    );
 
     optional<bson::document::value> find_one(
         const bson::document::view& filter,
         const options::find& options = options::find()
-    ) const;
+    );
 
     optional<bson::document::value> find_one_and_delete(
         const bson::document::view& filter,

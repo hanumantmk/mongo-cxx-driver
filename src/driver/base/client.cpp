@@ -21,8 +21,7 @@ namespace mongo {
 namespace driver {
 
 client::client(const uri& uri, const options::client&)
-    : _impl(stdx::make_unique<impl>(libmongoc::client_new_from_uri(uri._impl->uri_t)))
-{}
+    : _impl(stdx::make_unique<impl>(libmongoc::client_new_from_uri(uri._impl->uri_t))) {}
 
 client::client(client&&) noexcept = default;
 client& client::operator=(client&&) noexcept = default;

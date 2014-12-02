@@ -22,13 +22,9 @@ using namespace mongo::driver;
 TEST_CASE("a default write_concern", "[write_concern][base]") {
     write_concern wc{};
 
-    SECTION("doesn't require the server to fsync") {
-        REQUIRE(wc.fsync() == false);
-    }
+    SECTION("doesn't require the server to fsync") { REQUIRE(wc.fsync() == false); }
 
-    SECTION("doesn't require the server to journal") {
-        REQUIRE(wc.journal() == false);
-    }
+    SECTION("doesn't require the server to journal") { REQUIRE(wc.journal() == false); }
 
     SECTION("will not timeout") {
         auto timeout = wc.timeout();
@@ -39,9 +35,7 @@ TEST_CASE("a default write_concern", "[write_concern][base]") {
         REQUIRE(1 == wc.confirm_from().number().value());
     }
 
-    SECTION("has empty tag set") {
-        REQUIRE(!wc.confirm_from().tag());
-    }
+    SECTION("has empty tag set") { REQUIRE(!wc.confirm_from().tag()); }
 }
 
 TEST_CASE("write_concern fields may be set and retrieved", "[write_concern][base]") {
@@ -84,12 +78,10 @@ TEST_CASE("write_concern fields may be set and retrieved", "[write_concern][base
         write_concern wc{};
         REQUIRE_THROWS_AS(wc.confirm_from(-20), std::invalid_argument);
     }
-
 }
 
 TEST_CASE("confirmation from tags, a repl-member count, and majority are mutually exclusive",
           "[write_concern][base]") {
-
     SECTION("setting the confirmation number unsets the confirmation tag") {
         write_concern wc{};
         wc.confirm_from("MultipleDC");
@@ -130,5 +122,4 @@ TEST_CASE("confirmation from tags, a repl-member count, and majority are mutuall
         wc.confirm_from(majority);
         REQUIRE(!wc.confirm_from().tag());
     }
-
 }

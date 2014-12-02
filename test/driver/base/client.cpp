@@ -46,13 +46,9 @@ TEST_CASE("A client cleans up its underlying mongoc client on destruction", "[cl
     auto client_destroy = libmongoc::client_destroy.create_instance();
     bool destroy_called = false;
 
-    client_new->interpose([](const mongoc_uri_t* url) {
-        return nullptr;
-    });
+    client_new->interpose([](const mongoc_uri_t* url) { return nullptr; });
 
-    client_destroy->interpose([&](mongoc_client_t* client) {
-        destroy_called = true;
-    });
+    client_destroy->interpose([&](mongoc_client_t* client) { destroy_called = true; });
 
     {
         client object{};
@@ -85,12 +81,12 @@ TEST_CASE("A client's read preferences may be set and obtained", "[client][base]
 
     auto client_set_preference = libmongoc::client_set_read_prefs.create_instance();
     bool called = false;
-    client_set_preference->visit([&](mongoc_client_t* client,
-                                     const mongoc_read_prefs_t* read_prefs) {
+    client_set_preference->visit(
+        [&](mongoc_client_t* client, const mongoc_read_prefs_t* read_prefs) {
             called = true;
             REQUIRE(mongoc_read_prefs_get_mode(read_prefs) ==
                     static_cast<mongoc_read_mode_t>(read_mode::k_secondary_preferred));
-    });
+        });
     mongo_client.read_preference(preference);
     REQUIRE(called);
 
@@ -104,15 +100,15 @@ TEST_CASE("A client's write concern may be set and obtained", "[client][base]") 
 
     auto client_set_concern = libmongoc::client_set_write_concern.create_instance();
     bool called = false;
-    client_set_concern->visit([&](mongoc_client_t* client,
-                                  const mongoc_write_concern_t* concern) {
-            called = true;
-            REQUIRE(mongoc_write_concern_get_wmajority(concern));
+    client_set_concern->visit([&](mongoc_client_t* client, const mongoc_write_concern_t* concern) {
+        called = true;
+        REQUIRE(mongoc_write_concern_get_wmajority(concern));
     });
     mongo_client.write_concern(concern);
     REQUIRE(called);
 
-    REQUIRE(concern.confirm_from().majority() == mongo_client.write_concern().confirm_from().majority());
+    REQUIRE(concern.confirm_from().majority() ==
+            mongo_client.write_concern().confirm_from().majority());
 }
 
 TEST_CASE("A client can create a named database object", "[client][base]") {

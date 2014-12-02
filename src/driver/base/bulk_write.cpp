@@ -28,7 +28,8 @@ bulk_write::bulk_write(bulk_write&&) noexcept = default;
 bulk_write& bulk_write::operator=(bulk_write&&) noexcept = default;
 bulk_write::~bulk_write() = default;
 
-bulk_write::bulk_write(bool ordered) : _impl(stdx::make_unique<impl>(libmongoc::bulk_operation_new(ordered))) {}
+bulk_write::bulk_write(bool ordered)
+    : _impl(stdx::make_unique<impl>(libmongoc::bulk_operation_new(ordered))) {}
 
 void bulk_write::append(const model::write& operation) {
     switch (operation.type()) {
@@ -44,7 +45,7 @@ void bulk_write::append(const model::write& operation) {
             bool upsert = operation.get_update_one().upsert().value_or(false);
 
             libmongoc::bulk_operation_update_one(_impl->operation_t, filter.bson(), update.bson(),
-                                             upsert);
+                                                 upsert);
             break;
         }
         case model::write_type::kUpdateMany: {
@@ -52,7 +53,8 @@ void bulk_write::append(const model::write& operation) {
             scoped_bson_t update(operation.get_update_many().update());
             bool upsert = operation.get_update_many().upsert().value_or(false);
 
-            libmongoc::bulk_operation_update(_impl->operation_t, filter.bson(), update.bson(), upsert);
+            libmongoc::bulk_operation_update(_impl->operation_t, filter.bson(), update.bson(),
+                                             upsert);
             break;
         }
         case model::write_type::kDeleteOne: {
@@ -71,7 +73,7 @@ void bulk_write::append(const model::write& operation) {
             bool upsert = operation.get_replace_one().upsert().value_or(false);
 
             libmongoc::bulk_operation_replace_one(_impl->operation_t, filter.bson(), replace.bson(),
-                                              upsert);
+                                                  upsert);
             break;
         }
         case model::write_type::kUninitialized:

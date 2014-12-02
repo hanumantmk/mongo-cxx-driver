@@ -22,7 +22,8 @@
 
 using namespace mongo::driver;
 
-TEST_CASE("creation of priv::write_concern passes universal parameters to c-driver's methods", "[write_concern][base][priv][c-driver]") {
+TEST_CASE("creation of priv::write_concern passes universal parameters to c-driver's methods",
+          "[write_concern][base][priv][c-driver]") {
     SECTION("when fsync is requested, mongoc_write_concern_set_fsync is called with true") {
         bool fsync_called = false;
         bool fsync_value = false;
@@ -69,40 +70,30 @@ TEST_CASE("creation of priv::write_concern passes universal parameters to c-driv
     }
 }
 
-TEST_CASE("priv::write_concern is called with w MAJORITY", "[write_concern][base][priv][c-driver]") {
+TEST_CASE("priv::write_concern is called with w MAJORITY",
+          "[write_concern][base][priv][c-driver]") {
     bool w_called = false, wmajority_called = false, wtag_called = false;
     auto w_instance = libmongoc::write_concern_set_w.create_instance();
     auto wmajority_instance = libmongoc::write_concern_set_wmajority.create_instance();
     auto wtag_instance = libmongoc::write_concern_set_wtag.create_instance();
-    w_instance->visit([&](mongoc_write_concern_t* wc, int w) {
-        w_called = true;
-    });
-    wmajority_instance->visit([&](mongoc_write_concern_t* wc, int wtimout) {
-        wmajority_called = true;
-    });
-    wtag_instance->visit([&](mongoc_write_concern_t* wc, const char* wtag) {
-        wtag_called = true;
-    });
+    w_instance->visit([&](mongoc_write_concern_t* wc, int w) { w_called = true; });
+    wmajority_instance->visit(
+        [&](mongoc_write_concern_t* wc, int wtimout) { wmajority_called = true; });
+    wtag_instance->visit([&](mongoc_write_concern_t* wc, const char* wtag) { wtag_called = true; });
 
     write_concern wc{};
     wc.confirm_from(majority);
     priv::write_concern{wc};
 
+    SECTION("mongoc_write_concern_set_wmajority is called") { REQUIRE(wmajority_called == true); }
 
-    SECTION("mongoc_write_concern_set_wmajority is called") {
-        REQUIRE(wmajority_called == true);
-    }
+    SECTION("mongoc_write_concern_set_w is not called") { REQUIRE(w_called == false); }
 
-    SECTION("mongoc_write_concern_set_w is not called") {
-        REQUIRE(w_called == false);
-    }
-
-    SECTION("mongoc_write_concern_set_wtag is not called") {
-        REQUIRE(wtag_called == false);
-    }
+    SECTION("mongoc_write_concern_set_wtag is not called") { REQUIRE(wtag_called == false); }
 }
 
-TEST_CASE("priv::write_concern is called with a number of necessary confirmations", "[write_concern][base][priv][c-driver]") {
+TEST_CASE("priv::write_concern is called with a number of necessary confirmations",
+          "[write_concern][base][priv][c-driver]") {
     bool w_called = false, wmajority_called = false, wtag_called = false;
     int w_value = 0;
     const int expected_w = 5;
@@ -113,12 +104,9 @@ TEST_CASE("priv::write_concern is called with a number of necessary confirmation
         w_called = true;
         w_value = w;
     });
-    wmajority_instance->visit([&](mongoc_write_concern_t* wc, int wtimout) {
-        wmajority_called = true;
-    });
-    wtag_instance->visit([&](mongoc_write_concern_t* wc, const char* wtag) {
-        wtag_called = true;
-    });
+    wmajority_instance->visit(
+        [&](mongoc_write_concern_t* wc, int wtimout) { wmajority_called = true; });
+    wtag_instance->visit([&](mongoc_write_concern_t* wc, const char* wtag) { wtag_called = true; });
 
     write_concern wc{};
     wc.confirm_from(expected_w);
@@ -133,9 +121,7 @@ TEST_CASE("priv::write_concern is called with a number of necessary confirmation
         REQUIRE(wmajority_called == false);
     }
 
-    SECTION("mongoc_write_concern_set_wtag is not called") {
-        REQUIRE(wtag_called == false);
-    }
+    SECTION("mongoc_write_concern_set_wtag is not called") { REQUIRE(wtag_called == false); }
 }
 
 TEST_CASE("priv::write_concern is called with a tag", "[write_concern][base][priv][c-driver]") {
@@ -145,12 +131,9 @@ TEST_CASE("priv::write_concern is called with a tag", "[write_concern][base][pri
     auto w_instance = libmongoc::write_concern_set_w.create_instance();
     auto wmajority_instance = libmongoc::write_concern_set_wmajority.create_instance();
     auto wtag_instance = libmongoc::write_concern_set_wtag.create_instance();
-    w_instance->visit([&](mongoc_write_concern_t* wc, int w) {
-        w_called = true;
-    });
-    wmajority_instance->visit([&](mongoc_write_concern_t* wc, int wtimout) {
-        wmajority_called = true;
-    });
+    w_instance->visit([&](mongoc_write_concern_t* wc, int w) { w_called = true; });
+    wmajority_instance->visit(
+        [&](mongoc_write_concern_t* wc, int wtimout) { wmajority_called = true; });
     wtag_instance->visit([&](mongoc_write_concern_t* wc, const char* wtag) {
         wtag_called = true;
         wtag_value = wtag;
@@ -160,10 +143,7 @@ TEST_CASE("priv::write_concern is called with a tag", "[write_concern][base][pri
     wc.confirm_from(expected_wtag);
     priv::write_concern{wc};
 
-
-    SECTION("mongoc_write_concern_set_w is not called") {
-        REQUIRE(w_called == false);
-    }
+    SECTION("mongoc_write_concern_set_w is not called") { REQUIRE(w_called == false); }
 
     SECTION("mongoc_write_concern_set_wmajority is not called") {
         REQUIRE(wmajority_called == false);

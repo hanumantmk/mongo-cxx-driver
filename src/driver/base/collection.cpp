@@ -82,7 +82,7 @@ optional<result::bulk_write> collection::bulk_write(const class bulk_write& bulk
     return optional<result::bulk_write>(std::move(result));
 }
 
-cursor collection::find(const bson::document::view& filter, const options::find& options) const {
+cursor collection::find(const bson::document::view& filter, const options::find& options) {
     using namespace bson;
 
     builder::document filter_builder;
@@ -116,7 +116,7 @@ cursor collection::find(const bson::document::view& filter, const options::find&
 }
 
 optional<bson::document::value> collection::find_one(const bson::document::view& filter,
-                                                     const options::find& options) const {
+                                                     const options::find& options) {
     options::find copy(options);
     copy.limit(1);
     return optional<bson::document::value>(*find(filter, copy).begin());
@@ -353,7 +353,7 @@ optional<bson::document::value> collection::find_one_and_delete(
 }
 
 std::int64_t collection::count(const bson::document::view& filter,
-                               const options::count& options) const {
+                               const options::count& options) {
     scoped_bson_t bson_filter{filter};
     bson_error_t error;
 

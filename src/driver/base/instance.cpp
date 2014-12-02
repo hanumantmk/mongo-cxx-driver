@@ -18,7 +18,7 @@
 #include "mongoc.h"
 
 namespace {
-    void log_handler(mongoc_log_level_t, const char *, const char *, void *) {}
+void log_handler(mongoc_log_level_t, const char *, const char *, void *) {}
 }
 
 namespace mongo {
@@ -31,9 +31,7 @@ class instance::impl {
         mongoc_log_set_handler(log_handler, nullptr);
     }
 
-    ~impl() {
-        mongoc_cleanup();
-    }
+    ~impl() { mongoc_cleanup(); }
 };
 
 instance::instance() : _impl(stdx::make_unique<impl>()) {}

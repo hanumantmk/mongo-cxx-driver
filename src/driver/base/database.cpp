@@ -28,8 +28,9 @@ database& database::operator=(database&&) noexcept = default;
 database::~database() = default;
 
 database::database(const class client& client, const std::string& name)
-    : _impl(stdx::make_unique<impl>(mongoc_client_get_database(client._impl->client_t, name.c_str()),
-                     client._impl.get(), name.c_str())) {}
+    : _impl(
+          stdx::make_unique<impl>(mongoc_client_get_database(client._impl->client_t, name.c_str()),
+                                  client._impl.get(), name.c_str())) {}
 
 const std::string& database::name() const { return _impl->name; }
 

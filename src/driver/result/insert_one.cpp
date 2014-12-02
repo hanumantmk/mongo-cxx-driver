@@ -18,13 +18,9 @@ namespace mongo {
 namespace driver {
 namespace result {
 
-insert_one::insert_one(result::bulk_write result)
-    : _response(std::move(result._response))
-{}
+insert_one::insert_one(result::bulk_write result) : _response(std::move(result._response)) {}
 
-bson::document::element insert_one::inserted_id() const {
-    return _response.view()["inserted_id"];
-}
+bson::document::element insert_one::inserted_id() const { return _response.view()["inserted_id"]; }
 
 }  // namespace result
 }  // namespace driver

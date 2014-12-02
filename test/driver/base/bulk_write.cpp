@@ -45,14 +45,12 @@ TEST_CASE("a bulk_write will setup a mongoc bulk operation", "[bulk_write][base]
         REQUIRE(construct_called);
         REQUIRE(!ordered_value);
     }
-
 }
-TEST_CASE("the destruction of a bulk_write will destroy the mongoc operation", "[bulk_write][base]") {
+TEST_CASE("the destruction of a bulk_write will destroy the mongoc operation",
+          "[bulk_write][base]") {
     auto destruct = libmongoc::bulk_operation_destroy.create_instance();
     bool destruct_called = false;
-    destruct->visit([&destruct_called](mongoc_bulk_operation_t* op) {
-        destruct_called = true;
-    });
+    destruct->visit([&destruct_called](mongoc_bulk_operation_t* op) { destruct_called = true; });
     bulk_write(true);
     REQUIRE(destruct_called);
 }
@@ -64,39 +62,40 @@ TEST_CASE("bulk_write has a write_concern", "[bulk_write][base]") {
 
 class SingleDocumentFun {
    public:
-    SingleDocumentFun(bool& called, bson::document::view document) :
-            _called{called}, _document{document} {
+    SingleDocumentFun(bool& called, bson::document::view document)
+        : _called{called}, _document{document} {
         _called = false;
     }
-    void operator() (mongoc_bulk_operation_t* bulk, const bson_t* document) {
+    void operator()(mongoc_bulk_operation_t* bulk, const bson_t* document) {
         _called = true;
         REQUIRE(bson_get_data(document) == _document.get_buf());
     }
-    bool called() const {return _called;}
+    bool called() const { return _called; }
+
    private:
     bool& _called;
     bson::document::view _document;
 };
 
-class FilteredDocumentFun : public SingleDocumentFun{
+class FilteredDocumentFun : public SingleDocumentFun {
    public:
-    FilteredDocumentFun(bool& called, bson::document::view filter,
-                  bson::document::view document) :
-            SingleDocumentFun(called, document), _expected_upsert(false),
-            _filter{filter} {}
-    void operator() (mongoc_bulk_operation_t* bulk, const bson_t* filter,
-                     const bson_t* document, bool upsert) {
+    FilteredDocumentFun(bool& called, bson::document::view filter, bson::document::view document)
+        : SingleDocumentFun(called, document), _expected_upsert(false), _filter{filter} {}
+    void operator()(mongoc_bulk_operation_t* bulk, const bson_t* filter, const bson_t* document,
+                    bool upsert) {
         SingleDocumentFun::operator()(bulk, document);
         REQUIRE(bson_get_data(filter) == _filter.get_buf());
         REQUIRE(upsert == _expected_upsert);
     }
-    void upsert(bool upsert) {_expected_upsert = upsert;}
+    void upsert(bool upsert) { _expected_upsert = upsert; }
+
    private:
     bool _expected_upsert;
     bson::document::view _filter;
 };
 
-TEST_CASE("passing valid write operations to append calls the corresponding C function", "[bulk_write][base]") {
+TEST_CASE("passing valid write operations to append calls the corresponding C function",
+          "[bulk_write][base]") {
     bulk_write bw(true);
     bson::builder::document filter_builder, doc_builder;
     filter_builder << "_id" << 1;
