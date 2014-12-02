@@ -49,6 +49,8 @@ collection::collection(collection&&) noexcept = default;
 collection& collection::operator=(collection&&) noexcept = default;
 collection::~collection() = default;
 
+const std::string& collection::name() const { return _impl->name; }
+
 collection::collection(const database& database, const std::string& collection_name)
     : _impl(stdx::make_unique<impl>(
           mongoc_database_get_collection(database._impl->database_t, collection_name.c_str()),

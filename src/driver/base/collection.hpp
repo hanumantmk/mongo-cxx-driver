@@ -65,6 +65,8 @@ class LIBMONGOCXX_EXPORT collection {
 
     ~collection();
 
+    const std::string& name() const;
+
     cursor aggregate(
         const pipeline& pipeline,
         const options::aggregate& options = options::aggregate()
