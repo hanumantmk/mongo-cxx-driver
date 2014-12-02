@@ -49,11 +49,11 @@ class uri {
     const std::vector<host> hosts() const;
     const std::string database() const;
     bson::document::view options() const;
-    const std::string username() const;
     const std::string password() const;
     const class read_preference read_preference() const;
     const std::string replica_set() const;
     bool ssl() const;
+    const std::string username() const;
     const class write_concern write_concern() const;
 
    private:

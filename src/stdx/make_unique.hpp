@@ -14,17 +14,19 @@
 
 #pragma once
 
+#include <memory>
 
 namespace mongo {
 namespace stdx {
 
 #if __cplusplus >= 201402L
 
-#include <memory>
-
 using make_unique = ::std::make_unique;
 
 #else
+
+#include <type_traits>
+#include <utility>
     //Below code taken from N3588
 
     template<class T> struct _Never_true : std::false_type { };
@@ -71,5 +73,5 @@ using make_unique = ::std::make_unique;
 
 #endif
 
-} //namespace stdx
-} //namespace mongo
+}  // namespace stdx
+}  // namespace mongo

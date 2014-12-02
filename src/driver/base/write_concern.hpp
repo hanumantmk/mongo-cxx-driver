@@ -68,6 +68,7 @@ class LIBMONGOCXX_EXPORT write_concern {
     bool _fsync;
     bool _journal;
     type _confirm_from;
+
     std::chrono::milliseconds _timeout;
 };
 

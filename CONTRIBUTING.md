@@ -9,3 +9,16 @@
  - declaration-or-deletion-of-move-assignment-operator
 
  - declaration-of-dtor
+
+### Headers
+
+ - License
+ - Prelude
+ - System Headers `<>`
+ - Driver Headers `""`
+ - Open Namespace mongo
+ - Open Namespace driver
+ -    Code
+ - Close Namespace driver
+ - Close Namespace mongo
+ - Postlude
