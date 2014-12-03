@@ -14,6 +14,7 @@
 
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
+#include "helpers.hpp"
 
 #include "driver/libmongoc.hpp"
 
@@ -23,7 +24,7 @@
 using namespace mongo::driver;
 
 TEST_CASE("A client connects to a provided mongodb uri", "[client][base]") {
-    auto client_new = libmongoc::client_new_from_uri.create_instance();
+    MOCK_CLIENT
     std::string expected_url("mongodb://mongodb.example.com:9999");
     uri mongodb_uri(expected_url);
     std::string actual_url{};
@@ -42,13 +43,9 @@ TEST_CASE("A client connects to a provided mongodb uri", "[client][base]") {
 }
 
 TEST_CASE("A client cleans up its underlying mongoc client on destruction", "[client][base]") {
-    auto client_new = libmongoc::client_new_from_uri.create_instance();
-    auto client_destroy = libmongoc::client_destroy.create_instance();
+    MOCK_CLIENT
     bool destroy_called = false;
-
-    client_new->interpose([](const mongoc_uri_t* url) { return nullptr; });
-
-    client_destroy->interpose([&](mongoc_client_t* client) { destroy_called = true; });
+    client_destroy->interpose([&](mongoc_client_t*) { destroy_called = true; });
 
     {
         client object{};
@@ -59,10 +56,8 @@ TEST_CASE("A client cleans up its underlying mongoc client on destruction", "[cl
 }
 
 TEST_CASE("A client supports move operations", "[client][base]") {
-    auto client_new = libmongoc::client_new_from_uri.create_instance();
-    auto client_destroy = libmongoc::client_destroy.create_instance();
-    client_new->interpose([](const mongoc_uri_t*){return nullptr;}).forever();
-    client_destroy->interpose([](mongoc_client_t*){}).forever();
+    MOCK_CLIENT
+
     client a;
 
     bool called = false;
@@ -79,14 +74,7 @@ TEST_CASE("A client supports move operations", "[client][base]") {
 }
 
 TEST_CASE("A client's read preferences may be set and obtained", "[client][base]") {
-    auto client_new = libmongoc::client_new_from_uri.create_instance();
-    client_new->interpose([](const mongoc_uri_t*){return nullptr;}).forever();
-    auto client_destroy = libmongoc::client_destroy.create_instance();
-    client_destroy->interpose([](mongoc_client_t*){}).forever();
-    auto client_set_preference = libmongoc::client_set_read_prefs.create_instance();
-    client_set_preference->interpose([](mongoc_client_t*, const mongoc_read_prefs_t*){}).forever();
-    auto client_set_concern = libmongoc::client_set_write_concern.create_instance();
-    client_set_concern->interpose([](mongoc_client_t*, const mongoc_write_concern_t*){}).forever();
+    MOCK_CLIENT
 
     client mongo_client;
     read_preference preference{read_mode::k_secondary_preferred};
@@ -105,14 +93,7 @@ TEST_CASE("A client's read preferences may be set and obtained", "[client][base]
 }
 
 TEST_CASE("A client's write concern may be set and obtained", "[client][base]") {
-    auto client_new = libmongoc::client_new_from_uri.create_instance();
-    client_new->interpose([](const mongoc_uri_t*){return nullptr;}).forever();
-    auto client_destroy = libmongoc::client_destroy.create_instance();
-    client_destroy->interpose([](mongoc_client_t*){}).forever();
-    auto client_set_preference = libmongoc::client_set_read_prefs.create_instance();
-    client_set_preference->interpose([](mongoc_client_t*, const mongoc_read_prefs_t*){}).forever();
-    auto client_set_concern = libmongoc::client_set_write_concern.create_instance();
-    client_set_concern->interpose([](mongoc_client_t*, const mongoc_write_concern_t*){}).forever();
+    MOCK_CLIENT
 
     client mongo_client;
     write_concern concern{};
@@ -131,15 +112,7 @@ TEST_CASE("A client's write concern may be set and obtained", "[client][base]") 
 }
 
 TEST_CASE("A client can create a named database object", "[client][base]") {
-    auto client_new = libmongoc::client_new_from_uri.create_instance();
-    client_new->interpose([](const mongoc_uri_t*){return nullptr;}).forever();
-    auto client_destroy = libmongoc::client_destroy.create_instance();
-    client_destroy->interpose([](mongoc_client_t*){}).forever();
-    auto client_set_preference = libmongoc::client_set_read_prefs.create_instance();
-    client_set_preference->interpose([](mongoc_client_t*, const mongoc_read_prefs_t*){}).forever();
-    auto client_set_concern = libmongoc::client_set_write_concern.create_instance();
-    client_set_concern->interpose([](mongoc_client_t*, const mongoc_write_concern_t*){}).forever();
-
+    MOCK_CLIENT
     auto database_get = libmongoc::client_get_database.create_instance();
     database_get->interpose([](mongoc_client_t*, const char*){return nullptr;}).forever();
     auto database_destroy = libmongoc::database_destroy.create_instance();

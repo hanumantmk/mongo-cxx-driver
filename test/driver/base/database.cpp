@@ -14,6 +14,7 @@
 
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
+#include "helpers.hpp"
 
 #include "driver/libmongoc.hpp"
 
@@ -24,39 +25,8 @@ using namespace mongo::driver;
 
 TEST_CASE("A database", "[database][base]") {
     const std::string database_name("database");
-    auto client_new = libmongoc::client_new_from_uri.create_instance();
-    client_new->interpose([](const mongoc_uri_t*) {
-        return nullptr;
-    }).forever();
-    auto get_database = libmongoc::client_get_database.create_instance();
-    get_database->interpose([&](mongoc_client_t* client, const char* c_name) {
-        return nullptr;
-    });
-;
-    auto client_set_preference = libmongoc::client_set_read_prefs.create_instance();
-    client_set_preference->interpose([](mongoc_client_t*,
-                                        const mongoc_read_prefs_t*) {
-        return;
-    }).forever();
-    auto client_set_concern = libmongoc::client_set_write_concern.create_instance();
-    client_set_concern->interpose([](mongoc_client_t*,
-                                     const mongoc_write_concern_t*) {
-        return;
-    }).forever();
-    auto database_set_preference = libmongoc::database_set_read_prefs.create_instance();
-    database_set_preference->interpose([](mongoc_database_t*,
-                                        const mongoc_read_prefs_t*) {
-        return;
-    }).forever();
-    auto database_set_concern = libmongoc::database_set_write_concern.create_instance();
-    database_set_concern->interpose([](mongoc_database_t*,
-                                     const mongoc_write_concern_t*) {
-        return;
-    }).forever();
-    auto database_destroy = libmongoc::database_destroy.create_instance();
-    database_destroy->interpose([](mongoc_database_t* client) {
-        return;
-    }).forever();
+    MOCK_CLIENT
+    MOCK_DATABASE
     client mongo_client;
 
     SECTION("is created by a client") {
@@ -155,25 +125,7 @@ TEST_CASE("A database", "[database][base]") {
 
 
     SECTION("may create a collection") {
-        auto database_get_collection = libmongoc::database_get_collection.create_instance();
-        database_get_collection->interpose([](mongoc_database_t* client, const char* name) {
-            return nullptr;
-        }).forever();
-        auto collection_set_preference = libmongoc::collection_set_read_prefs.create_instance();
-        collection_set_preference->interpose([](mongoc_collection_t*,
-                                            const mongoc_read_prefs_t*) {
-            return;
-        }).forever();
-        auto collection_set_concern = libmongoc::collection_set_write_concern.create_instance();
-        collection_set_concern->interpose([](mongoc_collection_t*,
-                                         const mongoc_write_concern_t*) {
-            return;
-        }).forever();
-        auto collection_destroy = libmongoc::collection_destroy.create_instance();
-        collection_destroy->interpose([](mongoc_collection_t* client) {
-            return;
-        });
-
+        MOCK_COLLECTION
         const std::string collection_name("collection");
         database database = mongo_client[database_name];
         collection obtained_collection = database[collection_name];
