@@ -30,14 +30,12 @@ extern majority_t majority;
 class LIBMONGOCXX_EXPORT write_concern {
    public:
     class type {
+        friend class write_concern;
+        type();
         optional<std::int32_t> _count = 1;
         optional<std::string> _tag;
         bool _majority = false;
        public:
-        type& operator=(std::int32_t value);
-        type& operator=(std::string value);
-        type& operator=(class majority_t value);
-
         bool majority() const {
             return _majority;
         }

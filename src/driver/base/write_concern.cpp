@@ -20,26 +20,7 @@ namespace mongo {
 namespace driver {
 
 majority_t majority{};
-write_concern::type& write_concern::type::operator=(std::int32_t value) {
-    _count = value;
-    _majority = false;
-    _tag = nullopt;
-    return *this;
-}
-
-write_concern::type& write_concern::type::operator=(std::string value) {
-    _count = nullopt;
-    _majority = false;
-    _tag = std::move(value);
-    return *this;
-}
-
-write_concern::type& write_concern::type::operator=(class majority_t value) {
-    _count = nullopt;
-    _majority = true;
-    _tag = nullopt;
-    return *this;
-}
+write_concern::type::type() {}
 
 write_concern::write_concern() : _fsync(false), _journal(false), _confirm_from(), _timeout(0) {}
 
@@ -51,12 +32,20 @@ void write_concern::confirm_from(std::int32_t confirm_from) {
             "Must confirm against a positive"
             " number of replica set members");
     }
-    _confirm_from = confirm_from;
+    _confirm_from._count = confirm_from;
+    _confirm_from._majority = false;
+    _confirm_from._tag = nullopt;
 }
 void write_concern::confirm_from(std::string confirm_from) {
-    _confirm_from = std::move(confirm_from);
+    _confirm_from._count = nullopt;
+    _confirm_from._majority = false;
+    _confirm_from._tag = std::move(confirm_from);
 }
-void write_concern::confirm_from(class majority_t confirm_from) { _confirm_from = confirm_from; }
+void write_concern::confirm_from(class majority_t confirm_from) {
+    _confirm_from._count = nullopt;
+    _confirm_from._majority = true;
+    _confirm_from._tag = nullopt;
+}
 
 void write_concern::timeout(std::chrono::milliseconds timeout) { _timeout = timeout; }
 const bool& write_concern::fsync() const { return _fsync; }
