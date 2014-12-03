@@ -61,12 +61,18 @@ add_executable(test_database
 target_link_libraries(test_database mongocxx-mocked)
 add_test(test_database test_database)
 
+add_executable(test_collection
+    driver/base/collection.cpp
+)
+target_link_libraries(test_collection mongocxx-mocked)
+add_test(test_collection test_collection)
+
+
 
 add_executable(new_tests
     new_tests.cpp
     bson_builder.cpp
     bson_util_itoa.cpp
     bson_string_or_literal.cpp
-    collection.cpp
 )
 target_link_libraries(new_tests mongocxx-mocked)
