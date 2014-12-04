@@ -86,7 +86,7 @@ optional<result::bulk_write> collection::bulk_write(const class bulk_write& bulk
     return optional<result::bulk_write>(std::move(result));
 }
 
-cursor collection::find(const bson::document::view& filter, const options::find& options) {
+cursor collection::find(bson::document::view filter, const options::find& options) {
     using namespace bson;
 
     builder::document filter_builder;
@@ -115,7 +115,7 @@ cursor collection::find(const bson::document::view& filter, const options::find&
                                          projection.bson(), rp_ptr));
 }
 
-optional<bson::document::value> collection::find_one(const bson::document::view& filter,
+optional<bson::document::value> collection::find_one(bson::document::view filter,
                                                      const options::find& options) {
     options::find copy(options);
     copy.limit(1);
@@ -159,7 +159,7 @@ cursor collection::aggregate(const pipeline& pipeline, const options::aggregate&
                                               options_bson.bson(), rp_ptr));
 }
 
-optional<result::insert_one> collection::insert_one(const bson::document::view& document,
+optional<result::insert_one> collection::insert_one(bson::document::view document,
                                                     const options::insert& options) {
     class bulk_write bulk_op(false);
     model::insert_one insert(document);
@@ -172,8 +172,8 @@ optional<result::insert_one> collection::insert_one(const bson::document::view& 
     return result;
 }
 
-optional<result::replace_one> collection::replace_one(const bson::document::view& filter,
-                                                      const bson::document::view& replacement,
+optional<result::replace_one> collection::replace_one(bson::document::view filter,
+                                                      bson::document::view replacement,
                                                       const options::update& options) {
     class bulk_write bulk_op(false);
     model::replace_one replace_op(filter, replacement);
@@ -187,8 +187,8 @@ optional<result::replace_one> collection::replace_one(const bson::document::view
     return result;
 }
 
-optional<result::update> collection::update_many(const bson::document::view& filter,
-                                                 const bson::document::view& update,
+optional<result::update> collection::update_many(bson::document::view filter,
+                                                 bson::document::view update,
                                                  const options::update& options) {
     class bulk_write bulk_op(false);
     model::update_many update_op(filter, update);
@@ -204,7 +204,7 @@ optional<result::update> collection::update_many(const bson::document::view& fil
     return result;
 }
 
-optional<result::delete_result> collection::delete_many(const bson::document::view& filter,
+optional<result::delete_result> collection::delete_many(bson::document::view filter,
                                                         const options::delete_options& options) {
     class bulk_write bulk_op(false);
     model::delete_many delete_op(filter);
@@ -218,8 +218,8 @@ optional<result::delete_result> collection::delete_many(const bson::document::vi
     return result;
 }
 
-optional<result::update> collection::update_one(const bson::document::view& filter,
-                                                const bson::document::view& update,
+optional<result::update> collection::update_one(bson::document::view filter,
+                                                bson::document::view update,
                                                 const options::update& options) {
     class bulk_write bulk_op(false);
     model::update_many update_op(filter, update);
@@ -235,7 +235,7 @@ optional<result::update> collection::update_one(const bson::document::view& filt
     return result;
 }
 
-optional<result::delete_result> collection::delete_one(const bson::document::view& filter,
+optional<result::delete_result> collection::delete_one(bson::document::view filter,
                                                        const options::delete_options& options) {
     class bulk_write bulk_op(false);
     model::delete_one delete_op(filter);
@@ -250,7 +250,7 @@ optional<result::delete_result> collection::delete_one(const bson::document::vie
 }
 
 optional<bson::document::value> collection::find_one_and_replace(
-    const bson::document::view& filter, const bson::document::view& replacement,
+    bson::document::view filter, bson::document::view replacement,
     const options::find_one_and_replace& options) {
     scoped_bson_t bson_filter{filter};
     scoped_bson_t bson_replacement{replacement};
@@ -285,7 +285,7 @@ optional<bson::document::value> collection::find_one_and_replace(
 }
 
 optional<bson::document::value> collection::find_one_and_update(
-    const bson::document::view& filter, const bson::document::view& update,
+    bson::document::view filter, bson::document::view update,
     const options::find_one_and_update& options) {
     scoped_bson_t bson_filter{filter};
     scoped_bson_t bson_update{update};
@@ -320,7 +320,7 @@ optional<bson::document::value> collection::find_one_and_update(
 }
 
 optional<bson::document::value> collection::find_one_and_delete(
-    const bson::document::view& filter, const options::find_one_and_delete& options) {
+    bson::document::view filter, const options::find_one_and_delete& options) {
     scoped_bson_t bson_filter{filter};
     scoped_bson_t bson_sort{options.sort()};
     scoped_bson_t bson_projection{options.projection()};
@@ -348,7 +348,7 @@ optional<bson::document::value> collection::find_one_and_delete(
     return b.extract();
 }
 
-std::int64_t collection::count(const bson::document::view& filter, const options::count& options) {
+std::int64_t collection::count(bson::document::view filter, const options::count& options) {
     scoped_bson_t bson_filter{filter};
     bson_error_t error;
 
@@ -378,7 +378,7 @@ void collection::drop() {
 }
 
 void collection::read_preference(class read_preference rp) {
-    mongoc_collection_set_read_prefs(_impl->collection_t, rp._impl->read_preference_t);
+    libmongoc::collection_set_read_prefs(_impl->collection_t, rp._impl->read_preference_t);
 }
 
 class read_preference collection::read_preference() const {

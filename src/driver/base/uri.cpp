@@ -37,7 +37,7 @@ std::string uri::auth_source() const { return mongoc_uri_get_auth_source(_impl->
 
 std::string uri::database() const { return mongoc_uri_get_database(_impl->uri_t); }
 
-std::vector<host> uri::hosts() const {
+std::vector<uri::host> uri::hosts() const {
     std::vector<host> result;
 
     for (auto host_list = mongoc_uri_get_hosts(_impl->uri_t); host_list;

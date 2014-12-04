@@ -42,6 +42,8 @@
     client_destroy->interpose([](mongoc_client_t*){}).forever(); \
     auto client_set_preference = libmongoc::client_set_read_prefs.create_instance(); \
     client_set_preference->interpose([](mongoc_client_t*, const mongoc_read_prefs_t*){}).forever(); \
+    auto client_get_preference = libmongoc::client_get_read_prefs.create_instance(); \
+    client_get_preference->interpose([](const mongoc_client_t*){return nullptr;}).forever(); \
     auto client_set_concern = libmongoc::client_set_write_concern.create_instance(); \
     client_set_concern->interpose([](mongoc_client_t*, const mongoc_write_concern_t*){}).forever();
 
@@ -53,6 +55,8 @@
     auto database_set_preference = libmongoc::database_set_read_prefs.create_instance(); \
     database_set_preference->interpose([](mongoc_database_t*, \
                                         const mongoc_read_prefs_t*){}).forever(); \
+    auto database_get_preference = libmongoc::database_get_read_prefs.create_instance(); \
+    database_get_preference->interpose([](const mongoc_database_t*){return nullptr;}).forever(); \
     auto database_set_concern = libmongoc::database_set_write_concern.create_instance(); \
     database_set_concern->interpose([](mongoc_database_t*, \
                                        const mongoc_write_concern_t*){}).forever(); \
@@ -67,6 +71,8 @@
     auto collection_set_preference = libmongoc::collection_set_read_prefs.create_instance(); \
     collection_set_preference->interpose([](mongoc_collection_t*, \
                                         const mongoc_read_prefs_t*) {}).forever(); \
+    auto collection_get_preference = libmongoc::collection_get_read_prefs.create_instance(); \
+    collection_get_preference->interpose([](const mongoc_collection_t*) {return nullptr;}).forever(); \
     auto collection_set_concern = libmongoc::collection_set_write_concern.create_instance(); \
     collection_set_concern->interpose([](mongoc_collection_t*,\
                                      const mongoc_write_concern_t*) {}).forever(); \

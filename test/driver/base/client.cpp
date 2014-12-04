@@ -79,17 +79,28 @@ TEST_CASE("A client's read preferences may be set and obtained", "[client][base]
     client mongo_client;
     read_preference preference{read_mode::k_secondary_preferred};
 
-    bool called = false;
+    bool called_get = false;
+    bool called_set = false;
+    const mongoc_read_prefs_t* saved_preference = nullptr;
+
     client_set_preference->interpose(
         [&](mongoc_client_t* client, const mongoc_read_prefs_t* read_prefs) {
-            called = true;
+            called_set = true;
+            saved_preference = read_prefs;
             REQUIRE(mongoc_read_prefs_get_mode(read_prefs) ==
                     static_cast<mongoc_read_mode_t>(read_mode::k_secondary_preferred));
         });
-    mongo_client.read_preference(preference);
-    REQUIRE(called);
 
-    REQUIRE(preference.mode() == mongo_client.read_preference().mode());
+    client_get_preference->interpose(
+        [&](const mongoc_client_t* client) {
+            called_get = true;
+            return saved_preference;
+    }).forever();
+
+    mongo_client.read_preference(std::move(preference));
+    REQUIRE(called_set);
+
+    REQUIRE(read_mode::k_secondary_preferred == mongo_client.read_preference().mode());
 }
 
 TEST_CASE("A client's write concern may be set and obtained", "[client][base]") {

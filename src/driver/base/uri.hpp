@@ -22,7 +22,6 @@
 
 #include "bson/document.hpp"
 
-#include "driver/base/host.hpp"
 #include "driver/base/read_preference.hpp"
 #include "driver/base/write_concern.hpp"
 
@@ -32,6 +31,14 @@ namespace driver {
 class uri {
 
     class impl;
+
+    struct host {
+
+        std::string host;
+        std::uint16_t port;
+        std::int32_t family;
+
+    }; // class host
 
     friend class client;
 
@@ -50,7 +57,6 @@ class uri {
 
     // TODO: return const char* instead or stringview
     // TODO: harmonize with C library (options, credentials, etc...)
-    // TODO: add method to get the original string back out
     std::string auth_mechanism() const;
     std::string auth_source() const;
     std::vector<host> hosts() const;

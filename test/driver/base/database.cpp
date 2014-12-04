@@ -93,7 +93,7 @@ TEST_CASE("A database", "[database][base]") {
                 REQUIRE(mongoc_read_prefs_get_mode(read_prefs) ==
                         static_cast<mongoc_read_mode_t>(read_mode::k_secondary_preferred));
         });
-        mongo_database.read_preference(preference);
+        mongo_database.read_preference(std::move(preference));
         REQUIRE(called);
 
         REQUIRE(preference.mode() == mongo_database.read_preference().mode());

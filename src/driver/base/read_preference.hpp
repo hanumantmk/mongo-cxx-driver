@@ -48,9 +48,9 @@ class LIBMONGOCXX_EXPORT read_preference {
     class impl;
 
    public:
-       read_preference(read_mode = read_mode::k_primary);
+       read_preference(read_mode rm = read_mode::k_primary);
        read_preference(read_mode, bson::document::view tags);
-       read_preference(const read_preference& other);
+       read_preference(const read_preference&);
 
        read_preference(read_preference&& other) noexcept;
        read_preference& operator=(read_preference&& rhs) noexcept;

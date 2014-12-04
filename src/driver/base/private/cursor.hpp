@@ -26,7 +26,14 @@ namespace driver {
 class cursor::impl {
 
    public:
-    ~impl() { mongoc_cursor_destroy(cursor_t); }
+    impl(mongoc_cursor_t* cursor)
+        : cursor_t(cursor)
+    {}
+
+    ~impl() {
+        mongoc_cursor_destroy(cursor_t);
+    }
+
     mongoc_cursor_t* cursor_t;
 
 }; // class impl

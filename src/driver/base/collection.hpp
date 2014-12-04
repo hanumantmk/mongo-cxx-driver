@@ -91,57 +91,57 @@ class LIBMONGOCXX_EXPORT collection {
     // TODO: decide value vs. ref for bson::document::view types
     // TODO: almost certainly remove const, consider for client + db as well
     std::int64_t count(
-        const bson::document::view& filter,
+        bson::document::view filter,
         const options::count& options = options::count()
     );
 
     optional<result::delete_result> delete_one(
-        const bson::document::view& filter,
+        bson::document::view filter,
         const options::delete_options& options = options::delete_options()
     );
 
     optional<result::delete_result> delete_many(
-        const bson::document::view& filter,
+        bson::document::view filter,
         const options::delete_options& options = options::delete_options()
     );
 
     cursor distinct(
         const std::string& field_name,
-        const bson::document::view& filter,
+        bson::document::view filter,
         const options::distinct& options = options::distinct()
     );
 
     void drop();
 
     cursor find(
-        const bson::document::view& filter,
+        bson::document::view filter,
         const options::find& options = options::find()
     );
 
     optional<bson::document::value> find_one(
-        const bson::document::view& filter,
+        bson::document::view filter,
         const options::find& options = options::find()
     );
 
     optional<bson::document::value> find_one_and_delete(
-        const bson::document::view& filter,
+        bson::document::view filter,
         const options::find_one_and_delete& options = options::find_one_and_delete()
     );
 
     optional<bson::document::value> find_one_and_update(
-        const bson::document::view& filter,
-        const bson::document::view& update,
+        bson::document::view filter,
+        bson::document::view update,
         const options::find_one_and_update& options = options::find_one_and_update()
     );
 
     optional<bson::document::value> find_one_and_replace(
-        const bson::document::view& filter,
-        const bson::document::view& replacement,
+        bson::document::view filter,
+        bson::document::view replacement,
         const options::find_one_and_replace& options = options::find_one_and_replace()
     );
 
     optional<result::insert_one> insert_one(
-        const bson::document::view& document,
+        bson::document::view document,
         const options::insert& options = options::insert()
     );
 
@@ -162,20 +162,20 @@ class LIBMONGOCXX_EXPORT collection {
     class read_preference read_preference() const;
 
     optional<result::replace_one> replace_one(
-        const bson::document::view& filter,
-        const bson::document::view& replacement,
+        bson::document::view filter,
+        bson::document::view replacement,
         const options::update& options = options::update()
     );
 
     optional<result::update> update_one(
-        const bson::document::view& filter,
-        const bson::document::view& update,
+        bson::document::view filter,
+        bson::document::view update,
         const options::update& options = options::update()
     );
 
     optional<result::update> update_many(
-        const bson::document::view& filter,
-        const bson::document::view& update,
+        bson::document::view filter,
+        bson::document::view update,
         const options::update& options = options::update()
     );
 
@@ -226,7 +226,7 @@ inline optional<result::insert_many> collection::insert_many(
 ) {
     class bulk_write writes(false);
 
-    std::for_each(begin, end, [&](const bson::document::view& current){
+    std::for_each(begin, end, [&](bson::document::view current){
         writes.append(model::insert_one(current));
     });
 
