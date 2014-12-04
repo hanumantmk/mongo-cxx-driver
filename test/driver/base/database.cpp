@@ -45,7 +45,6 @@ TEST_CASE("A database", "[database][base]") {
         bool destroy_called = false;
         database_destroy->interpose([&](mongoc_database_t* client) {
             destroy_called = true;
-            return nullptr;
         });
 
         {
@@ -60,7 +59,6 @@ TEST_CASE("A database", "[database][base]") {
         bool destroy_called = false;
         database_destroy->interpose([&](mongoc_database_t* client) {
             destroy_called = true;
-            return nullptr;
         });
 
         {
@@ -80,7 +78,6 @@ TEST_CASE("A database", "[database][base]") {
         bool destroy_called = false;
         database_destroy->interpose([&](mongoc_database_t* client) {
             destroy_called = true;
-            return nullptr;
         });
 
         database mongo_database(mongo_client["database"]);
@@ -103,7 +100,6 @@ TEST_CASE("A database", "[database][base]") {
         bool destroy_called = false;
         database_destroy->interpose([&](mongoc_database_t* client) {
             destroy_called = true;
-            return nullptr;
         });
 
         database mongo_database(mongo_client[database_name]);
