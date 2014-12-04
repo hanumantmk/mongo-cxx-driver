@@ -15,7 +15,7 @@
 #include "driver/options/find.hpp"
 #include "driver/base/private/read_preference.hpp"
 
-// TODO: figure out what to do with this
+// TODO: should this go inside collection now? it's not used here
 enum class cursor_flag : uint32_t {
     k_tailable,
     k_oplog_replay,
