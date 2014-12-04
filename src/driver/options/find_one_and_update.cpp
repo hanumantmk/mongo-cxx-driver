@@ -20,7 +20,7 @@ namespace options {
 
 void find_one_and_update::projection(bson::document::view projection) { _projection = projection; }
 
-void find_one_and_update::return_document(ReturnDocument return_document) {
+void find_one_and_update::return_document(enum return_document return_document) {
     _return_document = return_document;
 }
 
@@ -32,7 +32,7 @@ const optional<bson::document::view>& find_one_and_update::projection() const {
     return _projection;
 }
 
-const optional<ReturnDocument>& find_one_and_update::return_document() const {
+const optional<return_document>& find_one_and_update::return_document() const {
     return _return_document;
 }
 

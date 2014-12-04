@@ -52,7 +52,7 @@ std::string uri::password() const { return mongoc_uri_get_password(_impl->uri_t)
 
 std::string uri::replica_set() const { return mongoc_uri_get_replica_set(_impl->uri_t); }
 
-std::string uri::string() const { return mongoc_uri_get_string(_impl->uri_t); }
+std::string uri::to_string() const { return mongoc_uri_get_string(_impl->uri_t); }
 
 bool uri::ssl() const { return mongoc_uri_get_ssl(_impl->uri_t); }
 

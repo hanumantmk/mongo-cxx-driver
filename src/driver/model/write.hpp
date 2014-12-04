@@ -32,6 +32,7 @@ namespace model {
 
 class LIBMONGOCXX_EXPORT write {
 
+   public:
     enum class type {
         k_insert_one,
         k_delete_one,
@@ -42,8 +43,6 @@ class LIBMONGOCXX_EXPORT write {
         k_uninitialized,
     };
 
-
-   public:
     write(insert_one value);
     write(update_one value);
     write(update_many value);

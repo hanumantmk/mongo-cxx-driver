@@ -32,6 +32,7 @@
 #include "driver/options/delete.hpp"
 #include "driver/options/distinct.hpp"
 #include "driver/options/find.hpp"
+#include "driver/options/find_one_and_modify.hpp"
 #include "driver/options/find_one_and_delete.hpp"
 #include "driver/options/find_one_and_replace.hpp"
 #include "driver/options/find_one_and_update.hpp"

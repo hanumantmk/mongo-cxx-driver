@@ -33,13 +33,13 @@ bulk_write::bulk_write(bool ordered)
 
 void bulk_write::append(const model::write& operation) {
     switch (operation.type()) {
-        case model::write_type::kInsertOne: {
+        case model::write::type::k_insert_one: {
             scoped_bson_t doc(operation.get_insert_one().document());
 
             libmongoc::bulk_operation_insert(_impl->operation_t, doc.bson());
             break;
         }
-        case model::write_type::kUpdateOne: {
+        case model::write::type::k_update_one: {
             scoped_bson_t filter(operation.get_update_one().filter());
             scoped_bson_t update(operation.get_update_one().update());
             bool upsert = operation.get_update_one().upsert().value_or(false);
@@ -48,7 +48,7 @@ void bulk_write::append(const model::write& operation) {
                                                  upsert);
             break;
         }
-        case model::write_type::kUpdateMany: {
+        case model::write::type::k_update_many: {
             scoped_bson_t filter(operation.get_update_many().filter());
             scoped_bson_t update(operation.get_update_many().update());
             bool upsert = operation.get_update_many().upsert().value_or(false);
@@ -57,17 +57,17 @@ void bulk_write::append(const model::write& operation) {
                                              upsert);
             break;
         }
-        case model::write_type::kDeleteOne: {
+        case model::write::type::k_delete_one: {
             scoped_bson_t filter(operation.get_delete_one().filter());
             libmongoc::bulk_operation_remove_one(_impl->operation_t, filter.bson());
             break;
         }
-        case model::write_type::kDeleteMany: {
+        case model::write::type::k_delete_many: {
             scoped_bson_t filter(operation.get_delete_many().filter());
             libmongoc::bulk_operation_remove(_impl->operation_t, filter.bson());
             break;
         }
-        case model::write_type::kReplaceOne: {
+        case model::write::type::k_replace_one: {
             scoped_bson_t filter(operation.get_replace_one().filter());
             scoped_bson_t replace(operation.get_replace_one().replacement());
             bool upsert = operation.get_replace_one().upsert().value_or(false);
@@ -76,7 +76,7 @@ void bulk_write::append(const model::write& operation) {
                                                   upsert);
             break;
         }
-        case model::write_type::kUninitialized:
+        case model::write::type::k_uninitialized:
             break;  // TODO: something exceptiony
     }
 }

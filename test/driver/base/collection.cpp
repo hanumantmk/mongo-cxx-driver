@@ -298,7 +298,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
 
         SECTION("with return replacement returns new") {
             options::find_one_and_replace options;
-            options.return_document(options::ReturnDocument::AFTER);
+            options.return_document(options::return_document::k_after);
             auto doc = coll.find_one_and_replace(criteria, replacement, options);
 
             REQUIRE(doc->view()["x"].get_int32() == 2);
@@ -341,7 +341,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
 
         SECTION("with return update returns new") {
             options::find_one_and_update options;
-            options.return_document(options::ReturnDocument::AFTER);
+            options.return_document(options::return_document::k_after);
             auto doc = coll.find_one_and_update(criteria, update, options);
 
             REQUIRE(doc);
