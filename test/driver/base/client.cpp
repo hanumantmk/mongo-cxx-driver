@@ -81,12 +81,13 @@ TEST_CASE("A client's read preferences may be set and obtained", "[client][base]
 
     bool called_get = false;
     bool called_set = false;
-    const mongoc_read_prefs_t* saved_preference = nullptr;
+    auto deleter = [](mongoc_read_prefs_t* var){mongoc_read_prefs_destroy(var);};
+    std::unique_ptr<mongoc_read_prefs_t, decltype(deleter)> saved_preference(nullptr, deleter);
 
     client_set_preference->interpose(
         [&](mongoc_client_t* client, const mongoc_read_prefs_t* read_prefs) {
             called_set = true;
-            saved_preference = read_prefs;
+            saved_preference.reset(mongoc_read_prefs_copy(read_prefs));
             REQUIRE(mongoc_read_prefs_get_mode(read_prefs) ==
                     static_cast<mongoc_read_mode_t>(read_mode::k_secondary_preferred));
         });
@@ -94,7 +95,7 @@ TEST_CASE("A client's read preferences may be set and obtained", "[client][base]
     client_get_preference->interpose(
         [&](const mongoc_client_t* client) {
             called_get = true;
-            return saved_preference;
+            return saved_preference.get();
     }).forever();
 
     mongo_client.read_preference(std::move(preference));
