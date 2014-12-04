@@ -19,6 +19,7 @@
 namespace mongo {
 namespace driver {
 
+// TODO: delete me?
 template <class In, typename Func>
 class Adapter {
    public:

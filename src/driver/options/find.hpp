@@ -26,10 +26,11 @@ namespace mongo {
 namespace driver {
 namespace options {
 
-enum class CursorType {
-    NON_TAILABLE,
-    TAILABLE,
-    TAILABLE_AWAIT
+// TODO: scope this to find?
+enum class cursor_type {
+    k_non_tailable,
+    k_tailable,
+    k_tailable_await
 };
 
 class LIBMONGOCXX_EXPORT find {
@@ -38,7 +39,7 @@ class LIBMONGOCXX_EXPORT find {
     void allow_partial_results(bool allow_partial);
     void batch_size(std::int32_t batch_size);
     void comment(std::string comment);
-    void cursor_type(CursorType cursor_type);
+    void cursor_type(cursor_type cursor_type);
     void limit(std::int32_t limit);
     void max_time_ms(std::int64_t max_time_ms);
     void modifiers(bson::document::view modifiers);
@@ -52,7 +53,7 @@ class LIBMONGOCXX_EXPORT find {
     const optional<bool>& allow_partial_results() const;
     const optional<std::int32_t>& batch_size() const;
     const optional<std::string>& comment() const;
-    const optional<CursorType>& cursor_type() const;
+    const optional<enum cursor_type>& cursor_type() const;
     const optional<std::int32_t>& limit() const;
     const optional<std::int64_t>& max_time_ms() const;
     const optional<bson::document::view>& modifiers() const;
@@ -67,7 +68,7 @@ class LIBMONGOCXX_EXPORT find {
     optional<bool> _allow_partial_results;
     optional<std::int32_t> _batch_size;
     optional<std::string> _comment;
-    optional<CursorType> _cursor_type;
+    optional<enum cursor_type> _cursor_type;
     optional<std::int32_t> _limit;
     optional<std::int64_t> _max_time_ms;
     optional<bson::document::view> _modifiers;

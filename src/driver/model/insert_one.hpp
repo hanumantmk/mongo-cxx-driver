@@ -32,6 +32,7 @@ class LIBMONGOCXX_EXPORT insert_one {
     const bson::document::view& document() const;
 
    private:
+    // TODO: should this be a value?
     bson::document::view _document;
 
 };

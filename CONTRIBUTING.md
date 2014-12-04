@@ -25,3 +25,6 @@
 
 ### Inlines
  - TODO
+
+### Relational Operators
+ - prefer free func

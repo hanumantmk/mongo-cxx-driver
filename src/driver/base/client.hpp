@@ -39,6 +39,8 @@ class LIBMONGOCXX_EXPORT client {
     friend class database;
     friend class collection;
 
+    // TODO: iterable for databases on the server
+    // TODO: add + implement client api methods
    public:
     client(
         const uri& mongodb_uri = uri(),

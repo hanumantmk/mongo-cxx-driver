@@ -16,19 +16,14 @@
 
 #include "driver/config/prelude.hpp"
 
-#include <cstdint>
-
-#include "bson/document.hpp"
-#include "driver/base/write_concern.hpp"
-#include "driver/util/optional.hpp"
-
 namespace mongo {
 namespace driver {
 namespace options {
 
-enum class ReturnDocument {
-    BEFORE,
-    AFTER
+// TODO: where is my home?
+enum class return_document {
+    k_before,
+    k_after,
 };
 
 }  // namespace options

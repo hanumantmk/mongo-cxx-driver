@@ -31,13 +31,13 @@ class LIBMONGOCXX_EXPORT find_one_and_replace {
    public:
     void max_time_ms(std::int64_t max_time_ms);
     void projection(bson::document::view projection);
-    void return_document(ReturnDocument return_document);
+    void return_document(return_document return_document);
     void sort(bson::document::view ordering);
     void upsert(bool upsert);
 
     const optional<std::int64_t>& max_time_ms() const;
     const optional<bson::document::view>& projection() const;
-    const optional<ReturnDocument>& return_document() const;
+    const optional<return_document>& return_document() const;
     const optional<bson::document::view>& sort() const;
     const optional<bool>& upsert() const;
 

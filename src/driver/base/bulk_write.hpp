@@ -32,7 +32,8 @@ class LIBMONGOCXX_EXPORT bulk_write {
     class impl;
 
    public:
-    bulk_write(bool ordered);
+    // TODO: can this be an enum?
+    explicit bulk_write(bool ordered);
 
     bulk_write(bulk_write&& other) noexcept;
     bulk_write& operator=(bulk_write&& rhs) noexcept;
@@ -40,6 +41,7 @@ class LIBMONGOCXX_EXPORT bulk_write {
     ~bulk_write();
 
     void append(const model::write& operation);
+
     void write_concern(class write_concern wc);
     optional<class write_concern> write_concern() const;
 

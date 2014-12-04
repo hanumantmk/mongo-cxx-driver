@@ -39,6 +39,9 @@ class LIBMONGOCXX_EXPORT database {
 
     class impl;
 
+    // TODO: iterable for collections in the database
+    // TODO: add + implement database management functions
+    // TODO: make copyable when c-driver supports this
    public:
     database(database&& other) noexcept;
     database& operator=(database&& rhs) noexcept;

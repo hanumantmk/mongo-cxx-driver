@@ -42,7 +42,6 @@ class LIBMONGOCXX_EXPORT cursor {
     iterator begin();
     iterator end();
 
-
    private:
     cursor(void* cursor_ptr);
 
@@ -50,6 +49,11 @@ class LIBMONGOCXX_EXPORT cursor {
 
 }; // class cursor
 
+// TODO: review template args to std::iterator
+// TODO: input iterator semantics (input iterator?)
+// TODO: post increment operator
+// TODO: make relational ops free functions
+// TODO: remove at_end (if possible)
 class cursor::iterator
     : public std::iterator<std::forward_iterator_tag, const bson::document::view&, std::ptrdiff_t,
                            const bson::document::view*, const bson::document::view&> {
@@ -67,7 +71,7 @@ class cursor::iterator
    private:
     explicit iterator(cursor* cursor);
 
-    cursor* _cursor;
+    cursor* const _cursor;
     bson::document::view _doc;
     bool _at_end;
 

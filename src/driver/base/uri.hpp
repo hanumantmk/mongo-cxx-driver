@@ -33,11 +33,9 @@ class uri {
     class impl;
 
     struct host {
-
         std::string host;
         std::uint16_t port;
         std::int32_t family;
-
     }; // class host
 
     friend class client;
@@ -66,7 +64,7 @@ class uri {
     class read_preference read_preference() const;
     std::string replica_set() const;
     bool ssl() const;
-    std::string string() const;
+    std::string to_string() const;
     std::string username() const;
     class write_concern write_concern() const;
 

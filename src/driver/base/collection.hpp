@@ -58,6 +58,8 @@ class LIBMONGOCXX_EXPORT collection {
 
     friend class database;
 
+    // TODO: add + implement collection management methods
+    // TODO: make copyable when c-driver supports this
    public:
     collection(collection&& other) noexcept;
     collection& operator=(collection&& rhs) noexcept;
@@ -88,8 +90,6 @@ class LIBMONGOCXX_EXPORT collection {
         const class bulk_write& bulk_write
     );
 
-    // TODO: decide value vs. ref for bson::document::view types
-    // TODO: almost certainly remove const, consider for client + db as well
     std::int64_t count(
         bson::document::view filter,
         const options::count& options = options::count()
@@ -151,6 +151,7 @@ class LIBMONGOCXX_EXPORT collection {
         const options::insert& options = options::insert()
     );
 
+    // TODO: document DocumentViewIterator concept or static assert
     template<class DocumentViewIterator>
     inline optional<result::insert_many> insert_many(
         DocumentViewIterator begin,
@@ -205,7 +206,9 @@ inline optional<result::bulk_write> collection::bulk_write(
 ) {
     class bulk_write writes(options.ordered().value_or(true));
 
-    std::for_each(begin, end, [&](const model::write& current){writes.append(current);});
+    std::for_each(begin, end, [&](const model::write& current){
+        writes.append(current);
+    });
 
     return bulk_write(writes);
 }

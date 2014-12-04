@@ -28,6 +28,7 @@ namespace driver {
 namespace options {
 
 // TODO: take hint as a std::string parameter in addition to bson::document::view
+// TODO: figure out hint (make a new type or use bson::element?)
 
 class LIBMONGOCXX_EXPORT count {
 

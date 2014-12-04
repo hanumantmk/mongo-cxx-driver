@@ -30,17 +30,18 @@ namespace mongo {
 namespace driver {
 namespace model {
 
-enum class write_type {
-    kInsertOne,
-    kDeleteOne,
-    kDeleteMany,
-    kUpdateOne,
-    kUpdateMany,
-    kReplaceOne,
-    kUninitialized,
-};
-
 class LIBMONGOCXX_EXPORT write {
+
+    enum class type {
+        k_insert_one,
+        k_delete_one,
+        k_delete_many,
+        k_update_one,
+        k_update_many,
+        k_replace_one,
+        k_uninitialized,
+    };
+
 
    public:
     write(insert_one value);
@@ -52,12 +53,13 @@ class LIBMONGOCXX_EXPORT write {
 
     write(write&& rhs);
     write& operator=(write&& rhs);
+
     write(const write& rhs) = delete;
     write& operator=(const write& rhs) = delete;
 
     ~write();
 
-    write_type type() const;
+    type type() const;
 
     const insert_one& get_insert_one() const;
     const update_one& get_update_one() const;
@@ -69,7 +71,7 @@ class LIBMONGOCXX_EXPORT write {
    private:
     void destroy_member();
 
-    write_type _type;
+    enum type _type;
 
     union {
         insert_one _insert_one;

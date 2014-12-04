@@ -26,6 +26,7 @@ namespace mongo {
 namespace driver {
 namespace options {
 
+// TODO: interleave the getters and setters
 class LIBMONGOCXX_EXPORT aggregate {
 
    public:

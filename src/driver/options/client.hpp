@@ -24,6 +24,8 @@ namespace options {
 
 class LIBMONGOCXX_EXPORT client {
 
+    // TODO: client options
+
 }; // class client
 
 }  // namespace options

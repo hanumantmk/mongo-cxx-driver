@@ -29,10 +29,6 @@ class collection;
 
 class LIBMONGOCXX_EXPORT pipeline {
 
-    friend class collection;
-
-    class impl;
-
    public:
     pipeline();
 
@@ -52,6 +48,9 @@ class LIBMONGOCXX_EXPORT pipeline {
     pipeline& unwind(std::string field_name);
 
    private:
+    friend class collection;
+
+    class impl;
     std::unique_ptr<impl> _impl;
 
 }; // class pipeline

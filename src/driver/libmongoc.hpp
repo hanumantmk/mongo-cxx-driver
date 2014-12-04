@@ -20,6 +20,7 @@
 namespace mongo {
 namespace driver {
 namespace libmongoc {
+    //TODO: move me to private
 
 #ifdef MONGOCXX_TESTING
 #define MONGOCXX_LIBMONGOC_SYMBOL(name) extern mongo::util::mock<decltype(&mongoc_##name)> name;
