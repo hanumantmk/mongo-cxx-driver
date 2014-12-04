@@ -29,7 +29,7 @@ read_preference& read_preference::operator=(read_preference&&) noexcept = defaul
 read_preference::read_preference(const read_preference&) { abort(); }
 
 read_preference::read_preference(std::unique_ptr<impl>&& implementation) {
-    _impl.reset(implementation.get());
+    _impl.reset(implementation.release());
 }
 
 read_preference::read_preference(read_mode mode)
