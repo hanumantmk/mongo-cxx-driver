@@ -41,34 +41,34 @@ enum class read_mode {
 
 class LIBMONGOCXX_EXPORT read_preference {
 
+   public:
+    explicit read_preference(read_mode rm = read_mode::k_primary);
+    read_preference(read_mode, bson::document::view tags);
+
+    // TODO: wat?!
+    read_preference(const read_preference&);
+
+    read_preference(read_preference&& other) noexcept;
+    read_preference& operator=(read_preference&& rhs) noexcept;
+
+    ~read_preference();
+
+    void mode(read_mode mode);
+    read_mode mode() const;
+
+    void tags(bson::document::view tags);
+    optional<bson::document::view> tags() const;
+
+   private:
     friend client;
     friend collection;
     friend database;
 
     class impl;
 
-   public:
-       explicit read_preference(read_mode rm = read_mode::k_primary);
-       read_preference(read_mode, bson::document::view tags);
+    read_preference(std::unique_ptr<impl>&& implementation);
 
-       // TODO: wat?!
-       read_preference(const read_preference&);
-
-       read_preference(read_preference&& other) noexcept;
-       read_preference& operator=(read_preference&& rhs) noexcept;
-
-       ~read_preference();
-
-       void mode(read_mode mode);
-       read_mode mode() const;
-
-       void tags(bson::document::view tags);
-       optional<bson::document::view> tags() const;
-
-   private:
-       read_preference(std::unique_ptr<impl>&& implementation);
-
-       std::unique_ptr<impl> _impl;
+    std::unique_ptr<impl> _impl;
 
 }; // class read_preference
 

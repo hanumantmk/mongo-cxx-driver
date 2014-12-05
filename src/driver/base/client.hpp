@@ -34,11 +34,6 @@ class settings;
 /// all of the options specified on the client.
 class LIBMONGOCXX_EXPORT client {
 
-    class impl;
-
-    friend class database;
-    friend class collection;
-
     // TODO: iterable for databases on the server
     // TODO: add + implement client api methods
    public:
@@ -66,6 +61,10 @@ class LIBMONGOCXX_EXPORT client {
     inline class database operator[](const std::string& name) const;
 
    private:
+    friend class database;
+    friend class collection;
+
+    class impl;
     std::unique_ptr<impl> _impl;
 
 }; // class client

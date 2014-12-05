@@ -30,15 +30,11 @@ namespace driver {
 
 class uri {
 
-    class impl;
-
-    struct host {
+   struct host {
         std::string host;
         std::uint16_t port;
         std::int32_t family;
-    }; // class host
-
-    friend class client;
+   }; // class host
 
    public:
 
@@ -69,6 +65,9 @@ class uri {
     class write_concern write_concern() const;
 
    private:
+    friend class client;
+
+    class impl;
     std::unique_ptr<impl> _impl;
 
 }; // class uri

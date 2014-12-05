@@ -27,10 +27,6 @@ class collection;
 
 class LIBMONGOCXX_EXPORT cursor {
 
-    friend class collection;
-
-    class impl;
-
    public:
     class iterator;
 
@@ -43,8 +39,11 @@ class LIBMONGOCXX_EXPORT cursor {
     iterator end();
 
    private:
+    friend class collection;
+
     cursor(void* cursor_ptr);
 
+    class impl;
     std::unique_ptr<impl> _impl;
 
 }; // class cursor

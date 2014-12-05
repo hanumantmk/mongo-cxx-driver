@@ -28,14 +28,12 @@ namespace driver {
 
 class majority_t{};
 extern majority_t majority;
+
 class LIBMONGOCXX_EXPORT write_concern {
+
    public:
     class type {
-        friend class write_concern;
-        type();
-        optional<std::int32_t> _count = 1;
-        optional<std::string> _tag;
-        bool _majority = false;
+
        public:
         bool majority() const {
             return _majority;
@@ -46,6 +44,15 @@ class LIBMONGOCXX_EXPORT write_concern {
         const optional<std::int32_t> number() const {
             return _count;
         }
+
+       private:
+        friend class write_concern;
+
+        type();
+
+        optional<std::int32_t> _count = 1;
+        optional<std::string> _tag;
+        bool _majority = false;
 
     };
 

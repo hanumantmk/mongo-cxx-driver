@@ -34,24 +34,37 @@ class client;
 /// it's constructor.
 class LIBMONGOCXX_EXPORT database {
 
-    friend class client;
-    friend class collection;
-
-    class impl;
-
     // TODO: iterable for collections in the database
-    // TODO: add + implement database management functions
     // TODO: make copyable when c-driver supports this
+    // TODO: add auth functions (add_user, remove_all_users, remove_user)
    public:
     database(database&& other) noexcept;
     database& operator=(database&& rhs) noexcept;
 
     ~database();
 
+    bson::document::value command(bson::document::view command);
+
+    class collection create_collection(const std::string& name, bson::document::view options);
+
+    void drop();
+
+    cursor collection_names();
+
+    bool has_collection(std::string name);
+
     const std::string& name() const;
 
     void read_preference(class read_preference rp);
     class read_preference read_preference() const;
+
+    // TODO: should this be called move?
+    void rename(
+        const std::string& new_name,
+        bool drop_target_before_rename
+    );
+
+    bson::document::value stats();
 
     void write_concern(class write_concern wc);
     const class write_concern& write_concern() const;
@@ -66,8 +79,12 @@ class LIBMONGOCXX_EXPORT database {
     inline class collection operator[](const std::string& name) const;
 
    private:
+    friend class client;
+    friend class collection;
+
     database(const class client& client, const std::string& name);
 
+    class impl;
     std::unique_ptr<impl> _impl;
 
 }; // class database

@@ -23,8 +23,42 @@
  - Close Namespace mongo
  - Postlude
 
+### Class Declarations
+
+Guidelines:
+
+ - Blank line at beginning and end of class declaration
+ - Public section up top / private at bottom
+ - Lifecycle methods first (see rules above)
+ - Private Member Ordering
+   - Friendships
+   - Private Constructors
+   - Private Methods
+   - Private Variables
+
+Example:
+
+    class foo {
+
+        public:
+          foo();
+
+          foo(foo&& other) noexcept;
+          foo& operator=(foo&& other) noexcept;
+
+          ~foo();
+
+        private:
+          friend baz;
+
+          class impl;
+          std::unique_ptr<impl> _impl;
+
+    };
+
 ### Inlines
- - TODO
+ - Define outside of class declaration
+ - Specify inline keyword in declaration and definition (for clarity)
 
 ### Relational Operators
- - prefer free func
+ - Prefer to use free functions

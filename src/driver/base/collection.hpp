@@ -52,14 +52,10 @@ class client;
 class database;
 class pipeline;
 
+// TODO: make copyable when c-driver supports this
+
 class LIBMONGOCXX_EXPORT collection {
 
-    class impl;
-
-    friend class database;
-
-    // TODO: add + implement collection management methods
-    // TODO: make copyable when c-driver supports this
    public:
     collection(collection&& other) noexcept;
     collection& operator=(collection&& rhs) noexcept;
@@ -93,6 +89,11 @@ class LIBMONGOCXX_EXPORT collection {
     std::int64_t count(
         bson::document::view filter,
         const options::count& options = options::count()
+    );
+
+    bool create_index(
+        bson::document::view keys,
+        bson::document::view options
     );
 
     optional<result::delete_result> delete_one(
@@ -184,8 +185,11 @@ class LIBMONGOCXX_EXPORT collection {
     const class write_concern& write_concern() const;
 
    private:
+    friend class database;
+
     collection(const database& database, const std::string& collection_name);
 
+    class impl;
     std::unique_ptr<impl> _impl;
 
 }; // class collection

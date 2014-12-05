@@ -27,10 +27,6 @@ class collection;
 
 class LIBMONGOCXX_EXPORT bulk_write {
 
-    friend class collection;
-
-    class impl;
-
    public:
     // TODO: can this be an enum?
     explicit bulk_write(bool ordered);
@@ -46,6 +42,9 @@ class LIBMONGOCXX_EXPORT bulk_write {
     optional<class write_concern> write_concern() const;
 
    private:
+    friend class collection;
+
+    class impl;
     std::unique_ptr<impl> _impl;
 
 }; // class bulk_write

@@ -35,7 +35,6 @@ class LIBMONGOCXX_EXPORT update {
     const optional<class write_concern>& write_concern() const;
 
    private:
-    // TODO: what does an optional boolean mean in the context of options?
     optional<bool> _upsert;
     optional<class write_concern> _write_concern;
 

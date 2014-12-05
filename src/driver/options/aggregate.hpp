@@ -48,6 +48,7 @@ class LIBMONGOCXX_EXPORT aggregate {
     optional<bool> _allow_disk_use;
     optional<std::int32_t> _batch_size;
     optional<std::int64_t> _max_time_ms;
+    // NOTE: It's important to be have this bool be optional as the default changed.
     optional<bool> _use_cursor;
     optional<class read_preference> _read_preference;
 

@@ -12,32 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
-
-#include "driver/config/prelude.hpp"
-
-#include <memory>
+#include "driver/base/index_spec.hpp"
 
 namespace mongo {
 namespace driver {
 
-class instance {
-
-   public:
-    instance();
-
-    instance(instance&& other) noexcept;
-    instance& operator=(instance&& rhs) noexcept;
-
-    ~instance();
-
-   private:
-    class impl;
-    std::unique_ptr<impl> _impl;
-
-}; // class instance
-
 }  // namespace driver
 }  // namespace mongo
-
-#include "driver/config/postlude.hpp"

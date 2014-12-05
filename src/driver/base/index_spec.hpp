@@ -16,26 +16,8 @@
 
 #include "driver/config/prelude.hpp"
 
-#include <memory>
-
 namespace mongo {
 namespace driver {
-
-class instance {
-
-   public:
-    instance();
-
-    instance(instance&& other) noexcept;
-    instance& operator=(instance&& rhs) noexcept;
-
-    ~instance();
-
-   private:
-    class impl;
-    std::unique_ptr<impl> _impl;
-
-}; // class instance
 
 }  // namespace driver
 }  // namespace mongo
