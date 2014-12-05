@@ -37,24 +37,25 @@ Guidelines:
    - Private Variables
 
 Example:
+```cpp
+class foo {
 
-    class foo {
+    public:
+      foo();
 
-        public:
-          foo();
+      foo(foo&& other) noexcept;
+      foo& operator=(foo&& other) noexcept;
 
-          foo(foo&& other) noexcept;
-          foo& operator=(foo&& other) noexcept;
+      ~foo();
 
-          ~foo();
+    private:
+      friend baz;
 
-        private:
-          friend baz;
+      class impl;
+      std::unique_ptr<impl> _impl;
 
-          class impl;
-          std::unique_ptr<impl> _impl;
-
-    };
+};
+```
 
 ### Inlines
  - Define outside of class declaration
