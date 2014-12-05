@@ -47,8 +47,9 @@ class LIBMONGOCXX_EXPORT read_preference {
 
     // TODO: make read_preference copyable
     read_preference(const read_preference&);
-    read_preference(read_preference&& other) noexcept;
+    read_preference& operator=(const read_preference&);
 
+    read_preference(read_preference&& other) noexcept;
     read_preference& operator=(read_preference&& rhs) noexcept;
 
     ~read_preference();
