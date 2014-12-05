@@ -37,31 +37,42 @@ class LIBMONGOCXX_EXPORT find {
 
    public:
     void allow_partial_results(bool allow_partial);
-    void batch_size(std::int32_t batch_size);
-    void comment(std::string comment);
-    void cursor_type(cursor_type cursor_type);
-    void limit(std::int32_t limit);
-    void max_time_ms(std::int64_t max_time_ms);
-    void modifiers(bson::document::view modifiers);
-    void no_cursor_timeout(bool no_cursor_timeout);
-    void oplog_replay(bool oplog_replay);
-    void projection(bson::document::view projection);
-    void read_preference(class read_preference rp);
-    void skip(std::int32_t skip);
-    void sort(bson::document::view ordering);
-
     const optional<bool>& allow_partial_results() const;
+
+    void batch_size(std::int32_t batch_size);
     const optional<std::int32_t>& batch_size() const;
+
+    void comment(std::string comment);
     const optional<std::string>& comment() const;
+
+    void cursor_type(cursor_type cursor_type);
     const optional<enum cursor_type>& cursor_type() const;
+
+    void limit(std::int32_t limit);
     const optional<std::int32_t>& limit() const;
+
+    void max_time_ms(std::int64_t max_time_ms);
     const optional<std::int64_t>& max_time_ms() const;
+
+    void modifiers(bson::document::view modifiers);
     const optional<bson::document::view>& modifiers() const;
+
+    void no_cursor_timeout(bool no_cursor_timeout);
     const optional<bool>& no_cursor_timeout() const;
+
+    void oplog_replay(bool oplog_replay);
     const optional<bool>& oplog_replay() const;
+
+    void projection(bson::document::view projection);
     const optional<bson::document::view>& projection() const;
+
+    void read_preference(class read_preference rp);
     const optional<class read_preference>& read_preference() const;
+
+    void skip(std::int32_t skip);
     const optional<std::int32_t>& skip() const;
+
+    void sort(bson::document::view ordering);
     const optional<bson::document::view>& sort() const;
 
    private:

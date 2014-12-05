@@ -30,11 +30,12 @@ class LIBMONGOCXX_EXPORT find_one_and_delete {
 
    public:
     void max_time_ms(std::int64_t max_time_ms);
-    void projection(bson::document::view projection);
-    void sort(bson::document::view ordering);
-
     const optional<std::int64_t>& max_time_ms() const;
+
+    void projection(bson::document::view projection);
     const optional<bson::document::view>& projection() const;
+
+    void sort(bson::document::view ordering);
     const optional<bson::document::view>& sort() const;
 
    private:

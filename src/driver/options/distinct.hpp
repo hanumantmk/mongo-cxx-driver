@@ -31,9 +31,9 @@ class LIBMONGOCXX_EXPORT distinct {
 
    public:
     void max_time_ms(std::int64_t max_time_ms);
-    void read_preference(class read_preference rp);
-
     const optional<std::int64_t>& max_time_ms() const;
+
+    void read_preference(class read_preference rp);
     const optional<class read_preference>& read_preference() const;
 
    private:

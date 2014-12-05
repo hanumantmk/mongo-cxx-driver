@@ -30,15 +30,18 @@ class LIBMONGOCXX_EXPORT find_one_and_replace {
 
    public:
     void max_time_ms(std::int64_t max_time_ms);
-    void projection(bson::document::view projection);
-    void return_document(return_document return_document);
-    void sort(bson::document::view ordering);
-    void upsert(bool upsert);
-
     const optional<std::int64_t>& max_time_ms() const;
+
+    void projection(bson::document::view projection);
     const optional<bson::document::view>& projection() const;
+
+    void return_document(return_document return_document);
     const optional<enum return_document>& return_document() const;
+
+    void sort(bson::document::view ordering);
     const optional<bson::document::view>& sort() const;
+
+    void upsert(bool upsert);
     const optional<bool>& upsert() const;
 
    private:

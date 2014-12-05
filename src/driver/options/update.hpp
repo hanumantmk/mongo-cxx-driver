@@ -29,9 +29,9 @@ class LIBMONGOCXX_EXPORT update {
 
    public:
     void upsert(bool upsert);
-    void write_concern(class write_concern wc);
-
     const optional<bool>& upsert() const;
+
+    void write_concern(class write_concern wc);
     const optional<class write_concern>& write_concern() const;
 
    private:

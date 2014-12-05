@@ -26,20 +26,22 @@ namespace mongo {
 namespace driver {
 namespace options {
 
-// TODO: interleave the getters and setters
 class LIBMONGOCXX_EXPORT aggregate {
 
    public:
     void allow_disk_use(bool allow_disk_use);
-    void batch_size(std::int32_t batch_size);
-    void max_time_ms(std::int64_t max_time_ms);
-    void use_cursor(bool use_cursor);
-    void read_preference(class read_preference read_preference);
-
     const optional<bool>& allow_disk_use() const;
+
+    void batch_size(std::int32_t batch_size);
     const optional<std::int32_t>& batch_size() const;
+
+    void max_time_ms(std::int64_t max_time_ms);
     const optional<std::int64_t>& max_time_ms() const;
+
+    void use_cursor(bool use_cursor);
     const optional<bool>& use_cursor() const;
+
+    void read_preference(class read_preference read_preference);
     const optional<class read_preference>& read_preference() const;
 
    private:

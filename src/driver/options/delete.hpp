@@ -29,7 +29,6 @@ class LIBMONGOCXX_EXPORT delete_options {
 
    public:
     void write_concern(class write_concern wc);
-
     const optional<class write_concern>& write_concern() const;
 
    private:

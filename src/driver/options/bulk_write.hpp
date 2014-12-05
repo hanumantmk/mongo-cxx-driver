@@ -26,9 +26,9 @@ class LIBMONGOCXX_EXPORT bulk_write {
 
    public:
     void ordered(bool ordered);
-    void write_concern(class write_concern wc);
-
     const optional<bool>& ordered() const;
+
+    void write_concern(class write_concern wc);
     const optional<class write_concern>& write_concern() const;
 
    private:
