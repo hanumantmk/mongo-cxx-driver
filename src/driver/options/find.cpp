@@ -15,16 +15,6 @@
 #include "driver/options/find.hpp"
 #include "driver/base/private/read_preference.hpp"
 
-// TODO: should this go inside collection now? it's not used here
-enum class cursor_flag : uint32_t {
-    k_tailable,
-    k_oplog_replay,
-    k_no_cursor_timeout,
-    k_await_data,
-    k_exhaust,
-    k_partial
-};
-
 namespace mongo {
 namespace driver {
 namespace options {

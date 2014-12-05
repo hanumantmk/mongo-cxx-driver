@@ -26,16 +26,15 @@ namespace mongo {
 namespace driver {
 namespace options {
 
-// TODO: scope this to find?
-enum class cursor_type {
-    k_non_tailable,
-    k_tailable,
-    k_tailable_await
-};
-
 class LIBMONGOCXX_EXPORT find {
 
    public:
+    enum class cursor_type {
+        k_non_tailable,
+        k_tailable,
+        k_tailable_await
+    };
+
     void allow_partial_results(bool allow_partial);
     const optional<bool>& allow_partial_results() const;
 

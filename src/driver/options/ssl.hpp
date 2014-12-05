@@ -18,23 +18,38 @@
 
 #include <string>
 
-#include "driver/options/ssl.hpp"
 #include "driver/util/optional.hpp"
 
 namespace mongo {
 namespace driver {
 namespace options {
 
-class LIBMONGOCXX_EXPORT client {
+class LIBMONGOCXX_EXPORT ssl {
 
    public:
-    void ssl_opts(ssl ssl_opts);
-    const optional<ssl>& ssl_opts() const;
+    void pem_file(std::string pem_file);
+    const optional<std::string>& pem_file() const;
+
+    void pem_password(std::string pem_password);
+    const optional<std::string>& pem_password() const;
+
+    void ca_file(std::string ca_file);
+    const optional<std::string>& ca_file() const;
+
+    void ca_dir(std::string ca_file);
+    const optional<std::string>& ca_dir() const;
+
+    void weak_cert_validation(bool weak_cert_validation);
+    const optional<bool>& weak_cert_validation() const;
 
    private:
-    optional<ssl> _ssl_opts;
+    optional<std::string> _pem_file;
+    optional<std::string> _pem_password;
+    optional<std::string> _ca_file;
+    optional<std::string> _ca_dir;
+    optional<bool> _weak_cert_validation;
 
-}; // class client
+}; // class ssl
 
 }  // namespace options
 }  // namespace driver
