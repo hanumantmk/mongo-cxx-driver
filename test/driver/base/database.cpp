@@ -84,17 +84,27 @@ TEST_CASE("A database", "[database][base]") {
         database mongo_database(mongo_client["database"]);
         read_preference preference{read_mode::k_secondary_preferred};
 
+        auto deleter = [](mongoc_read_prefs_t* var){mongoc_read_prefs_destroy(var);};
+        std::unique_ptr<mongoc_read_prefs_t, decltype(deleter)> saved_preference(nullptr, deleter);
+
         bool called = false;
-        database_set_preference->interpose([&](mongoc_database_t* db,
-                            const mongoc_read_prefs_t* read_prefs) {
+        database_set_preference->interpose(
+            [&](mongoc_database_t* db, const mongoc_read_prefs_t* read_prefs) {
                 called = true;
+                saved_preference.reset(mongoc_read_prefs_copy(read_prefs));
                 REQUIRE(mongoc_read_prefs_get_mode(read_prefs) ==
                         static_cast<mongoc_read_mode_t>(read_mode::k_secondary_preferred));
         });
+
+        database_get_preference->interpose(
+            [&](const mongoc_database_t* client) {
+                return saved_preference.get();
+        }).forever();
+
         mongo_database.read_preference(std::move(preference));
         REQUIRE(called);
 
-        REQUIRE(preference.mode() == mongo_database.read_preference().mode());
+        REQUIRE(read_mode::k_secondary_preferred == mongo_database.read_preference().mode());
     }
 
     SECTION("has a write concern which may be set and obtained") {

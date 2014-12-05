@@ -42,7 +42,7 @@ void database::read_preference(class read_preference rp) {
 
 class read_preference database::read_preference() const {
     class read_preference rp(stdx::make_unique<read_preference::impl>(
-        mongoc_read_prefs_copy(mongoc_database_get_read_prefs(_impl->database_t))));
+        mongoc_read_prefs_copy(libmongoc::database_get_read_prefs(_impl->database_t))));
     return rp;
 }
 
