@@ -12,9 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "bson/util/itoa.hpp"
 #include "driver/base/pipeline.hpp"
+
+#include "bson/util/itoa.hpp"
 #include "driver/base/private/pipeline.hpp"
+
 #include "stdx/make_unique.hpp"
 
 namespace mongo {

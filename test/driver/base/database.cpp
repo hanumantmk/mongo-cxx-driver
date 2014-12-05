@@ -16,7 +16,7 @@
 #include "catch.hpp"
 #include "helpers.hpp"
 
-#include "driver/libmongoc.hpp"
+#include "driver/private/libmongoc.hpp"
 
 #include "driver/base/client.hpp"
 #include "driver/base/database.hpp"

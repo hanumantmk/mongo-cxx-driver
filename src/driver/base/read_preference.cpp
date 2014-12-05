@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "driver/base/read_preference.hpp"
+
 #include "driver/base/private/read_preference.hpp"
 #include "driver/util/libbson.hpp"
 

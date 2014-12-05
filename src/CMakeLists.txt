@@ -34,7 +34,6 @@ target_link_libraries(mongocxx-static
     mongocxx-bson
 )
 
-
 if (BUILD_UNIT_TESTS)
 add_library(mongocxx-mocked SHARED mongocxx_static.cpp)
 set_target_properties(mongocxx-mocked PROPERTIES

@@ -19,7 +19,7 @@
 #include "bson/builder.hpp"
 #include "bson/types.hpp"
 
-#include "driver/libmongoc.hpp"
+#include "driver/private/libmongoc.hpp"
 #include "driver/base/bulk_write.hpp"
 #include "driver/base/write_concern.hpp"
 

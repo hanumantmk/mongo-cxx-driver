@@ -12,34 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "driver/base/instance.hpp"
+#pragma once
 
-#include "stdx/make_unique.hpp"
-
-#include "mongoc.h"
-
-namespace {
-void log_handler(mongoc_log_level_t, const char *, const char *, void *) {}
-}
+#include "driver/config/prelude.hpp"
 
 namespace mongo {
 namespace driver {
 
-class instance::impl {
-   public:
-    impl() {
-        mongoc_init();
-        mongoc_log_set_handler(log_handler, nullptr);
-    }
+enum class write_type {
 
-    ~impl() { mongoc_cleanup(); }
-};
+    k_insert_one,
+    k_delete_one,
+    k_delete_many,
+    k_update_one,
+    k_update_many,
+    k_replace_one,
+    k_uninitialized,
 
-instance::instance() : _impl(stdx::make_unique<impl>()) {}
-
-instance::instance(instance &&) noexcept = default;
-instance &instance::operator=(instance &&) noexcept = default;
-instance::~instance() = default;
+}; // enum write_type
 
 }  // namespace driver
 }  // namespace mongo
+
+#include "driver/config/postlude.hpp"

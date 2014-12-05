@@ -16,8 +16,6 @@
 
 #include "bson/builder.hpp"
 
-#include "driver/libmongoc.hpp"
-
 #include "driver/base/private/client.hpp"
 #include "driver/base/private/collection.hpp"
 #include "driver/base/private/database.hpp"
@@ -25,11 +23,11 @@
 #include "driver/base/private/bulk_write.hpp"
 #include "driver/base/private/read_preference.hpp"
 #include "driver/base/private/write_concern.hpp"
-
 #include "driver/base/write_concern.hpp"
 #include "driver/base/collection.hpp"
 #include "driver/base/client.hpp"
 #include "driver/model/write.hpp"
+#include "driver/private/libmongoc.hpp"
 #include "driver/result/bulk_write.hpp"
 #include "driver/result/delete.hpp"
 #include "driver/result/insert_many.hpp"

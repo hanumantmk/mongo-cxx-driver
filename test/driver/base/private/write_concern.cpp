@@ -15,7 +15,7 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
-#include "driver/libmongoc.hpp"
+#include "driver/private/libmongoc.hpp"
 
 #include "driver/base/write_concern.hpp"
 #include "driver/base/private/write_concern.hpp"

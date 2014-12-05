@@ -18,9 +18,8 @@
 
 #include <memory>
 
-#include "driver/libmongoc.hpp"
-
 #include "driver/base/write_concern.hpp"
+#include "driver/private/libmongoc.hpp"
 
 namespace mongo {
 namespace driver {

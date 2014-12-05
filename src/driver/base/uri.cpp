@@ -12,9 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "driver/libmongoc.hpp"
 #include "driver/base/uri.hpp"
+
 #include "driver/base/private/uri.hpp"
+#include "driver/private/libmongoc.hpp"
 
 #include "stdx/make_unique.hpp"
 

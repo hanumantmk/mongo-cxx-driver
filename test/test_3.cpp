@@ -5,7 +5,7 @@
 
 #include "mongocxx.hpp"
 #include "bson/builder.hpp"
-#include "driver/libmongoc.hpp"
+#include "driver/private/libmongoc.hpp"
 
 using namespace mongo::driver;
 

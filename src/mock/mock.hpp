@@ -26,8 +26,6 @@
 
 #include "driver/util/optional.hpp"
 
-// TODO: util = death
-
 namespace mongo {
 namespace util {
 

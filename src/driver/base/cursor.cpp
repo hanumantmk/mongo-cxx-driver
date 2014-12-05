@@ -19,6 +19,7 @@
 
 #include "driver/base/cursor.hpp"
 #include "driver/base/private/cursor.hpp"
+
 #include "stdx/make_unique.hpp"
 
 namespace mongo {

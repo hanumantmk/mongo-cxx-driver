@@ -14,10 +14,9 @@
 
 #pragma once
 
-#include "driver/config/prelude.hpp"
-
 #include "driver/base/bulk_write.hpp"
-#include "driver/libmongoc.hpp"
+#include "driver/config/prelude.hpp"
+#include "driver/private/libmongoc.hpp"
 
 namespace mongo {
 namespace driver {
