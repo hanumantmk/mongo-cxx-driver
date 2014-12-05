@@ -13,7 +13,8 @@
 ### Headers
 
  - License
- - Prelude
+ - Include Guard (`#pragma once`)
+ - Header Prelude
  - System Headers `<>` (alphabetical order)
  - Driver Headers `""` (alphabetical order)
  - Open Namespace mongo
@@ -21,7 +22,7 @@
  -    Code
  - Close Namespace driver
  - Close Namespace mongo
- - Postlude
+ - Header Postlude
 
 Example:
 ```cpp
