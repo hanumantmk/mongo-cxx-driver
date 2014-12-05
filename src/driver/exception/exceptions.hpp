@@ -33,6 +33,7 @@
 namespace mongo {
 namespace driver {
 
+// TODO: add export macros
 class exception : public std::exception {};
 
 class operation_exception : public exception {};
