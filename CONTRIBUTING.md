@@ -1,5 +1,5 @@
 ### Lifecycle Methods
-
+```
  - default-or-argument-bearing 'user' constructors
 
  - declaration-or-deletion-of-copy-contructor
@@ -9,6 +9,7 @@
  - declaration-or-deletion-of-move-assignment-operator
 
  - declaration-of-dtor
+```
 
 ### Headers
 
