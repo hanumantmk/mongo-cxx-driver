@@ -43,6 +43,7 @@ TEST_CASE("A database", "[database][base]") {
     }
     SECTION("cleans up its underlying mongoc database on destruction") {
         bool destroy_called = false;
+
         database_destroy->interpose([&](mongoc_database_t* client) {
             destroy_called = true;
         });

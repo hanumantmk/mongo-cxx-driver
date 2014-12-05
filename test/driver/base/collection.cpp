@@ -54,7 +54,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
         bson::builder::document b1;
         b1 << "_id" << 1;
 
-        coll.insert_one(b1.view());
+        coll.insert_one(b1);
 
         auto doc = coll.find_one(bson::document::view());
         REQUIRE(doc);
@@ -74,42 +74,42 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
         bson::builder::document b1;
         b1 << "x" << 1;
 
-        coll.insert_one(b1.view());
-        coll.insert_one(b1.view());
+        coll.insert_one(b1);
+        coll.insert_one(b1);
 
         bson::builder::document b2;
         b2 << "x" << 2;
 
-        coll.insert_one(b2.view());
+        coll.insert_one(b2);
 
-        REQUIRE(coll.count(b1.view()) == 2);
+        REQUIRE(coll.count(b1) == 2);
 
         bson::builder::document bchanged;
         bchanged << "changed" << true;
 
         bson::builder::document update_doc;
-        update_doc << "$set" << bson::types::b_document{bchanged.view()};
+        update_doc << "$set" << bson::types::b_document{bchanged};
 
         coll.update_many(b1, update_doc);
 
-        REQUIRE(coll.count(bchanged.view()) == 2);
+        REQUIRE(coll.count(bchanged) == 2);
     }
 
     SECTION("replace document replaces only one document", "[collection]") {
         bson::builder::document doc;
         doc << "x" << 1;
 
-        coll.insert_one(doc.view());
-        coll.insert_one(doc.view());
+        coll.insert_one(doc);
+        coll.insert_one(doc);
 
-        REQUIRE(coll.count(doc.view()) == 2);
+        REQUIRE(coll.count(doc) == 2);
 
         bson::builder::document replacement;
         replacement << "x" << 2;
 
-        coll.replace_one(doc.view(), replacement.view());
+        coll.replace_one(doc, replacement);
 
-        REQUIRE(coll.count(doc.view()) == 1);
+        REQUIRE(coll.count(doc) == 1);
     }
 
     SECTION("non-matching upsert creates document", "[collection]") {
@@ -137,7 +137,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
         bson::builder::document b1;
         b1 << "_id" << 1;
 
-        coll.insert_one(b1.view());
+        coll.insert_one(b1);
 
         bson::builder::document update_doc;
         update_doc << "$set" << open_doc << "changed" << true << close_doc;
@@ -161,21 +161,21 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
     // coll.insert_many(docs);
 
     // coll.insert_one(bson::document::view{});
-    // REQUIRE(coll.count(b1.view()) == 3);
+    // REQUIRE(coll.count(b1) == 3);
     // REQUIRE(coll.count() == 4);
     //}
 
     SECTION("document replacement", "[collection]") {
         bson::builder::document b1;
         b1 << "x" << 1;
-        coll.insert_one(b1.view());
+        coll.insert_one(b1);
 
         bson::builder::document b2;
         b2 << "x" << 2;
 
         coll.replace_one(b1, b2);
 
-        auto replaced = coll.find_one(b2.view());
+        auto replaced = coll.find_one(b2);
 
         REQUIRE(replaced);
         REQUIRE(coll.count(bson::document::view()) == 1);
@@ -185,17 +185,17 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
         bson::builder::document b1;
         b1 << "x" << 1;
 
-        coll.insert_one(b1.view());
+        coll.insert_one(b1);
 
         bson::builder::document b2;
         b2 << "x" << 2;
 
-        coll.insert_one(b2.view());
-        coll.insert_one(b2.view());
+        coll.insert_one(b2);
+        coll.insert_one(b2);
 
         REQUIRE(coll.count(bson::document::view()) == 3);
 
-        coll.delete_one(b2.view());
+        coll.delete_one(b2);
 
         REQUIRE(coll.count(bson::document::view()) == 2);
 
@@ -208,7 +208,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
 
         REQUIRE(seen == 3);
 
-        coll.delete_one(b2.view());
+        coll.delete_one(b2);
 
         REQUIRE(coll.count(bson::document::view()) == 1);
 
@@ -221,7 +221,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
 
         REQUIRE(seen == 1);
 
-        coll.delete_one(b2.view());
+        coll.delete_one(b2);
 
         REQUIRE(coll.count(bson::document::view()) == 1);
 
@@ -239,7 +239,7 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
         bson::builder::document b1;
         b1 << "x" << 1;
 
-        coll.insert_one(b1.view());
+        coll.insert_one(b1);
 
         bson::builder::document b2;
         b2 << "x" << 2;
@@ -320,8 +320,8 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
         bson::builder::document b1;
         b1 << "x" << 1;
 
-        coll.insert_one(b1.view());
-        coll.insert_one(b1.view());
+        coll.insert_one(b1);
+        coll.insert_one(b1);
 
         REQUIRE(coll.count(bson::document::view()) == 2);
 
@@ -364,8 +364,8 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
         bson::builder::document b1;
         b1 << "x" << 1;
 
-        coll.insert_one(b1.view());
-        coll.insert_one(b1.view());
+        coll.insert_one(b1);
+        coll.insert_one(b1);
 
         REQUIRE(coll.count(bson::document::view()) == 2);
 
@@ -390,12 +390,12 @@ TEST_CASE("CRUD functionality", "[driver::collection]") {
         bson::builder::document b2;
         b2 << "x" << 2;
 
-        coll.insert_one(b1.view());
-        coll.insert_one(b2.view());
-        coll.insert_one(b2.view());
+        coll.insert_one(b1);
+        coll.insert_one(b2);
+        coll.insert_one(b2);
 
         pipeline p;
-        p.match(b1.view());
+        p.match(b1);
 
         auto results = coll.aggregate(p);
     }
