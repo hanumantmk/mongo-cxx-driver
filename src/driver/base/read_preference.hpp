@@ -45,7 +45,6 @@ class LIBMONGOCXX_EXPORT read_preference {
     explicit read_preference(read_mode rm = read_mode::k_primary);
     read_preference(read_mode, bson::document::view tags);
 
-    // TODO: make read_preference copyable
     read_preference(const read_preference&);
     read_preference& operator=(const read_preference&);
 
