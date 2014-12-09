@@ -34,7 +34,7 @@ class mock;
 template <typename R, typename... Args>
 class mock<R (*)(Args...)> {
    public:
-    using ptr = R (*)(Args...);
+    using underlying_ptr = R (*)(Args...);
     using callback = std::function<R(Args...)>;
     using conditional = std::function<bool(Args...)>;
 
@@ -119,7 +119,7 @@ class mock<R (*)(Args...)> {
 
     friend class MockInstance;
 
-    mock(ptr func) : _func(std::move(func)) {}
+    mock(underlying_ptr func) : _func(std::move(func)) {}
     mock(mock&&) = delete;
     mock(const mock&) = delete;
     mock& operator=(const mock&) = delete;
@@ -171,7 +171,7 @@ class mock<R (*)(Args...)> {
 
     std::mutex _active_instances_lock;
     std::unordered_map<std::thread::id, MockInstance*> _active_instances;
-    const ptr _func;
+    const underlying_ptr _func;
 };
 
 }  // namespace util
