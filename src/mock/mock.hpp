@@ -17,12 +17,12 @@
 #include <array>
 #include <functional>
 #include <iostream>
-#include <map>
 #include <memory>
 #include <mutex>
 #include <stack>
 #include <thread>
 #include <type_traits>
+#include <unordered_map>
 #include <vector>
 
 namespace mongo {
@@ -167,9 +167,9 @@ class mock<R (*)(Args...)> {
         _active_instances.erase(id);
     }
 
-    std::map<std::thread::id, MockInstance*> _active_instances;
     std::mutex _active_instances_lock;
     ptr _func;
+    std::unordered_map<std::thread::id, MockInstance*> _active_instances;
 };
 
 }  // namespace util
