@@ -48,33 +48,32 @@ class LIBMONGOCXX_EXPORT cursor {
 
 }; // class cursor
 
-// TODO: review template args to std::iterator
-// TODO: input iterator semantics (input iterator?)
-// TODO: post increment operator
-// TODO: make relational ops free functions
-// TODO: remove at_end (if possible)
-class cursor::iterator
-    : public std::iterator<std::forward_iterator_tag, const bson::document::view&, std::ptrdiff_t,
-                           const bson::document::view*, const bson::document::view&> {
-    friend class cursor;
+class cursor::iterator : public std::iterator<
+    std::input_iterator_tag,
+    bson::document::view
+> {
 
    public:
     const bson::document::view& operator*() const;
     const bson::document::view* operator->() const;
 
     iterator& operator++();
-
-    bool operator==(const iterator& rhs) const;
-    bool operator!=(const iterator& rhs) const;
+    void operator++(int);
 
    private:
+    friend class cursor;
+    friend bool operator==(const iterator&, const iterator&);
+    friend bool operator!=(const iterator&, const iterator&);
+
     explicit iterator(cursor* cursor);
 
-    cursor* const _cursor;
+    cursor* _cursor;
     bson::document::view _doc;
-    bool _at_end;
 
 }; // class iterator
+
+bool operator==(const cursor::iterator& lhs, const cursor::iterator& rhs);
+bool operator!=(const cursor::iterator& lhs, const cursor::iterator& rhs);
 
 }  // namespace driver
 }  // namespace mongo

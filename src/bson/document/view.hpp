@@ -30,11 +30,9 @@ namespace document {
 
 class LIBMONGOCXX_EXPORT view {
    public:
-    class iterator : public std::iterator<std::forward_iterator_tag, element, std::ptrdiff_t,
-                                          const element*, const element&> {
+    class iterator : public std::iterator<std::forward_iterator_tag, element> {
        public:
         iterator(const void* iter);
-
         iterator(bool is_end);
 
         const element& operator*() const;
@@ -43,7 +41,6 @@ class LIBMONGOCXX_EXPORT view {
         iterator& operator++();
 
         bool operator==(const iterator& rhs) const;
-
         bool operator!=(const iterator& rhs) const;
 
        private:
