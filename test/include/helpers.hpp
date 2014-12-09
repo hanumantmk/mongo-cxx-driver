@@ -21,7 +21,6 @@
 \
     SECTION("has a method to set the upsert") { \
         OBJECT.NAME(VALUE); \
-        REQUIRE(OBJECT.NAME()); \
         REQUIRE(OBJECT.NAME().value() == VALUE); \
     }
 
