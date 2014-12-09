@@ -147,29 +147,29 @@ class mock<R (*)(Args...)> {
 
    private:
     MockInstance* active_instance() {
-        std::thread::id id = std::this_thread::get_id();
+        const auto id = std::this_thread::get_id();
         std::lock_guard<std::mutex> lock(_active_instances_lock);
-        auto iterator = _active_instances.find(id);
+        const auto iterator = _active_instances.find(id);
         if (iterator != _active_instances.end()) {
             return iterator->second;
         }
         return nullptr;
     }
     void active_instance(MockInstance* instance) {
-        std::thread::id id = std::this_thread::get_id();
+        const auto id = std::this_thread::get_id();
         std::lock_guard<std::mutex> lock(_active_instances_lock);
         _active_instances[id] = instance;
     }
 
     void destroy_active_instance() {
-        std::thread::id id = std::this_thread::get_id();
+        const auto id = std::this_thread::get_id();
         std::lock_guard<std::mutex> lock(_active_instances_lock);
         _active_instances.erase(id);
     }
 
     std::mutex _active_instances_lock;
-    ptr _func;
     std::unordered_map<std::thread::id, MockInstance*> _active_instances;
+    const ptr _func;
 };
 
 }  // namespace util
