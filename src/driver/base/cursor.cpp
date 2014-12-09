@@ -32,6 +32,7 @@ cursor::cursor(void* cursor_ptr)
 
 cursor::cursor(cursor&&) noexcept = default;
 cursor& cursor::operator=(cursor&&) noexcept = default;
+
 cursor::~cursor() = default;
 
 void cursor::iterator::operator++(int) {
