@@ -15,12 +15,12 @@
 #pragma once
 
 #include <array>
-#include <deque>
 #include <functional>
 #include <iostream>
 #include <map>
 #include <memory>
 #include <mutex>
+#include <stack>
 #include <thread>
 #include <type_traits>
 #include <vector>
@@ -78,9 +78,9 @@ class mock<R (*)(Args...)> {
      }
 
      rule& interpose(std::function<R(Args...)> func) {
-         _callbacks.emplace_front([=](Args... args) { return func(args...); });
+         _callbacks.emplace([=](Args... args) { return func(args...); });
 
-         return _callbacks.back();
+         return _callbacks.top();
      }
 
      template <typename T, typename... U>
@@ -88,24 +88,24 @@ class mock<R (*)(Args...)> {
          std::array<R, sizeof...(rs) + 1> vec = {r, rs...};
          std::size_t i = 0;
 
-         _callbacks.emplace_front([ vec, i ](Args... args) mutable->R {
+         _callbacks.emplace([ vec, i ](Args... args) mutable->R {
              if (i == vec.size()) {
                  i = 0;
              }
              return vec[i++];
          });
-         _callbacks.back().times(vec.size());
+         _callbacks.top().times(vec.size());
 
-         return _callbacks.back();
+         return _callbacks.top();
      }
 
      rule& visit(std::function<void(Args...)> func) {
-         _callbacks.emplace_front([=](Args... args) {
+         _callbacks.emplace([=](Args... args) {
              func(args...);
              return _parent->_func(args...);
          });
 
-         return _callbacks.back();
+         return _callbacks.top();
      }
 
      std::size_t depth() const { return _callbacks.size(); }
@@ -115,7 +115,7 @@ class mock<R (*)(Args...)> {
     private:
      MockInstance(mock* parent) : _parent(parent) {}
      mock* _parent;
-     std::deque<rule> _callbacks;
+     std::stack<rule> _callbacks;
     };
 
     friend class MockInstance;
@@ -127,10 +127,10 @@ class mock<R (*)(Args...)> {
         if (instance) {
             MockInstance* instance_value = instance.value();
             while (!instance_value->_callbacks.empty()) {
-                if (instance_value->_callbacks.front()._conditional(args...)) {
-                    return instance_value->_callbacks.front()._callback(args...);
+                if (instance_value->_callbacks.top()._conditional(args...)) {
+                    return instance_value->_callbacks.top()._callback(args...);
                 } else {
-                    instance_value->_callbacks.pop_front();
+                    instance_value->_callbacks.pop();
                 }
             }
         }
