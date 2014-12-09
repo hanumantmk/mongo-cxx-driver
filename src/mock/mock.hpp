@@ -78,7 +78,7 @@ class mock<R (*)(Args...)> {
          _parent->destroy_active_instance();
      }
 
-     rule& interpose(std::function<R(Args...)> func) {
+     rule& interpose(const std::function<R(Args...)>& func) {
          _callbacks.emplace([=](Args... args) { return func(args...); });
 
          return _callbacks.top();
