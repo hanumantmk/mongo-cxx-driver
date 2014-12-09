@@ -36,7 +36,7 @@ template <typename R, typename... Args>
 class mock<R (*)(Args...)> {
    public:
     using ptr = R (*)(Args...);
-    using callback = std::function<R(ptr, Args...)>;
+    using callback = std::function<R(Args...)>;
     using conditional = std::function<bool(Args...)>;
 
     class rule {
@@ -76,7 +76,7 @@ class mock<R (*)(Args...)> {
      }
 
      rule& interpose(std::function<R(Args...)> func) {
-         _callbacks.emplace_front([=](ptr, Args... args) { return func(args...); });
+         _callbacks.emplace_front([=](Args... args) { return func(args...); });
 
          return _callbacks.back();
      }
@@ -86,7 +86,7 @@ class mock<R (*)(Args...)> {
          std::vector<R> vec = {r, rs...};
          std::size_t i = 0;
 
-         _callbacks.emplace_back([ vec, i ](ptr, Args... args) mutable->R {
+         _callbacks.emplace_front([ vec, i ](Args... args) mutable->R {
              if (i == vec.size()) {
                  i = 0;
              }
@@ -98,7 +98,7 @@ class mock<R (*)(Args...)> {
      }
 
      rule& visit(std::function<void(Args...)> func) {
-         _callbacks.emplace_front([=](ptr, Args... args) {
+         _callbacks.emplace_front([=](Args... args) {
              func(args...);
              return _parent->_func(args...);
          });
@@ -126,7 +126,7 @@ class mock<R (*)(Args...)> {
             MockInstance* instance_value = instance.value();
             while (!instance_value->_callbacks.empty()) {
                 if (instance_value->_callbacks.front()._conditional(args...)) {
-                    return instance_value->_callbacks.front()._callback(_func, args...);
+                    return instance_value->_callbacks.front()._callback(args...);
                 } else {
                     instance_value->_callbacks.pop_front();
                 }
