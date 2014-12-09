@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <array>
 #include <deque>
 #include <functional>
 #include <iostream>
@@ -83,7 +84,7 @@ class mock<R (*)(Args...)> {
 
      template <typename T, typename... U>
      typename std::enable_if<std::is_same<T, R>::value, rule&>::type interpose(T r, U... rs) {
-         std::vector<R> vec = {r, rs...};
+         std::array<R, sizeof...(rs) + 1> vec = {r, rs...};
          std::size_t i = 0;
 
          _callbacks.emplace_front([ vec, i ](Args... args) mutable->R {
