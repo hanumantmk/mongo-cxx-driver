@@ -72,7 +72,8 @@ class mock<R (*)(Args...)> {
     friend class mock;
     public:
      MockInstance(const MockInstance&) = delete;
-     MockInstance* operator=(const MockInstance&) = delete;
+     MockInstance& operator=(const MockInstance&) = delete;
+
      ~MockInstance() {
          _parent->destroy_active_instance();
      }
