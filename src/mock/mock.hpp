@@ -119,7 +119,7 @@ class mock<R (*)(Args...)> {
 
     friend class MockInstance;
 
-    mock(ptr func) : _func(func) {}
+    mock(ptr func) : _func(std::move(func)) {}
 
     R operator()(Args... args) {
         auto instance = active_instance();
