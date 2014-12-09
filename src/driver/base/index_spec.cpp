@@ -15,7 +15,5 @@
 #include "driver/base/index_spec.hpp"
 
 namespace mongo {
-namespace driver {
-
-}  // namespace driver
+namespace driver {}  // namespace driver
 }  // namespace mongo

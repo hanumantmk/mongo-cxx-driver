@@ -30,8 +30,7 @@ cursor& cursor::operator=(cursor&&) noexcept = default;
 cursor::~cursor() = default;
 
 cursor::cursor(void* cursor_ptr)
-    : _impl(stdx::make_unique<impl>(static_cast<mongoc_cursor_t*>(cursor_ptr)))
-{}
+    : _impl(stdx::make_unique<impl>(static_cast<mongoc_cursor_t*>(cursor_ptr))) {}
 
 cursor::iterator& cursor::iterator::operator++() {
     const bson_t* out;

@@ -41,14 +41,14 @@
 #include "stdx/make_unique.hpp"
 
 namespace {
-    enum class cursor_flag : uint32_t {
-        k_tailable,
-        k_oplog_replay,
-        k_no_cursor_timeout,
-        k_await_data,
-        k_exhaust,
-        k_partial
-    };
+enum class cursor_flag : uint32_t {
+    k_tailable,
+    k_oplog_replay,
+    k_no_cursor_timeout,
+    k_await_data,
+    k_exhaust,
+    k_partial
+};
 }  // namespace
 
 namespace mongo {

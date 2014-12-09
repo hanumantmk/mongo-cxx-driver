@@ -44,9 +44,7 @@ TEST_CASE("A database", "[database][base]") {
     SECTION("cleans up its underlying mongoc database on destruction") {
         bool destroy_called = false;
 
-        database_destroy->interpose([&](mongoc_database_t* client) {
-            destroy_called = true;
-        });
+        database_destroy->interpose([&](mongoc_database_t* client) { destroy_called = true; });
 
         {
             database database = mongo_client["database"];
@@ -58,9 +56,7 @@ TEST_CASE("A database", "[database][base]") {
 
     SECTION("supports move operations") {
         bool destroy_called = false;
-        database_destroy->interpose([&](mongoc_database_t* client) {
-            destroy_called = true;
-        });
+        database_destroy->interpose([&](mongoc_database_t* client) { destroy_called = true; });
 
         {
             client mongo_client;
@@ -77,14 +73,12 @@ TEST_CASE("A database", "[database][base]") {
 
     SECTION("has a read preferences which may be set and obtained") {
         bool destroy_called = false;
-        database_destroy->interpose([&](mongoc_database_t* client) {
-            destroy_called = true;
-        });
+        database_destroy->interpose([&](mongoc_database_t* client) { destroy_called = true; });
 
         database mongo_database(mongo_client["database"]);
         read_preference preference{read_mode::k_secondary_preferred};
 
-        auto deleter = [](mongoc_read_prefs_t* var){mongoc_read_prefs_destroy(var);};
+        auto deleter = [](mongoc_read_prefs_t* var) { mongoc_read_prefs_destroy(var); };
         std::unique_ptr<mongoc_read_prefs_t, decltype(deleter)> saved_preference(nullptr, deleter);
 
         bool called = false;
@@ -94,12 +88,11 @@ TEST_CASE("A database", "[database][base]") {
                 saved_preference.reset(mongoc_read_prefs_copy(read_prefs));
                 REQUIRE(mongoc_read_prefs_get_mode(read_prefs) ==
                         static_cast<mongoc_read_mode_t>(read_mode::k_secondary_preferred));
-        });
+            });
 
-        database_get_preference->interpose(
-            [&](const mongoc_database_t* client) {
-                return saved_preference.get();
-        }).forever();
+        database_get_preference->interpose([&](const mongoc_database_t* client) {
+                                               return saved_preference.get();
+                                           }).forever();
 
         mongo_database.read_preference(std::move(preference));
         REQUIRE(called);
@@ -109,27 +102,24 @@ TEST_CASE("A database", "[database][base]") {
 
     SECTION("has a write concern which may be set and obtained") {
         bool destroy_called = false;
-        database_destroy->interpose([&](mongoc_database_t* client) {
-            destroy_called = true;
-        });
+        database_destroy->interpose([&](mongoc_database_t* client) { destroy_called = true; });
 
         database mongo_database(mongo_client[database_name]);
         write_concern concern{};
         concern.confirm_from(majority);
 
         bool called = false;
-        database_set_concern->interpose([&](mongoc_database_t* db,
-                             const mongoc_write_concern_t* concern) {
+        database_set_concern->interpose(
+            [&](mongoc_database_t* db, const mongoc_write_concern_t* concern) {
                 called = true;
                 REQUIRE(mongoc_write_concern_get_wmajority(concern));
-        });
+            });
         mongo_database.write_concern(concern);
         REQUIRE(called);
 
         REQUIRE(concern.confirm_from().majority() ==
                 mongo_database.write_concern().confirm_from().majority());
     }
-
 
     SECTION("may create a collection") {
         MOCK_COLLECTION

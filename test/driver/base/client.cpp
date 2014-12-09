@@ -80,7 +80,7 @@ TEST_CASE("A client's read preferences may be set and obtained", "[client][base]
     read_preference preference{read_mode::k_secondary_preferred};
 
     bool called_set = false;
-    auto deleter = [](mongoc_read_prefs_t* var){mongoc_read_prefs_destroy(var);};
+    auto deleter = [](mongoc_read_prefs_t* var) { mongoc_read_prefs_destroy(var); };
     std::unique_ptr<mongoc_read_prefs_t, decltype(deleter)> saved_preference(nullptr, deleter);
 
     client_set_preference->interpose(
@@ -91,10 +91,9 @@ TEST_CASE("A client's read preferences may be set and obtained", "[client][base]
                     static_cast<mongoc_read_mode_t>(read_mode::k_secondary_preferred));
         });
 
-    client_get_preference->interpose(
-        [&](const mongoc_client_t* client) {
-            return saved_preference.get();
-    }).forever();
+    client_get_preference->interpose([&](const mongoc_client_t* client) {
+                                         return saved_preference.get();
+                                     }).forever();
 
     mongo_client.read_preference(std::move(preference));
     REQUIRE(called_set);
@@ -110,10 +109,11 @@ TEST_CASE("A client's write concern may be set and obtained", "[client][base]") 
     concern.confirm_from(majority);
 
     bool called = false;
-    client_set_concern->interpose([&](mongoc_client_t* client, const mongoc_write_concern_t* concern) {
-        called = true;
-        REQUIRE(mongoc_write_concern_get_wmajority(concern));
-    });
+    client_set_concern->interpose(
+        [&](mongoc_client_t* client, const mongoc_write_concern_t* concern) {
+            called = true;
+            REQUIRE(mongoc_write_concern_get_wmajority(concern));
+        });
     mongo_client.write_concern(concern);
     REQUIRE(called);
 
@@ -124,13 +124,15 @@ TEST_CASE("A client's write concern may be set and obtained", "[client][base]") 
 TEST_CASE("A client can create a named database object", "[client][base]") {
     MOCK_CLIENT
     auto database_get = libmongoc::client_get_database.create_instance();
-    database_get->interpose([](mongoc_client_t*, const char*){return nullptr;}).forever();
+    database_get->interpose([](mongoc_client_t*, const char*) { return nullptr; }).forever();
     auto database_destroy = libmongoc::database_destroy.create_instance();
-    database_destroy->interpose([](mongoc_database_t*){}).forever();
+    database_destroy->interpose([](mongoc_database_t*) {}).forever();
     auto database_set_preference = libmongoc::database_set_read_prefs.create_instance();
-    database_set_preference->interpose([](mongoc_database_t*, const mongoc_read_prefs_t*){}).forever();
+    database_set_preference->interpose([](mongoc_database_t*, const mongoc_read_prefs_t*) {})
+        .forever();
     auto database_set_concern = libmongoc::database_set_write_concern.create_instance();
-    database_set_concern->interpose([](mongoc_database_t*, const mongoc_write_concern_t*){}).forever();
+    database_set_concern->interpose([](mongoc_database_t*, const mongoc_write_concern_t*) {})
+        .forever();
 
     const std::string name("database");
 

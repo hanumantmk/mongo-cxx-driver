@@ -154,6 +154,7 @@ class mock<R (*)(Args...)> {
         }
         return nullptr;
     }
+
     void active_instance(MockInstance* instance) {
         const auto id = std::this_thread::get_id();
         std::lock_guard<std::mutex> lock(_active_instances_lock);
