@@ -46,7 +46,7 @@ class mock<R (*)(Args...)> {
         rule(callback callback) : _callback(std::move(callback)) { times(1); }
 
         void times(int n) {
-            drop_when([n](Args...) mutable->bool {
+            until([n](Args...) mutable->bool {
                 if (n < 0) {
                     return true;
                 } else if (n == 0) {
@@ -59,7 +59,7 @@ class mock<R (*)(Args...)> {
 
         void forever() { return times(-1); }
 
-        void drop_when(conditional conditional) { _conditional = std::move(conditional); }
+        void until(conditional conditional) { _conditional = std::move(conditional); }
 
        private:
         callback _callback;
