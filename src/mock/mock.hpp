@@ -25,8 +25,6 @@
 #include <type_traits>
 #include <vector>
 
-#include "driver/util/optional.hpp"
-
 namespace mongo {
 namespace util {
 
@@ -124,14 +122,13 @@ class mock<R (*)(Args...)> {
     mock(ptr func) : _func(func) {}
 
     R operator()(Args... args) {
-        driver::optional<MockInstance*> instance = active_instance();
+        auto instance = active_instance();
         if (instance) {
-            MockInstance* instance_value = instance.value();
-            while (!instance_value->_callbacks.empty()) {
-                if (instance_value->_callbacks.top()._conditional(args...)) {
-                    return instance_value->_callbacks.top()._callback(args...);
+            while (!instance->_callbacks.empty()) {
+                if (instance->_callbacks.top()._conditional(args...)) {
+                    return instance->_callbacks.top()._callback(args...);
                 } else {
-                    instance_value->_callbacks.pop();
+                    instance->_callbacks.pop();
                 }
             }
         }
@@ -149,14 +146,14 @@ class mock<R (*)(Args...)> {
     }
 
    private:
-    driver::optional<MockInstance*> active_instance() {
+    MockInstance* active_instance() {
         std::thread::id id = std::this_thread::get_id();
         std::lock_guard<std::mutex> lock(_active_instances_lock);
         auto iterator = _active_instances.find(id);
-        if (iterator == _active_instances.end()) {
-            return driver::optional<MockInstance*>();
+        if (iterator != _active_instances.end()) {
+            return iterator->second;
         }
-        return driver::optional<MockInstance*>(iterator->second);
+        return nullptr;
     }
     void active_instance(MockInstance* instance) {
         std::thread::id id = std::this_thread::get_id();
