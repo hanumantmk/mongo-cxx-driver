@@ -137,9 +137,6 @@ class mock<R (*)(Args...)> {
     }
 
     std::unique_ptr<MockInstance> create_instance() {
-        if (active_instance()) {
-            throw std::runtime_error("Cannot create second mock instance in thread");
-        }
         std::unique_ptr<MockInstance> mock_instance(new MockInstance(this));
         active_instance(mock_instance.get());
         return mock_instance;
@@ -158,7 +155,10 @@ class mock<R (*)(Args...)> {
     void active_instance(MockInstance* instance) {
         const auto id = std::this_thread::get_id();
         std::lock_guard<std::mutex> lock(_active_instances_lock);
-        _active_instances[id] = instance;
+
+        auto& current = _active_instances[id];
+        assert(!current); // It is impossible to create two MockInstances in a single thread
+        current = instance;
     }
 
     void destroy_active_instance() {
