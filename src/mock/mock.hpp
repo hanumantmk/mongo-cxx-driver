@@ -130,9 +130,8 @@ class mock<R (*)(Args...)> {
             while (!instance->_callbacks.empty()) {
                 if (instance->_callbacks.top()._conditional(args...)) {
                     return instance->_callbacks.top()._callback(args...);
-                } else {
-                    instance->_callbacks.pop();
                 }
+                instance->_callbacks.pop();
             }
         }
 
