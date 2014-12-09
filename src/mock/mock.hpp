@@ -14,15 +14,15 @@
 
 #pragma once
 
-#include <iostream>
 #include <deque>
-#include <vector>
+#include <functional>
+#include <iostream>
 #include <map>
 #include <memory>
 #include <mutex>
-#include <functional>
-#include <type_traits>
 #include <thread>
+#include <type_traits>
+#include <vector>
 
 #include "driver/util/optional.hpp"
 
