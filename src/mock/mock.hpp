@@ -30,7 +30,7 @@ namespace mongo {
 namespace util {
 
 template <typename T>
-class mock {};
+class mock;
 
 template <typename R, typename... Args>
 class mock<R (*)(Args...)> {
