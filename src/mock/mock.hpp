@@ -141,7 +141,7 @@ class mock<R (*)(Args...)> {
             throw std::runtime_error("Cannot create second mock instance in thread");
         }
         std::unique_ptr<MockInstance> mock_instance(new MockInstance(this));
-        active_instance(&*mock_instance);
+        active_instance(mock_instance.get());
         return mock_instance;
     }
 
