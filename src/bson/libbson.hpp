@@ -29,6 +29,11 @@ class scoped_bson_t {
     scoped_bson_t(const bson::document::view& doc);
     scoped_bson_t();
 
+    scoped_bson_t(const scoped_bson_t& rhs) = delete;
+    scoped_bson_t& operator=(const scoped_bson_t& rhs) = delete;
+    scoped_bson_t(scoped_bson_t&& rhs) = delete;
+    scoped_bson_t& operator=(scoped_bson_t&& rhs) = delete;
+
     void init_from_static(const mongo::driver::optional<bson::document::view>& doc);
     void init_from_static(const bson::document::view& doc);
     void init();
@@ -42,11 +47,6 @@ class scoped_bson_t {
     bson::document::value steal();
 
    private:
-    scoped_bson_t(const scoped_bson_t& rhs) = delete;
-    scoped_bson_t& operator=(const scoped_bson_t& rhs) = delete;
-    scoped_bson_t(scoped_bson_t&& rhs) = delete;
-    scoped_bson_t& operator=(scoped_bson_t&& rhs) = delete;
-
     bson_t _bson;
     bool _is_initialized;
 };
