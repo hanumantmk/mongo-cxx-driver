@@ -27,6 +27,7 @@ namespace driver {
 
 database::database(database&&) noexcept = default;
 database& database::operator=(database&&) noexcept = default;
+
 database::~database() = default;
 
 database::database(const class client& client, const std::string& name)

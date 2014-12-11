@@ -58,7 +58,8 @@ class LIBMONGOCXX_EXPORT client {
     class database database(const std::string& name) const &;
     class database database(const std::string& name) const && = delete;
 
-    inline class database operator[](const std::string& name) const;
+    inline class database operator[](const std::string& name) const &;
+    inline class database operator[](const std::string& name) const && = delete;
 
    private:
     friend class database;
@@ -69,7 +70,7 @@ class LIBMONGOCXX_EXPORT client {
 
 }; // class client
 
-inline class database client::operator[](const std::string& name) const {
+inline class database client::operator[](const std::string& name) const & {
     return database(name);
 }
 
