@@ -15,6 +15,7 @@
 #include <cstdint>
 
 #include "bson/builder.hpp"
+#include "bson/libbson.hpp"
 
 #include "driver/base/private/client.hpp"
 #include "driver/base/private/collection.hpp"
@@ -35,8 +36,7 @@
 #include "driver/result/replace_one.hpp"
 #include "driver/result/update.hpp"
 #include "driver/result/write.hpp"
-#include "driver/util/libbson.hpp"
-#include "driver/util/optional.hpp"
+#include "stdx/optional.hpp"
 
 #include "stdx/make_unique.hpp"
 

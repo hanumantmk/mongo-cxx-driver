@@ -18,7 +18,7 @@
 
 #include "bson/document.hpp"
 
-#include "driver/util/optional.hpp"
+#include "stdx/optional.hpp"
 
 namespace bson {
 namespace libbson {

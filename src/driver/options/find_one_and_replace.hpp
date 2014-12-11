@@ -20,7 +20,7 @@
 
 #include "bson/document.hpp"
 #include "driver/options/find_one_and_modify.hpp"
-#include "driver/util/optional.hpp"
+#include "stdx/optional.hpp"
 
 namespace mongo {
 namespace driver {

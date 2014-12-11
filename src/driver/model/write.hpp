@@ -25,7 +25,7 @@
 #include "driver/model/update_one.hpp"
 #include "driver/model/update_many.hpp"
 #include "driver/model/replace_one.hpp"
-#include "driver/util/optional.hpp"
+#include "stdx/optional.hpp"
 
 namespace mongo {
 namespace driver {

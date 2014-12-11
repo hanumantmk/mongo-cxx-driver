@@ -14,9 +14,9 @@
 
 #include "driver/base/bulk_write.hpp"
 
+#include "bson/libbson.hpp"
 #include "driver/base/private/bulk_write.hpp"
 #include "driver/private/libmongoc.hpp"
-#include "driver/util/libbson.hpp"
 #include "stdx/make_unique.hpp"
 
 namespace mongo {

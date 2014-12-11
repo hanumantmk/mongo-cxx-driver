@@ -19,7 +19,7 @@
 
 #include "bson/document.hpp"
 #include "driver/base/write_concern.hpp"
-#include "driver/util/optional.hpp"
+#include "stdx/optional.hpp"
 
 namespace mongo {
 namespace driver {

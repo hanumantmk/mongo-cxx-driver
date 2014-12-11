@@ -14,8 +14,8 @@
 
 #include "driver/base/read_preference.hpp"
 
+#include "bson/libbson.hpp"
 #include "driver/base/private/read_preference.hpp"
-#include "driver/util/libbson.hpp"
 
 #include "stdx/make_unique.hpp"
 

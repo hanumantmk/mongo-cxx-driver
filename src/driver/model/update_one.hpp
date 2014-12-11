@@ -16,9 +16,9 @@
 
 #include "driver/config/prelude.hpp"
 
-#include "driver/base/write_concern.hpp"
 #include "bson/document.hpp"
-#include "driver/util/optional.hpp"
+#include "driver/base/write_concern.hpp"
+#include "stdx/optional.hpp"
 
 namespace mongo {
 namespace driver {
