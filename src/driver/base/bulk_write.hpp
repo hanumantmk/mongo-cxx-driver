@@ -28,7 +28,6 @@ class collection;
 class LIBMONGOCXX_EXPORT bulk_write {
 
    public:
-    // TODO: can this be an enum?
     explicit bulk_write(bool ordered);
 
     bulk_write(bulk_write&& other) noexcept;
