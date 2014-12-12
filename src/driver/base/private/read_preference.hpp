@@ -18,7 +18,7 @@
 
 #include "driver/base/read_preference.hpp"
 
-#include "mongoc.h"
+#include "driver/private/libmongoc.hpp"
 
 namespace mongo {
 namespace driver {
@@ -31,7 +31,7 @@ class read_preference::impl {
     {}
 
     ~impl() {
-        mongoc_read_prefs_destroy(read_preference_t);
+        libmongoc::read_prefs_destroy(read_preference_t);
     }
 
     mongoc_read_prefs_t* read_preference_t;
