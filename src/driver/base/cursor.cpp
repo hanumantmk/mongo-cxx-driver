@@ -15,11 +15,11 @@
 #include <cstdint>
 #include <memory>
 
-#include "mongoc.h"
 #include "bson.h"
 
 #include "driver/base/cursor.hpp"
 #include "driver/base/private/cursor.hpp"
+#include "driver/private/libmongoc.hpp"
 
 #include "stdx/make_unique.hpp"
 
@@ -41,7 +41,7 @@ void cursor::iterator::operator++(int) {
 
 cursor::iterator& cursor::iterator::operator++() {
     const bson_t* out;
-    if (mongoc_cursor_next(_cursor->_impl->cursor_t, &out)) {
+    if (libmongoc::cursor_next(_cursor->_impl->cursor_t, &out)) {
         _doc = bson::document::view(bson_get_data(out), out->len);
     } else {
         _cursor = nullptr;

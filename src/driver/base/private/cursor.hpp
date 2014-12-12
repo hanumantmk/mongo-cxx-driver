@@ -17,8 +17,7 @@
 #include "driver/config/prelude.hpp"
 
 #include "driver/base/cursor.hpp"
-
-#include "mongoc.h"
+#include "driver/private/libmongoc.hpp"
 
 namespace mongo {
 namespace driver {
@@ -31,7 +30,7 @@ class cursor::impl {
     {}
 
     ~impl() {
-        mongoc_cursor_destroy(cursor_t);
+        libmongoc::cursor_destroy(cursor_t);
     }
 
     mongoc_cursor_t* cursor_t;

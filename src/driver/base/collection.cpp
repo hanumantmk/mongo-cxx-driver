@@ -69,16 +69,16 @@ collection::collection(const database& database, const std::string& collection_n
 
 optional<result::bulk_write> collection::bulk_write(const class bulk_write& bulk_write) {
     mongoc_bulk_operation_t* b = bulk_write._impl->operation_t;
-    mongoc_bulk_operation_set_database(b, _impl->database_impl->name.c_str());
-    mongoc_bulk_operation_set_collection(b, _impl->name.c_str());
-    mongoc_bulk_operation_set_client(b, _impl->client_impl->client_t);
+    libmongoc::bulk_operation_set_database(b, _impl->database_impl->name.c_str());
+    libmongoc::bulk_operation_set_collection(b, _impl->name.c_str());
+    libmongoc::bulk_operation_set_client(b, _impl->client_impl->client_t);
 
     if (bulk_write.write_concern()) {
         priv::write_concern wc(*bulk_write.write_concern());
-        mongoc_bulk_operation_set_write_concern(b, wc.get_write_concern());
+        libmongoc::bulk_operation_set_write_concern(b, wc.get_write_concern());
     } else {
-        mongoc_bulk_operation_set_write_concern(
-            b, mongoc_collection_get_write_concern(_impl->collection_t));
+        libmongoc::bulk_operation_set_write_concern(
+            b, libmongoc::collection_get_write_concern(_impl->collection_t));
     }
 
     scoped_bson_t reply;
@@ -86,7 +86,7 @@ optional<result::bulk_write> collection::bulk_write(const class bulk_write& bulk
 
     bson_error_t error;
 
-    if (!mongoc_bulk_operation_execute(b, reply.bson(), &error)) {
+    if (!libmongoc::bulk_operation_execute(b, reply.bson(), &error)) {
         throw std::runtime_error(error.message);
     }
 
@@ -168,9 +168,9 @@ cursor collection::aggregate(const pipeline& pipeline, const options::aggregate&
         rp_ptr = read_preference()._impl->read_preference_t;
     }
 
-    return cursor(mongoc_collection_aggregate(_impl->collection_t,
-                                              static_cast<mongoc_query_flags_t>(0), stages.bson(),
-                                              options_bson.bson(), rp_ptr));
+    return cursor(libmongoc::collection_aggregate(_impl->collection_t,
+                                                  static_cast<mongoc_query_flags_t>(0), stages.bson(),
+                                                  options_bson.bson(), rp_ptr));
 }
 
 optional<result::insert_one> collection::insert_one(bson::document::view document,
@@ -314,7 +314,7 @@ optional<bson::document::value> collection::find_one_and_update(
     options::return_document rd =
         options.return_document().value_or(options::return_document::k_before);
 
-    bool r = mongoc_collection_find_and_modify(
+    bool r = libmongoc::collection_find_and_modify(
         _impl->collection_t, bson_filter.bson(), bson_sort.bson(), bson_update.bson(),
         bson_projection.bson(), false, options.upsert().value_or(false),
         rd == options::return_document::k_after, reply.bson(), &error);
@@ -344,9 +344,9 @@ optional<bson::document::value> collection::find_one_and_delete(
 
     bson_error_t error;
 
-    bool r = mongoc_collection_find_and_modify(_impl->collection_t, bson_filter.bson(),
-                                               bson_sort.bson(), nullptr, bson_projection.bson(),
-                                               true, false, false, reply.bson(), &error);
+    bool r = libmongoc::collection_find_and_modify(_impl->collection_t, bson_filter.bson(),
+                                                   bson_sort.bson(), nullptr, bson_projection.bson(),
+                                                   true, false, false, reply.bson(), &error);
 
     if (!r) {
         throw std::runtime_error("baddd");
@@ -372,9 +372,9 @@ std::int64_t collection::count(bson::document::view filter, const options::count
         rp_ptr = options.read_preference()->_impl->read_preference_t;
     }
 
-    auto result = mongoc_collection_count(_impl->collection_t, static_cast<mongoc_query_flags_t>(0),
-                                          bson_filter.bson(), options.skip().value_or(0),
-                                          options.limit().value_or(0), rp_ptr, &error);
+    auto result = libmongoc::collection_count(_impl->collection_t, static_cast<mongoc_query_flags_t>(0),
+                                              bson_filter.bson(), options.skip().value_or(0),
+                                              options.limit().value_or(0), rp_ptr, &error);
 
     /* TODO throw an exception if error
     if (result < 0)
@@ -386,7 +386,7 @@ std::int64_t collection::count(bson::document::view filter, const options::count
 void collection::drop() {
     bson_error_t error;
 
-    if (mongoc_collection_drop(_impl->collection_t, &error)) {
+    if (libmongoc::collection_drop(_impl->collection_t, &error)) {
         /* TODO handle errors */
     }
 }
@@ -397,7 +397,7 @@ void collection::read_preference(class read_preference rp) {
 
 class read_preference collection::read_preference() const {
     class read_preference rp(stdx::make_unique<read_preference::impl>(
-        mongoc_read_prefs_copy(mongoc_collection_get_read_prefs(_impl->collection_t))));
+        libmongoc::read_prefs_copy(libmongoc::collection_get_read_prefs(_impl->collection_t))));
     return rp;
 }
 
