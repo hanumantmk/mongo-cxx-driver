@@ -118,17 +118,22 @@ cursor collection::find(bson::document::view filter, const options::find& option
         rp_ptr = options.read_preference()->_impl->read_preference_t;
     }
 
-    return cursor(mongoc_collection_find(_impl->collection_t, mongoc_query_flags_t(0),
-                                         options.skip().value_or(0), options.limit().value_or(0),
-                                         options.batch_size().value_or(0), filter_bson.bson(),
-                                         projection.bson(), rp_ptr));
+    return cursor(libmongoc::collection_find(_impl->collection_t, mongoc_query_flags_t(0),
+                                             options.skip().value_or(0), options.limit().value_or(0),
+                                             options.batch_size().value_or(0), filter_bson.bson(),
+                                             projection.bson(), rp_ptr));
 }
 
 optional<bson::document::value> collection::find_one(bson::document::view filter,
                                                      const options::find& options) {
     options::find copy(options);
     copy.limit(1);
-    return optional<bson::document::value>(*find(filter, copy).begin());
+    cursor cursor = find(filter, copy);
+    cursor::iterator it = cursor.begin();
+    if (it == cursor.end()) {
+        return nullopt;
+    }
+    return optional<bson::document::value>(*it);
 }
 
 cursor collection::aggregate(const pipeline& pipeline, const options::aggregate& options) {

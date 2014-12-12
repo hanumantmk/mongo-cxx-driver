@@ -51,6 +51,10 @@ cursor::iterator& cursor::iterator::operator++() {
 }
 
 cursor::iterator cursor::begin() {
+    // Maybe this should be an exception somewhere?
+    if (!_impl->cursor_t) {
+        return end();
+    }
     return iterator(this);
 }
 
