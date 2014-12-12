@@ -36,7 +36,7 @@ void client::read_preference(class read_preference rp) {
 
 class read_preference client::read_preference() const {
     class read_preference rp(stdx::make_unique<read_preference::impl>(
-        mongoc_read_prefs_copy(libmongoc::client_get_read_prefs(_impl->client_t))));
+        libmongoc::read_prefs_copy(libmongoc::client_get_read_prefs(_impl->client_t))));
     return rp;
 }
 
