@@ -66,13 +66,13 @@ class mock<R (*)(Args...)> {
         conditional _conditional;
     };
 
-    class MockInstance {
+    class instance {
     friend class mock;
     public:
-     MockInstance(const MockInstance&) = delete;
-     MockInstance& operator=(const MockInstance&) = delete;
+     instance(const instance&) = delete;
+     instance& operator=(const instance&) = delete;
 
-     ~MockInstance() {
+     ~instance() {
          _parent->destroy_active_instance();
      }
 
@@ -112,12 +112,12 @@ class mock<R (*)(Args...)> {
      bool empty() const { return _callbacks.empty(); }
 
     private:
-     MockInstance(mock* parent) : _parent(parent) {}
+     instance(mock* parent) : _parent(parent) {}
      mock* _parent;
      std::stack<rule> _callbacks;
     };
 
-    friend class MockInstance;
+    friend class instance;
 
     mock(underlying_ptr func) : _func(std::move(func)) {}
     mock(mock&&) = delete;
@@ -138,14 +138,14 @@ class mock<R (*)(Args...)> {
         return _func(args...);
     }
 
-    std::unique_ptr<MockInstance> create_instance() {
-        std::unique_ptr<MockInstance> mock_instance(new MockInstance(this));
+    std::unique_ptr<instance> create_instance() {
+        std::unique_ptr<instance> mock_instance(new instance(this));
         active_instance(mock_instance.get());
         return mock_instance;
     }
 
    private:
-    MockInstance* active_instance() {
+    instance* active_instance() {
         const auto id = std::this_thread::get_id();
         std::lock_guard<std::mutex> lock(_active_instances_lock);
         const auto iterator = _active_instances.find(id);
@@ -155,12 +155,12 @@ class mock<R (*)(Args...)> {
         return nullptr;
     }
 
-    void active_instance(MockInstance* instance) {
+    void active_instance(instance* instance) {
         const auto id = std::this_thread::get_id();
         std::lock_guard<std::mutex> lock(_active_instances_lock);
 
         auto& current = _active_instances[id];
-        assert(!current); // It is impossible to create two MockInstances in a single thread
+        assert(!current); // It is impossible to create two instances in a single thread
         current = instance;
     }
 
@@ -171,7 +171,7 @@ class mock<R (*)(Args...)> {
     }
 
     std::mutex _active_instances_lock;
-    std::unordered_map<std::thread::id, MockInstance*> _active_instances;
+    std::unordered_map<std::thread::id, instance*> _active_instances;
     const underlying_ptr _func;
 };
 
