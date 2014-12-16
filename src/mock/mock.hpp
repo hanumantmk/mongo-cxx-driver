@@ -69,54 +69,54 @@ class mock<R (*)(Args...)> {
     };
 
     class instance {
-    friend class mock;
-    public:
-     instance(const instance&) = delete;
-     instance& operator=(const instance&) = delete;
+       friend class mock;
+       public:
+        instance(const instance&) = delete;
+        instance& operator=(const instance&) = delete;
 
-     ~instance() {
-         _parent->destroy_active_instance();
-     }
+        ~instance() {
+           _parent->destroy_active_instance();
+        }
 
-     rule& interpose(const std::function<R(Args...)>& func) {
-         _callbacks.emplace([=](Args... args) { return func(args...); });
+        rule& interpose(const std::function<R(Args...)>& func) {
+            _callbacks.emplace([=](Args... args) { return func(args...); });
 
-         return _callbacks.top();
-     }
+            return _callbacks.top();
+        }
 
-     template <typename T, typename... U>
-     typename std::enable_if<std::is_same<T, R>::value, rule&>::type interpose(T r, U... rs) {
-         std::array<R, sizeof...(rs) + 1> vec = {r, rs...};
-         std::size_t i = 0;
+        template <typename T, typename... U>
+        typename std::enable_if<std::is_same<T, R>::value, rule&>::type interpose(T r, U... rs) {
+            std::array<R, sizeof...(rs) + 1> vec = {r, rs...};
+            std::size_t i = 0;
 
-         _callbacks.emplace([ vec, i ](Args... args) mutable->R {
-             if (i == vec.size()) {
-                 i = 0;
-             }
-             return vec[i++];
-         });
-         _callbacks.top().times(vec.size());
+            _callbacks.emplace([ vec, i ](Args... args) mutable->R {
+                if (i == vec.size()) {
+                    i = 0;
+                }
+                return vec[i++];
+            });
+            _callbacks.top().times(vec.size());
 
-         return _callbacks.top();
-     }
+            return _callbacks.top();
+        }
 
-     rule& visit(std::function<void(Args...)> func) {
-         _callbacks.emplace([=](Args... args) {
-             func(args...);
-             return _parent->_func(args...);
-         });
+        rule& visit(std::function<void(Args...)> func) {
+            _callbacks.emplace([=](Args... args) {
+                func(args...);
+                return _parent->_func(args...);
+            });
 
-         return _callbacks.top();
-     }
+            return _callbacks.top();
+        }
 
-     std::size_t depth() const { return _callbacks.size(); }
+        std::size_t depth() const { return _callbacks.size(); }
 
-     bool empty() const { return _callbacks.empty(); }
+        bool empty() const { return _callbacks.empty(); }
 
-    private:
-     instance(mock* parent) : _parent(parent) {}
-     mock* _parent;
-     std::stack<rule> _callbacks;
+       private:
+        instance(mock* parent) : _parent(parent) {}
+        mock* _parent;
+        std::stack<rule> _callbacks;
     };
 
     friend class instance;
