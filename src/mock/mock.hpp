@@ -42,7 +42,10 @@ class mock<R (*)(Args...)> {
         friend class mock;
 
        public:
-        rule(callback callback) : _callback(std::move(callback)) { times(1); }
+        rule(callback callback)
+            : _callback(std::move(callback)) {
+            times(1);
+        }
 
         void times(int n) {
             until([=n](Args...) mutable -> bool {
