@@ -29,11 +29,7 @@ namespace options {
 class LIBMONGOCXX_EXPORT find {
 
    public:
-    enum class cursor_type {
-        k_non_tailable,
-        k_tailable,
-        k_tailable_await
-    };
+    enum class cursor_type: std::uint8_t;
 
     void allow_partial_results(bool allow_partial);
     const optional<bool>& allow_partial_results() const;

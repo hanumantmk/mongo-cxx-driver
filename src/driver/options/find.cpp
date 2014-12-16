@@ -19,6 +19,12 @@ namespace mongo {
 namespace driver {
 namespace options {
 
+enum class find::cursor_type: std::uint8_t {
+    k_non_tailable,
+    k_tailable,
+    k_tailable_await
+};
+
 void find::allow_partial_results(bool allow_partial) { _allow_partial_results = allow_partial; }
 
 void find::batch_size(std::int32_t batch_size) { _batch_size = batch_size; }
