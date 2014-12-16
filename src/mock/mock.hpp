@@ -26,7 +26,7 @@
 #include <vector>
 
 namespace mongo {
-namespace util {
+namespace mock {
 
 template <typename T>
 class mock;
@@ -45,21 +45,20 @@ class mock<R (*)(Args...)> {
         rule(callback callback) : _callback(std::move(callback)) { times(1); }
 
         void times(int n) {
-            until([n](Args...) mutable->bool {
-                if (n < 0) {
-                    return true;
-                } else if (n == 0) {
+            until([=n](Args...) mutable -> bool {
+                if (n <= 0) {
                     return false;
                 } else {
-                    n--;
                     return true;
                 }
             });
         }
 
-        void forever() { return times(-1); }
+        void forever() { return until([](){return true;}); }
 
-        void until(conditional conditional) { _conditional = std::move(conditional); }
+        void until(conditional conditional) {
+            _conditional = std::move(conditional);
+        }
 
        private:
         callback _callback;
@@ -175,5 +174,5 @@ class mock<R (*)(Args...)> {
     const underlying_ptr _func;
 };
 
-}  // namespace util
+}  // namespace mock
 }  // namespace mongo
