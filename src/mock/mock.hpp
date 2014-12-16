@@ -48,16 +48,16 @@ class mock<R (*)(Args...)> {
         }
 
         void times(int n) {
-            until([=n](Args...) mutable -> bool {
-                if (n <= 0) {
-                    return false;
-                } else {
-                    return true;
-                }
+            until([n](Args...) mutable -> bool {
+                return n-- > 0;
             });
         }
 
-        void forever() { return until([](){return true;}); }
+        void forever() {
+            until([](Args...){
+                    return true;
+                  });
+        }
 
         void until(conditional conditional) {
             _conditional = std::move(conditional);
