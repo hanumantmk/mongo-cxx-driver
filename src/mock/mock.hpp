@@ -118,7 +118,10 @@ class mock<R (*)(Args...)> {
         }
 
        private:
-        instance(mock* parent) : _parent(parent) {}
+        instance(mock* parent)
+            : _parent(parent) {
+        }
+
         mock* _parent;
         std::stack<rule> _callbacks;
     };
