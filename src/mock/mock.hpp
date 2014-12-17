@@ -79,7 +79,7 @@ class mock<R (*)(Args...)> {
         }
 
         rule& interpose(const std::function<R(Args...)>& func) {
-            _callbacks.emplace([=](Args... args) { return func(args...); });
+            _callbacks.emplace([func](Args... args) { return func(args...); });
 
             return _callbacks.top();
         }
