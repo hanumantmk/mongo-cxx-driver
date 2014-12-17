@@ -91,7 +91,7 @@ class LIBMONGOCXX_EXPORT collection {
         const options::count& options = options::count()
     );
 
-    bool create_index(
+    bson::document::value create_index(
         bson::document::view keys,
         bson::document::view options
     );
