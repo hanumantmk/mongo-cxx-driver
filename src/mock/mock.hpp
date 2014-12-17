@@ -109,9 +109,13 @@ class mock<R (*)(Args...)> {
             return _callbacks.top();
         }
 
-        std::size_t depth() const { return _callbacks.size(); }
+        std::size_t depth() const {
+            return _callbacks.size();
+        }
 
-        bool empty() const { return _callbacks.empty(); }
+        bool empty() const {
+            return _callbacks.empty();
+        }
 
        private:
         instance(mock* parent) : _parent(parent) {}
@@ -121,7 +125,8 @@ class mock<R (*)(Args...)> {
 
     friend class instance;
 
-    mock(underlying_ptr func) : _func(std::move(func)) {}
+    mock(underlying_ptr func) :
+        _func(std::move(func)) {}
     mock(mock&&) = delete;
     mock(const mock&) = delete;
     mock& operator=(const mock&) = delete;
