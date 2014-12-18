@@ -42,21 +42,16 @@ class mock<R (*)(Args...)> {
         friend class mock;
 
        public:
-        rule(callback callback)
-            : _callback(std::move(callback)) {
+        rule(callback callback) : _callback(std::move(callback)) {
             times(1);
         }
 
         void times(int n) {
-            until([n](Args...) mutable -> bool {
-                return n-- > 0;
-            });
+            until([n](Args...) mutable -> bool { return n-- > 0; });
         }
 
         void forever() {
-            until([](Args...){
-                    return true;
-                  });
+            until([](Args...) { return true; });
         }
 
         void until(conditional conditional) {
@@ -69,13 +64,14 @@ class mock<R (*)(Args...)> {
     };
 
     class instance {
-       friend class mock;
+        friend class mock;
+
        public:
         instance(const instance&) = delete;
         instance& operator=(const instance&) = delete;
 
         ~instance() {
-           _parent->destroy_active_instance();
+            _parent->destroy_active_instance();
         }
 
         rule& interpose(const std::function<R(Args...)>& func) {
@@ -86,10 +82,10 @@ class mock<R (*)(Args...)> {
 
         template <typename T, typename... U>
         typename std::enable_if<std::is_same<T, R>::value, rule&>::type interpose(T r, U... rs) {
-            std::array<R, sizeof...(rs) + 1> vec = {r, rs...};
+            std::array<R, sizeof...(rs)+1> vec = {r, rs...};
             std::size_t i = 0;
 
-            _callbacks.emplace([ vec, i ](Args... args) mutable -> R {
+            _callbacks.emplace([vec, i](Args... args) mutable -> R {
                 if (i == vec.size()) {
                     i = 0;
                 }
@@ -118,8 +114,7 @@ class mock<R (*)(Args...)> {
         }
 
        private:
-        instance(mock* parent)
-            : _parent(parent) {
+        instance(mock* parent) : _parent(parent) {
         }
 
         mock* _parent;
@@ -128,8 +123,8 @@ class mock<R (*)(Args...)> {
 
     friend class instance;
 
-    mock(underlying_ptr func) :
-        _func(std::move(func)) {}
+    mock(underlying_ptr func) : _func(std::move(func)) {
+    }
     mock(mock&&) = delete;
     mock(const mock&) = delete;
     mock& operator=(const mock&) = delete;
@@ -170,7 +165,7 @@ class mock<R (*)(Args...)> {
         std::lock_guard<std::mutex> lock(_active_instances_lock);
 
         auto& current = _active_instances[id];
-        assert(!current); // It is impossible to create two instances in a single thread
+        assert(!current);  // It is impossible to create two instances in a single thread
         current = instance;
     }
 
