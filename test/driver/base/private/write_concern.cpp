@@ -22,8 +22,8 @@
 
 using namespace mongo::driver;
 
-TEST_CASE("creation of priv::write_concern passes universal parameters to c-driver's methods",
-          "[write_concern][base][priv][c-driver]") {
+TEST_CASE("creation of write_concern passes universal parameters to c-driver's methods",
+          "[write_concern][base][c-driver]") {
     SECTION("when fsync is requested, mongoc_write_concern_set_fsync is called with true") {
         bool fsync_called = false;
         bool fsync_value = false;
@@ -34,7 +34,7 @@ TEST_CASE("creation of priv::write_concern passes universal parameters to c-driv
         });
         write_concern wc{};
         wc.fsync(true);
-        priv::write_concern{wc};
+        write_concern{wc};
         REQUIRE(fsync_called == true);
         REQUIRE(fsync_value == true);
     }
@@ -49,7 +49,7 @@ TEST_CASE("creation of priv::write_concern passes universal parameters to c-driv
         });
         write_concern wc{};
         wc.journal(true);
-        priv::write_concern{wc};
+        write_concern{wc};
         REQUIRE(journal_called == true);
         REQUIRE(journal_value == true);
     }
@@ -64,14 +64,14 @@ TEST_CASE("creation of priv::write_concern passes universal parameters to c-driv
         });
         write_concern wc{};
         wc.timeout(std::chrono::seconds(1));
-        priv::write_concern{wc};
+        write_concern{wc};
         REQUIRE(wtimeout_called == true);
         REQUIRE(wtimeout_value == 1000);
     }
 }
 
-TEST_CASE("priv::write_concern is called with w MAJORITY",
-          "[write_concern][base][priv][c-driver]") {
+TEST_CASE("write_concern is called with w MAJORITY",
+          "[write_concern][base][c-driver]") {
     bool w_called = false, wmajority_called = false, wtag_called = false;
     auto w_instance = libmongoc::write_concern_set_w.create_instance();
     auto wmajority_instance = libmongoc::write_concern_set_wmajority.create_instance();
@@ -82,8 +82,8 @@ TEST_CASE("priv::write_concern is called with w MAJORITY",
     wtag_instance->visit([&](mongoc_write_concern_t* wc, const char* wtag) { wtag_called = true; });
 
     write_concern wc{};
-    wc.confirm_from(majority);
-    priv::write_concern{wc};
+    wc.majority(std::chrono::milliseconds(100));
+    write_concern{wc};
 
     SECTION("mongoc_write_concern_set_wmajority is called") { REQUIRE(wmajority_called == true); }
 
@@ -92,8 +92,8 @@ TEST_CASE("priv::write_concern is called with w MAJORITY",
     SECTION("mongoc_write_concern_set_wtag is not called") { REQUIRE(wtag_called == false); }
 }
 
-TEST_CASE("priv::write_concern is called with a number of necessary confirmations",
-          "[write_concern][base][priv][c-driver]") {
+TEST_CASE("write_concern is called with a number of necessary confirmations",
+          "[write_concern][base][c-driver]") {
     bool w_called = false, wmajority_called = false, wtag_called = false;
     int w_value = 0;
     const int expected_w = 5;
@@ -109,8 +109,8 @@ TEST_CASE("priv::write_concern is called with a number of necessary confirmation
     wtag_instance->visit([&](mongoc_write_concern_t* wc, const char* wtag) { wtag_called = true; });
 
     write_concern wc{};
-    wc.confirm_from(expected_w);
-    priv::write_concern{wc};
+    wc.nodes(expected_w);
+    write_concern{wc};
 
     SECTION("mongoc_write_concern_set_w is called with that number") {
         REQUIRE(w_called == true);
@@ -124,7 +124,7 @@ TEST_CASE("priv::write_concern is called with a number of necessary confirmation
     SECTION("mongoc_write_concern_set_wtag is not called") { REQUIRE(wtag_called == false); }
 }
 
-TEST_CASE("priv::write_concern is called with a tag", "[write_concern][base][priv][c-driver]") {
+TEST_CASE("write_concern is called with a tag", "[write_concern][base][c-driver]") {
     bool w_called = false, wmajority_called = false, wtag_called = false;
     std::string wtag_value;
     const std::string expected_wtag("MultiDataCenter");
@@ -140,8 +140,8 @@ TEST_CASE("priv::write_concern is called with a tag", "[write_concern][base][pri
     });
 
     write_concern wc{};
-    wc.confirm_from(expected_wtag);
-    priv::write_concern{wc};
+    wc.tag(expected_wtag);
+    write_concern{wc};
 
     SECTION("mongoc_write_concern_set_w is not called") { REQUIRE(w_called == false); }
 

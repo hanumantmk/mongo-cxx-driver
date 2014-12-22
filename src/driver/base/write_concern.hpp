@@ -47,7 +47,7 @@ class LIBMONGOCXX_EXPORT write_concern {
     void fsync(bool fsync);
     void journal(bool journal);
     void nodes(std::int32_t confirm_from);
-    void majority();
+    void majority(std::chrono::milliseconds timeout);
     void tag(const std::string& tag);
     void timeout(std::chrono::milliseconds timeout);
 

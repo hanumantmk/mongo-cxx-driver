@@ -73,14 +73,6 @@ optional<result::bulk_write> collection::bulk_write(const class bulk_write& bulk
     libmongoc::bulk_operation_set_collection(b, _impl->name.c_str());
     libmongoc::bulk_operation_set_client(b, _impl->client_impl->client_t);
 
-    if (bulk_write.write_concern()) {
-        write_concern wc(*bulk_write.write_concern());
-        libmongoc::bulk_operation_set_write_concern(b, wc.get_write_concern());
-    } else {
-        libmongoc::bulk_operation_set_write_concern(
-            b, libmongoc::collection_get_write_concern(_impl->collection_t));
-    }
-
     scoped_bson_t reply;
     reply.flag_init();
 

@@ -55,10 +55,10 @@ TEST_CASE("the destruction of a bulk_write will destroy the mongoc operation",
     REQUIRE(destruct_called);
 }
 
-TEST_CASE("bulk_write has a write_concern", "[bulk_write][base]") {
-    bulk_write bw(true);
-    CHECK_OPTIONAL_ARGUMENT_WITHOUT_EQUALITY(bw, write_concern, write_concern());
-}
+//TEST_CASE("bulk_write has a write_concern", "[bulk_write][base]") {
+    //bulk_write bw(true);
+    //CHECK_OPTIONAL_ARGUMENT_WITHOUT_EQUALITY(bw, write_concern, write_concern());
+//}
 
 class SingleDocumentFun {
    public:

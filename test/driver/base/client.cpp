@@ -106,7 +106,7 @@ TEST_CASE("A client's write concern may be set and obtained", "[client][base]") 
 
     client mongo_client;
     write_concern concern{};
-    concern.confirm_from(majority);
+    concern.majority(std::chrono::milliseconds(100));
 
     bool called = false;
     client_set_concern->interpose(
@@ -117,8 +117,8 @@ TEST_CASE("A client's write concern may be set and obtained", "[client][base]") 
     mongo_client.write_concern(concern);
     REQUIRE(called);
 
-    REQUIRE(concern.confirm_from().majority() ==
-            mongo_client.write_concern().confirm_from().majority());
+    REQUIRE(concern.majority() ==
+            mongo_client.write_concern().majority());
 }
 
 TEST_CASE("A client can create a named database object", "[client][base]") {

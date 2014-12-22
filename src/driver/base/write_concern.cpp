@@ -60,11 +60,8 @@ void write_concern::tag(const std::string& confirm_from) {
     libmongoc::write_concern_set_wtag(_impl->write_concern_t, confirm_from.c_str());
 }
 
-void write_concern::majority() {
-    libmongoc::write_concern_set_wmajority(
-        _impl->write_concern_t,
-        libmongoc::write_concern_get_wtimeout(_impl->write_concern_t)
-    );
+void write_concern::majority(std::chrono::milliseconds timeout) {
+    libmongoc::write_concern_set_wmajority(_impl->write_concern_t, timeout.count());
 }
 
 void write_concern::timeout(std::chrono::milliseconds timeout) {

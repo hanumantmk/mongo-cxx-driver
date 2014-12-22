@@ -32,10 +32,10 @@ TEST_CASE("a default write_concern", "[write_concern][base]") {
     }
 
     SECTION("will require confirmation from just the primary or standalone mongod") {
-        REQUIRE(1 == wc.confirm_from().number().value());
+        REQUIRE(1 == wc.nodes());
     }
 
-    SECTION("has empty tag set") { REQUIRE(!wc.confirm_from().tag()); }
+    SECTION("has empty tag set") { REQUIRE(!wc.tag().empty()); }
 }
 
 TEST_CASE("write_concern fields may be set and retrieved", "[write_concern][base]") {
@@ -60,23 +60,19 @@ TEST_CASE("write_concern fields may be set and retrieved", "[write_concern][base
 
     SECTION("a tag may be set") {
         const std::string tag{"MultipleDC"};
-        wc.confirm_from(tag);
-        REQUIRE(tag == wc.confirm_from().tag().value());
+        wc.tag(tag);
+        REQUIRE(tag == wc.tag());
     }
 
     SECTION("the number of nodes requiring confirmation may be set to a number") {
-        wc.confirm_from(10);
-        REQUIRE(wc.confirm_from().number().value() == 10);
+        wc.nodes(10);
+        REQUIRE(wc.nodes() == 10);
     }
 
     SECTION("the number of nodes requiring confirmation may be set to the majority") {
-        wc.confirm_from(majority);
-        REQUIRE(wc.confirm_from().majority());
-    }
-
-    SECTION("the number of nodes requring confirmation may not be negative") {
-        write_concern wc{};
-        REQUIRE_THROWS_AS(wc.confirm_from(-20), std::invalid_argument);
+        wc.majority(std::chrono::milliseconds(100));
+        REQUIRE(wc.majority());
+        REQUIRE(100 == wc.timeout().count());
     }
 }
 
@@ -84,42 +80,43 @@ TEST_CASE("confirmation from tags, a repl-member count, and majority are mutuall
           "[write_concern][base]") {
     SECTION("setting the confirmation number unsets the confirmation tag") {
         write_concern wc{};
-        wc.confirm_from("MultipleDC");
-        wc.confirm_from(10);
-        REQUIRE(!wc.confirm_from().tag());
+        wc.tag("MultipleDC");
+        wc.nodes(10);
+        REQUIRE(wc.tag().empty());
     }
+
     SECTION("setting the confirmation number unsets majority") {
         write_concern wc{};
-        wc.confirm_from(majority);
-        wc.confirm_from(10);
-        REQUIRE(!wc.confirm_from().majority());
+        wc.majority(std::chrono::milliseconds(100));
+        wc.nodes(20);
+        REQUIRE(!wc.majority());
     }
 
     SECTION("setting the tag unsets the confirmation number") {
         write_concern wc{};
-        wc.confirm_from(10);
-        wc.confirm_from("MultipleDC");
-        REQUIRE(!wc.confirm_from().number());
+        wc.nodes(10);
+        wc.tag("MultipleDC");
+        REQUIRE(!wc.nodes());
     }
 
     SECTION("setting the tag unsets majority") {
         write_concern wc{};
-        wc.confirm_from(majority);
-        wc.confirm_from("MultipleDC");
-        REQUIRE(!wc.confirm_from().majority());
+        wc.majority(std::chrono::milliseconds(100));
+        wc.tag("MultipleDC");
+        REQUIRE(!wc.majority());
     }
 
     SECTION("setting the majority unsets the confirmation number") {
         write_concern wc{};
-        wc.confirm_from(10);
-        wc.confirm_from(majority);
-        REQUIRE(!wc.confirm_from().number());
+        wc.nodes(10);
+        wc.majority(std::chrono::milliseconds(100));
+        REQUIRE(!wc.nodes());
     }
 
     SECTION("setting majority unsets the tag") {
         write_concern wc{};
-        wc.confirm_from("MultipleDC");
-        wc.confirm_from(majority);
-        REQUIRE(!wc.confirm_from().tag());
+        wc.tag("MultipleDC");
+        wc.majority(std::chrono::milliseconds(100));
+        REQUIRE(wc.tag().empty());
     }
 }
