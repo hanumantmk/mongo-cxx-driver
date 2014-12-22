@@ -160,6 +160,8 @@ class LIBMONGOCXX_EXPORT collection {
         const options::insert& options = options::insert()
     );
 
+    cursor list_indexes() const;
+
     void read_preference(class read_preference rp);
     class read_preference read_preference() const;
 

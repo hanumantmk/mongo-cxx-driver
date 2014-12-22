@@ -49,8 +49,7 @@ class LIBMONGOCXX_EXPORT database {
 
     void drop();
 
-    // TODO: bikeshed name
-    cursor collection_names();
+    cursor list_collections();
 
     bool has_collection(const std::string& name);
 

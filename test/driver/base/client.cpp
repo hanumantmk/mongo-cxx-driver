@@ -103,22 +103,43 @@ TEST_CASE("A client's read preferences may be set and obtained", "[client][base]
 
 TEST_CASE("A client's write concern may be set and obtained", "[client][base]") {
     MOCK_CLIENT
+    MOCK_CONCERN
 
     client mongo_client;
     write_concern concern{};
     concern.majority(std::chrono::milliseconds(100));
 
-    bool called = false;
+    mongoc_write_concern_t* underlying_wc;
+
+    bool set_called = false;
     client_set_concern->interpose(
         [&](mongoc_client_t* client, const mongoc_write_concern_t* concern) {
-            called = true;
-            REQUIRE(mongoc_write_concern_get_wmajority(concern));
+            set_called = true;
+            underlying_wc = mongoc_write_concern_copy(concern);
         });
-    mongo_client.write_concern(concern);
-    REQUIRE(called);
 
-    REQUIRE(concern.majority() ==
-            mongo_client.write_concern().majority());
+    bool get_called = false;
+    client_get_concern->interpose(
+        [&](const mongoc_client_t* client) {
+            get_called = true;
+            return mongoc_write_concern_copy(underlying_wc);
+        });
+
+    bool copy_called = false;
+    concern_copy->interpose(
+        [&](const mongoc_write_concern_t* concern) {
+            copy_called = true;
+            return mongoc_write_concern_copy(underlying_wc);
+        });
+
+    mongo_client.write_concern(concern);
+    REQUIRE(set_called);
+
+    REQUIRE(mongo_client.write_concern());
+    REQUIRE(concern.majority());
+
+    REQUIRE(get_called);
+    REQUIRE(copy_called);
 }
 
 TEST_CASE("A client can create a named database object", "[client][base]") {

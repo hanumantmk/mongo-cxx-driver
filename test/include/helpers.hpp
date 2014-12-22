@@ -44,7 +44,9 @@
     auto client_get_preference = libmongoc::client_get_read_prefs.create_instance(); \
     client_get_preference->interpose([](const mongoc_client_t*){return nullptr;}).forever(); \
     auto client_set_concern = libmongoc::client_set_write_concern.create_instance(); \
-    client_set_concern->interpose([](mongoc_client_t*, const mongoc_write_concern_t*){}).forever();
+    client_set_concern->interpose([](mongoc_client_t*, const mongoc_write_concern_t*){}).forever(); \
+    auto client_get_concern = libmongoc::client_get_write_concern.create_instance(); \
+    client_get_concern->interpose([](const mongoc_client_t*){return nullptr;}).forever();
 
 #define MOCK_DATABASE \
     auto get_database = libmongoc::client_get_database.create_instance(); \
@@ -77,3 +79,7 @@
                                      const mongoc_write_concern_t*) {}).forever(); \
     auto collection_destroy = libmongoc::collection_destroy.create_instance();\
     collection_destroy->interpose([](mongoc_collection_t*) {});
+
+#define MOCK_CONCERN \
+    auto concern_copy = libmongoc::write_concern_copy.create_instance(); \
+    concern_copy->interpose([](const mongoc_write_concern_t*){return nullptr;}).forever();
