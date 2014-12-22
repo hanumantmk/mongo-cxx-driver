@@ -35,9 +35,7 @@ class collection::impl {
         database_impl(database),
         client_impl(client),
         name(name)
-    {
-        write_concern(database->write_concern());
-    }
+    {}
 
     ~impl() { libmongoc::collection_destroy(collection_t); }
 
@@ -45,21 +43,6 @@ class collection::impl {
     const class database::impl* database_impl;
     const class client::impl* client_impl;
     std::string name;
-
-    void write_concern(class write_concern wc) {
-        priv::write_concern write_conc{wc};
-
-        libmongoc::collection_set_write_concern(collection_t, write_conc.get_write_concern());
-
-        _write_concern = std::move(wc);
-    }
-
-    const class write_concern& write_concern() const {
-        return _write_concern;
-    }
-
-   private:
-    class write_concern _write_concern;
 
 }; // class impl
 

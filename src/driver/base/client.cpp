@@ -16,6 +16,7 @@
 
 #include "driver/base/private/client.hpp"
 #include "driver/base/private/read_preference.hpp"
+#include "driver/base/private/write_concern.hpp"
 #include "driver/base/private/uri.hpp"
 #include "stdx/make_unique.hpp"
 
@@ -36,12 +37,21 @@ void client::read_preference(class read_preference rp) {
 
 class read_preference client::read_preference() const {
     class read_preference rp(stdx::make_unique<read_preference::impl>(
-        libmongoc::read_prefs_copy(libmongoc::client_get_read_prefs(_impl->client_t))));
+        libmongoc::read_prefs_copy(libmongoc::client_get_read_prefs(_impl->client_t)))
+    );
     return rp;
 }
 
-void client::write_concern(class write_concern wc) { _impl->write_concern(std::move(wc)); }
-const class write_concern& client::write_concern() const { return _impl->write_concern(); }
+void client::write_concern(class write_concern wc) {
+    libmongoc::client_set_write_concern(_impl->client_t, wc._impl->write_concern_t);
+}
+
+class write_concern client::write_concern() const {
+    class write_concern wc(stdx::make_unique<write_concern::impl>(
+        libmongoc::write_concern_copy(libmongoc::client_get_write_concern(_impl->client_t)))
+    );
+    return wc;
+}
 
 class database client::database(const std::string& name) const & {
     return mongo::driver::database(*this, name);

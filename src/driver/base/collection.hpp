@@ -182,7 +182,7 @@ class LIBMONGOCXX_EXPORT collection {
     );
 
     void write_concern(class write_concern wc);
-    const class write_concern& write_concern() const;
+    class write_concern write_concern() const;
 
    private:
     friend class database;

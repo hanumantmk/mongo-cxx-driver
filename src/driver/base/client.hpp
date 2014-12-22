@@ -53,7 +53,7 @@ class LIBMONGOCXX_EXPORT client {
 
     // TODO: document that modifications at this level do not affect existing clients + databases
     void write_concern(class write_concern wc);
-    const class write_concern& write_concern() const;
+    class write_concern write_concern() const;
 
     class database database(const std::string& name) const &;
     class database database(const std::string& name) const && = delete;

@@ -32,29 +32,16 @@ class database::impl {
         database_t(db),
         client_impl(client),
         name(std::move(name))
-    {
-        write_concern(client->write_concern());
+    {}
+
+    ~impl() {
+        libmongoc::database_destroy(database_t);
     }
 
-    ~impl() { libmongoc::database_destroy(database_t); }
     mongoc_database_t* database_t;
     const class client::impl* client_impl;
     std::string name;
 
-    void write_concern(class write_concern wc) {
-        priv::write_concern write_conc{wc};
-
-        libmongoc::database_set_write_concern(database_t, write_conc.get_write_concern());
-
-        _write_concern = std::move(wc);
-    }
-
-    const class write_concern& write_concern() const {
-        return _write_concern;
-    }
-
-    private:
-        class write_concern _write_concern;
 };
 
 }  // namespace driver

@@ -47,8 +47,16 @@ class read_preference database::read_preference() const {
     return rp;
 }
 
-void database::write_concern(class write_concern wc) { _impl->write_concern(std::move(wc)); }
-const class write_concern& database::write_concern() const { return _impl->write_concern(); }
+void database::write_concern(class write_concern wc) {
+    libmongoc::database_set_write_concern(_impl->database_t, wc._impl->write_concern_t);
+}
+
+class write_concern database::write_concern() const {
+    class write_concern wc(stdx::make_unique<write_concern::impl>(
+        libmongoc::write_concern_copy(libmongoc::database_get_write_concern(_impl->database_t)))
+    );
+    return wc;
+}
 
 collection database::collection(const std::string& name) const & {
     return mongo::driver::collection(*this, name);

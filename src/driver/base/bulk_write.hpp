@@ -38,7 +38,7 @@ class LIBMONGOCXX_EXPORT bulk_write {
     void append(const model::write& operation);
 
     void write_concern(class write_concern wc);
-    optional<class write_concern> write_concern() const;
+    class write_concern write_concern() const;
 
    private:
     friend class collection;

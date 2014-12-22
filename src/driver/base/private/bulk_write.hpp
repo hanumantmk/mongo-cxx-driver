@@ -33,7 +33,6 @@ class bulk_write::impl {
     }
 
     mongoc_bulk_operation_t* operation_t;
-    optional<class write_concern> _write_concern;
 
 }; // class impl
 

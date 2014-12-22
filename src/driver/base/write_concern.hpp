@@ -26,55 +26,49 @@
 namespace mongo {
 namespace driver {
 
-class majority_t{};
-extern majority_t majority;
+class client;
+class collection;
+class database;
+class bulk_write;
 
 class LIBMONGOCXX_EXPORT write_concern {
 
    public:
-    class type {
-
-       public:
-        bool majority() const {
-            return _majority;
-        }
-        const optional<std::string>& tag () const {
-            return _tag;
-        }
-        const optional<std::int32_t> number() const {
-            return _count;
-        }
-
-       private:
-        friend class write_concern;
-
-        type();
-
-        optional<std::int32_t> _count = 1;
-        optional<std::string> _tag;
-        bool _majority = false;
-
-    };
-
     write_concern();
+
+    write_concern(const write_concern&);
+    write_concern& operator=(const write_concern&);
+
+    write_concern(write_concern&& other) noexcept;
+    write_concern& operator=(write_concern&& rhs) noexcept;
+
+    ~write_concern();
 
     void fsync(bool fsync);
     void journal(bool journal);
-    void confirm_from(std::int32_t confirm_from);
-    void confirm_from(class majority_t majority);
-    void confirm_from(std::string tag);
+    void nodes(std::int32_t confirm_from);
+    void majority();
+    void tag(const std::string& tag);
     void timeout(std::chrono::milliseconds timeout);
 
-    const bool& fsync() const;
-    const bool& journal() const;
-    const type& confirm_from() const;
-    const std::chrono::milliseconds& timeout() const;
+    bool fsync() const;
+    bool journal() const;
+    std::int32_t nodes() const;
+    std::string tag() const;
+    bool majority() const;
+    std::chrono::milliseconds timeout() const;
 
    private:
-    bool _fsync;
-    bool _journal;
-    type _confirm_from;
-    std::chrono::milliseconds _timeout;
+    friend client;
+    friend collection;
+    friend database;
+    friend bulk_write;
+
+    class impl;
+
+    write_concern(std::unique_ptr<impl>&& implementation);
+
+    std::unique_ptr<impl> _impl;
 
 };
 

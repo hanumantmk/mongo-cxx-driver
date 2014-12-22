@@ -16,44 +16,28 @@
 
 #include "driver/config/prelude.hpp"
 
-#include <memory>
-
 #include "driver/base/write_concern.hpp"
+
 #include "driver/private/libmongoc.hpp"
 
 namespace mongo {
 namespace driver {
-namespace priv {
 
-class write_concern {
-public:
-    write_concern(const driver::write_concern& arg) : _write_concern(mongoc_write_concern_new()) {
-        mongoc_write_concern_t* wc = _write_concern;
-        libmongoc::write_concern_set_fsync(wc, arg.fsync());
-        libmongoc::write_concern_set_journal(wc, arg.journal());
-        libmongoc::write_concern_set_wtimeout(wc, arg.timeout().count());
-        if (arg.confirm_from().majority()) {
-            libmongoc::write_concern_set_wmajority(wc, arg.timeout().count());
-        } else if (arg.confirm_from().tag()) {
-            libmongoc::write_concern_set_wtag(wc, arg.confirm_from().tag().value().c_str());
-        } else if (arg.confirm_from().number()) {
-            libmongoc::write_concern_set_w(wc, arg.confirm_from().number().value());
-        }
+class write_concern::impl {
+
+   public:
+    impl(mongoc_write_concern_t* write_concern)
+        : write_concern_t(write_concern)
+    {}
+
+    ~impl() {
+        libmongoc::write_concern_destroy(write_concern_t);
     }
 
-    ~write_concern() {
-        libmongoc::write_concern_destroy(_write_concern);
-    }
+    mongoc_write_concern_t* write_concern_t;
 
-    const mongoc_write_concern_t* get_write_concern() const {
-        return _write_concern;
-    }
+}; // class impl
 
-private:
-    mongoc_write_concern_t* _write_concern;
-}; // class write_concern
-
-}  // namespace priv
 }  // namespace driver
 }  // namespace mongo
 

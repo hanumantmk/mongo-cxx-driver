@@ -16,6 +16,7 @@
 
 #include "bson/libbson.hpp"
 #include "driver/base/private/bulk_write.hpp"
+#include "driver/base/private/write_concern.hpp"
 #include "driver/private/libmongoc.hpp"
 #include "stdx/make_unique.hpp"
 
@@ -82,9 +83,18 @@ void bulk_write::append(const model::write& operation) {
     }
 }
 
-void bulk_write::write_concern(class write_concern wc) { _impl->_write_concern = std::move(wc); }
+void bulk_write::write_concern(class write_concern wc) {
+    libmongoc::bulk_operation_set_write_concern(_impl->operation_t, wc._impl->write_concern_t);
+}
 
-optional<class write_concern> bulk_write::write_concern() const { return _impl->_write_concern; }
+class write_concern bulk_write::write_concern() const {
+    class write_concern wc(stdx::make_unique<write_concern::impl>(
+        libmongoc::write_concern_copy(
+            libmongoc::bulk_operation_get_write_concern(_impl->operation_t)
+        )
+    ));
+    return wc;
+}
 
 }  // namespace driver
 }  // namespace mongo

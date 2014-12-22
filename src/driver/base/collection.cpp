@@ -74,7 +74,7 @@ optional<result::bulk_write> collection::bulk_write(const class bulk_write& bulk
     libmongoc::bulk_operation_set_client(b, _impl->client_impl->client_t);
 
     if (bulk_write.write_concern()) {
-        priv::write_concern wc(*bulk_write.write_concern());
+        write_concern wc(*bulk_write.write_concern());
         libmongoc::bulk_operation_set_write_concern(b, wc.get_write_concern());
     } else {
         libmongoc::bulk_operation_set_write_concern(
@@ -401,9 +401,16 @@ class read_preference collection::read_preference() const {
     return rp;
 }
 
-void collection::write_concern(class write_concern wc) { _impl->write_concern(std::move(wc)); }
+void collection::write_concern(class write_concern wc) {
+    libmongoc::collection_set_write_concern(_impl->collection_t, wc._impl->write_concern_t);
+}
 
-const class write_concern& collection::write_concern() const { return _impl->write_concern(); }
+class write_concern collection::write_concern() const {
+    class write_concern wc(stdx::make_unique<write_concern::impl>(
+        libmongoc::write_concern_copy(libmongoc::collection_get_write_concern(_impl->collection_t)))
+    );
+    return wc;
+}
 
 }  // namespace driver
 }  // namespace mongo

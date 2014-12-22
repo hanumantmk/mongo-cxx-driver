@@ -14,44 +14,88 @@
 
 #include "driver/base/write_concern.hpp"
 
-#include <stdexcept>
+#include "driver/base/private/write_concern.hpp"
+
+#include "stdx/make_unique.hpp"
+#include "driver/private/libmongoc.hpp"
 
 namespace mongo {
 namespace driver {
 
-majority_t majority{};
-write_concern::type::type() {}
+write_concern::write_concern()
+    : _impl{stdx::make_unique<impl>(mongoc_write_concern_new())}
+{}
 
-write_concern::write_concern() : _fsync(false), _journal(false), _confirm_from(), _timeout(0) {}
-
-void write_concern::fsync(bool fsync) { _fsync = fsync; }
-void write_concern::journal(bool journal) { _journal = journal; }
-void write_concern::confirm_from(std::int32_t confirm_from) {
-    if (confirm_from < 0) {
-        throw std::invalid_argument(
-            "Must confirm against a positive"
-            " number of replica set members");
-    }
-    _confirm_from._count = confirm_from;
-    _confirm_from._majority = false;
-    _confirm_from._tag = nullopt;
-}
-void write_concern::confirm_from(std::string confirm_from) {
-    _confirm_from._count = nullopt;
-    _confirm_from._majority = false;
-    _confirm_from._tag = std::move(confirm_from);
-}
-void write_concern::confirm_from(class majority_t confirm_from) {
-    _confirm_from._count = nullopt;
-    _confirm_from._majority = true;
-    _confirm_from._tag = nullopt;
+write_concern::write_concern(std::unique_ptr<impl>&& implementation) {
+    _impl.reset(implementation.release());
 }
 
-void write_concern::timeout(std::chrono::milliseconds timeout) { _timeout = timeout; }
-const bool& write_concern::fsync() const { return _fsync; }
-const bool& write_concern::journal() const { return _journal; }
-const write_concern::type& write_concern::confirm_from() const { return _confirm_from; }
-const std::chrono::milliseconds& write_concern::timeout() const { return _timeout; }
+write_concern::write_concern(write_concern&&) noexcept = default;
+write_concern& write_concern::operator=(write_concern&&) noexcept = default;
+
+write_concern::write_concern(const write_concern& other)
+    : _impl(stdx::make_unique<impl>(libmongoc::write_concern_copy(other._impl->write_concern_t))) {}
+
+write_concern& write_concern::operator=(const write_concern& other) {
+    _impl.reset(
+        stdx::make_unique<impl>(libmongoc::write_concern_copy(other._impl->write_concern_t)).release());
+    return *this;
+}
+
+write_concern::~write_concern() = default;
+
+void write_concern::fsync(bool fsync) {
+    libmongoc::write_concern_set_fsync(_impl->write_concern_t, fsync);
+}
+
+void write_concern::journal(bool journal) {
+    libmongoc::write_concern_set_journal(_impl->write_concern_t, journal);
+}
+
+void write_concern::nodes(std::int32_t confirm_from) {
+    libmongoc::write_concern_set_w(_impl->write_concern_t, confirm_from);
+}
+
+void write_concern::tag(const std::string& confirm_from) {
+    libmongoc::write_concern_set_wtag(_impl->write_concern_t, confirm_from.c_str());
+}
+
+void write_concern::majority() {
+    libmongoc::write_concern_set_wmajority(
+        _impl->write_concern_t,
+        libmongoc::write_concern_get_wtimeout(_impl->write_concern_t)
+    );
+}
+
+void write_concern::timeout(std::chrono::milliseconds timeout) {
+    libmongoc::write_concern_set_wtimeout(_impl->write_concern_t, timeout.count());
+}
+
+bool write_concern::fsync() const {
+    return libmongoc::write_concern_get_fsync(_impl->write_concern_t);
+}
+
+bool write_concern::journal() const {
+    return libmongoc::write_concern_get_journal(_impl->write_concern_t);
+}
+
+std::int32_t write_concern::nodes() const {
+    return libmongoc::write_concern_get_w(_impl->write_concern_t);
+}
+
+std::string write_concern::tag() const {
+    return libmongoc::write_concern_get_wtag(_impl->write_concern_t);
+}
+
+bool write_concern::majority() const {
+    return libmongoc::write_concern_get_wmajority(_impl->write_concern_t);
+}
+
+std::chrono::milliseconds write_concern::timeout() const {
+    return std::chrono::milliseconds(
+        libmongoc::write_concern_get_wtimeout(_impl->write_concern_t)
+    );
+}
 
 }  // namespace driver
 }  // namespace mongo

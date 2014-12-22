@@ -34,22 +34,6 @@ class client::impl {
 
     mongoc_client_t* client_t;
 
-    void write_concern(class write_concern wc) {
-        priv::write_concern write_conc{wc};
-
-        libmongoc::client_set_write_concern(client_t, write_conc.get_write_concern());
-
-        _write_concern = std::move(wc);
-    }
-
-    const class write_concern& write_concern() const {
-        return _write_concern;
-    }
-
-    private:
-    class read_preference _read_preference;
-    class write_concern _write_concern;
-
 }; // class impl
 
 }  // namespace driver

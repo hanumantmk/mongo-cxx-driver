@@ -56,6 +56,7 @@ class LIBMONGOCXX_EXPORT database {
 
     const std::string& name() const;
 
+    // TODO: move this next to write concern
     void read_preference(class read_preference rp);
     class read_preference read_preference() const;
 
@@ -68,7 +69,7 @@ class LIBMONGOCXX_EXPORT database {
     bson::document::value stats();
 
     void write_concern(class write_concern wc);
-    const class write_concern& write_concern() const;
+    class write_concern write_concern() const;
 
     // TODO: add a non-doc comment "if you are getting a compile error here, don't use rvalue..."
     class collection collection(const std::string& name) const &;
