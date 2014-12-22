@@ -74,6 +74,7 @@ class mock<R (*)(Args...)> {
             _parent->destroy_active_instance();
         }
 
+        // Interposing functions replace C-Driver functionality completely
         rule& interpose(const std::function<R(Args...)>& func) {
             _callbacks.emplace([func](Args... args) { return func(args...); });
 
@@ -96,6 +97,7 @@ class mock<R (*)(Args...)> {
             return _callbacks.top();
         }
 
+        // Visiting functions get called in addition to the original C-Driver function
         rule& visit(std::function<void(Args...)> func) {
             _callbacks.emplace([=](Args... args) {
                 func(args...);
