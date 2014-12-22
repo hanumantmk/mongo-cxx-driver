@@ -103,10 +103,9 @@ TEST_CASE("A client's read preferences may be set and obtained", "[client][base]
 
 TEST_CASE("A client's write concern may be set and obtained", "[client][base]") {
     MOCK_CLIENT
-    MOCK_CONCERN
 
     client mongo_client;
-    write_concern concern{};
+    write_concern concern;
     concern.majority(std::chrono::milliseconds(100));
 
     mongoc_write_concern_t* underlying_wc;
@@ -122,9 +121,13 @@ TEST_CASE("A client's write concern may be set and obtained", "[client][base]") 
     client_get_concern->interpose(
         [&](const mongoc_client_t* client) {
             get_called = true;
-            return mongoc_write_concern_copy(underlying_wc);
+            return underlying_wc;
         });
 
+    mongo_client.write_concern(concern);
+    REQUIRE(set_called);
+
+    MOCK_CONCERN
     bool copy_called = false;
     concern_copy->interpose(
         [&](const mongoc_write_concern_t* concern) {
@@ -132,11 +135,7 @@ TEST_CASE("A client's write concern may be set and obtained", "[client][base]") 
             return mongoc_write_concern_copy(underlying_wc);
         });
 
-    mongo_client.write_concern(concern);
-    REQUIRE(set_called);
-
-    REQUIRE(mongo_client.write_concern());
-    REQUIRE(concern.majority());
+    REQUIRE(concern.majority() == mongo_client.write_concern().majority());
 
     REQUIRE(get_called);
     REQUIRE(copy_called);

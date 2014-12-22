@@ -61,6 +61,8 @@
     auto database_set_concern = libmongoc::database_set_write_concern.create_instance(); \
     database_set_concern->interpose([](mongoc_database_t*, \
                                        const mongoc_write_concern_t*){}).forever(); \
+    auto database_get_concern = libmongoc::database_get_write_concern.create_instance(); \
+    database_get_concern->interpose([](const mongoc_database_t*){return nullptr;}).forever(); \
     auto database_destroy = libmongoc::database_destroy.create_instance(); \
     database_destroy->interpose([](mongoc_database_t*) {}).forever(); \
     auto database_get_collection = libmongoc::database_get_collection.create_instance();\

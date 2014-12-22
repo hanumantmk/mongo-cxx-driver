@@ -105,20 +105,40 @@ TEST_CASE("A database", "[database][base]") {
         database_destroy->interpose([&](mongoc_database_t* client) { destroy_called = true; });
 
         database mongo_database(mongo_client[database_name]);
-        write_concern concern{};
+        write_concern concern;
         concern.majority(std::chrono::milliseconds(100));
 
-        bool called = false;
-        database_set_concern->interpose(
-            [&](mongoc_database_t* db, const mongoc_write_concern_t* concern) {
-                called = true;
-                REQUIRE(mongoc_write_concern_get_wmajority(concern));
-            });
-        mongo_database.write_concern(concern);
-        REQUIRE(called);
+        mongoc_write_concern_t* underlying_wc;
 
-        REQUIRE(concern.majority() ==
-                mongo_database.write_concern().majority());
+        bool set_called = false;
+        database_set_concern->interpose(
+            [&](mongoc_database_t* client, const mongoc_write_concern_t* concern) {
+                set_called = true;
+                underlying_wc = mongoc_write_concern_copy(concern);
+            });
+
+        bool get_called = false;
+        database_get_concern->interpose(
+            [&](const mongoc_database_t* client) {
+                get_called = true;
+                return underlying_wc;
+            });
+
+        mongo_database.write_concern(concern);
+        REQUIRE(set_called);
+
+        MOCK_CONCERN
+        bool copy_called = false;
+        concern_copy->interpose(
+            [&](const mongoc_write_concern_t* concern) {
+                copy_called = true;
+                return mongoc_write_concern_copy(underlying_wc);
+            });
+
+        REQUIRE(concern.majority() == mongo_database.write_concern().majority());
+
+        REQUIRE(get_called);
+        REQUIRE(copy_called);
     }
 
     SECTION("may create a collection") {
