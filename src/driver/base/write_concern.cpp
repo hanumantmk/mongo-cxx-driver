@@ -80,8 +80,10 @@ std::int32_t write_concern::nodes() const {
     return libmongoc::write_concern_get_w(_impl->write_concern_t);
 }
 
+// TODO: should this be an optional... probably
 std::string write_concern::tag() const {
-    return libmongoc::write_concern_get_wtag(_impl->write_concern_t);
+    const char* tag_str = libmongoc::write_concern_get_wtag(_impl->write_concern_t);
+    return tag_str ? tag_str : std::string();
 }
 
 bool write_concern::majority() const {
