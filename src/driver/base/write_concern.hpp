@@ -20,6 +20,7 @@
 #include <cstdint>
 #include <stdexcept>
 #include <string>
+#include <memory>
 
 #include "stdx/optional.hpp"
 
