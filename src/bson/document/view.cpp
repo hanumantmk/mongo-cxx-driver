@@ -45,6 +45,12 @@ view::iterator& view::iterator::operator++() {
     return *this;
 }
 
+view::iterator view::iterator::operator++(int) {
+    iterator before(*this);
+    operator++();
+    return before;
+}
+
 bool view::iterator::operator==(const iterator& rhs) const {
     if (is_end && rhs.is_end) return true;
     if (is_end || rhs.is_end) return false;

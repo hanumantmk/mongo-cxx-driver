@@ -23,6 +23,7 @@ namespace bson {
 namespace document {
 
 class LIBMONGOCXX_EXPORT view_or_value {
+
    public:
     view_or_value(bson::document::view view);
     view_or_value(bson::document::value value);
@@ -44,6 +45,7 @@ class LIBMONGOCXX_EXPORT view_or_value {
         bson::document::view _view;
         bson::document::value _value;
     };
+
 };
 
 }  // namespace document

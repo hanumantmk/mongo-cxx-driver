@@ -24,6 +24,7 @@ namespace bson {
 namespace document {
 
 class LIBMONGOCXX_EXPORT value {
+
    public:
     value(const std::uint8_t* b, std::size_t l, void (*dtor)(void*) = free);
     value(const view& view);
@@ -33,8 +34,8 @@ class LIBMONGOCXX_EXPORT value {
 
    private:
     std::unique_ptr<void, void (*)(void*)> _buf;
-
     std::size_t _len;
+
 };
 
 }  // namespace document

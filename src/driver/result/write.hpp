@@ -25,6 +25,7 @@ namespace driver {
 namespace result {
 
 class LIBMONGOCXX_EXPORT write {
+
    public:
     write(const bson::document::view& view);
     write(bson::document::value value);
@@ -39,6 +40,7 @@ class LIBMONGOCXX_EXPORT write {
 
    private:
     bson::document::view_or_value _value;
+
 }; // class write
 
 }  // namespace result

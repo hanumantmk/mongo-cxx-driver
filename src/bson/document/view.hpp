@@ -29,6 +29,7 @@ namespace bson {
 namespace document {
 
 class LIBMONGOCXX_EXPORT view {
+
    public:
     class iterator : public std::iterator<std::forward_iterator_tag, element> {
        public:
@@ -39,6 +40,7 @@ class LIBMONGOCXX_EXPORT view {
         const element* operator->() const;
 
         iterator& operator++();
+        iterator operator++(int);
 
         bool operator==(const iterator& rhs) const;
         bool operator!=(const iterator& rhs) const;
@@ -64,6 +66,7 @@ class LIBMONGOCXX_EXPORT view {
    protected:
     const std::uint8_t* buf;
     std::size_t len;
+
 };
 
 }  // namespace document
