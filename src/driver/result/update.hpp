@@ -35,7 +35,6 @@ class LIBMONGOCXX_EXPORT update {
     const result::bulk_write& result() const;
 
     std::int64_t matched_count() const;
-
     std::int64_t modified_count() const;
 
     optional <bson::document::element> upserted_id() const;

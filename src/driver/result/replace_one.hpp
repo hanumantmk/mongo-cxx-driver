@@ -32,13 +32,10 @@ class LIBMONGOCXX_EXPORT replace_one {
     explicit replace_one(result::bulk_write result);
 
     const result::bulk_write& result() const;
-
     std::int64_t matched_count() const;
-
     std::int64_t modified_count() const;
 
     optional<bson::document::element> upserted_id() const;
-
 
    private:
     result::bulk_write _result;

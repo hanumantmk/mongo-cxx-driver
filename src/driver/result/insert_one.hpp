@@ -24,13 +24,14 @@ namespace driver {
 namespace result {
 
 class LIBMONGOCXX_EXPORT insert_one {
+
    public:
     insert_one(result::bulk_write result, bson::document::element generated_id);
 
     const result::bulk_write& result() const;
 
     bson::document::element inserted_id() const;
-    
+
    private:
     result::bulk_write _result;
 

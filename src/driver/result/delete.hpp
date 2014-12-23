@@ -26,7 +26,6 @@ namespace result {
 
 class LIBMONGOCXX_EXPORT delete_result {
 
-
    public:
     // TODO: indicate that making the constructor public is for testing only in documentation
     explicit delete_result(result::bulk_write result);
@@ -34,7 +33,6 @@ class LIBMONGOCXX_EXPORT delete_result {
     const result::bulk_write& result() const;
 
     std::int64_t removed_count() const;
-
 
    private:
     result::bulk_write _result;

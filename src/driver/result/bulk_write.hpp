@@ -36,7 +36,6 @@ namespace result {
 
 class LIBMONGOCXX_EXPORT bulk_write {
 
-
    public:
 
     bulk_write(bson::document::value raw_response)
