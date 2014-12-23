@@ -12,39 +12,5 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
-
+//#include "driver/config/private/config.hpp"
 #include "driver/config/prelude.hpp"
-
-#include <iostream>
-
-#include "bson/document.hpp"
-
-namespace mongo {
-namespace driver {
-namespace result {
-
-class LIBMONGOCXX_EXPORT write {
-
-   public:
-    write(const bson::document::view& view);
-    write(bson::document::value value);
-
-    /* TODO replace this: */
-    write();
-
-    friend std::ostream& operator<<(std::ostream& out, const write& doc) {
-        out << doc._value.view();
-        return out;
-    }
-
-   private:
-    bson::document::view_or_value _value;
-
-}; // class write
-
-}  // namespace result
-}  // namespace driver
-}  // namespace mongo
-
-#include "driver/config/postlude.hpp"

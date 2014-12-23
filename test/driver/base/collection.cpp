@@ -3,7 +3,9 @@
 
 #include "bson/builder.hpp"
 #include "bson/types.hpp"
-#include "mongocxx.hpp"
+#include "driver/base/collection.hpp"
+#include "driver/base/client.hpp"
+#include "driver/base/pipeline.hpp"
 
 using namespace mongo::driver;
 

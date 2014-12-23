@@ -15,10 +15,11 @@
 #pragma once
 
 #include "driver/config/prelude.hpp"
-#include "driver/result/bulk_write.hpp"
 
 #include <cstdint>
+
 #include "bson/document.hpp"
+#include "driver/result/bulk_write.hpp"
 
 namespace mongo {
 namespace driver {

@@ -2,7 +2,7 @@
 #include "catch.hpp"
 #include "helpers.hpp"
 
-#include "mongocxx.hpp"
+#include "driver/options/aggregate.hpp"
 
 using namespace mongo::driver;
 

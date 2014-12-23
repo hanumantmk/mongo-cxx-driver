@@ -21,7 +21,6 @@
 #include <vector>
 
 #include "bson/document.hpp"
-
 #include "driver/base/read_preference.hpp"
 #include "driver/base/write_concern.hpp"
 

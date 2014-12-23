@@ -3,7 +3,6 @@
 #include <cstring>
 #include <vector>
 
-#include "mongocxx.hpp"
 #include "bson/builder.hpp"
 #include "driver/private/libmongoc.hpp"
 

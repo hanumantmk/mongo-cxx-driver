@@ -15,9 +15,9 @@
 #pragma once
 
 #include "driver/config/prelude.hpp"
-#include "driver/result/bulk_write.hpp"
 
 #include "bson/types.hpp"
+#include "driver/result/bulk_write.hpp"
 
 namespace mongo {
 namespace driver {
@@ -34,7 +34,6 @@ class LIBMONGOCXX_EXPORT insert_one {
 
    private:
     result::bulk_write _result;
-
     bson::document::element _generated_id;
 
 }; // class insert_one

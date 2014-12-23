@@ -29,7 +29,7 @@ enum class write_type {
     k_replace_one,
     k_uninitialized,
 
-}; // enum write_type
+}; // enum class write_type
 
 }  // namespace driver
 }  // namespace mongo

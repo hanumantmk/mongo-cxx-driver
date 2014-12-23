@@ -21,9 +21,8 @@
 #include <memory>
 #include <string>
 
-#include "bson/document.hpp"
-
 #include "bson/builder.hpp"
+#include "bson/document.hpp"
 #include "driver/base/bulk_write.hpp"
 #include "driver/base/cursor.hpp"
 #include "driver/base/read_preference.hpp"
@@ -62,8 +61,6 @@ class LIBMONGOCXX_EXPORT collection {
     collection& operator=(collection&& rhs) noexcept;
 
     ~collection();
-
-    const std::string& name() const;
 
     cursor aggregate(
         const pipeline& pipeline,
@@ -163,6 +160,8 @@ class LIBMONGOCXX_EXPORT collection {
 
     cursor list_indexes() const;
 
+    const std::string& name() const;
+
     void read_preference(class read_preference rp);
     class read_preference read_preference() const;
 
@@ -239,6 +238,7 @@ inline optional<result::insert_many> collection::insert_many(
     std::map<std::size_t, bson::document::element> inserted_ids{};
     size_t index = 0;
     std::for_each(begin, end, [&](const bson::document::view& current){
+        // TODO: put this somewhere else not in header scope (bson::builder)
         if ( !current.has_key("_id")) {
             bson::builder::document new_document;
             new_document << "_id" << bson::oid(bson::oid::init_tag);
@@ -260,7 +260,6 @@ inline optional<result::insert_many> collection::insert_many(
     result::bulk_write res(std::move(bulk_write(writes).value()));
     optional<result::insert_many> result(result::insert_many(std::move(res), std::move(inserted_ids)));
     return result;
-
 }
 
 }  // namespace driver

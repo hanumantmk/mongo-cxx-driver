@@ -27,8 +27,6 @@
 namespace mongo {
 namespace driver {
 
-class settings;
-
 /// The client class is the entry point into the MongoDB driver. It acts as a logical gateway for
 /// accessing the databases of MongoDB clusters. Databases that are accessed via a client inherit
 /// all of the options specified on the client.

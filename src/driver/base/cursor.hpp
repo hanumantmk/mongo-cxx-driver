@@ -14,9 +14,9 @@
 
 #pragma once
 
-#include <memory>
-
 #include "driver/config/prelude.hpp"
+
+#include <memory>
 
 #include "bson/document.hpp"
 

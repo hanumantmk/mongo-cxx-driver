@@ -18,6 +18,10 @@ namespace mongo {
 namespace driver {
 namespace result {
 
+bulk_write::bulk_write(bson::document::value raw_response)
+    : _response(std::move(raw_response))
+{}
+
 std::int64_t bulk_write::inserted_count() const { return view()["nInserted"].get_int64(); }
 
 std::int64_t bulk_write::matched_count() const { return view()["nMatched"].get_int64(); }

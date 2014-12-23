@@ -34,6 +34,7 @@ class bulk_write;
 
 class LIBMONGOCXX_EXPORT write_concern {
 
+   // TODO: this interface still needs work
    public:
     write_concern();
 
@@ -71,7 +72,7 @@ class LIBMONGOCXX_EXPORT write_concern {
 
     std::unique_ptr<impl> _impl;
 
-};
+}; // class write_concern
 
 }  // namespace driver
 }  // namespace mongo

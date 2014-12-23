@@ -14,33 +14,21 @@
 
 #pragma once
 
-#include "bson/document.hpp"
-#include "bson/types.hpp"
-
 #include "driver/config/prelude.hpp"
 
 #include <cstdint>
 
+#include "bson/document.hpp"
+#include "bson/types.hpp"
+
 namespace mongo {
 namespace driver {
-
-    class collection;
-
 namespace result {
-
-    class insert_one;
-    class delete_result;
-    class update;
-    class replace_one;
-    class insert_many;
 
 class LIBMONGOCXX_EXPORT bulk_write {
 
    public:
-
-    bulk_write(bson::document::value raw_response)
-        : _response(std::move(raw_response))
-    {}
+    explicit bulk_write(bson::document::value raw_response);
 
     bson::document::view view() const;
 
@@ -54,7 +42,6 @@ class LIBMONGOCXX_EXPORT bulk_write {
     bson::document::element upserted_ids() const;
 
    private:
-
     bson::document::value _response;
 
 }; // class bulk_write

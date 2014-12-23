@@ -12,12 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 #include "helpers.hpp"
 
-#include "mongocxx.hpp"
-#include "../../../src/bson/types.hpp"
+#include "bson/builder.hpp"
+#include "driver/result/delete.hpp"
 
 using namespace mongo::driver;
 

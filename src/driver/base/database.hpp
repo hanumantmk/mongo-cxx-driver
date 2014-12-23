@@ -49,9 +49,9 @@ class LIBMONGOCXX_EXPORT database {
 
     void drop();
 
-    cursor list_collections();
-
     bool has_collection(const std::string& name);
+
+    cursor list_collections();
 
     const std::string& name() const;
 

@@ -21,7 +21,6 @@
 #include <memory>
 
 #include "bson/document.hpp"
-
 #include "stdx/optional.hpp"
 
 namespace mongo {
@@ -31,6 +30,7 @@ class client;
 class collection;
 class database;
 
+// TODO: move to own file?
 enum class read_mode {
     k_primary,
     k_secondary,

@@ -33,16 +33,15 @@
 namespace mongo {
 namespace driver {
 
-// TODO: add export macros
-class exception : public std::exception {};
+class LIBMONGOCXX_EXPORT exception : public std::exception {};
 
-class operation_exception : public exception {};
+class LIBMONGOCXX_EXPORT operation_exception : public exception {};
 
-class query_exception : public operation_exception {};
+class LIBMONGOCXX_EXPORT query_exception : public operation_exception {};
 
-class write_exception : public operation_exception {};
+class LIBMONGOCXX_EXPORT write_exception : public operation_exception {};
 
-class duplicate_key_exception : public write_exception {};
+class LIBMONGOCXX_EXPORT duplicate_key_exception : public write_exception {};
 
 class write_concern_error {
   private:
@@ -56,7 +55,7 @@ class write_error {
     std::string message;
 }
 
-class authentication_exception : public operation_exception {};
+class LIBMONGOCXX_EXPORT authentication_exception : public operation_exception {};
 
 }  // namespace driver
 }  // namespace mongo

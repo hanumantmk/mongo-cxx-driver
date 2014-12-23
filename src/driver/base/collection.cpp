@@ -36,7 +36,6 @@
 #include "driver/result/insert_one.hpp"
 #include "driver/result/replace_one.hpp"
 #include "driver/result/update.hpp"
-#include "driver/result/write.hpp"
 #include "stdx/optional.hpp"
 
 #include "stdx/make_unique.hpp"

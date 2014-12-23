@@ -25,6 +25,7 @@ namespace mongo {
 namespace driver {
 namespace options {
 
+// NOTE: client options interface still evolving
 class LIBMONGOCXX_EXPORT client {
 
    public:
