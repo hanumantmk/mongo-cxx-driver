@@ -58,7 +58,7 @@ class write_concern database::write_concern() const {
     return wc;
 }
 
-collection database::collection(const std::string& name) const & {
+collection database::collection(const std::string& name) const {
     return mongo::driver::collection(*this, name);
 }
 
