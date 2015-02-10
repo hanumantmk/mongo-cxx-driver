@@ -48,6 +48,8 @@ namespace basic {
             _core.append(std::get<1>(t));
         }
 
+        // TODO add lambda overloads for subdoc and subarray creation
+
         bsoncxx::document::view view() const {
             return _core.view_document();
         }

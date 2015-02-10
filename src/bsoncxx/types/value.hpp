@@ -74,6 +74,8 @@ namespace types {
         friend BSONCXX_API bool operator==(const value&, const value&);
         friend BSONCXX_API bool operator!=(const value&, const value&);
 
+        // TODO drop optionality via unset
+
         bsoncxx::type type() const;
 
         b_double get_double() const;
@@ -103,9 +105,12 @@ namespace types {
             element,
             variant,
         } _mode;
+        // Let's just make this a variant and drop the element thing
+        // TODO let's just own this
         const document::element* _element;
 
         bsoncxx::type _type;
+        // TODO add equality overloads for b_types
         union {
             struct b_double _b_double;
             struct b_utf8 _b_utf8;

@@ -22,6 +22,10 @@ namespace bsoncxx {
 BSONCXX_INLINE_NAMESPACE_BEGIN
 namespace builder {
 namespace stream {
+    // TODO consider adding back helpers namespace
+    // TODO constexpr
+
+    // TODO _t -> _type
 
 struct BSONCXX_API open_document_t {};
 extern BSONCXX_API open_document_t open_document;

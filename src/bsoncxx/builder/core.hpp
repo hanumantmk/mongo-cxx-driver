@@ -37,7 +37,7 @@ class BSONCXX_API core {
     // TODO this should fit with the larger bson exception heirarchy
     class invalid_state : public std::runtime_error {};
 
-    core(bool is_array);
+    explicit core(bool is_array);
     core(core&& rhs);
     core& operator=(core&& rhs);
     ~core();
@@ -73,6 +73,7 @@ class BSONCXX_API core {
     void append(const types::b_minkey& value);
     void append(const types::b_maxkey& value);
 
+    // TODO everything that takes a document::x needs to take array::x
     void append(const document::element& value);
 
     template <std::size_t n>
