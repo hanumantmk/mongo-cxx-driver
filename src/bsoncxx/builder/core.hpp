@@ -73,8 +73,7 @@ class BSONCXX_API core {
     void append(const types::b_minkey& value);
     void append(const types::b_maxkey& value);
 
-    // TODO everything that takes a document::x needs to take array::x
-    void append(const document::element& value);
+    void append(const types::value& value);
 
     template <std::size_t n>
     void append(const char (&v)[n]) {
