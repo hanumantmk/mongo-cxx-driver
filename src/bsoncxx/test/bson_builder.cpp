@@ -733,3 +733,59 @@ TEST_CASE("array::view works", "[bsoncxx::builder::array]") {
     REQUIRE(stream.view()[1].get_int32() == 99);
     REQUIRE(stream.view()[2].get_int32() == 98);
 }
+
+TEST_CASE("stream::document append works", "[bsoncxx::builder::document]") {
+    using namespace builder::stream;
+
+    builder::stream::document stream;
+    builder::stream::document expected;
+
+    expected <<
+        "key" << "value" <<
+        "doc" << open_document <<
+            "a" << "b" <<
+        close_document <<
+        "array" << open_array <<
+            1 << 2 << 3 <<
+        close_array;
+
+    stream.append(
+        "key", "value",
+        "doc", sub_document(
+            "a", "b"
+        ),
+        "array", sub_array(
+            1, 2, 3
+        )
+    );
+
+    viewable_eq_viewable(expected, stream);
+}
+
+TEST_CASE("stream::array append works", "[bsoncxx::builder::array]") {
+    using namespace builder::stream;
+
+    builder::stream::array stream;
+    builder::stream::array expected;
+
+    expected <<
+        1 << 2 << 3 <<
+        open_document <<
+            "a" << "b" <<
+        close_document <<
+        open_array <<
+            1 << 2 << 3 <<
+        close_array;
+
+    stream.append(
+        1, 2, 3,
+        sub_document(
+            "a", "b"
+        ),
+        sub_array(
+            1, 2, 3
+        )
+    );
+
+    viewable_eq_viewable(expected, stream);
+}

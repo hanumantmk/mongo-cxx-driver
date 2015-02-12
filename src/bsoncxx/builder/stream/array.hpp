@@ -19,6 +19,7 @@
 #include <bsoncxx/array/view.hpp>
 #include <bsoncxx/array/value.hpp>
 #include <bsoncxx/builder/core.hpp>
+#include <bsoncxx/builder/stream/append.hpp>
 #include <bsoncxx/builder/stream/array_context.hpp>
 #include <bsoncxx/builder/stream/key_context.hpp>
 #include <bsoncxx/builder/stream/single_context.hpp>
@@ -47,6 +48,12 @@ namespace stream {
 
         void clear() {
             _core.clear();
+        }
+
+        template <typename ...Args>
+        array& append(Args&& ...args) {
+            append_bson(*this, std::forward<Args>(args)...);
+            return *this;
         }
 
     private:

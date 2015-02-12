@@ -5,6 +5,7 @@ include_directories(
 
 set(MONGOCXX_EXAMPLES
   aggregate.cpp
+  bson.cpp
   create.cpp
   index.cpp
   query.cpp

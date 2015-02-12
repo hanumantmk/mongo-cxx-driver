@@ -17,6 +17,7 @@
 #include <bsoncxx/config/prelude.hpp>
 
 #include <bsoncxx/builder/core.hpp>
+#include <bsoncxx/builder/stream/append.hpp>
 #include <bsoncxx/builder/stream/key_context.hpp>
 #include <bsoncxx/builder/stream/single_context.hpp>
 #include <bsoncxx/document/value.hpp>
@@ -45,6 +46,12 @@ namespace stream {
 
         void clear() {
             _core.clear();
+        }
+
+        template <typename ...Args>
+        document& append(Args&& ...args) {
+            append_bson(*this, std::forward<Args>(args)...);
+            return *this;
         }
 
     private:
