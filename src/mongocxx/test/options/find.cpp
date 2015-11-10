@@ -2,7 +2,6 @@
 #include "helpers.hpp"
 
 #include <bsoncxx/document/view.hpp>
-
 #include <mongocxx/options/find.hpp>
 
 using namespace mongocxx;
