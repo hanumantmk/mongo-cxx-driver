@@ -87,7 +87,7 @@ const stdx::optional<std::string>& find::comment() const {
     return _comment;
 }
 
-const stdx::optional<cursor_type>& find::cursor_type() const {
+const stdx::optional<typename find::cursor_type>& find::cursor_type() const {
     return _cursor_type;
 }
 

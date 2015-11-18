@@ -8,12 +8,12 @@ using namespace mongocxx;
 
 TEST_CASE("find", "[find][option]") {
     options::find find_opts{};
-    // using cursor_type = options::find::cursor_type;
+    using cursor_type = typename options::find::cursor_type;
 
     CHECK_OPTIONAL_ARGUMENT(find_opts, allow_partial_results, true);
     CHECK_OPTIONAL_ARGUMENT(find_opts, batch_size, 3);
     CHECK_OPTIONAL_ARGUMENT(find_opts, comment, "comment");
-    CHECK_OPTIONAL_ARGUMENT(find_opts, cursor_type, options::cursor_type::k_non_tailable);
+    CHECK_OPTIONAL_ARGUMENT(find_opts, cursor_type, cursor_type::k_non_tailable);
     CHECK_OPTIONAL_ARGUMENT(find_opts, limit, 3);
     CHECK_OPTIONAL_ARGUMENT(find_opts, max_await_time_ms, 300);
     CHECK_OPTIONAL_ARGUMENT(find_opts, max_time_ms, 300);
